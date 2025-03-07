@@ -7,6 +7,13 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@ghoran/entity':
+        specifier: ^0.0.7
+        version: 0.0.7
+      '@ghoran/metadata':
+        specifier: ^0.0.7
+        version: 0.0.7
     devDependencies:
       '@eslint/compat':
         specifier: ^1.2.5
@@ -331,6 +338,18 @@ packages:
   '@eslint/plugin-kit@0.2.7':
     resolution: {integrity: sha512-JubJ5B2pJ4k4yGxaNLdbjrnk9d/iDz6/q8wOilpIowd6PJPgaxCuHBnBszq7Ce2TyMrywm5r4PnKm6V3iiZF+g==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@ghoran/entity@0.0.7':
+    resolution: {integrity: sha512-/1YHhaGbhwJp/esWE6MfFRAqInw3rEx8qGS5nOKlcsT3F+6lsA8VF+/FP2MFtTzyHTURETHH5bqu70Wfgl0WZQ==}
+
+  '@ghoran/metadata@0.0.7':
+    resolution: {integrity: sha512-g+B+S87M6wKZ1HW4vpe13dG2307vht0dGZm5ts/B9cGLZUDpj8h5i/yZX4kV6Ma6utZEop8NW2d46nLfQnmZdg==}
+
+  '@ghoran/text@0.0.7':
+    resolution: {integrity: sha512-CZ/qtyvo2TaKF1nwkAlx7ayDmrWn8QyEBB025PsNSfecl5yfVkNP7kvfEPWER3eMOSX/T+/bD2Leab0Ud9VRkg==}
+
+  '@ghoran/utils@0.0.7':
+    resolution: {integrity: sha512-OkK0jykCZqQRxt1fm+WBiJ4V8Hk+tUz5Jvu9ZdD6pcKyVVytksBsKq7jR8vBNutgMpCESKV255EeTzhzyjeh5g==}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -2124,6 +2143,18 @@ snapshots:
     dependencies:
       '@eslint/core': 0.12.0
       levn: 0.4.1
+
+  '@ghoran/entity@0.0.7':
+    dependencies:
+      '@ghoran/metadata': 0.0.7
+      '@ghoran/text': 0.0.7
+      '@ghoran/utils': 0.0.7
+
+  '@ghoran/metadata@0.0.7': {}
+
+  '@ghoran/text@0.0.7': {}
+
+  '@ghoran/utils@0.0.7': {}
 
   '@humanfs/core@0.19.1': {}
 

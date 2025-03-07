@@ -5,7 +5,7 @@
 	let { open = $bindable(false), children = null as null | Snippet } = $props()
 </script>
 
-<input class="modal-toggle" type="checkbox" hidden bind:checked={open} />
+<input class="modal-toggle" type="checkbox" hidden checked={open} />
 
 {#if open}
 	<div class="modal" transition:fade>

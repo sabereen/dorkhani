@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { PageProps } from './$types'
-	import SelectPart from './select/select-part.svelte'
+	import SelectPart from './select-part.svelte'
 	import { KhatmPart } from '$lib/entity/KhatmPart'
-
+	import { invalidateAll } from '$app/navigation'
 	const { data }: PageProps = $props()
 
 	const count = $derived(
@@ -15,7 +15,7 @@
 <h1 class="mb-5 text-3xl">جزئیات ختم «{data.khatm.title}»</h1>
 
 <p>{data.khatm.description}</p>
-
+<input type="text" class="input" />
 <div class="alert m-2 flex flex-col">
 	پیشرفت کل: {percent}درصد
 	<progress max={6236} value={count}></progress>
@@ -25,4 +25,6 @@
 	برای قبول کردن و خواندن بخشی از ختم روی بازه مورد نظر کلیک کنید.
 </div>
 
-<SelectPart parts={data.khatm.parts} />
+<p class="text-sm">بخش سبزرنگ قسمتی را نشان می‌دهد که تا الآن خوانده شده است</p>
+
+<SelectPart parts={data.khatm.parts} onFinished={invalidateAll} />

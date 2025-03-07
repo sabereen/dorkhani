@@ -13,6 +13,7 @@
 	import { juzList } from '@ghoran/metadata'
 	import { COUNT_OF_PAGES, COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 	import { page } from '$app/state'
+	import { findNonOverlappingSubranges } from '$lib/utility/findNonOverlappingSubranges'
 	const props: Props = $props()
 
 	const surahList = Surah.getAll()
@@ -24,23 +25,24 @@
 		start: 0,
 		end: 0,
 	})
-	const selectedStartAyah = $derived(Ayah.get(selected.start))
-	const selectedEndAyah = $derived(Ayah.get(selected.end))
+	const selectableRanges = $derived(findNonOverlappingSubranges(props.parts, selected))
+	let finalRange = $state(null as null | typeof selected)
 
 	function openModal(start: number, length: number) {
 		modal = true
 		selected = { start, end: start + length }
+		finalRange = selectableRanges[0]
 	}
 
 	let loading = $state(false)
 	/** قسمت انتخاب شده را به عنوان خوانده شده علامت می‌زند */
 	async function markAsRead() {
-		if (loading) return
+		if (loading || !finalRange) return
 		loading = true
 		try {
 			const response = await fetch(`/khatm/${page.params.khatmId}`, {
 				method: 'POST',
-				body: JSON.stringify({ start: selected.start, end: selected.end }),
+				body: JSON.stringify({ start: finalRange.start, end: finalRange.end }),
 			})
 			if (response.status !== 200) throw new Error('خطا')
 			const { count } = await response.json()
@@ -74,22 +76,23 @@
 			style:height={ayahCount / 62.36 + '%'}
 			style:top={firstAyah / 62.36 + '%'}
 			style:right={(100 * (order - 1)) / 3 + '%'}
+			title={name}
 			onclick={() => openModal(firstAyah, ayahCount)}
 		>
 			{name}
 		</button>
 	{/snippet}
 
-	<div class="text-xs">
-		{#each surahList as surah}
-			{@render verticalRange(surah.ayahCount, surah.firstAyahIndex, surah.name, 1)}
-		{/each}
-	</div>
-
 	<div>
 		{#each juzList as juz, index}
 			{@const ayahCount = (juzList[index + 1] || 6236) - juz}
-			{@render verticalRange(ayahCount, juz, `جزء ${index + 1}`, 2)}
+			{@render verticalRange(ayahCount, juz, `جزء ${index + 1}`, 1)}
+		{/each}
+	</div>
+
+	<div class="text-xs">
+		{#each surahList as surah}
+			{@render verticalRange(surah.ayahCount, surah.firstAyahIndex, surah.name, 2)}
 		{/each}
 	</div>
 
@@ -102,21 +105,43 @@
 </div>
 
 <Modal bind:open={modal}>
-	آیا قرائت این بازه را تقبل می‌کنید؟
-	<p>
-		از آیه {selectedStartAyah.ayahNumber} سوره‌ی {selectedStartAyah.surah.name}
-		تا ابتدای آیه {selectedEndAyah.ayahNumber} سوره‌ی {selectedEndAyah.surah.name}
-	</p>
+	{#if selectableRanges.length}
+		آیا قرائت این بازه را تقبل می‌کنید؟
 
-	<a
-		href={`https://ketabmobin.com/ayah/${selectedStartAyah.index}`}
-		target="_blank"
-		class="badge badge-info badge-outline"
-	>
-		مشاهده آیات
-	</a>
+		{#each selectableRanges as range}
+			{@const start = Ayah.get(range.start)}
+			{@const end = Ayah.get(range.end - 1)}
+			<label class="my-2 block">
+				<input
+					type="radio"
+					name="part-range"
+					bind:group={finalRange}
+					class="radio float-right ml-1"
+					value={range}
+				/>
+				<p class="text-sm">
+					از آیه {start.ayahNumber}
+					{start.surah.name}
+					تا انتهای آیه {end.ayahNumber}
+					{end.surah.name}
+					<a
+						href={`https://ketabmobin.com/ayah/${start.index}`}
+						target="_blank"
+						class="badge badge-info badge-outline"
+					>
+						مشاهده آیات
+					</a>
+				</p>
+			</label>
+		{/each}
 
-	<div>
-		<button class="btn btn-primary mt-2" disabled={loading} onclick={markAsRead}>می‌پذیرم</button>
-	</div>
+		<div>
+			<button class="btn btn-primary mt-2" disabled={loading} onclick={markAsRead}>می‌پذیرم</button>
+			<button class="btn btn-error mt-2" disabled={loading} onclick={() => (modal = false)}>
+				لغو
+			</button>
+		</div>
+	{:else}
+		<p class="text-lg">این بازه قبلا قرائت شده است.</p>
+	{/if}
 </Modal>

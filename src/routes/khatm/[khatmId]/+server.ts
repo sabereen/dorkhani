@@ -20,7 +20,7 @@ export const POST: RequestHandler = async (event) => {
 			id: khatmId,
 			parts: {
 				every: {
-					OR: [{ end: { lt: body.start } }, { start: { gt: body.end } }],
+					OR: [{ end: { lte: body.start } }, { start: { gte: body.end } }],
 				},
 			},
 		},

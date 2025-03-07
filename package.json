@@ -51,6 +51,7 @@
 	"dependencies": {
 		"@ghoran/entity": "^0.0.7",
 		"@ghoran/metadata": "^0.0.7",
+		"module": "^1.2.5",
 		"vazirmatn": "^33.0.3"
 	}
 }

@@ -40,7 +40,7 @@
 		try {
 			const response = await fetch(`/khatm/${page.params.khatmId}`, {
 				method: 'POST',
-				body: JSON.stringify([[selected.start, selected.end]]),
+				body: JSON.stringify({ start: selected.start, end: selected.end }),
 			})
 			if (response.status !== 200) throw new Error('خطا')
 			const { count } = await response.json()

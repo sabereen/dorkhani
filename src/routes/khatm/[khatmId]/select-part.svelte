@@ -14,6 +14,7 @@
 	import { COUNT_OF_PAGES, COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 	import { page } from '$app/state'
 	import { findNonOverlappingSubranges } from '$lib/utility/findNonOverlappingSubranges'
+	import { invalidateAll } from '$app/navigation'
 	const props: Props = $props()
 
 	const surahList = Surah.getAll()
@@ -27,6 +28,10 @@
 	})
 	const selectableRanges = $derived(findNonOverlappingSubranges(props.parts, selected))
 	let finalRange = $state(null as null | typeof selected)
+
+	$effect(() => {
+		finalRange = selectableRanges[0]
+	})
 
 	function openModal(start: number, length: number) {
 		modal = true
@@ -51,6 +56,7 @@
 			props.onFinished?.()
 		} catch (err) {
 			alert(err)
+			invalidateAll()
 		} finally {
 			loading = false
 		}

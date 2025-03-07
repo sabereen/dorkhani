@@ -15,7 +15,7 @@
 <h1 class="mb-5 text-3xl">جزئیات ختم «{data.khatm.title}»</h1>
 
 <p>{data.khatm.description}</p>
-<input type="text" class="input" />
+
 <div class="alert m-2 flex flex-col">
 	پیشرفت کل: {percent}درصد
 	<progress max={6236} value={count}></progress>

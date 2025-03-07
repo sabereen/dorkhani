@@ -1,2 +1,7 @@
 @import 'tailwindcss';
 @plugin "daisyui";
+@import 'vazirmatn/Vazirmatn-Variable-font-face.css';
+
+body {
+  font-family: vazirmatn, tahoma;
+}

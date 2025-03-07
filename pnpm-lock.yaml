@@ -14,6 +14,9 @@ importers:
       '@ghoran/metadata':
         specifier: ^0.0.7
         version: 0.0.7
+      vazirmatn:
+        specifier: ^33.0.3
+        version: 33.0.3
     devDependencies:
       '@eslint/compat':
         specifier: ^1.2.5
@@ -1829,6 +1832,9 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
+  vazirmatn@33.0.3:
+    resolution: {integrity: sha512-fbjNc0CMjazZpIegWzz9OHGzI1APFboT+x7ZecXlUCtDe/nkyx7gtCTZnWS/+eeXG7fbfXymCPKJI8EsnM3iqw==}
+
   vite-node@3.0.7:
     resolution: {integrity: sha512-2fX0QwX4GkkkpULXdT1Pf4q0tC1i1lFOyseKoonavXUNlQ77KpW2XqBGGNIm/J4Ows4KxgGJzDguYVPKwG/n5A==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
@@ -3536,6 +3542,8 @@ snapshots:
       punycode: 2.3.1
 
   util-deprecate@1.0.2: {}
+
+  vazirmatn@33.0.3: {}
 
   vite-node@3.0.7(jiti@2.4.2)(lightningcss@1.29.1):
     dependencies:

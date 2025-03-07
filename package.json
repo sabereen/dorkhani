@@ -50,6 +50,7 @@
 	},
 	"dependencies": {
 		"@ghoran/entity": "^0.0.7",
-		"@ghoran/metadata": "^0.0.7"
+		"@ghoran/metadata": "^0.0.7",
+		"vazirmatn": "^33.0.3"
 	}
 }

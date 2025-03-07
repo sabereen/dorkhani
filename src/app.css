@@ -4,4 +4,6 @@
 
 body {
   font-family: vazirmatn, tahoma;
+  margin: auto;
+  max-width: 600px;
 }

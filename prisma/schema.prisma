@@ -17,7 +17,7 @@ model Khatm {
   id          Int         @id @default(autoincrement())
   title       String
   description String
-  KhatmPart   KhatmPart[]
+  parts       KhatmPart[]
 
   @@map("khatm")
 }

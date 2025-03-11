@@ -10,15 +10,16 @@
 	import Modal from '$lib/components/Modal.svelte'
 	import { KhatmPart } from '$lib/entity/KhatmPart'
 	import { Surah, Page, Ayah } from '@ghoran/entity'
-	import { juzList } from '@ghoran/metadata'
 	import { COUNT_OF_PAGES, COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 	import { page } from '$app/state'
 	import { findNonOverlappingSubranges } from '$lib/utility/findNonOverlappingSubranges'
 	import { invalidateAll } from '$app/navigation'
+	import { Juz } from '$lib/entity/Juz'
 	const props: Props = $props()
 
 	const surahList = Surah.getAll()
 	const pageList = new Array(COUNT_OF_PAGES).fill(0).map((_, i) => Page.get(i))
+	const juzList = Juz.getAll()
 
 	let modal = $state(false)
 
@@ -90,9 +91,8 @@
 	{/snippet}
 
 	<div>
-		{#each juzList as juz, index}
-			{@const ayahCount = (juzList[index + 1] || 6236) - juz}
-			{@render verticalRange(ayahCount, juz, `جزء ${index + 1}`, 1)}
+		{#each juzList as juz}
+			{@render verticalRange(juz.ayahCount, juz.firstAyahIndex, `جزء ${juz.number}`, 1)}
 		{/each}
 	</div>
 

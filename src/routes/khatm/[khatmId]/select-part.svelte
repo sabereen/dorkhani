@@ -9,17 +9,20 @@
 <script lang="ts">
 	import Modal from '$lib/components/Modal.svelte'
 	import { KhatmPart } from '$lib/entity/KhatmPart'
-	import { Surah, Page, Ayah } from '@ghoran/entity'
-	import { COUNT_OF_PAGES, COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
+	import { Ayah } from '@ghoran/entity'
 	import { page } from '$app/state'
 	import { findNonOverlappingSubranges } from '$lib/utility/findNonOverlappingSubranges'
 	import { invalidateAll } from '$app/navigation'
 	import { Juz } from '$lib/entity/Juz'
+	import { Surah } from '$lib/entity/Surah'
+	import { Page } from '$lib/entity/Page'
+	import type { QuranRange } from '$lib/entity/Range'
+
 	const props: Props = $props()
 
-	const surahList = Surah.getAll()
-	const pageList = new Array(COUNT_OF_PAGES).fill(0).map((_, i) => Page.get(i))
-	const juzList = Juz.getAll()
+	const surahList = Surah.getAll() as Surah[]
+	const pageList = Page.getAll() as Page[]
+	const juzList = Juz.getAll() as Juz[]
 
 	let modal = $state(false)
 
@@ -77,35 +80,35 @@
 		></div>
 	{/each}
 
-	{#snippet verticalRange(ayahCount: number, firstAyah: number, name: string, order: number)}
+	{#snippet verticalRange(range: QuranRange, order: number)}
+		{@const ayahCount = range.end - range.start + 1}
 		<button
 			class="absolute w-1/3 cursor-pointer overflow-hidden border border-blue-200 hover:bg-blue-200/20"
 			style:height={ayahCount / 62.36 + '%'}
-			style:top={firstAyah / 62.36 + '%'}
+			style:top={range.start / 62.36 + '%'}
 			style:right={(100 * (order - 1)) / 3 + '%'}
-			title={name}
-			onclick={() => openModal(firstAyah, ayahCount)}
+			title={range.title}
+			onclick={() => openModal(range.start, ayahCount)}
 		>
-			{name}
+			{range.title}
 		</button>
 	{/snippet}
 
 	<div>
 		{#each juzList as juz}
-			{@render verticalRange(juz.ayahCount, juz.firstAyahIndex, `جزء ${juz.number}`, 1)}
+			{@render verticalRange(juz.toRange(), 1)}
 		{/each}
 	</div>
 
 	<div class="text-xs">
 		{#each surahList as surah}
-			{@render verticalRange(surah.ayahCount, surah.firstAyahIndex, surah.name, 2)}
+			{@render verticalRange(surah.toRange(), 2)}
 		{/each}
 	</div>
 
 	<div class="text-xs">
 		{#each pageList as page}
-			{@const ayahCount = page.lastAyahIndex - page.firstAyahIndex + 1}
-			{@render verticalRange(ayahCount, page.firstAyahIndex, `صفحه ${page.pageNumber}`, 3)}
+			{@render verticalRange(page.toRange(), 3)}
 		{/each}
 	</div>
 </div>

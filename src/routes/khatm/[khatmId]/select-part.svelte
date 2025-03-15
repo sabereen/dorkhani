@@ -8,7 +8,6 @@
 
 <script lang="ts">
 	import Modal from '$lib/components/Modal.svelte'
-	import { KhatmPart } from '$lib/entity/KhatmPart'
 	import { Ayah } from '@ghoran/entity'
 	import { page } from '$app/state'
 	import { findNonOverlappingSubranges } from '$lib/utility/findNonOverlappingSubranges'
@@ -37,9 +36,9 @@
 		finalRange = selectableRanges[0]
 	})
 
-	function openModal(start: number, length: number) {
+	function openModal(start: number, end: number) {
 		modal = true
-		selected = { start, end: start + length }
+		selected = { start, end }
 		finalRange = selectableRanges[0]
 	}
 
@@ -67,50 +66,39 @@
 	}
 </script>
 
-<div class="relative h-[15000px]">
-	<div class="absolute inset-y-0 w-full bg-gray-500"></div>
-
+<div class="relative grid bg-gray-500/75 text-sm">
 	{#each props.parts as plainPart}
-		{@const part = new KhatmPart(plainPart)}
-		{@const style = part.getStyle()}
 		<div
-			class="absolute w-full bg-green-500"
-			style:height={style.width}
-			style:top={style.start}
+			class="col-span-3 col-start-1 w-full bg-green-500/75"
+			style:grid-row-start={plainPart.start + 1}
+			style:grid-row-end={plainPart.end + 1}
 		></div>
 	{/each}
 
 	{#snippet verticalRange(range: QuranRange, order: number)}
-		{@const ayahCount = range.end - range.start + 1}
 		<button
-			class="absolute w-1/3 cursor-pointer overflow-hidden border border-blue-200 hover:bg-blue-200/20"
-			style:height={ayahCount / 62.36 + '%'}
-			style:top={range.start / 62.36 + '%'}
-			style:right={(100 * (order - 1)) / 3 + '%'}
+			class="cursor-pointer overflow-hidden border border-blue-200 p-1 hover:bg-blue-200/20"
 			title={range.title}
-			onclick={() => openModal(range.start, ayahCount)}
+			style:grid-column-start={order}
+			style:grid-row-start={range.start + 1}
+			style:grid-row-end={range.end + 2}
+			onclick={() => openModal(range.start, range.end + 1)}
 		>
 			{range.title}
 		</button>
 	{/snippet}
 
-	<div>
-		{#each juzList as juz}
-			{@render verticalRange(juz.toRange(), 1)}
-		{/each}
-	</div>
+	{#each juzList as juz}
+		{@render verticalRange(juz.toRange(), 1)}
+	{/each}
 
-	<div class="text-xs">
-		{#each surahList as surah}
-			{@render verticalRange(surah.toRange(), 2)}
-		{/each}
-	</div>
+	{#each surahList as surah}
+		{@render verticalRange(surah.toRange(), 2)}
+	{/each}
 
-	<div class="text-xs">
-		{#each pageList as page}
-			{@render verticalRange(page.toRange(), 3)}
-		{/each}
-	</div>
+	{#each pageList as page}
+		{@render verticalRange(page.toRange(), 3)}
+	{/each}
 </div>
 
 <Modal bind:open={modal}>

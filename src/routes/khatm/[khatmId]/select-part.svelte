@@ -19,9 +19,30 @@
 
 	const props: Props = $props()
 
+	const juzList = Juz.getAll() as Juz[]
 	const surahList = Surah.getAll() as Surah[]
 	const pageList = Page.getAll() as Page[]
-	const juzList = Juz.getAll() as Juz[]
+
+	const juzRanges = juzList.map((i) => i.toRange())
+	const surahRanges = surahList.map((i) => i.toRange())
+	const pageRanges = pageList.map((i) => i.toRange())
+
+	const selectableJuzParts = $derived(findNonOverlappingSubranges(props.parts, juzRanges))
+	const selectableSurahParts = $derived(findNonOverlappingSubranges(props.parts, surahRanges))
+	const selectablePageParts = $derived(findNonOverlappingSubranges(props.parts, pageRanges))
+
+	$effect(() => {
+		console.log('selectable pages', selectablePageParts)
+	})
+	$effect(() => {
+		console.log('selectable surahs', selectableSurahParts)
+	})
+	$effect(() => {
+		console.log('selectable juz', selectableJuzParts)
+	})
+	$effect(() => {
+		console.log('parts', props.parts)
+	})
 
 	let modal = $state(false)
 
@@ -29,32 +50,24 @@
 		start: 0,
 		end: 0,
 	})
-	const selectableRanges = $derived(findNonOverlappingSubranges(props.parts, selected))
-	let finalRange = $state(null as null | typeof selected)
-
-	$effect(() => {
-		finalRange = selectableRanges[0]
-	})
 
 	function openModal(start: number, end: number) {
 		modal = true
 		selected = { start, end }
-		finalRange = selectableRanges[0]
 	}
 
 	let loading = $state(false)
 	/** قسمت انتخاب شده را به عنوان خوانده شده علامت می‌زند */
 	async function markAsRead() {
-		if (loading || !finalRange) return
+		if (loading) return
 		loading = true
 		try {
 			const response = await fetch(`/khatm/${page.params.khatmId}`, {
 				method: 'POST',
-				body: JSON.stringify({ start: finalRange.start, end: finalRange.end }),
+				body: JSON.stringify({ start: selected.start, end: selected.end }),
 			})
 			if (response.status !== 200) throw new Error('خطا')
-			const { count } = await response.json()
-			console.log(`created ${count} rows`)
+			await response.json()
 			modal = false
 			props.onFinished?.()
 		} catch (err) {
@@ -66,71 +79,70 @@
 	}
 </script>
 
-<div class="relative grid bg-gray-500/75 text-sm">
-	{#each props.parts as plainPart}
+<div class="relative grid text-center text-sm">
+	{#snippet renderSelectableRanges(ranges: { start: number; end: number }[], column: number)}
+		{#each ranges as range (range.start + ':' + range.end)}
+			<button
+				class="col-start-1 min-h-4 w-full cursor-pointer bg-gray-300/75 hover:bg-gray-500/60 dark:bg-gray-500/85 dark:hover:bg-gray-400/75"
+				style:grid-column-start={column}
+				style:grid-row-start={range.start + 1}
+				style:grid-row-end={range.end + 1}
+				onclick={() => openModal(range.start, range.end)}
+				aria-label="selectable range"
+			></button>
+		{/each}
+	{/snippet}
+
+	{#snippet renderRanges(list: QuranRange[], column: number)}
+		{#each list as range (range.title)}
+			<div
+				class="pointer-events-none min-h-4 overflow-hidden border border-gray-400 p-1"
+				title={range.title}
+				style:grid-column-start={column}
+				style:grid-row-start={range.start + 1}
+				style:grid-row-end={range.end + 1}
+			>
+				{range.title}
+			</div>
+		{/each}
+	{/snippet}
+
+	{@render renderSelectableRanges(selectableJuzParts, 1)}
+	{@render renderSelectableRanges(selectableSurahParts, 2)}
+	{@render renderSelectableRanges(selectablePageParts, 3)}
+
+	{#each props.parts as part (part.id)}
 		<div
-			class="col-span-3 col-start-1 w-full bg-green-500/75"
-			style:grid-row-start={plainPart.start + 1}
-			style:grid-row-end={plainPart.end + 1}
+			class="col-span-3 col-start-1 min-h-4 w-full bg-green-700/70"
+			style:grid-row-start={part.start + 1}
+			style:grid-row-end={part.end + 1}
 		></div>
 	{/each}
 
-	{#snippet verticalRange(range: QuranRange, order: number)}
-		<button
-			class="cursor-pointer overflow-hidden border border-blue-200 p-1 hover:bg-blue-200/20"
-			title={range.title}
-			style:grid-column-start={order}
-			style:grid-row-start={range.start + 1}
-			style:grid-row-end={range.end + 2}
-			onclick={() => openModal(range.start, range.end + 1)}
-		>
-			{range.title}
-		</button>
-	{/snippet}
-
-	{#each juzList as juz}
-		{@render verticalRange(juz.toRange(), 1)}
-	{/each}
-
-	{#each surahList as surah}
-		{@render verticalRange(surah.toRange(), 2)}
-	{/each}
-
-	{#each pageList as page}
-		{@render verticalRange(page.toRange(), 3)}
-	{/each}
+	{@render renderRanges(juzRanges, 1)}
+	{@render renderRanges(surahRanges, 2)}
+	{@render renderRanges(pageRanges, 3)}
 </div>
 
 <Modal bind:open={modal}>
-	{#if selectableRanges.length}
+	{#if selected}
 		آیا قرائت این بازه را تقبل می‌کنید؟
 
-		{#each selectableRanges as range}
-			{@const start = Ayah.get(range.start)}
-			{@const end = Ayah.get(range.end - 1)}
-			<label class="my-2 block">
-				<input
-					type="radio"
-					name="part-range"
-					bind:group={finalRange}
-					class="radio float-right ml-1"
-					value={range}
-				/>
-				<p class="text-sm">
-					از آیه {start.ayahNumber}
-					{start.surah.name}
-					تا انتهای آیه {end.ayahNumber}
-					{end.surah.name}
-					<a
-						href={`https://ketabmobin.com/ayah/${start.index}`}
-						target="_blank"
-						class="badge badge-info badge-outline"
-					>
-						مشاهده آیات
-					</a>
-				</p>
-			</label>
-		{/each}
+		{@const start = Ayah.get(selected.start)}
+		{@const end = Ayah.get(selected.end - 1)}
+		<p class="my-2 text-sm">
+			از آیه {start.ayahNumber}
+			{start.surah.name}
+			تا انتهای آیه {end.ayahNumber}
+			{end.surah.name}
+			<a
+				href={`https://ketabmobin.com/ayah/${start.index}`}
+				target="_blank"
+				class="badge badge-info badge-outline"
+			>
+				مشاهده آیات
+			</a>
+		</p>
 
 		<div>
 			<button class="btn btn-primary mt-2" disabled={loading} onclick={markAsRead}>می‌پذیرم</button>

@@ -4,7 +4,7 @@ export class Surah extends GSurah {
 	toRange() {
 		return {
 			start: this.firstAyahIndex,
-			end: this.lastAyahIndex,
+			end: this.lastAyahIndex + 1,
 			title: this.name,
 		}
 	}

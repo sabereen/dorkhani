@@ -19,6 +19,8 @@
 
 	const props: Props = $props()
 
+	let showBadges = $state(false)
+
 	const juzList = Juz.getAll() as Juz[]
 	const surahList = Surah.getAll() as Surah[]
 	const pageList = Page.getAll() as Page[]
@@ -79,17 +81,34 @@
 	}
 </script>
 
-<div class="relative grid text-center text-sm">
+<label class="my-2 block">
+	<input type="checkbox" class="checkbox" bind:checked={showBadges} />
+	نمایش بازه ها
+</label>
+
+<div class="relative grid text-xs">
 	{#snippet renderSelectableRanges(ranges: { start: number; end: number }[], column: number)}
 		{#each ranges as range (range.start + ':' + range.end)}
+			{@const start = Ayah.get(range.start)}
+			{@const end = Ayah.get(range.end - 1)}
 			<button
-				class="col-start-1 min-h-4 w-full cursor-pointer bg-gray-300/75 hover:bg-gray-500/60 dark:bg-gray-500/85 dark:hover:bg-gray-400/75"
+				class="col-start-1 flex min-h-4 w-full cursor-pointer flex-col items-end justify-between bg-gray-300/75 hover:bg-gray-500/60 dark:bg-gray-500/85 dark:hover:bg-gray-400/75"
 				style:grid-column-start={column}
 				style:grid-row-start={range.start + 1}
 				style:grid-row-end={range.end + 1}
 				onclick={() => openModal(range.start, range.end)}
-				aria-label="selectable range"
-			></button>
+			>
+				{#if showBadges}
+					<span class="badge badge-xs badge-neutral">
+						{start.ayahNumber}
+						{start.surah.name}
+					</span>
+					<span class="badge badge-xs badge-neutral">
+						{end.ayahNumber}
+						{end.surah.name}
+					</span>
+				{/if}
+			</button>
 		{/each}
 	{/snippet}
 
@@ -136,7 +155,7 @@
 			تا انتهای آیه {end.ayahNumber}
 			{end.surah.name}
 			<a
-				href={`https://ketabmobin.com/ayah/${start.index}`}
+				href={`https://ketabmobin.com/ayah/${selected.start}`}
 				target="_blank"
 				class="badge badge-info badge-outline"
 			>

@@ -35,15 +35,15 @@
 	const selectableSurahParts = $derived(findNonOverlappingSubranges(props.parts, surahRanges))
 	const selectablePageParts = $derived(findNonOverlappingSubranges(props.parts, pageRanges))
 
-	let openedAccardeon = $state(0)
-	let accardeonJuz = $derived(juzList[openedAccardeon])
+	let openedAccardeon = $state(-1)
+	let accardeonJuz = $derived(juzList[openedAccardeon] as Juz | undefined)
 	let accardeonRange = $derived(accardeonJuz && juz_toRange(accardeonJuz))
 	const accardeonSurahList = $derived(accardeonRange?.getSurahs())
 	const accardeonDevidedRanges = $derived(
 		accardeonSurahList?.map((item) => ({
 			...item,
 			parts: item.range.divideByKahtmParts(props.parts),
-		})),
+		})) || [],
 	)
 
 	$effect(() => {

@@ -1,11 +1,6 @@
-import { Page as GPage } from '@ghoran/entity'
+import { Page } from '@ghoran/entity'
+import { QuranRange } from './Range'
 
-export class Page extends GPage {
-	toRange() {
-		return {
-			start: this.firstAyahIndex,
-			end: this.lastAyahIndex + 1,
-			title: `صفحه ${this.number}`,
-		}
-	}
+export function page_toRange(page: Page) {
+	return new QuranRange(page.firstAyahIndex, page.lastAyahIndex + 1, `صفحه ${page.number}`)
 }

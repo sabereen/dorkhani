@@ -1,11 +1,6 @@
-import { Juz as GJuz } from '@ghoran/entity'
+import { Juz } from '@ghoran/entity'
+import { QuranRange } from './Range'
 
-export class Juz extends GJuz {
-	toRange() {
-		return {
-			start: this.firstAyahIndex,
-			end: this.lastAyahIndex + 1,
-			title: `جزء ${this.number}`,
-		}
-	}
+export function juz_toRange(juz: Juz) {
+	return new QuranRange(juz.firstAyahIndex, juz.lastAyahIndex + 1, `جزء ${juz.number}`)
 }

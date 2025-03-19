@@ -8,30 +8,44 @@
 
 <script lang="ts">
 	import Modal from '$lib/components/Modal.svelte'
-	import { Ayah } from '@ghoran/entity'
+	import { Ayah, Juz, Page, Surah } from '@ghoran/entity'
 	import { page } from '$app/state'
 	import { findNonOverlappingSubranges } from '$lib/utility/findNonOverlappingSubranges'
 	import { invalidateAll } from '$app/navigation'
-	import { Juz } from '$lib/entity/Juz'
-	import { Surah } from '$lib/entity/Surah'
-	import { Page } from '$lib/entity/Page'
-	import type { QuranRange } from '$lib/entity/Range'
+	import { juz_toRange } from '$lib/entity/Juz'
+	import { surah_getName, surah_toRange } from '$lib/entity/Surah'
+	import { page_toRange } from '$lib/entity/Page'
+	import { QuranRange } from '$lib/entity/Range'
+	import { KhatmPart } from '$lib/entity/KhatmPart'
 
 	const props: Props = $props()
 
 	let showBadges = $state(false)
+	let gridLayout = $state(false)
 
-	const juzList = Juz.getAll() as Juz[]
-	const surahList = Surah.getAll() as Surah[]
-	const pageList = Page.getAll() as Page[]
+	const juzList = Juz.getAll()
+	const surahList = Surah.getAll()
+	const pageList = Page.getAll()
 
-	const juzRanges = juzList.map((i) => i.toRange())
-	const surahRanges = surahList.map((i) => i.toRange())
-	const pageRanges = pageList.map((i) => i.toRange())
+	const juzRanges = juzList.map(juz_toRange)
+	const surahRanges = surahList.map(surah_toRange)
+	const pageRanges = pageList.map(page_toRange)
 
 	const selectableJuzParts = $derived(findNonOverlappingSubranges(props.parts, juzRanges))
 	const selectableSurahParts = $derived(findNonOverlappingSubranges(props.parts, surahRanges))
 	const selectablePageParts = $derived(findNonOverlappingSubranges(props.parts, pageRanges))
+
+	const khatmParts = $derived(props.parts.map((p) => new KhatmPart(p)))
+	let openedAccardeon = $state(0)
+	let accardeonJuz = $derived(juzList[openedAccardeon])
+	let accardeonRange = $derived(accardeonJuz && juz_toRange(accardeonJuz))
+	const accardeonSurahList = $derived(accardeonRange?.getSurahs())
+	const accardeonDevidedRanges = $derived(
+		accardeonSurahList?.map((item) => ({
+			...item,
+			parts: item.range.divideByKahtmParts(khatmParts),
+		})),
+	)
 
 	$effect(() => {
 		console.log('selectable pages', selectablePageParts)
@@ -48,14 +62,11 @@
 
 	let modal = $state(false)
 
-	let selected = $state({
-		start: 0,
-		end: 0,
-	})
+	let selected = $state(new QuranRange(0, 0))
 
 	function openModal(start: number, end: number) {
 		modal = true
-		selected = { start, end }
+		selected = new QuranRange(start, end)
 	}
 
 	let loading = $state(false)
@@ -86,74 +97,123 @@
 	نمایش بازه ها
 </label>
 
-<div class="relative grid text-xs">
-	{#snippet renderSelectableRanges(ranges: { start: number; end: number }[], column: number)}
-		{#each ranges as range (range.start + ':' + range.end)}
-			{@const start = Ayah.get(range.start)}
-			{@const end = Ayah.get(range.end - 1)}
-			<button
-				class="col-start-1 flex min-h-4 w-full cursor-pointer flex-col items-end justify-between bg-gray-300/75 hover:bg-gray-500/60 dark:bg-gray-500/85 dark:hover:bg-gray-400/75"
-				style:grid-column-start={column}
-				style:grid-row-start={range.start + 1}
-				style:grid-row-end={range.end + 1}
-				onclick={() => openModal(range.start, range.end)}
-			>
-				{#if showBadges}
-					<span class="badge badge-xs badge-neutral">
-						{start.ayahNumber}
-						{start.surah.name}
-					</span>
-					<span class="badge badge-xs badge-neutral">
-						{end.ayahNumber}
-						{end.surah.name}
-					</span>
-				{/if}
-			</button>
-		{/each}
-	{/snippet}
+<label class="my-2 block">
+	<input type="checkbox" class="checkbox" bind:checked={gridLayout} />
+	نمایش جدولی
+</label>
 
-	{#snippet renderRanges(list: QuranRange[], column: number)}
-		{#each list as range (range.title)}
+{#if gridLayout}
+	<div class="relative grid text-xs">
+		{#snippet renderSelectableRanges(ranges: { start: number; end: number }[], column: number)}
+			{#each ranges as range (range.start + ':' + range.end)}
+				{@const start = Ayah.get(range.start)}
+				{@const end = Ayah.get(range.end - 1)}
+				<button
+					class="col-start-1 flex min-h-4 w-full cursor-pointer flex-col items-end justify-between bg-gray-300/75 hover:bg-gray-500/60 dark:bg-gray-500/85 dark:hover:bg-gray-400/75"
+					style:grid-column-start={column}
+					style:grid-row-start={range.start + 1}
+					style:grid-row-end={range.end + 1}
+					onclick={() => openModal(range.start, range.end)}
+				>
+					{#if showBadges}
+						<span class="badge badge-xs badge-neutral">
+							{start.number}
+							{surah_getName(start.surah)}
+						</span>
+						<span class="badge badge-xs badge-neutral">
+							{end.number}
+							{surah_getName(end.surah)}
+						</span>
+					{/if}
+				</button>
+			{/each}
+		{/snippet}
+
+		{#snippet renderRanges(list: QuranRange[], column: number)}
+			{#each list as range (range.title)}
+				<div
+					class="pointer-events-none min-h-4 overflow-hidden border border-gray-400 p-1"
+					title={range.title}
+					style:grid-column-start={column}
+					style:grid-row-start={range.start + 1}
+					style:grid-row-end={range.end + 1}
+				>
+					{range.title}
+				</div>
+			{/each}
+		{/snippet}
+
+		{@render renderSelectableRanges(selectableJuzParts, 1)}
+		{@render renderSelectableRanges(selectableSurahParts, 2)}
+		{@render renderSelectableRanges(selectablePageParts, 3)}
+
+		{#each props.parts as part (part.id)}
 			<div
-				class="pointer-events-none min-h-4 overflow-hidden border border-gray-400 p-1"
-				title={range.title}
-				style:grid-column-start={column}
-				style:grid-row-start={range.start + 1}
-				style:grid-row-end={range.end + 1}
-			>
-				{range.title}
+				class="col-span-3 col-start-1 min-h-4 w-full bg-green-700/70"
+				style:grid-row-start={part.start + 1}
+				style:grid-row-end={part.end + 1}
+			></div>
+		{/each}
+
+		{@render renderRanges(juzRanges, 1)}
+		{@render renderRanges(surahRanges, 2)}
+		{@render renderRanges(pageRanges, 3)}
+	</div>
+{:else}
+	<div class="join join-vertical bg-base-100 w-full">
+		{#each juzRanges as range, i}
+			<div class="collapse-plus join-item bg-base-100 border-base-300 collapse border">
+				<input type="radio" name="juz" bind:group={openedAccardeon} value={i} />
+				<div class="collapse-title font-semibold">
+					{range.title}
+					<!-- <span
+						class="radial-progress ms-1"
+						style:--value="70"
+						style:--size="0.8rem"
+						aria-valuenow="70"
+						role="progressbar"
+					></span> -->
+				</div>
+				<div class="collapse-content w-full text-sm">
+					<ul class="bg-base-100 rounded-box">
+						{#each accardeonDevidedRanges as { surah, parts }}
+							<li
+								class="my-2 flex items-center rounded border border-gray-200 px-3 py-1 shadow-md dark:border-gray-700"
+							>
+								<div class="ml-2 w-15">
+									{surah_getName(surah)}
+								</div>
+								<div class="flex flex-col">
+									{#each parts as { khatmPart, range }}
+										<div class="px-1 py-1" class:text-gray-500={!!khatmPart}>
+											{range.getTitleSurahOrinted()}
+											{#if khatmPart}
+												<span class="badge badge-xs">قبلا قرائت شده است</span>
+											{:else}
+												<button
+													class="btn btn-outline btn-xs"
+													onclick={() => openModal(range.start, range.end)}
+												>
+													انتخاب
+												</button>
+											{/if}
+										</div>
+									{/each}
+								</div>
+							</li>
+						{/each}
+					</ul>
+				</div>
 			</div>
 		{/each}
-	{/snippet}
-
-	{@render renderSelectableRanges(selectableJuzParts, 1)}
-	{@render renderSelectableRanges(selectableSurahParts, 2)}
-	{@render renderSelectableRanges(selectablePageParts, 3)}
-
-	{#each props.parts as part (part.id)}
-		<div
-			class="col-span-3 col-start-1 min-h-4 w-full bg-green-700/70"
-			style:grid-row-start={part.start + 1}
-			style:grid-row-end={part.end + 1}
-		></div>
-	{/each}
-
-	{@render renderRanges(juzRanges, 1)}
-	{@render renderRanges(surahRanges, 2)}
-	{@render renderRanges(pageRanges, 3)}
-</div>
+	</div>
+{/if}
 
 <Modal bind:open={modal}>
 	{#if selected}
 		آیا قرائت این بازه را تقبل می‌کنید؟
-
-		{@const start = Ayah.get(selected.start)}
-		{@const end = Ayah.get(selected.end - 1)}
 		<p class="my-2 text-sm">
-			از آیه {start.ayahNumber}
-			{start.surah.name}
-			تا انتهای آیه {end.ayahNumber}
-			{end.surah.name}
+			{selected.getTitle()}
 			<a
 				href={`https://ketabmobin.com/ayah/${selected.start}`}
 				target="_blank"

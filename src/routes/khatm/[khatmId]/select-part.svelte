@@ -93,14 +93,16 @@
 </script>
 
 <label class="my-2 block">
-	<input type="checkbox" class="checkbox" bind:checked={showBadges} />
-	نمایش بازه ها
-</label>
-
-<label class="my-2 block">
 	<input type="checkbox" class="checkbox" bind:checked={gridLayout} />
 	نمایش جدولی
 </label>
+
+{#if gridLayout}
+	<label class="my-2 block">
+		<input type="checkbox" class="checkbox" bind:checked={showBadges} />
+		نمایش بازه ها
+	</label>
+{/if}
 
 {#if gridLayout}
 	<div class="relative grid text-xs">

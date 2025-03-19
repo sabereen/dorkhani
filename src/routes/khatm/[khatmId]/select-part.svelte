@@ -148,7 +148,7 @@
 		{@render renderSelectableRanges(selectableSurahParts, 2)}
 		{@render renderSelectableRanges(selectablePageParts, 3)}
 
-		{#each props.parts as part (part.id)}
+		{#each props.parts as part (part.plain.id)}
 			<div
 				class="col-span-3 col-start-1 min-h-4 w-full bg-green-700/70"
 				style:grid-row-start={part.start + 1}
@@ -163,25 +163,47 @@
 {:else}
 	<div class="join join-vertical bg-base-100 w-full">
 		{#each juzRanges as range, i}
+			{@const percent = range.getFillPercent(props.parts)}
 			<div class="collapse-plus join-item bg-base-100 border-base-300 collapse border">
-				<input type="radio" name="juz" bind:group={openedAccardeon} value={i} />
+				<input
+					type="radio"
+					name="juz"
+					bind:group={openedAccardeon}
+					value={i}
+					disabled={percent >= 100}
+				/>
 				<div class="collapse-title font-semibold">
-					{range.title}
-					<!-- <span
-						class="radial-progress ms-1"
-						style:--value="70"
-						style:--size="0.8rem"
-						aria-valuenow="70"
+					<span
+						class="radial-progress text-primary ms-1 text-[0.5rem]"
+						style:--value={percent}
+						style:--size="1.4rem"
+						aria-valuenow={percent}
 						role="progressbar"
-					></span> -->
+					>
+						&lrm;{percent}%&lrm;
+					</span>
+					{range.title}
+					{#if percent >= 100}
+						<span class="badge badge-xs">قبلا قرائت شده است</span>
+					{/if}
 				</div>
 				<div class="collapse-content w-full text-sm">
 					<ul class="bg-base-100 rounded-box">
-						{#each accardeonDevidedRanges as { surah, parts }}
+						{#each accardeonDevidedRanges as { surah, parts, range }}
+							{@const percent = range.getFillPercent(props.parts)}
 							<li
 								class="my-2 flex items-center rounded border border-gray-200 px-3 py-1 shadow-md dark:border-gray-700"
 							>
-								<div class="ml-2 w-15">
+								<div class="ml-2 flex w-20 items-center">
+									<span
+										class="radial-progress text-primary ms-1 me-1 text-[0.4rem]"
+										style:--value={percent}
+										style:--size="1.4rem"
+										aria-valuenow={percent}
+										role="progressbar"
+									>
+										&lrm;{percent}%&lrm;
+									</span>
 									{surah_getName(surah)}
 								</div>
 								<div class="flex flex-col">

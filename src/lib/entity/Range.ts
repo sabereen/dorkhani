@@ -86,6 +86,12 @@ export class QuranRange {
 		return result
 	}
 
+	getFillPercent(parts: KhatmPart[]) {
+		const subranges = this.divideByKahtmParts(parts).filter((p) => p.khatmPart)
+		const fillCount = subranges.map(({ range }) => range.length).reduce((a, b) => a + b, 0)
+		return +(100 * (fillCount / this.length)).toFixed(0)
+	}
+
 	getTitle() {
 		const startSurahName = surah_getName(this.startAyah.surah)
 		const lastSurahName = surah_getName(this.lastAyah.surah)

@@ -1,7 +1,8 @@
 <script lang="ts" module>
-	import type { KhatmPart as IKhatmPart } from '@prisma/client'
+	import { KhatmPart } from '$lib/entity/KhatmPart'
+
 	export type Props = {
-		parts: IKhatmPart[]
+		parts: KhatmPart[]
 		onFinished?: () => void
 	}
 </script>
@@ -16,7 +17,6 @@
 	import { surah_getName, surah_toRange } from '$lib/entity/Surah'
 	import { page_toRange } from '$lib/entity/Page'
 	import { QuranRange } from '$lib/entity/Range'
-	import { KhatmPart } from '$lib/entity/KhatmPart'
 
 	const props: Props = $props()
 
@@ -35,7 +35,6 @@
 	const selectableSurahParts = $derived(findNonOverlappingSubranges(props.parts, surahRanges))
 	const selectablePageParts = $derived(findNonOverlappingSubranges(props.parts, pageRanges))
 
-	const khatmParts = $derived(props.parts.map((p) => new KhatmPart(p)))
 	let openedAccardeon = $state(0)
 	let accardeonJuz = $derived(juzList[openedAccardeon])
 	let accardeonRange = $derived(accardeonJuz && juz_toRange(accardeonJuz))
@@ -43,7 +42,7 @@
 	const accardeonDevidedRanges = $derived(
 		accardeonSurahList?.map((item) => ({
 			...item,
-			parts: item.range.divideByKahtmParts(khatmParts),
+			parts: item.range.divideByKahtmParts(props.parts),
 		})),
 	)
 

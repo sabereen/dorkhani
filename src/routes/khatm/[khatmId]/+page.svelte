@@ -5,9 +5,9 @@
 	import { invalidateAll } from '$app/navigation'
 	const { data }: PageProps = $props()
 
-	const count = $derived(
-		data.khatm.parts.map((p) => new KhatmPart(p).length).reduce((a, b) => a + b, 0),
-	)
+	const parts = $derived(data.khatm.parts.map((p) => new KhatmPart(p)))
+
+	const count = $derived(parts.map((p) => p.length).reduce((a, b) => a + b, 0))
 
 	const percent = $derived(Math.floor((100_00 * count) / 6236) / 100)
 </script>
@@ -27,4 +27,4 @@
 
 <p class="text-sm">بخش سبزرنگ قسمتی را نشان می‌دهد که تا الآن خوانده شده است</p>
 
-<SelectPart parts={data.khatm.parts} onFinished={invalidateAll} />
+<SelectPart {parts} onFinished={invalidateAll} />

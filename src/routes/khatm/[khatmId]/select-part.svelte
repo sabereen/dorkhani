@@ -214,7 +214,7 @@
 												<span class="badge badge-xs">قبلا قرائت شده است</span>
 											{:else}
 												<button
-													class="btn btn-outline btn-xs"
+													class="btn btn-primary btn-xs"
 													onclick={() => openModal(range.start, range.end)}
 												>
 													انتخاب

@@ -5,7 +5,7 @@
 	import { invalidateAll } from '$app/navigation'
 	const { data }: PageProps = $props()
 
-	const parts = $derived(data.khatm.parts.map((p) => new KhatmPart(p)))
+	const parts = $derived(KhatmPart.fromList(data.khatm.parts))
 
 	const count = $derived(parts.map((p) => p.length).reduce((a, b) => a + b, 0))
 

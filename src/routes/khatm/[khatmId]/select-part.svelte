@@ -22,6 +22,7 @@
 
 	let showBadges = $state(false)
 	let gridLayout = $state(false)
+	let hideFinishedIntervals = $state(false)
 
 	const juzList = Juz.getAll()
 	const surahList = Surah.getAll()
@@ -39,12 +40,22 @@
 	let accardeonJuz = $derived(juzList[openedAccardeon] as Juz | undefined)
 	let accardeonRange = $derived(accardeonJuz && juz_toRange(accardeonJuz))
 	const accardeonSurahList = $derived(accardeonRange?.getSurahs())
-	const accardeonDevidedRanges = $derived(
-		accardeonSurahList?.map((item) => ({
-			...item,
-			parts: item.range.divideByKahtmParts(props.parts),
-		})) || [],
-	)
+	const accardeonDevidedRanges = $derived.by(() => {
+		let list =
+			accardeonSurahList?.map((item) => ({
+				...item,
+				parts: item.range.divideByKahtmParts(props.parts),
+			})) || []
+
+		if (hideFinishedIntervals) {
+			list.forEach((item) => {
+				item.parts = item.parts.filter((p) => !p.khatmPart)
+			})
+
+			list = list.filter(({ parts }) => parts.length > 0)
+		}
+		return list
+	})
 
 	$effect(() => {
 		console.log('selectable pages', selectablePageParts)
@@ -96,10 +107,17 @@
 	نمایش جدولی
 </label>
 
+{#if !gridLayout}
+	<label class="my-2 block">
+		<input type="checkbox" class="checkbox" bind:checked={hideFinishedIntervals} />
+		پنهان کردن بازه‌های قرائت شده
+	</label>
+{/if}
+
 {#if gridLayout}
 	<label class="my-2 block">
 		<input type="checkbox" class="checkbox" bind:checked={showBadges} />
-		نمایش بازه ها
+		نمایش ابتدا و انتهای بازه ها
 	</label>
 {/if}
 
@@ -164,7 +182,10 @@
 	<div class="join join-vertical bg-base-100 w-full">
 		{#each juzRanges as range, i}
 			{@const percent = range.getFillPercent(props.parts)}
-			<div class="collapse-plus join-item bg-base-100 border-base-300 collapse border">
+			<div
+				class="collapse-plus join-item bg-base-100 border-base-300 collapse border"
+				class:hidden={hideFinishedIntervals && percent >= 100}
+			>
 				<input
 					type="radio"
 					name="juz"

@@ -17,6 +17,7 @@
 	import { surah_getName, surah_toRange } from '$lib/entity/Surah'
 	import { page_toRange } from '$lib/entity/Page'
 	import { QuranRange } from '$lib/entity/Range'
+	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 
 	const props: Props = $props()
 
@@ -70,6 +71,28 @@
 		console.log('parts', props.parts)
 	})
 
+	const gridTemplateRows = $derived.by(() => {
+		if (!hideFinishedIntervals || props.parts.length === 0) return null
+
+		let rows: string[] = []
+		let currentPartIndex = 0
+		for (let i = 0; i < COUNT_OF_AYAHS; i++) {
+			let currentPart = props.parts[currentPartIndex]
+			if (currentPart.end === i) {
+				currentPartIndex++
+				currentPart = props.parts[currentPartIndex]
+				if (!currentPart) break
+			}
+			if (currentPart.start <= i && currentPart.end > i) {
+				rows.push('0')
+			} else {
+				rows.push('auto')
+			}
+		}
+
+		return rows.join(' ')
+	})
+
 	let modal = $state(false)
 
 	let selected = $state(new QuranRange(0, 0))
@@ -107,12 +130,10 @@
 	نمایش جدولی
 </label>
 
-{#if !gridLayout}
-	<label class="my-2 block">
-		<input type="checkbox" class="checkbox" bind:checked={hideFinishedIntervals} />
-		پنهان کردن بازه‌های قرائت شده
-	</label>
-{/if}
+<label class="my-2 block">
+	<input type="checkbox" class="checkbox" bind:checked={hideFinishedIntervals} />
+	پنهان کردن بازه‌های قرائت شده
+</label>
 
 {#if gridLayout}
 	<label class="my-2 block">
@@ -122,7 +143,7 @@
 {/if}
 
 {#if gridLayout}
-	<div class="relative grid text-xs">
+	<div class="relative grid text-xs" style:grid-template-rows={gridTemplateRows}>
 		{#snippet renderSelectableRanges(ranges: { start: number; end: number }[], column: number)}
 			{#each ranges as range (range.start + ':' + range.end)}
 				{@const start = Ayah.get(range.start)}
@@ -132,6 +153,7 @@
 					style:grid-column-start={column}
 					style:grid-row-start={range.start + 1}
 					style:grid-row-end={range.end + 1}
+					style:min-height={hideFinishedIntervals ? '0' : null}
 					onclick={() => openModal(range.start, range.end)}
 				>
 					{#if showBadges}
@@ -156,6 +178,7 @@
 					style:grid-column-start={column}
 					style:grid-row-start={range.start + 1}
 					style:grid-row-end={range.end + 1}
+					style:min-height={hideFinishedIntervals ? '0' : null}
 				>
 					{range.title}
 				</div>
@@ -171,6 +194,7 @@
 				class="col-span-3 col-start-1 min-h-4 w-full bg-green-700/70"
 				style:grid-row-start={part.start + 1}
 				style:grid-row-end={part.end + 1}
+				style:min-height={hideFinishedIntervals ? '0' : null}
 			></div>
 		{/each}
 

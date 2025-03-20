@@ -209,6 +209,8 @@
 			<div
 				class="collapse-plus join-item bg-base-100 border-base-300 collapse border"
 				class:hidden={hideFinishedIntervals && percent >= 100}
+				class:opacity-50={percent >= 100}
+				class:pointer-events-none={percent >= 100}
 			>
 				<input
 					type="radio"

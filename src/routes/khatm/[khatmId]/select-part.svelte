@@ -233,44 +233,46 @@
 					{/if}
 				</div>
 				<div class="collapse-content w-full text-sm">
-					<ul class="bg-base-100 rounded-box">
-						{#each accardeonDevidedRanges as { surah, parts, range }}
-							{@const percent = range.getFillPercent(props.parts)}
-							<li
-								class="my-2 flex items-center rounded border border-gray-200 px-3 py-1 shadow-md dark:border-gray-700"
-							>
-								<div class="ml-2 flex w-20 items-center">
-									<span
-										class="radial-progress text-primary ms-1 me-1 text-[0.4rem]"
-										style:--value={percent}
-										style:--size="1.4rem"
-										aria-valuenow={percent}
-										role="progressbar"
-									>
-										&lrm;{percent}%&lrm;
-									</span>
-									{surah_getName(surah)}
-								</div>
-								<div class="flex flex-col">
-									{#each parts as { khatmPart, range }}
-										<div class="px-1 py-1" class:text-gray-500={!!khatmPart}>
-											{range.getTitleSurahOrinted()}
-											{#if khatmPart}
-												<span class="badge badge-xs">قبلا قرائت شده است</span>
-											{:else}
-												<button
-													class="btn btn-primary btn-xs"
-													onclick={() => openModal(range.start, range.end)}
-												>
-													انتخاب
-												</button>
-											{/if}
-										</div>
-									{/each}
-								</div>
-							</li>
-						{/each}
-					</ul>
+					{#if openedAccardeon === i}
+						<ul class="bg-base-100 rounded-box">
+							{#each accardeonDevidedRanges as { surah, parts, range }}
+								{@const percent = range.getFillPercent(props.parts)}
+								<li
+									class="my-2 flex items-center rounded border border-gray-200 px-3 py-1 shadow-md dark:border-gray-700"
+								>
+									<div class="ml-2 flex w-20 items-center">
+										<span
+											class="radial-progress text-primary ms-1 me-1 text-[0.4rem]"
+											style:--value={percent}
+											style:--size="1.4rem"
+											aria-valuenow={percent}
+											role="progressbar"
+										>
+											&lrm;{percent}%&lrm;
+										</span>
+										{surah_getName(surah)}
+									</div>
+									<div class="flex flex-col">
+										{#each parts as { khatmPart, range }}
+											<div class="px-1 py-1" class:text-gray-500={!!khatmPart}>
+												{range.getTitleSurahOrinted()}
+												{#if khatmPart}
+													<span class="badge badge-xs">قبلا قرائت شده است</span>
+												{:else}
+													<button
+														class="btn btn-primary btn-xs"
+														onclick={() => openModal(range.start, range.end)}
+													>
+														انتخاب
+													</button>
+												{/if}
+											</div>
+										{/each}
+									</div>
+								</li>
+							{/each}
+						</ul>
+					{/if}
 				</div>
 			</div>
 		{/each}

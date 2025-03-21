@@ -243,76 +243,84 @@
 					{#if openedAccardeon === i}
 						<!-- انتخاب نوع زیربازه -->
 						<div class="tabs tabs-box justify-center">
-							<label class="tab">
-								<input
-									class="radio"
-									type="radio"
-									name="subrangeType"
-									bind:group={subrangeType}
-									value="surah"
-								/>
-								سوره
-							</label>
-							<label class="tab ms-2">
-								<input
-									class="radio"
-									type="radio"
-									name="subrangeType"
-									bind:group={subrangeType}
-									value="page"
-								/>
-								صفحه
-							</label>
+							<input
+								class="tab"
+								type="radio"
+								name="subrangeType"
+								bind:group={subrangeType}
+								value="surah"
+								aria-label="سوره"
+							/>
+							<div class="tab-content">
+								{#if subrangeType === 'surah'}
+									{@render tabContent()}
+								{/if}
+							</div>
+							<input
+								class="tab"
+								type="radio"
+								name="subrangeType"
+								bind:group={subrangeType}
+								value="page"
+								aria-label="صفحه"
+							/>
+							<div class="tab-content">
+								{#if subrangeType === 'page'}
+									{@render tabContent()}
+								{/if}
+							</div>
 						</div>
 
-						<ul class="bg-base-100 rounded-box py-2">
-							{#each accardeonDevidedRanges as { parts, range }}
-								{@const percent = range.getFillPercent(props.parts)}
-								<li
-									class="flex items-center border border-gray-200 px-1 py-1 first:rounded-t last:rounded-b dark:border-gray-700"
-								>
-									<div class="ml-2 flex w-24 items-center">
-										<span
-											class="radial-progress text-primary ms-1 me-1 text-[0.4rem]"
-											style:--value={percent}
-											style:--size="1.4rem"
-											aria-valuenow={percent}
-											role="progressbar"
-										>
-											&lrm;{percent}%&lrm;
-										</span>
-										{range.title}
-									</div>
-									<div class="flex grow flex-col">
-										{#each parts as { khatmPart, range }}
-											<div class="flex items-center px-1 py-1">
-												<span class:text-gray-500={!!khatmPart}>
-													{range.getTitleSurahOrinted()}
-												</span>
-												<span class="m-3 h-0 grow border border-dashed border-gray-500/20"></span>
-												{#if khatmPart}
-													<span class="badge badge-success badge-xs">قرائت‌شده</span>
-												{:else}
-													<button
-														class="btn btn-primary btn-xs ms-auto"
-														onclick={() => openModal(range.start, range.end)}
+						{#snippet tabContent()}
+							<ul class="rounded-box py-2">
+								{#each accardeonDevidedRanges as { parts, range }}
+									{@const percent = range.getFillPercent(props.parts)}
+									<li
+										class="bg-base-100 flex items-center border border-gray-200 px-1 py-1 first:rounded-t last:rounded-b dark:border-gray-700"
+									>
+										<div class="ml-2 flex w-24 items-center">
+											<span
+												class="radial-progress text-primary ms-1 me-1 text-[0.4rem]"
+												style:--value={percent}
+												style:--size="1.4rem"
+												aria-valuenow={percent}
+												role="progressbar"
+											>
+												&lrm;{percent}%&lrm;
+											</span>
+											{range.title}
+										</div>
+										<div class="flex grow flex-col">
+											{#each parts as { khatmPart, range }}
+												<div class="flex items-center px-1 py-1">
+													<span class:text-gray-500={!!khatmPart}>
+														{range.getTitleSurahOrinted()}
+													</span>
+													<span class="m-3 h-0 grow border border-dashed border-gray-500/20"></span>
+													{#if khatmPart}
+														<span class="badge badge-success badge-xs">قرائت‌شده</span>
+													{:else}
+														<button
+															class="btn btn-primary btn-xs ms-auto"
+															onclick={() => openModal(range.start, range.end)}
+														>
+															انتخاب
+														</button>
+													{/if}
+													<a
+														class="btn btn-circle btn-ghost btn-xs ms-1"
+														target="_blank"
+														href={'https://ketabmobin.com/ayah/' + range.start}
 													>
-														انتخاب
-													</button>
-												{/if}
-												<a
-													class="btn btn-circle btn-ghost btn-xs ms-1"
-													target="_blank"
-													href={'https://ketabmobin.com/ayah/' + range.start}
-												>
-													<IconEye />
-												</a>
-											</div>
-										{/each}
-									</div>
-								</li>
-							{/each}
-						</ul>
+														<IconEye />
+													</a>
+												</div>
+											{/each}
+										</div>
+									</li>
+								{/each}
+							</ul>
+						{/snippet}
 					{/if}
 				</div>
 			</div>

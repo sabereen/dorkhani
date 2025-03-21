@@ -55,17 +55,8 @@ export class QuranRange {
 		do {
 			const range = surah_toRange(surah)
 
-			if (range.start < this.start && range.end > this.end) {
-				range.start = this.start
-				range.end = this.end
-				range.title += ` (از آیه ${this.startAyah.ayahNumber} تا ${this.endAyah.ayahNumber})`
-			} else if (range.start < this.start) {
-				range.start = this.start
-				range.title += ` (از آیه ${this.startAyah.ayahNumber})`
-			} else if (range.end > this.end) {
-				range.end = this.end
-				range.title += ` (تا آیه ${this.endAyah.ayahNumber})`
-			}
+			range.start = Math.max(range.start, this.start)
+			range.end = Math.min(range.end, this.end)
 
 			list.push({ surah, range })
 

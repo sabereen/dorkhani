@@ -24,6 +24,8 @@
 	let showBadges = $state(false)
 	let gridLayout = $state(false)
 	let hideFinishedIntervals = $state(false)
+	/** نوع زیربازه‌ها در چیدمان آکاردئونی */
+	let subrangeType = $state<'surah' | 'page'>('surah')
 
 	const juzList = Juz.getAll()
 	const surahList = Surah.getAll()
@@ -40,10 +42,12 @@
 	let openedAccardeon = $state(-1)
 	let accardeonJuz = $derived(juzList[openedAccardeon] as Juz | undefined)
 	let accardeonRange = $derived(accardeonJuz && juz_toRange(accardeonJuz))
-	const accardeonSurahList = $derived(accardeonRange?.getSurahs())
+	const accardeonSubranges = $derived(
+		subrangeType === 'surah' ? accardeonRange?.getSurahs() : accardeonRange?.getPages(),
+	)
 	const accardeonDevidedRanges = $derived.by(() => {
 		let list =
-			accardeonSurahList?.map((item) => ({
+			accardeonSubranges?.map((item) => ({
 				...item,
 				parts: item.range.divideByKahtmParts(props.parts),
 			})) || []
@@ -236,13 +240,37 @@
 				</div>
 				<div class="collapse-content w-full text-sm">
 					{#if openedAccardeon === i}
-						<ul class="bg-base-100 rounded-box">
-							{#each accardeonDevidedRanges as { surah, parts, range }}
+						<!-- انتخاب نوع زیربازه -->
+						<div class="tabs tabs-box justify-center">
+							<label class="tab">
+								<input
+									class="radio"
+									type="radio"
+									name="subrangeType"
+									bind:group={subrangeType}
+									value="surah"
+								/>
+								سوره
+							</label>
+							<label class="tab ms-2">
+								<input
+									class="radio"
+									type="radio"
+									name="subrangeType"
+									bind:group={subrangeType}
+									value="page"
+								/>
+								صفحه
+							</label>
+						</div>
+
+						<ul class="bg-base-100 rounded-box py-2">
+							{#each accardeonDevidedRanges as { parts, range }}
 								{@const percent = range.getFillPercent(props.parts)}
 								<li
-									class="my-2 flex items-center rounded border border-gray-200 px-3 py-1 shadow-md dark:border-gray-700"
+									class="flex items-center border border-gray-200 px-3 py-1 shadow-md first:rounded-t last:rounded-b dark:border-gray-700"
 								>
-									<div class="ml-2 flex w-20 items-center">
+									<div class="ml-2 flex w-24 items-center">
 										<span
 											class="radial-progress text-primary ms-1 me-1 text-[0.4rem]"
 											style:--value={percent}
@@ -252,17 +280,17 @@
 										>
 											&lrm;{percent}%&lrm;
 										</span>
-										{surah_getName(surah)}
+										{range.title}
 									</div>
-									<div class="flex flex-col">
+									<div class="flex grow flex-col">
 										{#each parts as { khatmPart, range }}
-											<div class="px-1 py-1" class:text-gray-500={!!khatmPart}>
+											<div class="flex px-1 py-1" class:text-gray-500={!!khatmPart}>
 												{range.getTitleSurahOrinted()}
 												{#if khatmPart}
 													<span class="badge badge-xs">قبلا قرائت شده است</span>
 												{:else}
 													<button
-														class="btn btn-primary btn-xs"
+														class="btn btn-primary btn-xs ms-auto"
 														onclick={() => openModal(range.start, range.end)}
 													>
 														انتخاب

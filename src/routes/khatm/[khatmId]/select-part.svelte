@@ -284,10 +284,13 @@
 									</div>
 									<div class="flex grow flex-col">
 										{#each parts as { khatmPart, range }}
-											<div class="flex px-1 py-1" class:text-gray-500={!!khatmPart}>
-												{range.getTitleSurahOrinted()}
+											<div class="flex items-center px-1 py-1">
+												<span class:text-gray-500={!!khatmPart}>
+													{range.getTitleSurahOrinted()}
+												</span>
+												<span class="m-3 h-0 grow border border-dashed border-gray-500"></span>
 												{#if khatmPart}
-													<span class="badge badge-xs">قبلا قرائت شده است</span>
+													<span class="badge badge-success badge-xs">قرائت‌شده</span>
 												{:else}
 													<button
 														class="btn btn-primary btn-xs ms-auto"
@@ -296,6 +299,13 @@
 														انتخاب
 													</button>
 												{/if}
+												<a
+													class="btn btn-ghost btn-xs ms-1"
+													target="_blank"
+													href={'https://ketabmobin.com/ayah/' + range.start}
+												>
+													مشاهده
+												</a>
 											</div>
 										{/each}
 									</div>

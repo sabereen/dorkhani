@@ -18,6 +18,7 @@
 	import { page_toRange } from '$lib/entity/Page'
 	import { QuranRange } from '$lib/entity/Range'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
+	import IconEye from '~icons/ic/outline-remove-red-eye'
 
 	const props: Props = $props()
 
@@ -268,7 +269,7 @@
 							{#each accardeonDevidedRanges as { parts, range }}
 								{@const percent = range.getFillPercent(props.parts)}
 								<li
-									class="flex items-center border border-gray-200 px-3 py-1 shadow-md first:rounded-t last:rounded-b dark:border-gray-700"
+									class="flex items-center border border-gray-200 px-1 py-1 first:rounded-t last:rounded-b dark:border-gray-700"
 								>
 									<div class="ml-2 flex w-24 items-center">
 										<span
@@ -300,11 +301,11 @@
 													</button>
 												{/if}
 												<a
-													class="btn btn-ghost btn-xs ms-1"
+													class="btn btn-circle btn-ghost btn-xs ms-1"
 													target="_blank"
 													href={'https://ketabmobin.com/ayah/' + range.start}
 												>
-													مشاهده
+													<IconEye />
 												</a>
 											</div>
 										{/each}

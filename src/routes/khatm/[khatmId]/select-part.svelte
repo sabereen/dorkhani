@@ -239,7 +239,7 @@
 						<span class="badge badge-xs">قبلا قرائت شده است</span>
 					{/if}
 				</div>
-				<div class="collapse-content w-full text-sm">
+				<div class="collapse-content w-full text-xs sm:text-sm">
 					{#if openedAccardeon === i}
 						<!-- انتخاب نوع زیربازه -->
 						<div class="tabs tabs-box justify-center">
@@ -289,7 +289,7 @@
 												<span class:text-gray-500={!!khatmPart}>
 													{range.getTitleSurahOrinted()}
 												</span>
-												<span class="m-3 h-0 grow border border-dashed border-gray-500"></span>
+												<span class="m-3 h-0 grow border border-dashed border-gray-500/20"></span>
 												{#if khatmPart}
 													<span class="badge badge-success badge-xs">قرائت‌شده</span>
 												{:else}

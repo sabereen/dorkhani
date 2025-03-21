@@ -12,6 +12,11 @@
 	const percent = $derived(Math.floor((100_00 * count) / 6236) / 100)
 </script>
 
+<svelte:head>
+	<title>ختم قرآن | {data.khatm.title}</title>
+	<meta name="description" content={data.khatm.description} />
+</svelte:head>
+
 <h1 class="mb-5 text-3xl">جزئیات ختم «{data.khatm.title}»</h1>
 
 <p>{data.khatm.description}</p>

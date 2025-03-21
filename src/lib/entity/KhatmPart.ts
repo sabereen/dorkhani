@@ -15,7 +15,7 @@ export class KhatmPart {
 		// merge ranges
 		const mergedRanges: KhatmPart[] = []
 		let currentPart = parts[parts.length - 1]
-		for (let i = parts.length - 2; i > 0; i--) {
+		for (let i = parts.length - 2; i >= 0; i--) {
 			if (
 				currentPart.start === parts[i].end &&
 				currentPart.plain.status === parts[i].plain.status

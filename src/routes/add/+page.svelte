@@ -1,28 +1,26 @@
 <script lang="ts">
 	import type { PageProps } from './$types'
 	import { enhance } from '$app/forms'
+	import Header from '$lib/components/Header.svelte'
 
 	let { data, form }: PageProps = $props()
 </script>
 
-<h1 class="mb-5 text-3xl">تعریف ختم جدید</h1>
+<Header title="ایجاد ختم گروهی جدید" />
 
 {#if !form}
-	<form use:enhance action="" method="POST">
-		<div>
-			<input class="input" placeholder="عنوان" type="text" name="title" id="input-title" />
-		</div>
-		<div>
-			<input
-				class="input mt-2"
-				type="text"
-				placeholder="توضیحات"
-				name="description"
-				id="input-description"
-			/>
-		</div>
+	<form use:enhance class="flex justify-center p-2" action="" method="POST">
+		<fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+			<legend class="fieldset-legend">ختم قرآن</legend>
 
-		<input class="btn btn-primary mt-2" type="submit" value="ایجاد" />
+			<label for="input-title" class="fieldset-label">عنوان</label>
+			<input class="input" type="text" name="title" id="input-title" />
+
+			<label for="input-description" class="fieldset-label">توضیحات</label>
+			<input class="input" type="text" name="description" id="input-description" />
+
+			<input class="btn btn-primary mt-4" type="submit" value="ایجاد" />
+		</fieldset>
 	</form>
 {:else}
 	<div class="alert alert-success">

@@ -149,6 +149,12 @@
 {/if}
 
 {#if gridLayout}
+	<div class="alert alert-info m-2">
+		برای قبول کردن و خواندن بخشی از ختم روی بازه مورد نظر کلیک کنید.
+	</div>
+
+	<p class="text-sm">بخش سبزرنگ قسمتی را نشان می‌دهد که تا الآن خوانده شده است</p>
+
 	<div class="relative grid text-xs" style:grid-template-rows={gridTemplateRows}>
 		{#snippet renderSelectableRanges(ranges: { start: number; end: number }[], column: number)}
 			{#each ranges as range (range.start + ':' + range.end)}

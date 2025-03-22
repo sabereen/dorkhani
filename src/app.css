@@ -1,6 +1,8 @@
 @import 'tailwindcss';
-@plugin "daisyui";
 @import 'vazirmatn/Vazirmatn-Variable-font-face.css';
+@plugin "daisyui" {
+  themes: autumn --default, dracula --prefersdark;
+}
 
 body {
   font-family: vazirmatn, tahoma;

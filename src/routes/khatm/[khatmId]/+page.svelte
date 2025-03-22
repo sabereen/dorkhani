@@ -3,6 +3,7 @@
 	import SelectPart from './select-part.svelte'
 	import { KhatmPart } from '$lib/entity/KhatmPart'
 	import { invalidateAll } from '$app/navigation'
+	import Header from '$lib/components/Header.svelte'
 	const { data }: PageProps = $props()
 
 	$effect(() => {
@@ -21,19 +22,26 @@
 	<meta name="description" content={data.khatm.description} />
 </svelte:head>
 
-<h1 class="mb-5 text-3xl">جزئیات ختم «{data.khatm.title}»</h1>
+<Header title="ختم قرآن گروهی" />
 
-<p>{data.khatm.description}</p>
-
-<div class="alert m-2 flex flex-col">
-	پیشرفت کل: {percent}درصد
-	<progress max={6236} value={count}></progress>
+<div class="hero">
+	<div class="hero-content flex flex-col text-center sm:flex-row">
+		<div class="max-w-md">
+			<h1 class="text-5xl font-black">{data.khatm.title}</h1>
+			<p class="pt-6">
+				{data.khatm.description}
+			</p>
+			<div class="stats shadow">
+				<div class="stat">
+					<div class="stat-title">پیشرفت ختم</div>
+					<div class="stat-value px-2">{percent}%</div>
+					<div class="stat-desc">
+						<progress class="progress progress-success" max={6236} value={count}></progress>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
-
-<div class="alert alert-info m-2">
-	برای قبول کردن و خواندن بخشی از ختم روی بازه مورد نظر کلیک کنید.
-</div>
-
-<p class="text-sm">بخش سبزرنگ قسمتی را نشان می‌دهد که تا الآن خوانده شده است</p>
 
 <SelectPart {parts} onFinished={invalidateAll} />

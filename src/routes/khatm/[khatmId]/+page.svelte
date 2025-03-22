@@ -28,7 +28,7 @@
 	<div class="hero-content flex flex-col text-center sm:flex-row">
 		<div class="max-w-md">
 			<h1 class="text-5xl font-black">{data.khatm.title}</h1>
-			<p class="pt-6">
+			<p class="pt-6 pb-1">
 				{data.khatm.description}
 			</p>
 			<div class="stats shadow">

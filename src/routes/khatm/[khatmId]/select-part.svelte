@@ -24,7 +24,7 @@
 	const props: Props = $props()
 
 	let showBadges = $state(false)
-	let gridLayout = $state(false)
+	let gridLayout = $state(true)
 	let hideFinishedIntervals = $state(false)
 	/** نوع زیربازه‌ها در چیدمان آکاردئونی */
 	let subrangeType = $state<'surah' | 'page'>('surah')
@@ -131,37 +131,40 @@
 	}
 </script>
 
-<label class="my-2 block">
-	<input type="checkbox" class="checkbox" bind:checked={gridLayout} />
-	نمایش جدولی
-</label>
-
-<label class="my-2 block">
-	<input type="checkbox" class="checkbox" bind:checked={hideFinishedIntervals} />
-	پنهان کردن بازه‌های قرائت شده
-</label>
-
-{#if gridLayout}
+<div class="px-4">
 	<label class="my-2 block">
-		<input type="checkbox" class="checkbox" bind:checked={showBadges} />
-		نمایش ابتدا و انتهای بازه ها
+		<input type="checkbox" class="checkbox" bind:checked={gridLayout} />
+		نمایش جدولی
 	</label>
-{/if}
+
+	<label class="my-2 block">
+		<input type="checkbox" class="checkbox" bind:checked={hideFinishedIntervals} />
+		پنهان کردن بازه‌های قرائت شده
+	</label>
+
+	{#if gridLayout}
+		<label class="my-2 block">
+			<input type="checkbox" class="checkbox" bind:checked={showBadges} />
+			نمایش ابتدا و انتهای بازه ها
+		</label>
+	{/if}
+</div>
 
 {#if gridLayout}
-	<div class="alert alert-info m-2">
+	<div class="alert alert-info my-2">
 		برای قبول کردن و خواندن بخشی از ختم روی بازه مورد نظر کلیک کنید.
 	</div>
 
-	<p class="text-sm">بخش سبزرنگ قسمتی را نشان می‌دهد که تا الآن خوانده شده است</p>
-
-	<div class="relative grid text-xs" style:grid-template-rows={gridTemplateRows}>
+	<div
+		class="rounded-box relative grid overflow-hidden border border-gray-500 text-xs"
+		style:grid-template-rows={gridTemplateRows}
+	>
 		{#snippet renderSelectableRanges(ranges: { start: number; end: number }[], column: number)}
 			{#each ranges as range (range.start + ':' + range.end)}
 				{@const start = Ayah.get(range.start)}
 				{@const end = Ayah.get(range.end - 1)}
 				<button
-					class="col-start-1 flex min-h-4 w-full cursor-pointer flex-col items-end justify-between bg-gray-300/75 hover:bg-gray-500/60 dark:bg-gray-500/85 dark:hover:bg-gray-400/75"
+					class="bg-base-100 hover:bg-base-200 dark:hover:bg-base-300 col-start-1 flex min-h-4 w-full cursor-pointer flex-col items-end justify-between"
 					style:grid-column-start={column}
 					style:grid-row-start={range.start + 1}
 					style:grid-row-end={range.end + 1}
@@ -169,11 +172,11 @@
 					onclick={() => openModal(range.start, range.end)}
 				>
 					{#if showBadges}
-						<span class="badge badge-xs badge-neutral">
+						<span class="badge badge-xs badge-neutral rounded-t-none rounded-l-none">
 							{start.number}
 							{surah_getName(start.surah)}
 						</span>
-						<span class="badge badge-xs badge-neutral">
+						<span class="badge badge-xs badge-neutral rounded-l-none rounded-b-none">
 							{end.number}
 							{surah_getName(end.surah)}
 						</span>
@@ -185,7 +188,7 @@
 		{#snippet renderRanges(list: QuranRange[], column: number)}
 			{#each list as range (range.title)}
 				<div
-					class="pointer-events-none min-h-4 overflow-hidden border border-gray-400 p-1"
+					class="dark:border-neutral pointer-events-none min-h-4 overflow-hidden border border-gray-300 p-1"
 					title={range.title}
 					style:grid-column-start={column}
 					style:grid-row-start={range.start + 1}
@@ -201,14 +204,17 @@
 		{@render renderSelectableRanges(selectableSurahParts, 2)}
 		{@render renderSelectableRanges(selectablePageParts, 3)}
 
-		{#each props.parts as part (part.plain.id)}
-			<div
-				class="col-span-3 col-start-1 min-h-4 w-full bg-green-700/70"
-				style:grid-row-start={part.start + 1}
-				style:grid-row-end={part.end + 1}
-				style:min-height={hideFinishedIntervals ? '0' : null}
-			></div>
-		{/each}
+		{#if !hideFinishedIntervals}
+			{#each props.parts as part (part.plain.id)}
+				<div
+					class="hatched col-span-3 col-start-1 flex min-h-4 w-full items-center justify-center border border-gray-500 bg-gray-100 opacity-75"
+					style:grid-row-start={part.start + 1}
+					style:grid-row-end={part.end + 1}
+				>
+					<span class="select-none">قرائت شده</span>
+				</div>
+			{/each}
+		{/if}
 
 		{@render renderRanges(juzRanges, 1)}
 		{@render renderRanges(surahRanges, 2)}
@@ -219,7 +225,7 @@
 		{#each juzRanges as range, i}
 			{@const percent = range.getFillPercent(props.parts)}
 			<div
-				class="collapse-plus join-item bg-base-100 border-base-300 collapse border"
+				class="collapse-plus join-item bg-base-100 collapse border border-gray-500"
 				class:hidden={hideFinishedIntervals && percent >= 100}
 				class:opacity-50={percent >= 100}
 				class:pointer-events-none={percent >= 100}

@@ -24,7 +24,7 @@
 	const props: Props = $props()
 
 	let showBadges = $state(false)
-	let gridLayout = $state(true)
+	let gridLayout = $state(false)
 	let hideFinishedIntervals = $state(false)
 	/** نوع زیربازه‌ها در چیدمان آکاردئونی */
 	let subrangeType = $state<'surah' | 'page'>('surah')

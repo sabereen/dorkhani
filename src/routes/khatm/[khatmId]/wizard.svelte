@@ -41,8 +41,18 @@
 	let step = $state(1)
 	let rangeType = $state<'juz' | 'page' | 'surah' | 'all'>('page')
 
+	function selectRangeType(type: typeof rangeType) {
+		rangeType = type
+		next()
+	}
+
 	function next() {
 		step++
+	}
+
+	function goToStep(n: number) {
+		if (n < step) step = n
+		selected = null
 	}
 
 	const ranges = $derived(
@@ -59,7 +69,9 @@
 
 <div class="mb-7 flex justify-center">
 	<ul class="steps steps-horizontal">
-		<li class="step" class:step-primary={step >= 1}>نوع ختم</li>
+		<!-- svelte-ignore a11y_click_events_have_key_events -->
+		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+		<li class="step" class:step-primary={step >= 1} onclick={() => goToStep(1)}>نوع ختم</li>
 		<li class="step" class:step-primary={step >= 2}>انتخاب</li>
 		<li class="step" class:step-primary={step >= 3}>اتمام</li>
 	</ul>
@@ -67,16 +79,24 @@
 
 {#if step === 1}
 	<div class="p-4">
-		<p>تا چه میزان می‌خواهید در ختم قرآن مشارکت داشته باشید؟</p>
-		<div class="mt-2">
-			<select class="select" bind:value={rangeType}>
-				<option value="juz">یک جزء</option>
-				<option value="page">یک صفحه</option>
-				<option value="surah">یک سوره</option>
-				<option value="all">تمام بازه‌ها</option>
-			</select>
+		<p>تا چه میزان در ختم قرآن مشارکت می‌کنید؟</p>
+		<div class="mt-3">
+			<div class="grid grid-cols-2 gap-2">
+				{#snippet button(type: typeof rangeType, title: string)}
+					<button
+						class="btn btn-primary btn-soft btn-block"
+						type="button"
+						onclick={() => selectRangeType(type)}
+					>
+						{title}
+					</button>
+				{/snippet}
+				{@render button('juz', 'یک جزء')}
+				{@render button('page', 'یک صفحه')}
+				{@render button('surah', 'یک سوره')}
+				{@render button('all', 'تمام بازه‌ها')}
+			</div>
 		</div>
-		<button class="btn btn-primary mt-2" type="button" onclick={next}>ادامه</button>
 	</div>
 {/if}
 
@@ -88,10 +108,12 @@
 				<li class="list-row grow">
 					<button
 						class="btn btn-primary btn-soft btn-block"
+						class:h-auto={rangeType === 'all'}
+						class:py-1={rangeType === 'all'}
 						type="button"
 						onclick={() => select(range)}
 					>
-						{range.title || range.getTitle()}
+						{range.title || range.getTitleSurahOrinted()}
 					</button>
 				</li>
 			{/each}
@@ -99,14 +121,14 @@
 	{:else}
 		<p class="mb-2 text-center">موردی جهت انتخاب وجود ندارد. نوع بازه‌ی دیگری را انتخاب کنید.</p>
 		<div class="flex items-center justify-center">
-			<button type="button" class="btn btn-primary" onclick={() => (step = 1)}>بازگشت</button>
+			<button type="button" class="btn btn-primary" onclick={() => goToStep(1)}>بازگشت</button>
 		</div>
 	{/if}
 {/if}
 
 {#if step === 3 && selected}
-	<div class="flex flex-col items-center">
-		<div class="card bg-base-100 card-md w-96 shadow-sm">
+	<div class="flex flex-col items-center p-4">
+		<div class="card bg-base-100 card-md w-96 max-w-full shadow-sm">
 			<div class="card-body">
 				<h2 class="card-title">بازه انتخاب شده</h2>
 				<p>
@@ -123,9 +145,9 @@
 				</div>
 			</div>
 		</div>
-		<div class="mt-2">
-			<button type="button" class="btn btn-outline btn-primary" onclick={() => (step = 1)}>
-				بازگشت
+		<div class="mt-3">
+			<button type="button" class="btn btn-outline btn-primary" onclick={() => goToStep(1)}>
+				می‌خواهم بیشتر مشارکت کنم
 			</button>
 		</div>
 	</div>

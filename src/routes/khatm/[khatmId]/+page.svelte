@@ -60,3 +60,5 @@
 </div>
 
 <SelectPart {parts} onFinished={invalidateAll} />
+
+<div class="pt-10"></div>

@@ -19,6 +19,7 @@
 	import { QuranRange } from '$lib/entity/Range'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 	import IconEye from '~icons/ic/outline-remove-red-eye'
+	import { toast } from '$lib/components/TheToast.svelte'
 
 	const props: Props = $props()
 
@@ -122,7 +123,7 @@
 			modal = false
 			props.onFinished?.()
 		} catch (err) {
-			alert(err)
+			toast('error', String(err))
 			invalidateAll()
 		} finally {
 			loading = false

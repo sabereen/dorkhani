@@ -207,7 +207,7 @@
 		{#if !hideFinishedIntervals}
 			{#each props.parts as part (part.plain.id)}
 				<div
-					class="hatched col-span-3 col-start-1 flex min-h-4 w-full items-center justify-center border border-gray-500 bg-gray-100 opacity-75"
+					class="hatched col-span-3 col-start-1 flex min-h-4 w-full items-center justify-center border-y border-dashed border-gray-500 bg-gray-100 opacity-75"
 					style:grid-row-start={part.start + 1}
 					style:grid-row-end={part.end + 1}
 				>

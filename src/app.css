@@ -1,7 +1,11 @@
 @import 'tailwindcss';
 @import 'vazirmatn/Vazirmatn-Variable-font-face.css';
 @plugin "daisyui" {
-  themes: autumn --default, dracula --prefersdark;
+  themes: autumn --default, dim --prefersdark;
+}
+
+html {
+  overflow-y: scroll;
 }
 
 body {

@@ -10,16 +10,14 @@
 <script lang="ts">
 	import Modal from '$lib/components/Modal.svelte'
 	import { Ayah, Juz, Page, Surah } from '@ghoran/entity'
-	import { page } from '$app/state'
 	import { findNonOverlappingSubranges } from '$lib/utility/findNonOverlappingSubranges'
-	import { invalidateAll } from '$app/navigation'
 	import { juz_toRange } from '$lib/entity/Juz'
 	import { surah_getName, surah_toRange } from '$lib/entity/Surah'
 	import { page_toRange } from '$lib/entity/Page'
 	import { QuranRange } from '$lib/entity/Range'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 	import IconEye from '~icons/ic/outline-remove-red-eye'
-	import { toast } from '$lib/components/TheToast.svelte'
+	import ConfirmRange from './confirm-range.svelte'
 
 	const props: Props = $props()
 
@@ -106,28 +104,6 @@
 	function openModal(start: number, end: number) {
 		modal = true
 		selected = new QuranRange(start, end)
-	}
-
-	let loading = $state(false)
-	/** قسمت انتخاب شده را به عنوان خوانده شده علامت می‌زند */
-	async function markAsRead() {
-		if (loading) return
-		loading = true
-		try {
-			const response = await fetch(`/khatm/${page.params.khatmId}`, {
-				method: 'POST',
-				body: JSON.stringify({ start: selected.start, end: selected.end }),
-			})
-			if (response.status !== 200) throw new Error('خطا')
-			await response.json()
-			modal = false
-			props.onFinished?.()
-		} catch (err) {
-			toast('error', String(err))
-			invalidateAll()
-		} finally {
-			loading = false
-		}
 	}
 </script>
 
@@ -342,26 +318,5 @@
 {/if}
 
 <Modal bind:open={modal}>
-	{#if selected}
-		آیا قرائت این بازه را تقبل می‌کنید؟
-		<p class="my-2 text-sm">
-			{selected.getTitle()}
-			<a
-				href={`https://ketabmobin.com/ayah/${selected.start}`}
-				target="_blank"
-				class="badge badge-info badge-outline"
-			>
-				مشاهده آیات
-			</a>
-		</p>
-
-		<div>
-			<button class="btn btn-primary mt-2" disabled={loading} onclick={markAsRead}>می‌پذیرم</button>
-			<button class="btn btn-error mt-2" disabled={loading} onclick={() => (modal = false)}>
-				لغو
-			</button>
-		</div>
-	{:else}
-		<p class="text-lg">این بازه قبلا قرائت شده است.</p>
-	{/if}
+	<ConfirmRange onClose={() => (modal = false)} range={selected} />
 </Modal>

@@ -1,10 +1,17 @@
 <script lang="ts">
 	import type { PageProps } from './$types'
-	import SelectPart from './select-part.svelte'
+	import SelectPartList from './select-part.svelte'
+	import SelectPartWizard from './wizard.svelte'
 	import { KhatmPart } from '$lib/entity/KhatmPart'
 	import { invalidateAll } from '$app/navigation'
 	import Header from '$lib/components/Header.svelte'
+	import IconViewWizard from '~icons/ic/round-view-carousel'
+	import IconViewList from '~icons/ic/baseline-view-list'
+
 	const { data }: PageProps = $props()
+
+	let wizardMode = $state(true)
+	const SelectPart = $derived(wizardMode ? SelectPartWizard : SelectPartList)
 
 	$effect(() => {
 		console.log('raw parts', data.khatm.parts)
@@ -22,7 +29,15 @@
 	<meta name="description" content={data.khatm.description} />
 </svelte:head>
 
-<Header title="ختم قرآن گروهی" />
+<Header title="ختم قرآن گروهی">
+	{#snippet end()}
+		<label class="swap">
+			<input type="checkbox" bind:checked={wizardMode} />
+			<IconViewWizard class="swap-on h-7 w-7" />
+			<IconViewList class="swap-off h-7 w-7" />
+		</label>
+	{/snippet}
+</Header>
 
 <div class="hero">
 	<div class="hero-content flex flex-col text-center sm:flex-row">

@@ -103,13 +103,16 @@
 {#if step === 2}
 	{#if selectableRanges.length > 0}
 		<p class="mb-2">یکی از موارد باقی‌مانده را انتخاب کنید.</p>
-		<ul class="grid grid-cols-3 gap-2 sm:grid-cols-4">
+		<ul
+			class={[
+				'grid gap-2',
+				rangeType === 'all' ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-3 sm:grid-cols-4',
+			]}
+		>
 			{#each selectableRanges as range}
 				<li class="list-row grow">
 					<button
 						class="btn btn-primary btn-soft btn-block"
-						class:h-auto={rangeType === 'all'}
-						class:py-1={rangeType === 'all'}
 						type="button"
 						onclick={() => select(range)}
 					>

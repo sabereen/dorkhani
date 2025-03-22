@@ -4,6 +4,15 @@
 	const { data }: PageProps = $props()
 </script>
 
+<svelte:head>
+	<title>ختم قرآن</title>
+	<meta
+		name="description"
+		content="از طریق این سامانه می‌توانید به صورت گروهی ختم قرآن انجام دهید؛ و وضعیت بازه‌های قرائت شده را رصد کنید."
+	/>
+	<meta property="og:image" content="https://khatm.esangar.ir/hero.png" />
+</svelte:head>
+
 <div class="hero mt-7">
 	<div class="hero-content flex flex-col text-center sm:flex-row">
 		<img

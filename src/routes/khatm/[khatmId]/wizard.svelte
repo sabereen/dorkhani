@@ -71,7 +71,9 @@
 	<ul class="steps steps-horizontal">
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-		<li class="step" class:step-primary={step >= 1} onclick={() => goToStep(1)}>نوع ختم</li>
+		<li class="step cursor-pointer" class:step-primary={step >= 1} onclick={() => goToStep(1)}>
+			نوع ختم
+		</li>
 		<li class="step" class:step-primary={step >= 2}>انتخاب</li>
 		<li class="step" class:step-primary={step >= 3}>اتمام</li>
 	</ul>
@@ -102,10 +104,10 @@
 
 {#if step === 2}
 	{#if selectableRanges.length > 0}
-		<p class="mb-2">یکی از موارد باقی‌مانده را انتخاب کنید.</p>
+		<p class="mb-2 px-2">یکی از موارد باقی‌مانده را انتخاب کنید.</p>
 		<ul
 			class={[
-				'grid gap-2',
+				'grid gap-2 px-2',
 				rangeType === 'all' ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-3 sm:grid-cols-4',
 			]}
 		>

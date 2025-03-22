@@ -6,7 +6,8 @@
 	import { surah_toRange } from '$lib/entity/Surah'
 	import { Juz, Page, Surah } from '@ghoran/entity'
 	import ConfirmRange from './confirm-range.svelte'
-	import type { QuranRange } from '$lib/entity/Range'
+	import { QuranRange } from '$lib/entity/Range'
+	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 
 	type Props = {
 		parts: KhatmPart[]
@@ -30,9 +31,15 @@
 	const juzRanges = juzList.map(juz_toRange)
 	const surahRanges = surahList.map(surah_toRange)
 	const pageRanges = pageList.map(page_toRange)
+	const allRanges = $derived(
+		new QuranRange(0, COUNT_OF_AYAHS)
+			.divideByKahtmParts(parts)
+			.filter((i) => !i.khatmPart)
+			.map(({ range }) => range),
+	)
 
 	let step = $state(1)
-	let rangeType = $state<'juz' | 'page' | 'surah'>('page')
+	let rangeType = $state<'juz' | 'page' | 'surah' | 'all'>('page')
 
 	function next() {
 		step++
@@ -43,6 +50,7 @@
 			juz: juzRanges,
 			page: pageRanges,
 			surah: surahRanges,
+			all: allRanges,
 		}[rangeType],
 	)
 
@@ -65,6 +73,7 @@
 				<option value="juz">یک جزء</option>
 				<option value="page">یک صفحه</option>
 				<option value="surah">یک سوره</option>
+				<option value="all">تمام بازه‌ها</option>
 			</select>
 		</div>
 		<button class="btn btn-primary mt-2" type="button" onclick={next}>ادامه</button>
@@ -72,24 +81,31 @@
 {/if}
 
 {#if step === 2}
-	<p class="mb-2">یکی از موارد باقی‌مانده را انتخاب کنید.</p>
-	<ul class="grid grid-cols-3 gap-2 sm:grid-cols-4">
-		{#each selectableRanges as range}
-			<li class="list-row grow">
-				<button
-					class="btn btn-primary btn-soft btn-block"
-					type="button"
-					onclick={() => select(range)}
-				>
-					{range.title}
-				</button>
-			</li>
-		{/each}
-	</ul>
+	{#if selectableRanges.length > 0}
+		<p class="mb-2">یکی از موارد باقی‌مانده را انتخاب کنید.</p>
+		<ul class="grid grid-cols-3 gap-2 sm:grid-cols-4">
+			{#each selectableRanges as range}
+				<li class="list-row grow">
+					<button
+						class="btn btn-primary btn-soft btn-block"
+						type="button"
+						onclick={() => select(range)}
+					>
+						{range.title || range.getTitle()}
+					</button>
+				</li>
+			{/each}
+		</ul>
+	{:else}
+		<p class="mb-2 text-center">موردی جهت انتخاب وجود ندارد. نوع بازه‌ی دیگری را انتخاب کنید.</p>
+		<div class="flex items-center justify-center">
+			<button type="button" class="btn btn-primary" onclick={() => (step = 1)}>بازگشت</button>
+		</div>
+	{/if}
 {/if}
 
 {#if step === 3 && selected}
-	<div class="flex justify-center">
+	<div class="flex flex-col items-center">
 		<div class="card bg-base-100 card-md w-96 shadow-sm">
 			<div class="card-body">
 				<h2 class="card-title">بازه انتخاب شده</h2>
@@ -106,6 +122,11 @@
 					</a>
 				</div>
 			</div>
+		</div>
+		<div class="mt-2">
+			<button type="button" class="btn btn-outline btn-primary" onclick={() => (step = 1)}>
+				بازگشت
+			</button>
 		</div>
 	</div>
 {/if}

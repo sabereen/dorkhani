@@ -87,7 +87,11 @@ export class QuranRange {
 		const startSurahName = surah_getName(this.startAyah.surah)
 		const lastSurahName = surah_getName(this.lastAyah.surah)
 
-		if (this.startAyah.isFirstOfSurah && this.lastAyah.isLastOfSurah) {
+		if (
+			this.startAyah.isFirstOfSurah &&
+			this.lastAyah.isLastOfSurah &&
+			startSurahName === lastSurahName
+		) {
 			return `سوره‌ی ${startSurahName}`
 		}
 

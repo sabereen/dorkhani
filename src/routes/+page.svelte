@@ -6,7 +6,13 @@
 
 <div class="hero mt-7">
 	<div class="hero-content flex flex-col text-center sm:flex-row">
-		<img src="/hero.png" class="max-w-50 rounded-lg shadow-2xl" alt="logo" />
+		<img
+			src="/hero.png"
+			class="h-auto max-w-50 rounded-lg shadow-2xl"
+			width="250"
+			height="250"
+			alt="logo"
+		/>
 		<div class="max-w-md">
 			<h1 class="text-5xl font-black">ختم قرآن</h1>
 			<p class="py-6">

@@ -4,10 +4,11 @@
 	import type { KhatmPart } from '$lib/entity/KhatmPart'
 	import { page_toRange } from '$lib/entity/Page'
 	import { surah_toRange } from '$lib/entity/Surah'
-	import { Juz, Page, Surah } from '@ghoran/entity'
+	import { Juz, Page, Surah, HizbQuarter } from '@ghoran/entity'
 	import ConfirmRange from './confirm-range.svelte'
 	import { QuranRange } from '$lib/entity/Range'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
+	import { hizbQuarter_toRange } from '$lib/entity/HizbQuarter'
 
 	type Props = {
 		parts: KhatmPart[]
@@ -25,10 +26,12 @@
 	}
 
 	const juzList = Juz.getAll()
+	const hizbQuarterList = HizbQuarter.getAll()
 	const surahList = Surah.getAll()
 	const pageList = Page.getAll()
 
 	const juzRanges = juzList.map(juz_toRange)
+	const hizbQuarterRanges = hizbQuarterList.map(hizbQuarter_toRange)
 	const surahRanges = surahList.map(surah_toRange)
 	const pageRanges = pageList.map(page_toRange)
 	const allRanges = $derived(
@@ -39,7 +42,7 @@
 	)
 
 	let step = $state(1)
-	let rangeType = $state<'juz' | 'page' | 'surah' | 'all'>('page')
+	let rangeType = $state<'juz' | 'hizbQuarter' | 'page' | 'surah' | 'all'>('page')
 
 	function selectRangeType(type: typeof rangeType) {
 		rangeType = type
@@ -58,6 +61,7 @@
 	const ranges = $derived(
 		{
 			juz: juzRanges,
+			hizbQuarter: hizbQuarterRanges,
 			page: pageRanges,
 			surah: surahRanges,
 			all: allRanges,
@@ -84,9 +88,10 @@
 		<p>تا چه میزان در ختم قرآن مشارکت می‌کنید؟</p>
 		<div class="mt-3">
 			<div class="grid grid-cols-2 gap-2">
-				{#snippet button(type: typeof rangeType, title: string)}
+				{#snippet button(type: typeof rangeType, title: string, span = 1)}
 					<button
 						class="btn btn-primary btn-soft btn-block"
+						style:grid-column-end={`span ${span}`}
 						type="button"
 						onclick={() => selectRangeType(type)}
 					>
@@ -94,9 +99,10 @@
 					</button>
 				{/snippet}
 				{@render button('juz', 'یک جزء')}
+				{@render button('hizbQuarter', 'یک چهارم حزب')}
 				{@render button('page', 'یک صفحه')}
 				{@render button('surah', 'یک سوره')}
-				{@render button('all', 'تمام بازه‌ها')}
+				{@render button('all', 'تمام بازه‌ها', 2)}
 			</div>
 		</div>
 	</div>

@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@ghoran/entity':
-        specifier: ^0.0.14
-        version: 0.0.14
+        specifier: ^0.1.0
+        version: 0.1.0
       '@ghoran/metadata':
         specifier: ^0.0.7
         version: 0.0.7
@@ -357,8 +357,8 @@ packages:
     resolution: {integrity: sha512-JubJ5B2pJ4k4yGxaNLdbjrnk9d/iDz6/q8wOilpIowd6PJPgaxCuHBnBszq7Ce2TyMrywm5r4PnKm6V3iiZF+g==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@ghoran/entity@0.0.14':
-    resolution: {integrity: sha512-qgmL2aissBMjbgWJurh0lv6lCAqi0AsOSu4HAlJ37/ki/kLG1pImgacu0t01zkHAEnbSJQCIvEZFCRFWLS3rmw==}
+  '@ghoran/entity@0.1.0':
+    resolution: {integrity: sha512-C+XJCWfS/YnEWc87NseeJJhl/Lo0HTnrhzGBfQhCosV7CPI6qtw/8aJcFpgpqFnmExyHhfG4d1Xxbl1+MDcABA==}
 
   '@ghoran/metadata@0.0.7':
     resolution: {integrity: sha512-g+B+S87M6wKZ1HW4vpe13dG2307vht0dGZm5ts/B9cGLZUDpj8h5i/yZX4kV6Ma6utZEop8NW2d46nLfQnmZdg==}
@@ -2868,7 +2868,7 @@ snapshots:
       '@eslint/core': 0.12.0
       levn: 0.4.1
 
-  '@ghoran/entity@0.0.14':
+  '@ghoran/entity@0.1.0':
     dependencies:
       '@ghoran/metadata': 0.0.7
       '@ghoran/text': 0.0.7

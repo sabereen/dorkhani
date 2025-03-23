@@ -3,6 +3,7 @@
 
 	export type Props = {
 		parts: KhatmPart[]
+		grid?: boolean
 		onFinished?: () => void
 	}
 </script>
@@ -22,7 +23,7 @@
 	const props: Props = $props()
 
 	let showBadges = $state(false)
-	let gridLayout = $state(false)
+	const gridLayout = $derived(props.grid)
 	let hideFinishedIntervals = $state(false)
 	/** نوع زیربازه‌ها در چیدمان آکاردئونی */
 	let subrangeType = $state<'surah' | 'page'>('surah')
@@ -108,11 +109,6 @@
 </script>
 
 <div class="px-4">
-	<label class="my-2 block">
-		<input type="checkbox" class="checkbox" bind:checked={gridLayout} />
-		نمایش جدولی
-	</label>
-
 	<label class="my-2 block">
 		<input type="checkbox" class="checkbox" bind:checked={hideFinishedIntervals} />
 		پنهان کردن بازه‌های قرائت شده

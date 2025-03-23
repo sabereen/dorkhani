@@ -5,13 +5,22 @@
 	import { KhatmPart } from '$lib/entity/KhatmPart'
 	import { invalidateAll } from '$app/navigation'
 	import Header from '$lib/components/Header.svelte'
-	import IconViewWizard from '~icons/ic/round-view-carousel'
-	import IconViewList from '~icons/ic/baseline-view-list'
+	import IconViewWizard from '~icons/ic/twotone-view-carousel'
+	import IconViewList from '~icons/ic/outline-view-agenda'
+	import IconViewTable from '~icons/ic/round-calendar-view-month'
 
 	const { data }: PageProps = $props()
 
-	let wizardMode = $state(true)
-	const SelectPart = $derived(wizardMode ? SelectPartWizard : SelectPartList)
+	let layout = $state<'wizard' | 'list' | 'grid'>('wizard')
+	const CurrentLayoutIcon = $derived(
+		{
+			wizard: IconViewWizard,
+			list: IconViewList,
+			grid: IconViewTable,
+		}[layout],
+	)
+
+	const SelectPart = $derived(layout === 'wizard' ? SelectPartWizard : SelectPartList)
 
 	$effect(() => {
 		console.log('raw parts', data.khatm.parts)
@@ -30,12 +39,37 @@
 </svelte:head>
 
 <Header title="ختم قرآن گروهی">
-	{#snippet end()}
-		<label class="swap">
-			<input type="checkbox" bind:checked={wizardMode} />
-			<IconViewWizard class="swap-on h-7 w-7" />
-			<IconViewList class="swap-off h-7 w-7" />
-		</label>
+	{#snippet start()}
+		<div class="flex-none">
+			<ul class="menu menu-horizontal px-1">
+				<!-- <li><a><CurrentLayoutIcon /></a></li> -->
+				<li>
+					<details>
+						<summary><CurrentLayoutIcon /></summary>
+						<ul class="bg-base-100 rounded-t-none p-2">
+							<li>
+								<button onclick={() => (layout = 'wizard')}>
+									<IconViewWizard />
+									مرحله‌ای
+								</button>
+							</li>
+							<li>
+								<button onclick={() => (layout = 'list')}>
+									<IconViewList />
+									لیستی
+								</button>
+							</li>
+							<li>
+								<button onclick={() => (layout = 'grid')}>
+									<IconViewTable />
+									جدولی
+								</button>
+							</li>
+						</ul>
+					</details>
+				</li>
+			</ul>
+		</div>
 	{/snippet}
 </Header>
 
@@ -59,6 +93,6 @@
 	</div>
 </div>
 
-<SelectPart {parts} onFinished={invalidateAll} />
+<SelectPart {parts} onFinished={invalidateAll} grid={layout === 'grid'} />
 
 <div class="pt-10"></div>

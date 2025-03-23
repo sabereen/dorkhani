@@ -1,8 +1,9 @@
-import { Ayah, Page, Surah } from '@ghoran/entity'
+import { Ayah, HizbQuarter, Page, Surah } from '@ghoran/entity'
 import { page_toRange } from './Page'
 import { surah_getName, surah_toRange } from './Surah'
 import type { KhatmPart } from './KhatmPart'
 import { splitInterval } from '$lib/utility/splitIntervals'
+import { hizbQuarter_toRange } from './HizbQuarter'
 
 export class QuranRange {
 	start: number
@@ -44,6 +45,23 @@ export class QuranRange {
 
 			page = page.next
 		} while (page && page.firstAyah.index < this.end)
+
+		return list
+	}
+
+	getHizbQuarters() {
+		const list: { hizbQuarter: HizbQuarter; range: QuranRange }[] = []
+
+		let hizbQuarter: HizbQuarter | null = this.startAyah.hizbQuarter
+		do {
+			const range = hizbQuarter_toRange(hizbQuarter)
+			range.start = Math.max(range.start, this.start)
+			range.end = Math.min(range.end, this.end)
+
+			list.push({ hizbQuarter, range })
+
+			hizbQuarter = hizbQuarter.next
+		} while (hizbQuarter && hizbQuarter.firstAyah.index < this.end)
 
 		return list
 	}

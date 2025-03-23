@@ -10,7 +10,7 @@
 
 <script lang="ts">
 	import Modal from '$lib/components/Modal.svelte'
-	import { Ayah, Juz, Page, Surah } from '@ghoran/entity'
+	import { Ayah, HizbQuarter, Juz, Page, Surah } from '@ghoran/entity'
 	import { findNonOverlappingSubranges } from '$lib/utility/findNonOverlappingSubranges'
 	import { juz_toRange } from '$lib/entity/Juz'
 	import { surah_getName, surah_toRange } from '$lib/entity/Surah'
@@ -19,6 +19,7 @@
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 	import IconEye from '~icons/ic/outline-remove-red-eye'
 	import ConfirmRange from './confirm-range.svelte'
+	import { hizbQuarter_toRange } from '$lib/entity/HizbQuarter'
 
 	const props: Props = $props()
 
@@ -26,17 +27,22 @@
 	const gridLayout = $derived(props.grid)
 	let hideFinishedIntervals = $state(false)
 	/** نوع زیربازه‌ها در چیدمان آکاردئونی */
-	let subrangeType = $state<'surah' | 'page'>('surah')
+	let subrangeType = $state<'hizbQuarter' | 'surah' | 'page'>('surah')
 
 	const juzList = Juz.getAll()
+	const hizbQuarterList = HizbQuarter.getAll()
 	const surahList = Surah.getAll()
 	const pageList = Page.getAll()
 
 	const juzRanges = juzList.map(juz_toRange)
+	const hizbQuarterRanges = hizbQuarterList.map(hizbQuarter_toRange)
 	const surahRanges = surahList.map(surah_toRange)
 	const pageRanges = pageList.map(page_toRange)
 
 	const selectableJuzParts = $derived(findNonOverlappingSubranges(props.parts, juzRanges))
+	const selectableHizbQuarterParts = $derived(
+		findNonOverlappingSubranges(props.parts, hizbQuarterRanges),
+	)
 	const selectableSurahParts = $derived(findNonOverlappingSubranges(props.parts, surahRanges))
 	const selectablePageParts = $derived(findNonOverlappingSubranges(props.parts, pageRanges))
 
@@ -44,7 +50,11 @@
 	let accardeonJuz = $derived(juzList[openedAccardeon] as Juz | undefined)
 	let accardeonRange = $derived(accardeonJuz && juz_toRange(accardeonJuz))
 	const accardeonSubranges = $derived(
-		subrangeType === 'surah' ? accardeonRange?.getSurahs() : accardeonRange?.getPages(),
+		{
+			surah: accardeonRange?.getSurahs.bind(accardeonRange),
+			page: accardeonRange?.getPages.bind(accardeonRange),
+			hizbQuarter: accardeonRange?.getHizbQuarters.bind(accardeonRange),
+		}[subrangeType]?.(),
 	)
 	const accardeonDevidedRanges = $derived.by(() => {
 		let list =
@@ -228,6 +238,19 @@
 					{#if openedAccardeon === i}
 						<!-- انتخاب نوع زیربازه -->
 						<div class="tabs tabs-box justify-center">
+							<input
+								class="tab"
+								type="radio"
+								name="subrangeType"
+								bind:group={subrangeType}
+								value="hizbQuarter"
+								aria-label="ربع حزب"
+							/>
+							<div class="tab-content">
+								{#if subrangeType === 'hizbQuarter'}
+									{@render tabContent()}
+								{/if}
+							</div>
 							<input
 								class="tab"
 								type="radio"

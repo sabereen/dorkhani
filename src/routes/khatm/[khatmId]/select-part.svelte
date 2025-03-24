@@ -221,7 +221,7 @@
 				/>
 				<div class="collapse-title font-semibold">
 					<span
-						class="radial-progress text-primary ms-1 text-[0.5rem]"
+						class="radial-progress text-primary ms-1 text-[0.6rem]"
 						style:--value={percent}
 						style:--size="1.4rem"
 						aria-valuenow={percent}
@@ -288,7 +288,7 @@
 									>
 										<div class="ml-2 flex w-24 items-center">
 											<span
-												class="radial-progress text-primary ms-1 me-1 text-[0.4rem]"
+												class="radial-progress text-primary ms-1 me-1 text-[0.5rem]"
 												style:--value={percent}
 												style:--size="1.4rem"
 												aria-valuenow={percent}

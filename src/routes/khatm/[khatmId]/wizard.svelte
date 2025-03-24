@@ -17,6 +17,8 @@
 
 	const { parts }: Props = $props()
 
+	let hideFinishedIntervals = $state(true)
+
 	let modal = $state(false)
 	let selected = $state<QuranRange | null>(null)
 
@@ -68,7 +70,16 @@
 		}[rangeType],
 	)
 
-	const selectableRanges = $derived(ranges.filter((r) => r.getFillPercent(parts) === 0))
+	const selectableRanges = $derived.by(() => {
+		let result = ranges.map((range) => ({
+			percent: range.getFillPercent(parts),
+			range,
+		}))
+		if (hideFinishedIntervals) {
+			result = result.filter(({ percent }) => percent === 0)
+		}
+		return result
+	})
 </script>
 
 <div class="mb-7 flex justify-center">
@@ -111,20 +122,40 @@
 {#if step === 2}
 	{#if selectableRanges.length > 0}
 		<p class="mb-2 px-2">یکی از موارد باقی‌مانده را انتخاب کنید.</p>
+		<div>
+			<label class="my-2 block">
+				<input type="checkbox" class="checkbox" bind:checked={hideFinishedIntervals} />
+				پنهان کردن بازه‌های قرائت شده
+			</label>
+		</div>
 		<ul
 			class={[
 				'grid gap-2 px-2',
 				rangeType === 'all' ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-3 sm:grid-cols-4',
 			]}
 		>
-			{#each selectableRanges as range}
+			{#each selectableRanges as { range, percent }}
 				<li class="list-row grow">
 					<button
 						class="btn btn-primary btn-soft btn-block"
 						type="button"
+						disabled={percent > 0}
 						onclick={() => select(range)}
 					>
 						{range.title || range.getTitleSurahOrinted()}
+						{#if percent > 0 && percent < 100}
+							<span class="flex items-center">
+								<span
+									class="radial-progress text-primary ms-1 me-1 text-[0.6rem] opacity-50"
+									style:--value={percent}
+									style:--size="1.4rem"
+									aria-valuenow={percent}
+									role="progressbar"
+								>
+									&lrm;{percent.toLocaleString('fa')}٪&lrm;
+								</span>
+							</span>
+						{/if}
 					</button>
 				</li>
 			{/each}

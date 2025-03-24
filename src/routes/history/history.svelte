@@ -13,12 +13,14 @@
 
 	const props: Props = $props()
 
+	let loading = $state(true)
 	let hasMore = $state(false)
 
 	let history = $state<PickedKhatmPart[]>()
 	onMount(async () => {
 		const limit = props.limit ? props.limit + 1 : undefined
 		const list = await PickedKhatmPart.getList(limit)
+		loading = false
 		if (props.limit && list.length > props.limit) {
 			list.length = props.limit
 			hasMore = true
@@ -65,6 +67,6 @@
 			</ul>
 		</div>
 	</section>
-{:else}
+{:else if !loading}
 	{@render props.fallback?.()}
 {/if}

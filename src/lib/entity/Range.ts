@@ -29,7 +29,7 @@ export class QuranRange {
 	}
 
 	get length() {
-		return this.end - this.start + 1
+		return this.end - this.start
 	}
 
 	getPages() {

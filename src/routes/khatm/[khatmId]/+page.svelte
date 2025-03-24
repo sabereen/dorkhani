@@ -8,6 +8,7 @@
 	import IconViewWizard from '~icons/ic/twotone-view-carousel'
 	import IconViewList from '~icons/ic/outline-view-agenda'
 	import IconViewTable from '~icons/ic/round-calendar-view-month'
+	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 
 	const { data }: PageProps = $props()
 
@@ -30,7 +31,7 @@
 
 	const count = $derived(parts.map((p) => p.length).reduce((a, b) => a + b, 0))
 
-	const percent = $derived(Math.floor((100_00 * count) / 6236) / 100)
+	const percent = $derived(Math.floor((100_00 * count) / COUNT_OF_AYAHS) / 100)
 </script>
 
 <svelte:head>

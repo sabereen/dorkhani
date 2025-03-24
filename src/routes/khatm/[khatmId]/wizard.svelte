@@ -9,13 +9,15 @@
 	import { QuranRange } from '$lib/entity/Range'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 	import { hizbQuarter_toRange } from '$lib/entity/HizbQuarter'
+	import type { Khatm } from '@prisma/client'
 
 	type Props = {
 		parts: KhatmPart[]
+		khatm: Khatm
 		onFinished?: () => void
 	}
 
-	const { parts }: Props = $props()
+	const { parts, khatm }: Props = $props()
 
 	let hideFinishedIntervals = $state(true)
 
@@ -196,5 +198,5 @@
 {/if}
 
 <Modal bind:open={modal}>
-	<ConfirmRange onClose={() => (modal = false)} onFinished={next} range={selected} />
+	<ConfirmRange {khatm} onClose={() => (modal = false)} onFinished={next} range={selected} />
 </Modal>

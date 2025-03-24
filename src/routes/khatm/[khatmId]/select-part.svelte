@@ -3,6 +3,7 @@
 
 	export type Props = {
 		parts: KhatmPart[]
+		khatm: Khatm
 		grid?: boolean
 		onFinished?: () => void
 	}
@@ -20,6 +21,7 @@
 	import IconEye from '~icons/ic/outline-remove-red-eye'
 	import ConfirmRange from './confirm-range.svelte'
 	import { hizbQuarter_toRange } from '$lib/entity/HizbQuarter'
+	import type { Khatm } from '@prisma/client'
 
 	const props: Props = $props()
 
@@ -337,5 +339,5 @@
 {/if}
 
 <Modal bind:open={modal}>
-	<ConfirmRange onClose={() => (modal = false)} range={selected} />
+	<ConfirmRange khatm={props.khatm} onClose={() => (modal = false)} range={selected} />
 </Modal>

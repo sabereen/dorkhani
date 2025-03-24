@@ -1,16 +1,18 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation'
-	import { page } from '$app/state'
 	import { toast } from '$lib/components/TheToast.svelte'
+	import { PickedKhatmPart } from '$lib/entity/PickedKhatmPart'
 	import type { QuranRange } from '$lib/entity/Range'
+	import type { Khatm } from '@prisma/client'
 
 	type Props = {
 		range: QuranRange | null
+		khatm: Khatm
 		onClose?: () => void
 		onFinished?: () => void
 	}
 
-	let { range, onClose, onFinished }: Props = $props()
+	let { range, khatm, onClose, onFinished }: Props = $props()
 
 	let loading = $state(false)
 	/** قسمت انتخاب شده را به عنوان خوانده شده علامت می‌زند */
@@ -18,12 +20,21 @@
 		if (loading || !range) return
 		loading = true
 		try {
-			const response = await fetch(`/khatm/${page.params.khatmId}`, {
+			const response = await fetch(`/khatm/${khatm.id}`, {
 				method: 'POST',
 				body: JSON.stringify({ start: range.start, end: range.end }),
 			})
 			if (response.status !== 200) throw new Error('خطا')
 			await response.json()
+
+			new PickedKhatmPart({
+				id: undefined as unknown as number,
+				date: new Date(),
+				start: range.start,
+				end: range.end,
+				khatm,
+			}).save()
+
 			invalidateAll()
 			onFinished?.()
 			onClose?.()

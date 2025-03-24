@@ -93,6 +93,6 @@
 	</div>
 </div>
 
-<SelectPart {parts} onFinished={invalidateAll} grid={layout === 'grid'} />
+<SelectPart {parts} khatm={data.khatm} onFinished={invalidateAll} grid={layout === 'grid'} />
 
 <div class="pt-10"></div>

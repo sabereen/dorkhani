@@ -54,7 +54,7 @@
 		]
 	},
 	"dependencies": {
-		"@ghoran/entity": "^0.1.3",
+		"@ghoran/entity": "^0.1.4",
 		"@ghoran/metadata": "^0.0.7",
 		"dexie": "^4.0.11",
 		"module": "^1.2.5",

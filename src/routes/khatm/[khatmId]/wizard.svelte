@@ -39,10 +39,7 @@
 	const surahRanges = surahList.map(surah_toRange)
 	const pageRanges = pageList.map(page_toRange)
 	const allRanges = $derived(
-		new QuranRange(0, COUNT_OF_AYAHS)
-			.divideByKahtmParts(parts)
-			.filter((i) => !i.khatmPart)
-			.map(({ range }) => range),
+		new QuranRange(0, COUNT_OF_AYAHS).divideByKahtmParts(parts).map(({ range }) => range),
 	)
 
 	let step = $state(1)

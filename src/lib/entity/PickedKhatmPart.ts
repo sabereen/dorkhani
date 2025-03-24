@@ -10,8 +10,8 @@ export class PickedKhatmPart {
 		return list.map((p) => new PickedKhatmPart(p))
 	}
 
-	static async getList() {
-		const list = await idb_pickedKhatmPart_getList()
+	static async getList(limit?: number) {
+		const list = await idb_pickedKhatmPart_getList(limit)
 		return this.fromPlainList(list)
 	}
 

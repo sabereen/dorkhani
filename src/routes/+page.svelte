@@ -1,16 +1,8 @@
 <script lang="ts">
-	import { onMount } from 'svelte'
 	import type { PageProps } from './$types'
-	import { PickedKhatmPart } from '$lib/entity/PickedKhatmPart'
-	import { slide } from 'svelte/transition'
-	import IconEye from '~icons/ic/outline-remove-red-eye'
+	import History from './history/history.svelte'
 
 	const { data }: PageProps = $props()
-
-	let history = $state<PickedKhatmPart[]>()
-	onMount(async () => {
-		history = await PickedKhatmPart.getList()
-	})
 </script>
 
 <svelte:head>
@@ -42,38 +34,7 @@
 	</div>
 </div>
 
-{#if history?.length}
-	<section transition:slide={{ axis: 'y' }} class="card card-border bg-base-100">
-		<div class="card-body">
-			<h2 class="card-title">آخرین مشارکت‌های شما</h2>
-			<ul class="list">
-				{#each history as item}
-					<li class="list-row flex flex-col">
-						<span>
-							<strong>بازه:</strong>
-							{item.range.getTitle()}
-							<a
-								class="btn btn-circle btn-ghost btn-xs ms-1"
-								target="_blank"
-								href={'https://ketabmobin.com/ayah/' + item.range.start}
-							>
-								<IconEye />
-							</a>
-						</span>
-						<span>
-							<strong>ختم:</strong>
-							«<a class="link link-info" href={'/khatm/' + item.khatm.id}>{item.khatm.title}</a>»
-						</span>
-						<span>
-							<strong>تاریخ:</strong>
-							{item.date.toLocaleString('fa-IR')}
-						</span>
-					</li>
-				{/each}
-			</ul>
-		</div>
-	</section>
-{/if}
+<History limit={3} title="آخرین مشارکت‌های شما" />
 
 <section class="card card-border bg-base-100 mt-4">
 	<div class="card-body">

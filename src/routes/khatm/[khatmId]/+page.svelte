@@ -83,7 +83,7 @@
 			<div class="stats shadow">
 				<div class="stat">
 					<div class="stat-title">پیشرفت ختم</div>
-					<div class="stat-value px-2">{percent}%</div>
+					<div class="stat-value px-2">{percent.toLocaleString('fa')}٪</div>
 					<div class="stat-desc">
 						<progress class="progress progress-success" max={6236} value={count}></progress>
 					</div>

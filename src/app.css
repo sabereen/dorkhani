@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import 'vazirmatn/Vazirmatn-Variable-font-face.css';
+@import 'vazirmatn/misc/UI-Farsi-Digits/Vazirmatn-UI-FD-font-face.css';
 @plugin "daisyui" {
   themes: autumn --default, dim --prefersdark;
 }
@@ -9,7 +9,7 @@ html {
 }
 
 body {
-  font-family: vazirmatn, tahoma;
+  font-family: 'Vazirmatn UI FD', tahoma;
   margin: auto;
   max-width: 600px;
 }

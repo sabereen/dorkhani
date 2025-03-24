@@ -227,7 +227,7 @@
 						aria-valuenow={percent}
 						role="progressbar"
 					>
-						&lrm;{percent}%&lrm;
+						&lrm;{percent.toLocaleString('fa')}٪&lrm;
 					</span>
 					{range.title}
 					{#if percent >= 100}
@@ -294,7 +294,7 @@
 												aria-valuenow={percent}
 												role="progressbar"
 											>
-												&lrm;{percent}%&lrm;
+												&lrm;{percent.toLocaleString('fa')}٪&lrm;
 											</span>
 											{range.title}
 										</div>
@@ -306,7 +306,7 @@
 													</span>
 													<span class="m-3 h-0 grow border border-dashed border-gray-500/20"></span>
 													{#if khatmPart}
-														<span class="badge badge-success badge-xs">قرائت‌شده</span>
+														<span class="badge badge-xs opacity-75">قرائت‌شده</span>
 													{:else}
 														<button
 															class="btn btn-primary btn-xs ms-auto"

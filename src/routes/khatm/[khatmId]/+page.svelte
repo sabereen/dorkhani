@@ -44,31 +44,33 @@
 		<div class="flex-none">
 			<ul class="menu menu-horizontal px-1">
 				<!-- <li><a><CurrentLayoutIcon /></a></li> -->
-				<li>
-					<details>
-						<summary><CurrentLayoutIcon /></summary>
-						<ul class="bg-base-100 rounded-t-none p-2">
-							<li>
-								<button onclick={() => (layout = 'wizard')}>
-									<IconViewWizard />
-									مرحله‌ای
-								</button>
-							</li>
-							<li>
-								<button onclick={() => (layout = 'list')}>
-									<IconViewList />
-									لیستی
-								</button>
-							</li>
-							<li>
-								<button onclick={() => (layout = 'grid')}>
-									<IconViewTable />
-									جدولی
-								</button>
-							</li>
-						</ul>
-					</details>
-				</li>
+				{#if percent < 100}
+					<li>
+						<details>
+							<summary><CurrentLayoutIcon /></summary>
+							<ul class="bg-base-100 rounded-t-none p-2">
+								<li>
+									<button onclick={() => (layout = 'wizard')}>
+										<IconViewWizard />
+										مرحله‌ای
+									</button>
+								</li>
+								<li>
+									<button onclick={() => (layout = 'list')}>
+										<IconViewList />
+										لیستی
+									</button>
+								</li>
+								<li>
+									<button onclick={() => (layout = 'grid')}>
+										<IconViewTable />
+										جدولی
+									</button>
+								</li>
+							</ul>
+						</details>
+					</li>
+				{/if}
 			</ul>
 		</div>
 	{/snippet}
@@ -94,6 +96,12 @@
 	</div>
 </div>
 
-<SelectPart {parts} khatm={data.khatm} onFinished={invalidateAll} grid={layout === 'grid'} />
+{#if percent < 100}
+	<SelectPart {parts} khatm={data.khatm} onFinished={invalidateAll} grid={layout === 'grid'} />
+{:else}
+	<div class="alert alert-success">
+		<p>تبریک! این ختم قرآن کامل شده است.</p>
+	</div>
+{/if}
 
 <div class="pt-10"></div>

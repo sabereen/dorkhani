@@ -19,6 +19,8 @@
 	let ayahText = $state('')
 	let ayahTranslation = $state('')
 
+	let ayahWrapper = $state<HTMLElement>()
+
 	async function pick() {
 		loading = true
 
@@ -39,6 +41,7 @@
 			ayahText = result.ayahText
 			ayahTranslation = result.ayahTranslation
 			invalidateAll()
+			ayahWrapper?.scrollIntoView({ block: 'start', behavior: 'smooth' })
 		} catch (err) {
 			console.error(err)
 			toast('error', (err as any)?.message || String(err))
@@ -49,16 +52,18 @@
 </script>
 
 {#if ayah}
-	<div class="card" transition:slide={{ axis: 'y' }}>
-		<div class="card-body">
-			<p class="mb-4 font-[uthmanic-hafs-v13] text-3xl leading-14">
-				{ayahText}
-				{ayah.number.toLocaleString('ar-IQ')}
-			</p>
-			<p class="text-md mb-4 opacity-80">{ayahTranslation}</p>
-			<p class="self-end text-sm">آیه {ayah.number} {surah_getName(ayah.surah)}</p>
+	{#key ayah.index}
+		<div class="card" transition:slide|global={{ axis: 'y' }} bind:this={ayahWrapper}>
+			<div class="card-body">
+				<p class="mb-4 font-[uthmanic-hafs-v13] text-3xl leading-14">
+					{ayahText}
+					{ayah.number.toLocaleString('ar-IQ')}
+				</p>
+				<p class="text-md mb-4 opacity-80">{ayahTranslation}</p>
+				<p class="self-end text-sm">آیه {ayah.number} {surah_getName(ayah.surah)}</p>
+			</div>
 		</div>
-	</div>
+	{/key}
 {/if}
 
 <div class="mt-5 flex flex-col text-center">

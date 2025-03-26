@@ -56,6 +56,8 @@
 	"dependencies": {
 		"@ghoran/entity": "^0.1.4",
 		"@ghoran/metadata": "^0.0.7",
+		"@ghoran/text": "^0.0.7",
+		"@ghoran/translation": "^0.0.9",
 		"dexie": "^4.0.11",
 		"module": "^1.2.5",
 		"vazirmatn": "^33.0.3"

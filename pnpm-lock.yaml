@@ -14,6 +14,12 @@ importers:
       '@ghoran/metadata':
         specifier: ^0.0.7
         version: 0.0.7
+      '@ghoran/text':
+        specifier: ^0.0.7
+        version: 0.0.7
+      '@ghoran/translation':
+        specifier: ^0.0.9
+        version: 0.0.9
       dexie:
         specifier: ^4.0.11
         version: 4.0.11
@@ -368,6 +374,9 @@ packages:
 
   '@ghoran/text@0.0.7':
     resolution: {integrity: sha512-CZ/qtyvo2TaKF1nwkAlx7ayDmrWn8QyEBB025PsNSfecl5yfVkNP7kvfEPWER3eMOSX/T+/bD2Leab0Ud9VRkg==}
+
+  '@ghoran/translation@0.0.9':
+    resolution: {integrity: sha512-DJbb3VvuTBFOOOXb0bYh6o+1QZT2gCvl0nnule3u7Hn77o6oxACZXW2ajis9F5DJ0TChZ5F2makTF8vAMAQX3g==}
 
   '@ghoran/utils@0.0.7':
     resolution: {integrity: sha512-OkK0jykCZqQRxt1fm+WBiJ4V8Hk+tUz5Jvu9ZdD6pcKyVVytksBsKq7jR8vBNutgMpCESKV255EeTzhzyjeh5g==}
@@ -2883,6 +2892,8 @@ snapshots:
   '@ghoran/metadata@0.0.7': {}
 
   '@ghoran/text@0.0.7': {}
+
+  '@ghoran/translation@0.0.9': {}
 
   '@ghoran/utils@0.0.7': {}
 

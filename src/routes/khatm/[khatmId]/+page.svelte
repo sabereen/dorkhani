@@ -9,6 +9,7 @@
 	import IconViewList from '~icons/ic/outline-view-agenda'
 	import IconViewTable from '~icons/ic/round-calendar-view-month'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
+	import AyahByAyah from './ayah-by-ayah.svelte'
 
 	const { data }: PageProps = $props()
 
@@ -31,7 +32,13 @@
 
 	const count = $derived(parts.map((p) => p.length).reduce((a, b) => a + b, 0))
 
-	const percent = $derived(Math.floor((100_00 * count) / COUNT_OF_AYAHS) / 100)
+	const percentSequential = $derived(
+		Math.floor((100_00 * data.khatm.currentAyahIndex) / (COUNT_OF_AYAHS - 1)) / 100,
+	)
+	const percentNonSequential = $derived(Math.floor((100_00 * count) / COUNT_OF_AYAHS) / 100)
+	const percent = $derived(data.khatm.sequential ? percentSequential : percentNonSequential)
+
+	const canSelectLayout = $derived(percent < 100 && !data.khatm.sequential)
 </script>
 
 <svelte:head>
@@ -44,7 +51,7 @@
 		<div class="flex-none">
 			<ul class="menu menu-horizontal px-1">
 				<!-- <li><a><CurrentLayoutIcon /></a></li> -->
-				{#if percent < 100}
+				{#if canSelectLayout}
 					<li>
 						<details>
 							<summary><CurrentLayoutIcon /></summary>
@@ -79,7 +86,12 @@
 <div class="hero">
 	<div class="hero-content flex flex-col text-center sm:flex-row">
 		<div class="max-w-md">
-			<h1 class="text-5xl font-black">{data.khatm.title}</h1>
+			<h1 class="text-5xl font-black">
+				{data.khatm.title}
+				{#if data.khatm.rangeType === 'ayah'}
+					<span class="badge badge-info">آیه به آیه</span>
+				{/if}
+			</h1>
 			<p class="pt-6 pb-1">
 				{data.khatm.description}
 			</p>
@@ -96,7 +108,9 @@
 	</div>
 </div>
 
-{#if percent < 100}
+{#if percent < 100 && data.khatm.rangeType === 'ayah'}
+	<AyahByAyah khatm={data.khatm} />
+{:else if percent < 100}
 	<SelectPart {parts} khatm={data.khatm} onFinished={invalidateAll} grid={layout === 'grid'} />
 {:else}
 	<div class="alert alert-success">

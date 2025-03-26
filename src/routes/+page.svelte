@@ -30,6 +30,7 @@
 				را رصد کنید.
 			</p>
 			<a class="btn btn-primary font-bold" href="/add">ایجاد ختم قرآن جدید</a>
+			<a class="btn btn-outline font-bold" href="/add?rangeType=ayah">ایجاد ختم آیه به آیه</a>
 		</div>
 	</div>
 </div>

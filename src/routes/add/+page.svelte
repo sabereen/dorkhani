@@ -13,6 +13,8 @@
 		<fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
 			<legend class="fieldset-legend">ختم قرآن</legend>
 
+			<input type="hidden" name="rangeType" value={data.rangeType} />
+
 			<label for="input-title" class="fieldset-label">عنوان</label>
 			<input class="input" type="text" name="title" id="input-title" />
 

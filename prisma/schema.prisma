@@ -13,11 +13,28 @@ datasource db {
   url      = "file:./dev.db"
 }
 
+enum RangeType {
+  free
+  juz
+  hizbQuarter
+  page
+  surah
+  ayah
+}
+
 model Khatm {
-  id          Int         @id @default(autoincrement())
-  title       String
-  description String
-  parts       KhatmPart[]
+  id               Int         @id @default(autoincrement())
+  title            String
+  description      String
+  // نوع بازه‌ی قابل انتخاب توسط کاربر
+  rangeType        RangeType   @default(free)
+  // در حالت ترتیبی سیستم به صورت خودکار بازه را به کاربر انتساب می‌دهد
+  // بازه آیه‌ای فقط می‌تواند به صورت ترتیبی استفاده شود
+  // و بازه‌ی آزاد اصلا نمی‌تواند به صورت ترتیبی استفاده شود
+  sequential       Boolean     @default(false)
+  // فقط برای ترتیبی‌ها کاربرد دارد
+  currentAyahIndex Int         @default(0)
+  parts            KhatmPart[]
 
   @@map("khatm")
 }

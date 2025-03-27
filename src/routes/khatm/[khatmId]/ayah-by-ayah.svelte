@@ -7,6 +7,7 @@
 	import '@ghoran/text/fonts/uthmanic-hafs-v13/style.css'
 	import { invalidateAll } from '$app/navigation'
 	import { toast } from '$lib/components/TheToast.svelte'
+	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 
 	type Props = {
 		khatm: Khatm
@@ -19,6 +20,8 @@
 	// هر دکمه‌ای که تعداد آیاتش با این متغیر یکسان بود باید لودینگ بخورد
 	let loading = $state(-1)
 	let selectedAyat = $state<SelectedAyah[]>([])
+
+	const isFinished = $derived(selectedAyat[selectedAyat.length - 1]?.index === COUNT_OF_AYAHS - 1)
 
 	let ayahWrapper = $state<HTMLElement>()
 
@@ -42,8 +45,12 @@
 				throw result
 			}
 			selectedAyat = result.ayat
-			invalidateAll()
 			ayahWrapper?.scrollIntoView({ block: 'start', behavior: 'smooth' })
+
+			// این شرط را گذاشته ایم که آیه آخر سوره ناس را نمایش بدهد
+			if (!isFinished) {
+				invalidateAll()
+			}
 		} catch (err) {
 			console.error(err)
 			toast('error', (err as any)?.message || String(err))
@@ -93,31 +100,37 @@
 		</p>
 	{/if}
 	<div class="mt-5 px-4">
-		<div class="grid grid-cols-2 gap-2">
-			{#snippet smallButton(text: string, count: number)}
-				<button class="btn btn-outline btn-sm" onclick={() => pick(count)}>
-					{#if loading === count}
+		{#if isFinished}
+			<div>
+				<button class="btn btn-primary btn-block" onclick={invalidateAll}>پایان</button>
+			</div>
+		{:else}
+			<div class="grid grid-cols-2 gap-2">
+				{#snippet smallButton(text: string, count: number)}
+					<button class="btn btn-outline btn-sm" onclick={() => pick(count)}>
+						{#if loading === count}
+							<div class="loading loading-md" transition:slide={{ axis: 'x' }}></div>
+						{/if}
+						{text}
+					</button>
+				{/snippet}
+
+				<button class="btn btn-primary btn-xl col-span-2" onclick={() => pick(1)}>
+					{#if loading === 1}
 						<div class="loading loading-md" transition:slide={{ axis: 'x' }}></div>
 					{/if}
-					{text}
+					{#if selectedAyat.length}
+						پذیرفتن یک آیه بیشتر
+					{:else}
+						پذیرفتن خواندن یک آیه
+					{/if}
 				</button>
-			{/snippet}
 
-			<button class="btn btn-primary btn-xl col-span-2" onclick={() => pick(1)}>
-				{#if loading === 1}
-					<div class="loading loading-md" transition:slide={{ axis: 'x' }}></div>
-				{/if}
-				{#if selectedAyat.length}
-					پذیرفتن یک آیه بیشتر
-				{:else}
-					پذیرفتن خواندن یک آیه
-				{/if}
-			</button>
-
-			{@render smallButton('پذیرفتن ۵ آیه متوالی', 5)}
-			{@render smallButton('پذیرفتن ۱۰ آیه متوالی', 10)}
-			{@render smallButton('پذیرفتن ۲۰ آیه متوالی', 20)}
-			{@render smallButton('پذیرفتن ۴۰ آیه متوالی', 40)}
-		</div>
+				{@render smallButton('پذیرفتن ۵ آیه متوالی', 5)}
+				{@render smallButton('پذیرفتن ۱۰ آیه متوالی', 10)}
+				{@render smallButton('پذیرفتن ۲۰ آیه متوالی', 20)}
+				{@render smallButton('پذیرفتن ۴۰ آیه متوالی', 40)}
+			</div>
+		{/if}
 	</div>
 </div>

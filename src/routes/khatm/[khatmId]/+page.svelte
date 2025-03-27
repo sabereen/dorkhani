@@ -33,7 +33,7 @@
 	const count = $derived(parts.map((p) => p.length).reduce((a, b) => a + b, 0))
 
 	const percentSequential = $derived(
-		Math.floor((100_00 * data.khatm.currentAyahIndex) / (COUNT_OF_AYAHS - 1)) / 100,
+		Math.floor((100_00 * data.khatm.currentAyahIndex) / COUNT_OF_AYAHS) / 100,
 	)
 	const percentNonSequential = $derived(Math.floor((100_00 * count) / COUNT_OF_AYAHS) / 100)
 	const percent = $derived(data.khatm.sequential ? percentSequential : percentNonSequential)

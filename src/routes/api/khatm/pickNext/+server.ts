@@ -31,7 +31,7 @@ export const POST: RequestHandler = async (event) => {
 			id: body.khatmId,
 			sequential: true,
 			rangeType: 'ayah',
-			currentAyahIndex: { lt: COUNT_OF_AYAHS - count },
+			currentAyahIndex: { lt: COUNT_OF_AYAHS - count + 1 },
 		},
 		data: {
 			currentAyahIndex: { increment: count },

@@ -59,6 +59,21 @@
 			{@const ayah = Ayah.get(index)}
 			<div class="card" transition:slide|global={{ axis: 'y' }}>
 				<div class="card-body">
+					{#if ayah.isFirstOfSurah}
+						<div class="mb-3">
+							<p class="text-center text-xl font-bold">
+								سوره {surah_getName(ayah.surah)}
+							</p>
+							{#if ayah.surah.hasBasmalah}
+								<p class="text-center text-lg">بسم الله الرحمن الرحیم</p>
+							{/if}
+						</div>
+					{/if}
+					{#if ayah.obligatorySajdah}
+						<div class="alert alert-error">
+							<p>این آیه دارای سجده واجب است.</p>
+						</div>
+					{/if}
 					<p class="mb-4 font-[uthmanic-hafs-v13] text-3xl leading-14">
 						{text}
 						{ayah.number.toLocaleString('ar-IQ')}

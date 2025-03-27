@@ -43,8 +43,12 @@
 		<ul class="list">
 			{#each data.khatms as khatm}
 				<li class="">
-					<a class="list-row w-full hover:bg-green-500/15" href="/khatm/{khatm.id}">{khatm.title}</a
-					>
+					<a class="list-row w-full hover:bg-green-500/15" href="/khatm/{khatm.id}">
+						{khatm.title}
+						{#if khatm.rangeType === 'ayah'}
+							<span class="badge badge-xs badge-info">آیه به آیه</span>
+						{/if}
+					</a>
 				</li>
 			{/each}
 		</ul>

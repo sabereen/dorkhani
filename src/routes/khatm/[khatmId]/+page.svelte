@@ -28,22 +28,28 @@
 		console.log('raw parts', data.khatm.parts)
 	})
 
-	const parts = $derived(KhatmPart.fromList(data.khatm.parts))
+	const khatm = $derived(data.khatm)
 
-	const count = $derived(parts.map((p) => p.length).reduce((a, b) => a + b, 0))
+	const parts = $derived(KhatmPart.fromList(khatm.parts))
+
+	const count = $derived(
+		khatm.sequential
+			? khatm.currentAyahIndex
+			: parts.map((p) => p.length).reduce((a, b) => a + b, 0),
+	)
 
 	const percentSequential = $derived(
-		Math.floor((100_00 * data.khatm.currentAyahIndex) / COUNT_OF_AYAHS) / 100,
+		Math.floor((100_00 * khatm.currentAyahIndex) / COUNT_OF_AYAHS) / 100,
 	)
 	const percentNonSequential = $derived(Math.floor((100_00 * count) / COUNT_OF_AYAHS) / 100)
-	const percent = $derived(data.khatm.sequential ? percentSequential : percentNonSequential)
+	const percent = $derived(khatm.sequential ? percentSequential : percentNonSequential)
 
-	const canSelectLayout = $derived(percent < 100 && !data.khatm.sequential)
+	const canSelectLayout = $derived(percent < 100 && !khatm.sequential)
 </script>
 
 <svelte:head>
-	<title>ختم قرآن | {data.khatm.title}</title>
-	<meta name="description" content={data.khatm.description} />
+	<title>ختم قرآن | {khatm.title}</title>
+	<meta name="description" content={khatm.description} />
 </svelte:head>
 
 <Header title="ختم قرآن گروهی">
@@ -87,20 +93,21 @@
 	<div class="hero-content flex flex-col text-center sm:flex-row">
 		<div class="max-w-md">
 			<h1 class="text-5xl font-black">
-				{data.khatm.title}
-				{#if data.khatm.rangeType === 'ayah'}
+				{khatm.title}
+				{#if khatm.rangeType === 'ayah'}
 					<span class="badge badge-info">آیه به آیه</span>
 				{/if}
 			</h1>
 			<p class="pt-6 pb-1">
-				{data.khatm.description}
+				{khatm.description}
 			</p>
 			<div class="stats shadow">
 				<div class="stat">
 					<div class="stat-title">پیشرفت ختم</div>
 					<div class="stat-value px-2">{percent.toLocaleString('fa')}٪</div>
 					<div class="stat-desc">
-						<progress class="progress progress-success" max={6236} value={count}></progress>
+						<progress class="progress progress-success w-23" max={COUNT_OF_AYAHS} value={count}
+						></progress>
 					</div>
 				</div>
 			</div>

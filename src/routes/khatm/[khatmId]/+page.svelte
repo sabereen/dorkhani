@@ -50,6 +50,10 @@
 <svelte:head>
 	<title>ختم قرآن | {khatm.title}</title>
 	<meta name="description" content={khatm.description} />
+	<meta property="og:title" content="ختم قرآن | {khatm.title}" />
+	<meta property="og:description" content={khatm.description} />
+	<meta property="og:image" content="https://khatm.esangar.ir/hero.png" />
+	<meta property="og:type" content="website" />
 </svelte:head>
 
 <Header title="ختم قرآن گروهی">

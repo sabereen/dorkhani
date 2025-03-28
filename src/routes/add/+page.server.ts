@@ -1,6 +1,7 @@
 import { error } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import { db } from '$lib/server/db'
+import type { RangeType } from '@prisma/client'
 
 export const load: PageServerLoad = ({ url }) => {
 	return {
@@ -12,8 +13,7 @@ export const actions = {
 	default: async (event) => {
 		const form = await event.request.formData()
 		const title = form.get('title')
-		let rangeType = form.get('rangeType') as 'ayah' | 'free'
-		rangeType = rangeType === 'ayah' ? 'ayah' : 'free'
+		const rangeType = String(form.get('rangeType'))
 		const description = form.get('description')
 
 		if (!title || !description) {
@@ -24,7 +24,7 @@ export const actions = {
 			data: {
 				title: String(title),
 				description: String(description),
-				rangeType,
+				rangeType: rangeType as RangeType,
 				sequential: rangeType === 'ayah',
 			},
 		})

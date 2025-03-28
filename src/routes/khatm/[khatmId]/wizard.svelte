@@ -43,10 +43,16 @@
 	)
 
 	let step = $state(1)
-	let rangeType = $state<'juz' | 'hizbQuarter' | 'page' | 'surah' | 'all'>('page')
+	let userRangeType = $state<'juz' | 'hizbQuarter' | 'page' | 'surah' | 'all'>('page')
+
+	// مقدار rangeType منطقا اینجا هیچ وقت ayah نیست.
+	// ولی برای جلوگیری از خطای تایپ‌اسکریپتی فقط روی آن شرط گذاشته ایم
+	const rangeType = $derived(
+		khatm.rangeType === 'free' || khatm.rangeType === 'ayah' ? userRangeType : khatm.rangeType,
+	)
 
 	function selectRangeType(type: typeof rangeType) {
-		rangeType = type
+		userRangeType = type
 		next()
 	}
 
@@ -81,19 +87,7 @@
 	})
 </script>
 
-<div class="mb-7 flex justify-center">
-	<ul class="steps steps-horizontal">
-		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-		<li class="step cursor-pointer" class:step-primary={step >= 1} onclick={() => goToStep(1)}>
-			نوع ختم
-		</li>
-		<li class="step" class:step-primary={step >= 2}>انتخاب</li>
-		<li class="step" class:step-primary={step >= 3}>اتمام</li>
-	</ul>
-</div>
-
-{#if step === 1}
+{#snippet stepSelectRangeType()}
 	<div class="p-4">
 		<p>تا چه میزان در ختم قرآن مشارکت می‌کنید؟</p>
 		<div class="mt-3">
@@ -116,9 +110,9 @@
 			</div>
 		</div>
 	</div>
-{/if}
+{/snippet}
 
-{#if step === 2}
+{#snippet stepSelectRange()}
 	{#if selectableRanges.length > 0}
 		<p class="mb-2 px-2">یکی از موارد باقی‌مانده را انتخاب کنید.</p>
 		<div>
@@ -165,9 +159,9 @@
 			<button type="button" class="btn btn-primary" onclick={() => goToStep(1)}>بازگشت</button>
 		</div>
 	{/if}
-{/if}
+{/snippet}
 
-{#if step === 3 && selected}
+{#snippet stepShowResult(selected: QuranRange)}
 	<div class="flex flex-col items-center p-4">
 		<div class="card bg-base-100 card-md w-96 max-w-full shadow-sm">
 			<div class="card-body">
@@ -192,6 +186,47 @@
 			</button>
 		</div>
 	</div>
+{/snippet}
+
+{#if khatm.rangeType === 'free'}
+	<div class="mb-7 flex justify-center">
+		<ul class="steps steps-horizontal">
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+			<li class="step cursor-pointer" class:step-primary={step >= 1} onclick={() => goToStep(1)}>
+				نوع ختم
+			</li>
+			<li class="step" class:step-primary={step >= 2}>انتخاب</li>
+			<li class="step" class:step-primary={step >= 3}>اتمام</li>
+		</ul>
+	</div>
+
+	{#if step === 1}
+		{@render stepSelectRangeType()}
+	{/if}
+
+	{#if step === 2}
+		{@render stepSelectRange()}
+	{/if}
+
+	{#if step === 3 && selected}
+		{@render stepShowResult(selected)}
+	{/if}
+{:else}
+	<div class="mb-7 flex justify-center">
+		<ul class="steps steps-horizontal">
+			<li class="step" class:step-primary={step >= 1}>انتخاب</li>
+			<li class="step" class:step-primary={step >= 2}>اتمام</li>
+		</ul>
+	</div>
+
+	{#if step === 1}
+		{@render stepSelectRange()}
+	{/if}
+
+	{#if step === 2 && selected}
+		{@render stepShowResult(selected)}
+	{/if}
 {/if}
 
 <Modal bind:open={modal}>

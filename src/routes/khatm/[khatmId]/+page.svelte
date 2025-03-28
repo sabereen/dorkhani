@@ -25,7 +25,7 @@
 	const SelectPart = $derived(layout === 'wizard' ? SelectPartWizard : SelectPartList)
 
 	$effect(() => {
-		console.log('raw parts', data.khatm.parts)
+		console.log('raw khatm', data.khatm)
 	})
 
 	const khatm = $derived(data.khatm)
@@ -44,7 +44,7 @@
 	const percentNonSequential = $derived(Math.floor((100_00 * count) / COUNT_OF_AYAHS) / 100)
 	const percent = $derived(khatm.sequential ? percentSequential : percentNonSequential)
 
-	const canSelectLayout = $derived(percent < 100 && !khatm.sequential)
+	const canSelectLayout = $derived(percent < 100 && !khatm.sequential && khatm.rangeType === 'free')
 </script>
 
 <svelte:head>

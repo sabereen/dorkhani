@@ -14,18 +14,24 @@ export const actions = {
 		const form = await event.request.formData()
 		const title = form.get('title')
 		const rangeType = String(form.get('rangeType'))
-		const description = form.get('description')
+		const description = form.get('description') || ''
+		let sequential = form.get('sequentialType') === 'sequential'
 
-		if (!title || !description) {
-			throw error(400, { message: 'عنوان و توضیحات اجباری است.' })
+		if (!title) {
+			throw error(400, { message: 'عنوان اجباری است.' })
 		}
+
+		// در حالت آیه به آیه امکان انتخاب آیه دلخواه نیست
+		if (rangeType === 'ayah') sequential = true
+		// در حالت آزاد امکان انتساب خودکار بازه به کاربر نیست
+		if (rangeType === 'free') sequential = false
 
 		const khatm = await db.khatm.create({
 			data: {
 				title: String(title),
 				description: String(description),
 				rangeType: rangeType as RangeType,
-				sequential: rangeType === 'ayah',
+				sequential,
 			},
 		})
 

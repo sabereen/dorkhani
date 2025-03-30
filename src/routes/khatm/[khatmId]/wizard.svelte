@@ -213,12 +213,12 @@
 		{@render stepShowResult(selected)}
 	{/if}
 {:else}
-	<div class="mb-7 flex justify-center">
+	<!-- <div class="mb-7 flex justify-center">
 		<ul class="steps steps-horizontal">
 			<li class="step" class:step-primary={step >= 1}>انتخاب</li>
 			<li class="step" class:step-primary={step >= 2}>اتمام</li>
 		</ul>
-	</div>
+	</div> -->
 
 	{#if step === 1}
 		{@render stepSelectRange()}

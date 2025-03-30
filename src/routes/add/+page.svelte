@@ -55,7 +55,7 @@
 				{/if}
 			{/if}
 
-			{#if data.rangeType !== 'ayah' && rangeType !== 'free' && rangeType !== 'ayah'}
+			<!-- {#if data.rangeType !== 'ayah' && rangeType !== 'free' && rangeType !== 'ayah'}
 				<label for="input-sequential" class="fieldset-label pt-2" transition:slide={{ axis: 'y' }}>
 					انتخابی یا ترتیبی
 				</label>
@@ -81,7 +81,7 @@
 						قرائت کند.
 					</p>
 				{/if}
-			{/if}
+			{/if} -->
 
 			<input class="btn btn-primary mt-4" type="submit" value="ایجاد" />
 		</fieldset>

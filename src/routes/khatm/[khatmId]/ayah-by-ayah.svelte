@@ -8,6 +8,7 @@
 	import { invalidateAll } from '$app/navigation'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
+	import { page } from '$app/state'
 
 	type Props = {
 		khatm: Khatm
@@ -36,6 +37,7 @@
 				body: JSON.stringify({
 					khatmId: khatm.id,
 					count,
+					token: page.url.searchParams.get('token'),
 				}),
 			})
 

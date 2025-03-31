@@ -1,8 +1,9 @@
 import { db } from '$lib/server/db'
 import { error } from '@sveltejs/kit'
-import type { Actions, PageServerLoad } from './$types'
+import type { PageServerLoad } from './$types'
+import { verifyPrivateKhatm } from '$lib/server/security'
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params, url }) => {
 	const khatmId = +params.khatmId
 
 	const khatm = await db.khatm.findUnique({
@@ -14,29 +15,13 @@ export const load: PageServerLoad = async ({ params }) => {
 		throw error(400, { message: 'ختم مورد نظر پیدا نشد.' })
 	}
 
+	if (khatm.private) {
+		const hash = url.searchParams.get('token')
+		const isOK = !!hash && (await verifyPrivateKhatm(khatm, hash))
+		if (!isOK) throw error(403, { message: 'شما به این ختم دسترسی ندارید.' })
+	}
+
 	return {
 		khatm,
 	}
 }
-
-export const actions = {
-	async default({ request }) {
-		const form = await request.formData()
-		const start = Number(form.get('start'))
-		const end = Number(form.get('end'))
-		const khatmId = Number(form.get('khatmId'))
-
-		if (isNaN(start) || isNaN(end)) return error(400, { message: 'بازه نامعتبر است' })
-
-		const part = await db.khatmPart.create({
-			data: {
-				khatmId,
-				start,
-				end,
-				status: 'inprogress',
-			},
-		})
-
-		return part
-	},
-} satisfies Actions

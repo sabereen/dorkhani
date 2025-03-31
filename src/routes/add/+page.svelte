@@ -55,6 +55,12 @@
 				{/if}
 			{/if}
 
+			<label class="mt-2">
+				<input type="checkbox" name="private" class="checkbox" />
+				<span>خصوصی</span>
+				<span class="badge badge-xs">آزمایشی</span>
+			</label>
+
 			<!-- {#if data.rangeType !== 'ayah' && rangeType !== 'free' && rangeType !== 'ayah'}
 				<label for="input-sequential" class="fieldset-label pt-2" transition:slide={{ axis: 'y' }}>
 					انتخابی یا ترتیبی
@@ -88,9 +94,14 @@
 	</form>
 {:else}
 	<div class="alert alert-success">
-		ختم «{form.khatm.title}» ایجاد شد.
-		<a href={`/khatm/${form.khatm.id}`} class="link block">
-			{location.origin}/khatm/{form.khatm.id}
-		</a>
+		<div>
+			ختم «{form.khatm.title}» ایجاد شد.
+			<a
+				href={`/khatm/${form.khatm.id}${form.hash ? `?token=${form.hash}` : ''}`}
+				class="link block"
+			>
+				{location.origin}/khatm/{form.khatm.id}{form.hash ? `?token=${form.hash}` : ''}
+			</a>
+		</div>
 	</div>
 {/if}

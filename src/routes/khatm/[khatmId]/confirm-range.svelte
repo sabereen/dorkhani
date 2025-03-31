@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation'
+	import { page } from '$app/state'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { PickedKhatmPart } from '$lib/entity/PickedKhatmPart'
 	import type { QuranRange } from '$lib/entity/Range'
@@ -22,7 +23,11 @@
 		try {
 			const response = await fetch(`/khatm/${khatm.id}`, {
 				method: 'POST',
-				body: JSON.stringify({ start: range.start, end: range.end }),
+				body: JSON.stringify({
+					start: range.start,
+					end: range.end,
+					token: page.url.searchParams.get('token'),
+				}),
 			})
 			if (response.status !== 200) throw new Error('خطا')
 			await response.json()

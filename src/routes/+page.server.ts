@@ -3,6 +3,7 @@ import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async () => {
 	const khatms = await db.khatm.findMany({
+		where: { private: false },
 		orderBy: { id: 'desc' },
 		take: 10,
 	})

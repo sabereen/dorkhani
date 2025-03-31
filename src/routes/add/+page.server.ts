@@ -2,6 +2,7 @@ import { error } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import { db } from '$lib/server/db'
 import type { RangeType } from '@prisma/client'
+import { signPrivateKhatm } from '$lib/server/security'
 
 export const load: PageServerLoad = ({ url }) => {
 	return {
@@ -15,6 +16,7 @@ export const actions = {
 		const title = form.get('title')
 		const rangeType = String(form.get('rangeType'))
 		const description = form.get('description') || ''
+		const isPrivate = form.get('private') === 'on'
 		let sequential = form.get('sequentialType') === 'sequential'
 
 		if (!title) {
@@ -31,10 +33,13 @@ export const actions = {
 				title: String(title),
 				description: String(description),
 				rangeType: rangeType as RangeType,
+				private: isPrivate,
 				sequential,
 			},
 		})
 
-		return { khatm }
+		const hash = isPrivate ? await signPrivateKhatm(khatm) : null
+
+		return { khatm, hash }
 	},
 } satisfies Actions

@@ -55,6 +55,9 @@
 	<meta property="og:image" content="https://khatm.esangar.ir/hero.png" />
 	<meta property="og:url" content="https://khatm.esangar.ir/khatm/{khatm.id}" />
 	<meta property="og:type" content="website" />
+	{#if khatm.private}
+		<meta name="robots" content="noindex" />
+	{/if}
 </svelte:head>
 
 <Header title="ختم قرآن گروهی">

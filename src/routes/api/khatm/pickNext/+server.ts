@@ -5,6 +5,7 @@ import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 import { importText } from '@ghoran/text'
 import translation from '@ghoran/translation/json/fa/tanzil-ansarian.json'
 import type { Khatm } from '@prisma/client'
+import { verifyPrivateKhatm } from '$lib/server/security'
 
 export type SelectedAyah = {
 	index: number
@@ -18,7 +19,7 @@ export type PickAyahResult = {
 }
 
 export const POST: RequestHandler = async (event) => {
-	const body: { khatmId: number; count: number } = await event.request.json()
+	const body: { khatmId: number; count: number; token?: string } = await event.request.json()
 
 	if (typeof body.khatmId !== 'number' || body.count < 0 || body.count > 40) {
 		throw error(400, 'ورودی معتبر نیست')
@@ -26,11 +27,26 @@ export const POST: RequestHandler = async (event) => {
 
 	const count = Math.floor(body.count)
 
+	/** آیا اگر ختم خصوصی بود باز هم آپدیت شود؟ */
+	let privateAllowed = false
+
+	// اگر توکن داشت تلاش می‌کنیم اعتبارسنجی کنیم
+	// وگرنه نیازی به این کار نیست و شرط privateAllowed در کوئری جلوی درخواست بدون توکن به ختم خصوصی را می‌گیرد.
+	if (body.token) {
+		const khatm = await db.khatm.findUnique({ where: { id: body.khatmId } })
+		if (!khatm) throw error(404, { message: 'ختم وجود ندارد.' })
+		if (khatm?.private) {
+			privateAllowed = await verifyPrivateKhatm(khatm, body.token)
+			if (!privateAllowed) throw error(403, 'شما اجازه دسترسی به این ختم را ندارید.')
+		}
+	}
+
 	const result = await db.khatm.update({
 		where: {
 			id: body.khatmId,
 			sequential: true,
 			rangeType: 'ayah',
+			private: privateAllowed,
 			currentAyahIndex: { lt: COUNT_OF_AYAHS - count + 1 },
 		},
 		data: {

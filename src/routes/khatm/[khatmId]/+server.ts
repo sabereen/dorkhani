@@ -25,6 +25,9 @@ export const POST: RequestHandler = async (event) => {
 			},
 		},
 		data: {
+			currentAyahIndex: {
+				increment: body.end - body.start,
+			},
 			parts: {
 				create: {
 					start: body.start,

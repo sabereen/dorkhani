@@ -30,7 +30,7 @@
 </script>
 
 {#if history?.length}
-	<section transition:slide={{ axis: 'y' }} class="card card-border bg-base-100">
+	<section transition:slide={{ axis: 'y' }} class="card card-border bg-base-200">
 		<div class="card-body">
 			{#if props.title}
 				<h2 class="card-title">{props.title}</h2>

@@ -40,7 +40,7 @@
 
 <History limit={3} title="آخرین مشارکت‌های شما" />
 
-<section class="card card-border bg-base-100 mt-4">
+<section class="card card-border bg-base-200 mt-4">
 	<div class="card-body">
 		<h2 class="card-title">آخرین ختم‌های ثبت شده</h2>
 		<ul class="list">

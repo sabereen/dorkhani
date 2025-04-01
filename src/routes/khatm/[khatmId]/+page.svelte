@@ -73,7 +73,7 @@
 					<li>
 						<details>
 							<summary><CurrentLayoutIcon /></summary>
-							<ul class="bg-base-100 rounded-t-none p-2">
+							<ul class="bg-base-200 rounded-t-none p-2">
 								<li>
 									<button onclick={() => (layout = 'wizard')}>
 										<IconViewWizard />

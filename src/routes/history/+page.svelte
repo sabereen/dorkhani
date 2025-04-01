@@ -5,8 +5,10 @@
 
 <Header title="تاریخچه مشارکت‌های شما" />
 
-<History>
-	{#snippet fallback()}
-		<div class="alert alert-info mt-4">موردی جهت نمایش وجود ندارد</div>
-	{/snippet}
-</History>
+<div class="mt-4">
+	<History>
+		{#snippet fallback()}
+			<div class="alert alert-info mt-4">موردی جهت نمایش وجود ندارد</div>
+		{/snippet}
+	</History>
+</div>

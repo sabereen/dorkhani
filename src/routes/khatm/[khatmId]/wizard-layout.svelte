@@ -163,7 +163,7 @@
 
 {#snippet stepShowResult(selected: QuranRange)}
 	<div class="flex flex-col items-center p-4">
-		<div class="card bg-base-100 card-md w-96 max-w-full shadow-sm">
+		<div class="card bg-base-200 card-md w-96 max-w-full shadow-sm">
 			<div class="card-body">
 				<h2 class="card-title">بازه انتخاب شده</h2>
 				<p>

@@ -104,5 +104,7 @@
 		</fieldset>
 	</form>
 {:else}
-	<SucessResult khatm={Khatm.fromPlain(form.khatm)} hash={form.hash} />
+	<div class="mt-4">
+		<SucessResult khatm={Khatm.fromPlain(form.khatm)} hash={form.hash} />
+	</div>
 {/if}

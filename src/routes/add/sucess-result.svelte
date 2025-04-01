@@ -1,0 +1,61 @@
+<script lang="ts">
+	import { toast } from '$lib/components/TheToast.svelte'
+	import type { Khatm } from '$lib/entity/Khatm.svelte'
+	import IconCopy from '~icons/ic/outline-copy-all'
+	import IconShare from '~icons/ic/outline-share'
+
+	type Props = {
+		khatm: Khatm
+		hash?: string | null
+	}
+
+	const { khatm, hash }: Props = $props()
+
+	const link = $derived(`${location.origin}/khatm/${khatm.id}${hash ? `?token=${hash}` : ''}`)
+
+	async function copy() {
+		try {
+			await navigator.clipboard.writeText(link)
+			toast('info', 'لینک ختم قرآن شما کپی شد.')
+		} catch (err) {
+			console.error(err)
+			toast('error', String(err))
+		}
+	}
+
+	async function share() {
+		try {
+			await navigator.share({
+				url: link,
+				title: `سامانه ختم قرآن گروهی | ${khatm.title}`,
+				text: khatm.description,
+			})
+		} catch (err) {
+			console.error(err)
+			toast('error', String(err))
+		}
+	}
+</script>
+
+<div class="alert alert-success">
+	ختم «{khatm.title}» ایجاد شد.
+</div>
+<div class="card card-xl bg-base-200 mt-4 shadow-sm">
+	<div class="card-body">
+		<h2 class="card-title">{khatm.title}</h2>
+		<p>{khatm.description}</p>
+		<p class="text-sm" dir="ltr">
+			<a href={link} class="link font-sans" target="_blank">{link}</a>
+		</p>
+		<div class="card-actions">
+			<button class="btn btn-primary" onclick={share}>
+				<IconShare class="size-5" />
+				اشتراک گذاری
+			</button>
+			<button class="btn btn-outline" onclick={copy}>
+				<IconCopy class="size-5" />
+				کپی لینک
+			</button>
+		</div>
+	</div>
+</div>

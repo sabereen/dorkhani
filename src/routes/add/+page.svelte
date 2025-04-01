@@ -4,16 +4,21 @@
 	import Header from '$lib/components/Header.svelte'
 	import type { RangeType } from '@prisma/client'
 	import { slide } from 'svelte/transition'
+	import { toast } from '$lib/components/TheToast.svelte'
 
 	let { data, form }: PageProps = $props()
 
 	let rangeType = $state<RangeType>('free')
 	let sequentialType = $state<'discrete' | 'sequential'>('discrete')
+
+	$effect(() => {
+		if (form?.errorMessage) toast('error', form.errorMessage)
+	})
 </script>
 
 <Header title="ایجاد ختم گروهی جدید" />
 
-{#if !form}
+{#if !form || !form.khatm}
 	<form use:enhance class="flex justify-center p-2" action="" method="POST">
 		<fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
 			<legend class="fieldset-legend">

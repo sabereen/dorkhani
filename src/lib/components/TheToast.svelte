@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	import { fly } from 'svelte/transition'
 	import { browser } from '$app/environment'
+	import { untrack } from 'svelte'
 
 	type ToastType = 'info' | 'error'
 
@@ -15,16 +16,18 @@
 	export function toast(type: ToastType, message: string) {
 		if (!browser) return
 
-		state.counter++
-		state.open = true
-		state.type = type
-		state.message = message
+		untrack(() => {
+			state.counter++
+			state.open = true
+			state.type = type
+			state.message = message
 
-		if (!isNaN(state.timer)) window.clearTimeout(state.timer)
-		state.timer = window.setTimeout(() => {
-			state.open = false
-			state.timer = NaN
-		}, 4000)
+			if (!isNaN(state.timer)) window.clearTimeout(state.timer)
+			state.timer = window.setTimeout(() => {
+				state.open = false
+				state.timer = NaN
+			}, 4000)
+		})
 	}
 </script>
 

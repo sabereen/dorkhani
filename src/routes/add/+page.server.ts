@@ -1,4 +1,4 @@
-import { error } from '@sveltejs/kit'
+import { fail } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import { db } from '$lib/server/db'
 import type { RangeType } from '@prisma/client'
@@ -20,7 +20,7 @@ export const actions = {
 		let sequential = form.get('sequentialType') === 'sequential'
 
 		if (!title) {
-			throw error(400, { message: 'عنوان اجباری است.' })
+			return fail(400, { errorMessage: 'عنوان اجباری است.' })
 		}
 
 		// در حالت آیه به آیه امکان انتخاب آیه دلخواه نیست

@@ -70,7 +70,7 @@
 	<meta name="description" content={khatm.description} />
 	<meta property="og:title" content="ختم قرآن | {khatm.title}" />
 	<meta property="og:description" content={khatm.description} />
-	<meta property="og:image" content="https://khatm.esangar.ir/hero.png" />
+	<meta property="og:logo" content="https://khatm.esangar.ir/hero.png" />
 	<meta property="og:url" content="https://khatm.esangar.ir/khatm/{khatm.id}" />
 	<meta property="og:type" content="website" />
 	{#if khatm.private}

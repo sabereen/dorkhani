@@ -39,8 +39,10 @@
 	</div>
 </div>
 
-<HistoryKhatm limit={3} title="آخرین ختم‌هایی که ایجاد کرده اید" />
-<HistoryPickedRange limit={3} title="آخرین مشارکت‌های شما" />
+<div class="grid grid-cols-1 gap-3">
+	<HistoryKhatm limit={3} title="آخرین ختم‌هایی که ایجاد کرده اید" />
+	<HistoryPickedRange limit={3} title="آخرین مشارکت‌های شما" />
+</div>
 
 <section class="card card-border bg-base-200 mt-4">
 	<div class="card-body">

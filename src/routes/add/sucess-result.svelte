@@ -13,7 +13,7 @@
 
 	const { khatm, hash }: Props = $props()
 
-	const link = $derived(`${location.origin}/khatm/${khatm.id}${hash ? `?token=${hash}` : ''}`)
+	const link = $derived(khatm.getLink(hash))
 
 	async function copy() {
 		try {
@@ -27,11 +27,7 @@
 
 	async function share() {
 		try {
-			await navigator.share({
-				url: link,
-				title: `سامانه ختم قرآن گروهی | ${khatm.title}`,
-				text: khatm.description,
-			})
+			await khatm.share(link)
 		} catch (err) {
 			console.error(err)
 			toast('error', String(err))

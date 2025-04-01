@@ -127,6 +127,14 @@ export class Khatm {
 		return result
 	}
 
+	share(link = this.getLink()) {
+		return navigator.share({
+			url: link,
+			title: `سامانه ختم قرآن گروهی | ${this.title}`,
+			text: this.description,
+		})
+	}
+
 	async pickRange(range: QuranRange) {
 		const response = await fetch(`/khatm/${this.id}`, {
 			method: 'POST',

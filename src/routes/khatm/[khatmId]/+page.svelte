@@ -6,12 +6,15 @@
 	import IconViewWizard from '~icons/ic/twotone-view-carousel'
 	import IconViewList from '~icons/ic/outline-view-agenda'
 	import IconViewTable from '~icons/ic/round-calendar-view-month'
+	import IconShare from '~icons/ic/outline-share'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 	import AyahByAyah from './ayah-by-ayah.svelte'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import GridLayout from './grid-layout.svelte'
 	import ListLayout from './list-layout.svelte'
 	import WizardLayout from './wizard-layout.svelte'
+	import { page } from '$app/state'
+	import { toast } from '$lib/components/TheToast.svelte'
 
 	const { data }: PageProps = $props()
 
@@ -35,6 +38,17 @@
 	const khatm = $derived(Khatm.fromPlain(data.khatm))
 
 	const parts = $derived(KhatmPart.fromList(data.khatm.parts))
+
+	const khatmLink = $derived(khatm.getLink(page.url.searchParams.get('token')))
+
+	async function share() {
+		try {
+			await khatm.share(khatmLink)
+		} catch (err) {
+			console.error(err)
+			toast('error', String(err))
+		}
+	}
 
 	const count = $derived(
 		khatm.sequential
@@ -98,6 +112,12 @@
 				{/if}
 			</ul>
 		</div>
+	{/snippet}
+
+	{#snippet end()}
+		<button class="btn btn-square btn-xs btn-soft" onclick={share} aria-label="Share">
+			<IconShare class="size-5" />
+		</button>
 	{/snippet}
 </Header>
 

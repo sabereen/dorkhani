@@ -1,7 +1,5 @@
 <script lang="ts">
 	import type { PageProps } from './$types'
-	import SelectPartList from './select-part.svelte'
-	import SelectPartWizard from './wizard.svelte'
 	import { KhatmPart } from '$lib/entity/KhatmPart'
 	import { invalidateAll } from '$app/navigation'
 	import Header from '$lib/components/Header.svelte'
@@ -11,6 +9,9 @@
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 	import AyahByAyah from './ayah-by-ayah.svelte'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
+	import GridLayout from './grid-layout.svelte'
+	import ListLayout from './list-layout.svelte'
+	import WizardLayout from './wizard-layout.svelte'
 
 	const { data }: PageProps = $props()
 
@@ -23,7 +24,13 @@
 		}[layout],
 	)
 
-	const SelectPart = $derived(layout === 'wizard' ? SelectPartWizard : SelectPartList)
+	const SelectPart = $derived(
+		{
+			wizard: WizardLayout,
+			grid: GridLayout,
+			list: ListLayout,
+		}[layout],
+	)
 
 	$effect(() => {
 		console.log('raw khatm', data.khatm)
@@ -124,14 +131,14 @@
 	</div>
 </div>
 
-{#if percent < 100 && data.khatm.rangeType === 'ayah'}
-	<AyahByAyah {khatm} />
-{:else if percent < 100}
-	<SelectPart {parts} {khatm} onFinished={invalidateAll} grid={layout === 'grid'} />
-{:else}
+{#if percent >= 100}
 	<div class="alert alert-success">
 		<p>تبریک! این ختم قرآن کامل شده است.</p>
 	</div>
+{:else if data.khatm.rangeType === 'ayah'}
+	<AyahByAyah {khatm} />
+{:else}
+	<SelectPart {parts} {khatm} onFinished={invalidateAll} grid={layout === 'grid'} />
 {/if}
 
 <div class="pt-10"></div>

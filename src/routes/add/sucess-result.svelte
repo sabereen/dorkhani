@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { toast } from '$lib/components/TheToast.svelte'
+	import { CreatedKhatm } from '$lib/entity/CreatedKhatm'
 	import type { Khatm } from '$lib/entity/Khatm.svelte'
+	import { onMount } from 'svelte'
 	import IconCopy from '~icons/ic/outline-copy-all'
 	import IconShare from '~icons/ic/outline-share'
 
@@ -35,6 +37,13 @@
 			toast('error', String(err))
 		}
 	}
+
+	onMount(() => {
+		new CreatedKhatm({
+			khatm: khatm.plain,
+			hash: hash || null,
+		}).save()
+	})
 </script>
 
 <div class="alert alert-success">

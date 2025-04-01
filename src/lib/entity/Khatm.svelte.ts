@@ -22,10 +22,12 @@ export class Khatm {
 				khatm!.plain = plain
 			})
 		} else {
-			khatm = new this(plain)
-			cache.set(plain.id, khatm)
+			untrack(() => {
+				khatm = new this(plain)
+				cache.set(plain.id, khatm)
+			})
 		}
-		return khatm
+		return khatm!
 	}
 
 	static fromPlainList(plainList: KhatmPlain[]) {
@@ -96,6 +98,14 @@ export class Khatm {
 
 	get isFree() {
 		return this.rangeType === 'free'
+	}
+
+	get rangeTypeTitle() {
+		return Khatm.getRangeTypeTitle(this.rangeType)
+	}
+
+	getLink(hash?: string | null) {
+		return `https://khatm.esangar.ir/khatm/${this.id}${hash ? `?token=${hash}` : ''}`
 	}
 
 	async pickNextAyat(count = 1) {

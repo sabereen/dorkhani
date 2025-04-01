@@ -15,17 +15,24 @@ interface PickedKhatmPart {
 	khatm: Khatm
 }
 
+interface CreatedKhatm {
+	id?: number
+	/** ختم ساخته شده */
+	khatm: Khatm
+	/** هش ختم (در صورت خصوصی بودن) */
+	hash: string | null
+}
+
 const db = new Dexie('Khatm') as Dexie & {
-	pickedKhatmParts: EntityTable<
-		PickedKhatmPart,
-		'id' // primary key "id" (for the typings only)
-	>
+	pickedKhatmParts: EntityTable<PickedKhatmPart, 'id'>
+	createdKhatms: EntityTable<CreatedKhatm, 'id'>
 }
 
 // Schema declaration:
-db.version(1).stores({
-	pickedKhatmParts: '++id, date', // primary key "id" (for the runtime!)
+db.version(2).stores({
+	pickedKhatmParts: '++id, date',
+	createdKhatms: 'id',
 })
 
-export type { PickedKhatmPart }
+export type { PickedKhatmPart, CreatedKhatm }
 export { db }

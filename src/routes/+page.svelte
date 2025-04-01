@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import type { PageProps } from './$types'
-	import History from './history/history.svelte'
+	import HistoryKhatm from './history/history-khatm.svelte'
+	import HistoryPickedRange from './history/history-picked-range.svelte'
 
 	const { data }: PageProps = $props()
 
@@ -38,7 +39,8 @@
 	</div>
 </div>
 
-<History limit={3} title="آخرین مشارکت‌های شما" />
+<HistoryKhatm limit={3} title="آخرین ختم‌هایی که ایجاد کرده اید" />
+<HistoryPickedRange limit={3} title="آخرین مشارکت‌های شما" />
 
 <section class="card card-border bg-base-200 mt-4">
 	<div class="card-body">
@@ -50,7 +52,7 @@
 						{khatm.title}
 						{#if !khatm.isFree}
 							<span class="badge badge-xs" class:badge-info={khatm.isAyahOriented}>
-								{Khatm.getRangeTypeTitle(khatm.rangeType)}
+								{khatm.rangeTypeTitle}
 							</span>
 						{/if}
 					</a>

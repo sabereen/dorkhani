@@ -32,10 +32,6 @@
 		}[layout],
 	)
 
-	$effect(() => {
-		console.log('raw khatm', data.khatm)
-	})
-
 	const khatm = $derived(Khatm.fromPlain(data.khatm))
 
 	const parts = $derived(KhatmPart.fromList(data.khatm.parts))

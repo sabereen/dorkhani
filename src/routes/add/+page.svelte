@@ -45,6 +45,10 @@
 	})
 </script>
 
+<svelte:head>
+	<title>ختم قرآن | ایجاد ختم گروهی جدید</title>
+</svelte:head>
+
 <Header title="ایجاد ختم گروهی جدید" />
 
 {#if !form || !form.khatm}

@@ -5,11 +5,40 @@
 	import type { RangeType } from '@prisma/client'
 	import { slide } from 'svelte/transition'
 	import { toast } from '$lib/components/TheToast.svelte'
+	import IconCopy from '~icons/ic/outline-copy-all'
+	import IconShare from '~icons/ic/outline-share'
 
 	let { data, form }: PageProps = $props()
 
 	let rangeType = $state<RangeType>('free')
 	let sequentialType = $state<'discrete' | 'sequential'>('discrete')
+
+	const link = $derived(
+		`${location.origin}/khatm/${form?.khatm?.id}${form?.hash ? `?token=${form.hash}` : ''}`,
+	)
+
+	async function copy() {
+		try {
+			await navigator.clipboard.writeText(link)
+			toast('info', 'لینک ختم قرآن شما کپی شد.')
+		} catch (err) {
+			console.error(err)
+			toast('error', String(err))
+		}
+	}
+
+	async function share() {
+		try {
+			await navigator.share({
+				url: link,
+				title: `سامانه ختم قرآن گروهی | ${form?.khatm?.title}`,
+				text: form?.khatm?.description,
+			})
+		} catch (err) {
+			console.error(err)
+			toast('error', String(err))
+		}
+	}
 
 	$effect(() => {
 		if (form?.errorMessage) toast('error', form.errorMessage)
@@ -99,14 +128,25 @@
 	</form>
 {:else}
 	<div class="alert alert-success">
-		<div>
-			ختم «{form.khatm.title}» ایجاد شد.
-			<a
-				href={`/khatm/${form.khatm.id}${form.hash ? `?token=${form.hash}` : ''}`}
-				class="link block"
-			>
-				{location.origin}/khatm/{form.khatm.id}{form.hash ? `?token=${form.hash}` : ''}
-			</a>
+		ختم «{form.khatm.title}» ایجاد شد.
+	</div>
+	<div class="card card-xl bg-base-200 mt-4 shadow-sm">
+		<div class="card-body">
+			<h2 class="card-title">{form.khatm.title}</h2>
+			<p>{form.khatm.description}</p>
+			<p class="text-sm" dir="ltr">
+				<a href={link} class="link font-sans" target="_blank">{link}</a>
+			</p>
+			<div class="card-actions">
+				<button class="btn btn-primary" onclick={share}>
+					<IconShare class="size-5" />
+					اشتراک گذاری
+				</button>
+				<button class="btn btn-outline" onclick={copy}>
+					<IconCopy class="size-5" />
+					کپی لینک
+				</button>
+			</div>
 		</div>
 	</div>
 {/if}

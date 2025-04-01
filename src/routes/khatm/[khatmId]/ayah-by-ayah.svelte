@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { Khatm } from '@prisma/client'
 	import { slide } from 'svelte/transition'
 	import type { PickAyahResult, SelectedAyah } from '../../api/khatm/pickNext/+server'
 	import { Ayah } from '@ghoran/entity'
@@ -8,7 +7,7 @@
 	import { invalidateAll } from '$app/navigation'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
-	import { page } from '$app/state'
+	import type { Khatm } from '$lib/entity/Khatm.svelte'
 
 	type Props = {
 		khatm: Khatm
@@ -32,20 +31,7 @@
 		loading = count
 
 		try {
-			const response = await fetch('/api/khatm/pickNext', {
-				method: 'POST',
-				body: JSON.stringify({
-					khatmId: khatm.id,
-					count,
-					token: page.url.searchParams.get('token'),
-				}),
-			})
-
-			const result: PickAyahResult = await response.json()
-
-			if (!response.ok) {
-				throw result
-			}
+			const result = await khatm.pickNextAyat(count)
 			selectedAyat = result.ayat
 			ayahWrapper?.scrollIntoView({ block: 'start', behavior: 'smooth' })
 

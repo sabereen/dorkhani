@@ -10,6 +10,7 @@
 	import IconViewTable from '~icons/ic/round-calendar-view-month'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 	import AyahByAyah from './ayah-by-ayah.svelte'
+	import { Khatm } from '$lib/entity/Khatm.svelte'
 
 	const { data }: PageProps = $props()
 
@@ -28,9 +29,9 @@
 		console.log('raw khatm', data.khatm)
 	})
 
-	const khatm = $derived(data.khatm)
+	const khatm = $derived(Khatm.fromPlain(data.khatm))
 
-	const parts = $derived(KhatmPart.fromList(khatm.parts))
+	const parts = $derived(KhatmPart.fromList(data.khatm.parts))
 
 	const count = $derived(
 		khatm.sequential
@@ -124,9 +125,9 @@
 </div>
 
 {#if percent < 100 && data.khatm.rangeType === 'ayah'}
-	<AyahByAyah khatm={data.khatm} />
+	<AyahByAyah {khatm} />
 {:else if percent < 100}
-	<SelectPart {parts} khatm={data.khatm} onFinished={invalidateAll} grid={layout === 'grid'} />
+	<SelectPart {parts} {khatm} onFinished={invalidateAll} grid={layout === 'grid'} />
 {:else}
 	<div class="alert alert-success">
 		<p>تبریک! این ختم قرآن کامل شده است.</p>

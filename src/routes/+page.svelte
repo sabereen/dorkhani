@@ -1,8 +1,11 @@
 <script lang="ts">
+	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import type { PageProps } from './$types'
 	import History from './history/history.svelte'
 
 	const { data }: PageProps = $props()
+
+	const khatms = $derived(Khatm.fromPlainList(data.khatms))
 </script>
 
 <svelte:head>
@@ -41,12 +44,14 @@
 	<div class="card-body">
 		<h2 class="card-title">آخرین ختم‌های ثبت شده</h2>
 		<ul class="list">
-			{#each data.khatms as khatm}
+			{#each khatms as khatm}
 				<li class="">
 					<a class="list-row w-full hover:bg-green-500/15" href="/khatm/{khatm.id}">
 						{khatm.title}
-						{#if khatm.rangeType === 'ayah'}
-							<span class="badge badge-xs badge-info">آیه به آیه</span>
+						{#if !khatm.isFree}
+							<span class="badge badge-xs" class:badge-info={khatm.isAyahOriented}>
+								{Khatm.getRangeTypeTitle(khatm.rangeType)}
+							</span>
 						{/if}
 					</a>
 				</li>

@@ -1,5 +1,6 @@
 <script lang="ts" module>
 	import { KhatmPart } from '$lib/entity/KhatmPart'
+	import type { Khatm } from '$lib/entity/Khatm.svelte'
 
 	export type Props = {
 		parts: KhatmPart[]
@@ -21,7 +22,6 @@
 	import IconEye from '~icons/ic/outline-remove-red-eye'
 	import ConfirmRange from './confirm-range.svelte'
 	import { hizbQuarter_toRange } from '$lib/entity/HizbQuarter'
-	import type { Khatm } from '@prisma/client'
 
 	const props: Props = $props()
 

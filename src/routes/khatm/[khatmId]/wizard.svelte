@@ -9,7 +9,7 @@
 	import { QuranRange } from '$lib/entity/Range'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 	import { hizbQuarter_toRange } from '$lib/entity/HizbQuarter'
-	import type { Khatm } from '@prisma/client'
+	import type { Khatm } from '$lib/entity/Khatm.svelte'
 
 	type Props = {
 		parts: KhatmPart[]

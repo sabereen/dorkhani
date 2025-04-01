@@ -12,6 +12,11 @@ export async function idb_pickedKhatmPart_add(item: Omit<PickedKhatmPart, 'id'>)
 			id: item.khatm.id,
 			title: item.khatm.title,
 			description: item.khatm.description,
+			created: item.khatm.created,
+			currentAyahIndex: item.khatm.currentAyahIndex,
+			private: item.khatm.private,
+			rangeType: item.khatm.rangeType,
+			sequential: item.khatm.sequential,
 		},
 	})
 }
@@ -19,7 +24,7 @@ export async function idb_pickedKhatmPart_add(item: Omit<PickedKhatmPart, 'id'>)
 export async function idb_pickedKhatmPart_getList(limit?: number) {
 	const { db } = await import('./idb')
 	if (limit) {
-		return db.pickedKhatmParts.limit(limit).toArray()
+		return db.pickedKhatmParts.reverse().limit(limit).toArray()
 	}
 	return db.pickedKhatmParts.toArray()
 }

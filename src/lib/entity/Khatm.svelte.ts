@@ -145,6 +145,7 @@ export class Khatm {
 			start: range.start,
 			end: range.end,
 			khatm: this.plain,
+			hash: page.url.searchParams.get('token'),
 		}).save()
 	}
 }

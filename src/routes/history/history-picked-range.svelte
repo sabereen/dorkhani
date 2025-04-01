@@ -51,7 +51,13 @@
 						</span>
 						<span>
 							<strong>ختم:</strong>
-							«<a class="link link-info" href={'/khatm/' + item.khatm.id}>{item.khatm.title}</a>»
+							«<a class="link link-info" href={item.link}>{item.khatm.title}</a>»
+							{#if item.khatm.private}
+								<span class="badge badge-xs badge-info">خصوصی</span>
+							{/if}
+							{#if !item.khatm.isFree}
+								<span class="badge badge-xs">{item.khatm.rangeTypeTitle}</span>
+							{/if}
 						</span>
 						<span>
 							<strong>تاریخ:</strong>

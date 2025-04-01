@@ -13,6 +13,7 @@ interface PickedKhatmPart {
 	end: number
 	/** خود آبجکت ختم مورد نظر */
 	khatm: Khatm
+	hash?: string | null
 }
 
 interface CreatedKhatm {

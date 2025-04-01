@@ -8,6 +8,7 @@ export async function idb_pickedKhatmPart_add(item: Omit<PickedKhatmPart, 'id'>)
 		date: item.date,
 		start: item.start,
 		end: item.end,
+		hash: item.hash,
 		khatm: {
 			id: item.khatm.id,
 			title: item.khatm.title,

@@ -44,22 +44,24 @@
 	<HistoryPickedRange limit={3} title="آخرین مشارکت‌های شما" />
 </div>
 
-<section class="card card-border bg-base-200 mt-4">
-	<div class="card-body">
-		<h2 class="card-title">آخرین ختم‌های ثبت شده</h2>
-		<ul class="list">
-			{#each khatms as khatm}
-				<li class="">
-					<a class="list-row w-full hover:bg-green-500/15" href="/khatm/{khatm.id}">
-						{khatm.title}
-						{#if !khatm.isFree}
-							<span class="badge badge-xs" class:badge-info={khatm.isAyahOriented}>
-								{khatm.rangeTypeTitle}
-							</span>
-						{/if}
-					</a>
-				</li>
-			{/each}
-		</ul>
-	</div>
-</section>
+{#if khatms.length}
+	<section class="card card-border bg-base-200 mt-4">
+		<div class="card-body">
+			<h2 class="card-title">آخرین ختم‌های ثبت شده</h2>
+			<ul class="list">
+				{#each khatms as khatm}
+					<li class="">
+						<a class="list-row w-full hover:bg-green-500/15" href="/khatm/{khatm.id}">
+							{khatm.title}
+							{#if !khatm.isFree}
+								<span class="badge badge-xs" class:badge-info={khatm.isAyahOriented}>
+									{khatm.rangeTypeTitle}
+								</span>
+							{/if}
+						</a>
+					</li>
+				{/each}
+			</ul>
+		</div>
+	</section>
+{/if}

@@ -1,4 +1,4 @@
-import type { Khatm } from '@prisma/client'
+import type { TKhatm } from '@prisma/client'
 import { PRIVATE_KHATM_SECRET } from './config'
 
 export const rawPrivateKhatmKey = await crypto.subtle.importKey(
@@ -9,7 +9,7 @@ export const rawPrivateKhatmKey = await crypto.subtle.importKey(
 	['sign', 'verify'],
 )
 
-export async function signPrivateKhatm(khatm: Khatm) {
+export async function signPrivateKhatm(khatm: TKhatm) {
 	const text = khatm.created.toString() + khatm.id
 
 	const signatureBuffer = await crypto.subtle.sign(
@@ -25,7 +25,7 @@ export async function signPrivateKhatm(khatm: Khatm) {
 	return token
 }
 
-export async function verifyPrivateKhatm(khatm: Khatm, token: string) {
+export async function verifyPrivateKhatm(khatm: TKhatm, token: string) {
 	const text = khatm.created.toString() + khatm.id
 
 	try {

@@ -6,7 +6,7 @@ import { verifyPrivateKhatm } from '$lib/server/security'
 export const load: PageServerLoad = async ({ params, url }) => {
 	const khatmId = +params.khatmId
 
-	const khatm = await db.khatm.findUnique({
+	const khatm = await db.tKhatm.findUnique({
 		include: { parts: true },
 		where: { id: khatmId },
 	})

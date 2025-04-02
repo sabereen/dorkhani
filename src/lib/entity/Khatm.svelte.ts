@@ -1,6 +1,6 @@
 import { page } from '$app/state'
 import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
-import type { Khatm as KhatmPlain, RangeType } from '@prisma/client'
+import type { TKhatm, RangeType } from '@prisma/client'
 import type { PickAyahResult } from '../../routes/api/khatm/pickNext/+server'
 import { PickedKhatmPart } from './PickedKhatmPart'
 import type { QuranRange } from './Range'
@@ -9,13 +9,13 @@ import { untrack } from 'svelte'
 const cache = new Map<number, Khatm>()
 
 export class Khatm {
-	plain = $state() as KhatmPlain
+	plain = $state() as TKhatm
 
-	private constructor(plain: KhatmPlain) {
+	private constructor(plain: TKhatm) {
 		this.plain = plain
 	}
 
-	static fromPlain(plain: KhatmPlain) {
+	static fromPlain(plain: TKhatm) {
 		let khatm = cache.get(plain.id)
 		if (khatm) {
 			untrack(() => {
@@ -30,7 +30,7 @@ export class Khatm {
 		return khatm!
 	}
 
-	static fromPlainList(plainList: KhatmPlain[]) {
+	static fromPlainList(plainList: TKhatm[]) {
 		return plainList.map((plain) => this.fromPlain(plain))
 	}
 
@@ -85,7 +85,7 @@ export class Khatm {
 	}
 
 	get sequential() {
-		return this.plain.sequential
+		return this.isAyahOriented
 	}
 
 	get currentAyahIndex() {

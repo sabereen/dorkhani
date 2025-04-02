@@ -1,5 +1,5 @@
 // db.ts
-import type { Khatm } from '@prisma/client'
+import type { TKhatm } from '@prisma/client'
 import Dexie, { type EntityTable } from 'dexie'
 
 /** بازه‌ی انتخاب شده برای ختم */
@@ -12,14 +12,14 @@ interface PickedKhatmPart {
 	/** پایان بازه انتخاب شده */
 	end: number
 	/** خود آبجکت ختم مورد نظر */
-	khatm: Khatm
+	khatm: TKhatm
 	hash?: string | null
 }
 
 interface CreatedKhatm {
 	id?: number
 	/** ختم ساخته شده */
-	khatm: Khatm
+	khatm: TKhatm
 	/** هش ختم (در صورت خصوصی بودن) */
 	hash: string | null
 }

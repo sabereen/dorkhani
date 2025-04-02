@@ -17,7 +17,7 @@ export async function idb_pickedKhatmPart_add(item: Omit<PickedKhatmPart, 'id'>)
 			currentAyahIndex: item.khatm.currentAyahIndex,
 			private: item.khatm.private,
 			rangeType: item.khatm.rangeType,
-			sequential: item.khatm.sequential,
+			accessToken: item.khatm.accessToken,
 		},
 	})
 }

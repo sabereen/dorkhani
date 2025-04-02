@@ -22,7 +22,7 @@ export const POST: RequestHandler = async (event) => {
 	// اگر توکن داشت تلاش می‌کنیم اعتبارسنجی کنیم
 	// وگرنه نیازی به این کار نیست و شرط privateAllowed در کوئری جلوی درخواست بدون توکن به ختم خصوصی را می‌گیرد.
 	if (body.token) {
-		const khatm = await db.khatm.findUnique({ where: { id: khatmId } })
+		const khatm = await db.tKhatm.findUnique({ where: { id: khatmId } })
 		if (!khatm) throw error(404, { message: 'ختم وجود ندارد.' })
 		if (khatm?.private) {
 			privateAllowed = await verifyPrivateKhatm(khatm, body.token)
@@ -30,7 +30,7 @@ export const POST: RequestHandler = async (event) => {
 		}
 	}
 
-	const result = await db.khatm.update({
+	const result = await db.tKhatm.update({
 		where: {
 			id: khatmId,
 			private: privateAllowed,

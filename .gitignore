@@ -24,3 +24,4 @@ vite.config.ts.timestamp-*
 
 # Sqlite DB
 prisma/dev.db
+prisma/dev2.db

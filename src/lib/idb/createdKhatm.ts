@@ -13,8 +13,8 @@ export async function idb_createdKhatm_add(item: Omit<CreatedKhatm, 'id'>) {
 			description: item.khatm.description,
 			private: item.khatm.private,
 			rangeType: item.khatm.rangeType,
-			sequential: item.khatm.sequential,
 			title: item.khatm.title,
+			accessToken: item.khatm.accessToken,
 		},
 	})
 }

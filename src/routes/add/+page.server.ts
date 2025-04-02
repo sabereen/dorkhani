@@ -17,24 +17,17 @@ export const actions = {
 		const rangeType = String(form.get('rangeType'))
 		const description = form.get('description') || ''
 		const isPrivate = form.get('private') === 'on'
-		let sequential = form.get('sequentialType') === 'sequential'
 
 		if (!title) {
 			return fail(400, { errorMessage: 'عنوان اجباری است.' })
 		}
 
-		// در حالت آیه به آیه امکان انتخاب آیه دلخواه نیست
-		if (rangeType === 'ayah') sequential = true
-		// در حالت آزاد امکان انتساب خودکار بازه به کاربر نیست
-		if (rangeType === 'free') sequential = false
-
-		const khatm = await db.khatm.create({
+		const khatm = await db.tKhatm.create({
 			data: {
 				title: String(title),
 				description: String(description),
 				rangeType: rangeType as RangeType,
 				private: isPrivate,
-				sequential,
 			},
 		})
 

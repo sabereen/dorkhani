@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db"
+  url      = "file:./dev2.db"
 }
 
 enum RangeType {
@@ -22,30 +22,31 @@ enum RangeType {
   ayah
 }
 
-model Khatm {
-  id               Int         @id @default(autoincrement())
+model TKhatm {
+  id               Int          @id @default(autoincrement())
+  // عنوان
   title            String
-  description      String      @default("")
+  // توضیحات
+  description      String       @default("")
   // نوع بازه‌ی قابل انتخاب توسط کاربر
-  rangeType        RangeType   @default(free)
-  // در حالت ترتیبی سیستم به صورت خودکار بازه را به کاربر انتساب می‌دهد
-  // بازه آیه‌ای فقط می‌تواند به صورت ترتیبی استفاده شود
-  // و بازه‌ی آزاد اصلا نمی‌تواند به صورت ترتیبی استفاده شود
-  sequential       Boolean     @default(false)
+  rangeType        RangeType    @default(free) @map("range_type")
   // فقط برای ترتیبی‌ها کاربرد دارد
-  currentAyahIndex Int         @default(0)
-  // ختم خصوصی فقط با داشتن هش مربوطه نمایش داده می‌شود و در صفحه اصلی نمایش داده نمی‌شود
-  private          Boolean     @default(false)
-  created          DateTime    @default(now())
-  parts            KhatmPart[]
+  currentAyahIndex Int          @default(0) @map("current_ayah_index")
+  // ختم خصوصی فقط با داشتن اکسس‌توکن مربوطه نمایش داده می‌شود و در صفحه اصلی نمایش داده نمی‌شود
+  private          Boolean      @default(false)
+  // توکن مربوط به ختم‌های خصوصی
+  accessToken      String?      @map("access_token")
+  // تاریخ ایجاد ختم
+  created          DateTime     @default(now())
+  parts            TKhatmPart[]
 
   @@map("khatm")
 }
 
-model KhatmPart {
+model TKhatmPart {
   id      Int    @id @default(autoincrement())
-  khatm   Khatm  @relation(fields: [khatmId], references: [id])
-  khatmId Int
+  khatm   TKhatm @relation(fields: [khatmId], references: [id])
+  khatmId Int    @map("khatm_id")
   start   Int
   end     Int
   status  String

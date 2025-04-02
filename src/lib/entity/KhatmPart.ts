@@ -1,13 +1,13 @@
-import type { KhatmPart as PlainKhatmPart } from '@prisma/client'
+import type { TKhatmPart } from '@prisma/client'
 
 export class KhatmPart {
-	plain: PlainKhatmPart
+	plain: TKhatmPart
 
-	constructor(plain: PlainKhatmPart) {
+	constructor(plain: TKhatmPart) {
 		this.plain = plain
 	}
 
-	static fromList(plainParts: PlainKhatmPart[]) {
+	static fromList(plainParts: TKhatmPart[]) {
 		const parts = plainParts.map((part) => new KhatmPart(part)).sort((a, b) => a.start - b.start)
 
 		if (parts.length <= 1) return parts

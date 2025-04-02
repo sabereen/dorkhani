@@ -11,7 +11,6 @@
 	let { data, form }: PageProps = $props()
 
 	let rangeType = $state<RangeType>('free')
-	let sequentialType = $state<'discrete' | 'sequential'>('discrete')
 
 	$effect(() => {
 		if (form?.errorMessage) toast('error', form.errorMessage)
@@ -71,34 +70,6 @@
 				<span>خصوصی</span>
 				<span class="badge badge-xs">آزمایشی</span>
 			</label>
-
-			<!-- {#if data.rangeType !== 'ayah' && rangeType !== 'free' && rangeType !== 'ayah'}
-				<label for="input-sequential" class="fieldset-label pt-2" transition:slide={{ axis: 'y' }}>
-					انتخابی یا ترتیبی
-				</label>
-				<select
-					id="input-sequential"
-					class="select"
-					name="sequentialType"
-					transition:slide={{ axis: 'y' }}
-					bind:value={sequentialType}
-				>
-					<option value="discrete">انتخابی</option>
-					<option value="sequential">ترتیبی</option>
-				</select>
-				{#if sequentialType === 'discrete'}
-					<p class="pt-1 text-xs" transition:slide|global={{ axis: 'y' }}>
-						در حالت «انتخابی» مشارکت‌کننده می‌تواند به دلخواه خود یکی از بازه‌های باقیمانده را برای
-						قرائت انتخاب کند.
-					</p>
-				{/if}
-				{#if sequentialType === 'sequential'}
-					<p class="pt-1 text-xs" transition:slide|global={{ axis: 'y' }}>
-						در حالت «ترتیبی» سیستم اولین بازه‌ی قرائت‌نشده را در اختیار مشارکت‌کننده قرار می‌دهد تا
-						قرائت کند.
-					</p>
-				{/if}
-			{/if} -->
 
 			<input class="btn btn-primary mt-4" type="submit" value="ایجاد" />
 		</fieldset>

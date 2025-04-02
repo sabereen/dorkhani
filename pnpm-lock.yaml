@@ -26,6 +26,9 @@ importers:
       module:
         specifier: ^1.2.5
         version: 1.2.5
+      uuid:
+        specifier: ^11.1.0
+        version: 11.1.0
       vazirmatn:
         specifier: ^33.0.3
         version: 33.0.3
@@ -2518,6 +2521,10 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
+  uuid@11.1.0:
+    resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
+    hasBin: true
+
   vali-date@1.0.0:
     resolution: {integrity: sha512-sgECfZthyaCKW10N0fm27cg8HYTFK5qMWgypqkXMQ4Wbl/zZKx7xZICgcoxIIE+WFAP/MBL2EFwC/YvLxw3Zeg==}
     engines: {node: '>=0.10.0'}
@@ -4960,6 +4967,8 @@ snapshots:
   urix@0.1.0: {}
 
   util-deprecate@1.0.2: {}
+
+  uuid@11.1.0: {}
 
   vali-date@1.0.0: {}
 

@@ -104,8 +104,8 @@ export class Khatm {
 		return Khatm.getRangeTypeTitle(this.rangeType)
 	}
 
-	getLink(hash?: string | null) {
-		return `https://khatm.esangar.ir/khatm/${this.id}${hash ? `?token=${hash}` : ''}`
+	get link() {
+		return `https://khatm.esangar.ir/khatm/${this.id}${this.plain.accessToken ? `?token=${this.plain.accessToken}` : ''}`
 	}
 
 	async pickNextAyat(count = 1) {
@@ -127,9 +127,9 @@ export class Khatm {
 		return result
 	}
 
-	share(link = this.getLink()) {
+	share() {
 		return navigator.share({
-			url: link,
+			url: this.link,
 			title: `سامانه ختم قرآن گروهی | ${this.title}`,
 			text: this.description,
 		})

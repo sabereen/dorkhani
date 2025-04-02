@@ -1,24 +1,18 @@
 import { db } from '$lib/server/db'
 import { error } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
-import { verifyPrivateKhatm } from '$lib/server/security'
 
 export const load: PageServerLoad = async ({ params, url }) => {
 	const khatmId = +params.khatmId
+	const accessToken = url.searchParams.get('token') || null
 
 	const khatm = await db.tKhatm.findUnique({
 		include: { parts: true },
-		where: { id: khatmId },
+		where: { id: khatmId, accessToken: { equals: accessToken } },
 	})
 
 	if (!khatm) {
 		throw error(400, { message: 'ختم مورد نظر پیدا نشد.' })
-	}
-
-	if (khatm.private) {
-		const hash = url.searchParams.get('token')
-		const isOK = !!hash && (await verifyPrivateKhatm(khatm, hash))
-		if (!isOK) throw error(403, { message: 'شما به این ختم دسترسی ندارید.' })
 	}
 
 	return {

@@ -20,8 +20,6 @@ interface CreatedKhatm {
 	id?: number
 	/** ختم ساخته شده */
 	khatm: TKhatm
-	/** هش ختم (در صورت خصوصی بودن) */
-	hash: string | null
 }
 
 const db = new Dexie('Khatm') as Dexie & {

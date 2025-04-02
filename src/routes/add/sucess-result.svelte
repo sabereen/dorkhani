@@ -8,16 +8,13 @@
 
 	type Props = {
 		khatm: Khatm
-		hash?: string | null
 	}
 
-	const { khatm, hash }: Props = $props()
-
-	const link = $derived(khatm.getLink(hash))
+	const { khatm }: Props = $props()
 
 	async function copy() {
 		try {
-			await navigator.clipboard.writeText(link)
+			await navigator.clipboard.writeText(khatm.link)
 			toast('info', 'لینک ختم قرآن شما کپی شد.')
 		} catch (err) {
 			console.error(err)
@@ -27,7 +24,7 @@
 
 	async function share() {
 		try {
-			await khatm.share(link)
+			await khatm.share()
 		} catch (err) {
 			console.error(err)
 			toast('error', String(err))
@@ -37,7 +34,6 @@
 	onMount(() => {
 		new CreatedKhatm({
 			khatm: khatm.plain,
-			hash: hash || null,
 		}).save()
 	})
 </script>
@@ -50,7 +46,7 @@
 		<h2 class="card-title">{khatm.title}</h2>
 		<p>{khatm.description}</p>
 		<p class="text-sm" dir="ltr">
-			<a href={link} class="link font-sans" target="_blank">{link}</a>
+			<a href={khatm.link} class="link font-sans" target="_blank">{khatm.link}</a>
 		</p>
 		<div class="card-actions">
 			<button class="btn btn-primary" onclick={share}>

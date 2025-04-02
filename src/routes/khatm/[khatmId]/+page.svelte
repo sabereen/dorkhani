@@ -39,11 +39,9 @@
 
 	const parts = $derived(KhatmPart.fromList(data.khatm.parts))
 
-	const khatmLink = $derived(khatm.getLink(page.url.searchParams.get('token')))
-
 	async function share() {
 		try {
-			await khatm.share(khatmLink)
+			await khatm.share()
 		} catch (err) {
 			console.error(err)
 			toast('error', String(err))

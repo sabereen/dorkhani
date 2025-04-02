@@ -2,7 +2,7 @@ import { fail } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import { db } from '$lib/server/db'
 import type { RangeType } from '@prisma/client'
-import { signPrivateKhatm } from '$lib/server/security'
+import { v4 as uuid } from 'uuid'
 
 export const load: PageServerLoad = ({ url }) => {
 	return {
@@ -28,11 +28,10 @@ export const actions = {
 				description: String(description),
 				rangeType: rangeType as RangeType,
 				private: isPrivate,
+				accessToken: isPrivate ? uuid() : null,
 			},
 		})
 
-		const hash = isPrivate ? await signPrivateKhatm(khatm) : null
-
-		return { khatm, hash }
+		return { khatm }
 	},
 } satisfies Actions

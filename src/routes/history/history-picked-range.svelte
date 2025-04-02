@@ -51,7 +51,7 @@
 						</span>
 						<span>
 							<strong>ختم:</strong>
-							«<a class="link link-info" href={item.link}>{item.khatm.title}</a>»
+							«<a class="link link-info" href={item.khatm.link}>{item.khatm.title}</a>»
 							{#if item.khatm.private}
 								<span class="badge badge-xs badge-info">خصوصی</span>
 							{/if}

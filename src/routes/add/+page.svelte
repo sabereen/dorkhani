@@ -76,6 +76,6 @@
 	</form>
 {:else}
 	<div class="mt-4">
-		<SucessResult khatm={Khatm.fromPlain(form.khatm)} hash={form.hash} />
+		<SucessResult khatm={Khatm.fromPlain(form.khatm)} />
 	</div>
 {/if}

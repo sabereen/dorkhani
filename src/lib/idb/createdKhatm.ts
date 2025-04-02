@@ -5,7 +5,6 @@ export async function idb_createdKhatm_add(item: Omit<CreatedKhatm, 'id'>) {
 
 	await db.createdKhatms.add({
 		id: item.khatm.id,
-		hash: item.hash,
 		khatm: {
 			id: item.khatm.id,
 			created: item.khatm.created,

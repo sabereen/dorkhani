@@ -1,7 +1,6 @@
 import { db } from '$lib/server/db'
 import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
-import { verifyPrivateKhatm } from '$lib/server/security'
 
 export const POST: RequestHandler = async (event) => {
 	const body: { start: number; end: number; token?: string } = await event.request.json()
@@ -16,24 +15,10 @@ export const POST: RequestHandler = async (event) => {
 
 	const khatmId = +event.params.khatmId
 
-	/** آیا اگر ختم خصوصی بود باز هم آپدیت شود؟ */
-	let privateAllowed = false
-
-	// اگر توکن داشت تلاش می‌کنیم اعتبارسنجی کنیم
-	// وگرنه نیازی به این کار نیست و شرط privateAllowed در کوئری جلوی درخواست بدون توکن به ختم خصوصی را می‌گیرد.
-	if (body.token) {
-		const khatm = await db.tKhatm.findUnique({ where: { id: khatmId } })
-		if (!khatm) throw error(404, { message: 'ختم وجود ندارد.' })
-		if (khatm?.private) {
-			privateAllowed = await verifyPrivateKhatm(khatm, body.token)
-			if (!privateAllowed) throw error(403, 'شما اجازه دسترسی به این ختم را ندارید.')
-		}
-	}
-
 	const result = await db.tKhatm.update({
 		where: {
 			id: khatmId,
-			private: privateAllowed,
+			accessToken: { equals: body.token || null },
 			parts: {
 				every: {
 					OR: [{ end: { lte: body.start } }, { start: { gte: body.end } }],

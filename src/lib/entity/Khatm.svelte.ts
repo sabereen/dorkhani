@@ -93,6 +93,10 @@ export class Khatm {
 		return this.plain.currentAyahIndex
 	}
 
+	get accessToken() {
+		return this.plain.accessToken || null
+	}
+
 	get isAyahOriented() {
 		return this.rangeType === 'ayah'
 	}
@@ -108,7 +112,7 @@ export class Khatm {
 	get link() {
 		const origin = browser ? location.origin : 'https://khatm.esangar.ir'
 		const idBase36 = this.id.toString(36)
-		return `${origin}/@/${idBase36}${this.plain.accessToken ? `?token=${this.plain.accessToken}` : ''}`
+		return `${origin}/@/${idBase36}${this.accessToken ? `?t=${this.accessToken}` : ''}`
 	}
 
 	async pickNextAyat(count = 1) {
@@ -117,7 +121,7 @@ export class Khatm {
 			body: JSON.stringify({
 				khatmId: this.id,
 				count,
-				token: page.url.searchParams.get('token'),
+				token: this.accessToken,
 			}),
 		})
 
@@ -144,7 +148,7 @@ export class Khatm {
 			body: JSON.stringify({
 				start: range.start,
 				end: range.end,
-				token: page.url.searchParams.get('token'),
+				token: this.accessToken,
 			}),
 		})
 		if (response.status !== 200) throw new Error('خطا')
@@ -156,7 +160,7 @@ export class Khatm {
 			start: range.start,
 			end: range.end,
 			khatm: this.plain,
-			hash: page.url.searchParams.get('token'),
+			hash: this.accessToken,
 		}).save()
 	}
 }

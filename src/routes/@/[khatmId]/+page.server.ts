@@ -4,7 +4,7 @@ import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async ({ params, url }) => {
 	const khatmId = parseInt(params.khatmId, 36)
-	const accessToken = url.searchParams.get('token') || null
+	const accessToken = url.searchParams.get('t') || null
 
 	const khatm = await db.tKhatm.findUnique({
 		include: { parts: true },

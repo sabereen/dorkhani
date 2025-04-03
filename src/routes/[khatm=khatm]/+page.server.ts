@@ -3,7 +3,7 @@ import { error } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async ({ params, url }) => {
-	const khatmId = parseInt(params.khatmId, 36)
+	const khatmId = parseInt(params.khatm.slice(1), 36)
 	const accessToken = url.searchParams.get('t') || null
 
 	const khatm = await db.tKhatm.findUnique({

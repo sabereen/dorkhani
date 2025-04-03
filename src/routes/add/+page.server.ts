@@ -28,7 +28,7 @@ export const actions = {
 				description: String(description),
 				rangeType: rangeType as RangeType,
 				private: isPrivate,
-				accessToken: isPrivate ? uuid() : null,
+				accessToken: isPrivate ? uuid().split('-').pop() : null,
 			},
 		})
 

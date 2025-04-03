@@ -13,7 +13,7 @@ export const POST: RequestHandler = async (event) => {
 		throw error(400, 'ورودی معتبر نیست.')
 	}
 
-	const khatmId = +event.params.khatmId
+	const khatmId = parseInt(event.params.khatmId, 36)
 
 	const result = await db.tKhatm.update({
 		where: {

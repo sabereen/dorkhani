@@ -51,7 +51,7 @@
 			<ul class="list">
 				{#each khatms as khatm}
 					<li class="">
-						<a class="list-row w-full hover:bg-green-500/15" href="/khatm/{khatm.id}">
+						<a class="list-row w-full hover:bg-green-500/15" href={khatm.link}>
 							{khatm.title}
 							{#if !khatm.isFree}
 								<span class="badge badge-xs" class:badge-info={khatm.isAyahOriented}>

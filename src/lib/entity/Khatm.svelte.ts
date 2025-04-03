@@ -5,6 +5,7 @@ import type { PickAyahResult } from '../../routes/api/khatm/pickNext/+server'
 import { PickedKhatmPart } from './PickedKhatmPart'
 import type { QuranRange } from './Range'
 import { untrack } from 'svelte'
+import { browser } from '$app/environment'
 
 const cache = new Map<number, Khatm>()
 
@@ -105,7 +106,9 @@ export class Khatm {
 	}
 
 	get link() {
-		return `https://khatm.esangar.ir/khatm/${this.id}${this.plain.accessToken ? `?token=${this.plain.accessToken}` : ''}`
+		const origin = browser ? location.origin : 'https://khatm.esangar.ir'
+		const idBase36 = this.id.toString(36)
+		return `${origin}/@/${idBase36}${this.plain.accessToken ? `?token=${this.plain.accessToken}` : ''}`
 	}
 
 	async pickNextAyat(count = 1) {
@@ -136,7 +139,7 @@ export class Khatm {
 	}
 
 	async pickRange(range: QuranRange) {
-		const response = await fetch(`/khatm/${this.id}`, {
+		const response = await fetch(`/@/${this.id.toString(36)}`, {
 			method: 'POST',
 			body: JSON.stringify({
 				start: range.start,

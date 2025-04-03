@@ -70,7 +70,7 @@
 	<meta property="og:description" content={khatm.description} />
 	<meta property="og:logo" content="https://khatm.esangar.ir/hero.png" />
 	<meta property="og:image" content="https://khatm.esangar.ir/hero.png" />
-	<meta property="og:url" content="https://khatm.esangar.ir/khatm/{khatm.id}" />
+	<meta property="og:url" content={khatm.link} />
 	<meta property="og:type" content="website" />
 	{#if khatm.private}
 		<meta name="robots" content="noindex" />

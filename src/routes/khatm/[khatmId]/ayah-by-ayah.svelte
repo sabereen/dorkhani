@@ -209,8 +209,8 @@
 
 				{@render smallButton('پذیرفتن ۳ آیه متوالی', 3)}
 				{@render smallButton('پذیرفتن ۵ آیه متوالی', 5)}
+				{@render smallButton('پذیرفتن ۷ آیه متوالی', 7)}
 				{@render smallButton('پذیرفتن ۱۰ آیه متوالی', 10)}
-				{@render smallButton('پذیرفتن ۲۰ آیه متوالی', 20)}
 			</div>
 		{/if}
 	</div>

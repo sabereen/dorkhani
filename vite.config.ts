@@ -2,30 +2,10 @@ import tailwindcss from '@tailwindcss/vite'
 import { svelteTesting } from '@testing-library/svelte/vite'
 import { sveltekit } from '@sveltejs/kit/vite'
 import icons from 'unplugin-icons/vite'
-import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-	plugins: [
-		sveltekit(),
-		tailwindcss(),
-		icons({ autoInstall: true, compiler: 'svelte' }),
-		viteStaticCopy({
-			targets: [
-				{
-					src: 'node_modules/@ghoran/font-page/fonts/qpc-v1/woff2',
-					dest: 'fonts/qpc-v1',
-				},
-			],
-			watch: {
-				options: {
-					ignored() {
-						return true
-					},
-				},
-			},
-		}),
-	],
+	plugins: [sveltekit(), tailwindcss(), icons({ autoInstall: true, compiler: 'svelte' })],
 
 	test: {
 		workspace: [

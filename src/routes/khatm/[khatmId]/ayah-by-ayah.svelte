@@ -92,7 +92,7 @@
 			if (ayah.pageNumber === lastPage) continue
 			lastPage = ayah.pageNumber
 			const family = `qpc-v1-${lastPage}`
-			const src = `${import.meta.env.BASE_URL}fonts/qpc-v1/woff2/p${lastPage}.woff2`
+			const src = `https://unpkg.com/@ghoran/font-page@latest/fonts/qpc-v1/woff2/p${lastPage}.woff2`
 			html.push(`@font-face {font-family: '${family}'; src: url('${src}'); font-display: block;}`)
 		}
 		return `<style>\n${html.join('\n')}\n</style>`

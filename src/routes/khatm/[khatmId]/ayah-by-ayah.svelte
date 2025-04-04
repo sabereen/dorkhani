@@ -119,11 +119,11 @@
 				<div class="card-body">
 					{#if ayah.isFirstOfSurah}
 						<div class="mb-3">
-							<p class="text-center text-xl font-bold">
+							<p class="text-md text-center font-bold">
 								سوره {surah_getName(ayah.surah)}
 							</p>
 							{#if ayah.surah.hasBasmalah}
-								<p class="text-center text-lg">بسم الله الرحمن الرحیم</p>
+								<p class="mt-2 text-center text-2xl">بسم الله الرحمن الرحیم</p>
 							{/if}
 						</div>
 					{/if}

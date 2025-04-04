@@ -2,8 +2,8 @@ import { db } from '$lib/server/db'
 import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
-import { importText } from '@ghoran/text'
 import translation from '@ghoran/translation/json/fa/tanzil-ansarian.json'
+import quranTextQPC1 from '@ghoran/text/json/quran-text-qpc-v1.json'
 import type { Khatm } from '@prisma/client'
 import { verifyPrivateKhatm } from '$lib/server/security'
 
@@ -54,14 +54,12 @@ export const POST: RequestHandler = async (event) => {
 		},
 	})
 
-	const text = await importText('hafs')
-
 	const ayat: SelectedAyah[] = []
 	for (let i = count; i > 0; i--) {
 		const ayahIndex = result.currentAyahIndex - i
 		ayat.push({
 			index: ayahIndex,
-			text: text.default[ayahIndex],
+			text: quranTextQPC1[ayahIndex],
 			translation: translation[ayahIndex],
 		})
 	}

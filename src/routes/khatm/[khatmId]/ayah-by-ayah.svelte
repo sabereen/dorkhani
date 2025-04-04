@@ -85,7 +85,23 @@
 				.scrollIntoView({ block: 'start', behavior: 'smooth' })
 		}
 	}
+
+	const fontStyleHTML = $derived.by(() => {
+		let html: string[] = []
+		let lastPage = 0
+		for (let i = 0; i < selectedAyat.length; i++) {
+			const ayah = Ayah.get(selectedAyat[i].index)
+			if (ayah.pageNumber === lastPage) continue
+			lastPage = ayah.pageNumber
+			const family = `qpc-v1-${lastPage}`
+			const src = `${import.meta.env.BASE_URL}fonts/qpc-v1/woff2/p${lastPage}.woff2`
+			html.push(`@font-face {font-family: '${family}'; src: url('${src}'); font-display: block;}`)
+		}
+		return `<style>\n${html.join('\n')}\n</style>`
+	})
 </script>
+
+{@html fontStyleHTML}
 
 {#if selectedAyat.length}
 	<div bind:this={ayahWrapper}>
@@ -117,9 +133,11 @@
 							<p>این آیه دارای سجده واجب است.</p>
 						</div>
 					{/if}
-					<p class="mb-4 font-[uthmanic-hafs-v13] text-3xl leading-14">
+					<p
+						class="mb-4 text-[32px] leading-14 font-normal"
+						style:font-family={`qpc-v1-${ayah.pageNumber}`}
+					>
 						{text}
-						{ayah.number.toLocaleString('ar-IQ')}
 					</p>
 					<p class="text-md mb-4 opacity-80">{translation}</p>
 				</div>

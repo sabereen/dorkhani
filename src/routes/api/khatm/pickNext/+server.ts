@@ -3,11 +3,12 @@ import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 import translation from '@ghoran/translation/json/fa/tanzil-ansarian.json'
-import quranTextQPC1 from '@ghoran/text/json/quran-text-qpc-v1.json'
-import quranTextQPC2 from '@ghoran/text/json/quran-text-qpc-v2.json'
-import quranTextHafs from '@ghoran/text/json/quran-text-hafs.json'
 import type { Khatm } from '@prisma/client'
 import { verifyPrivateKhatm } from '$lib/server/security'
+
+const quranTextQPC1 = await import('@ghoran/text/json/quran-text-qpc-v1.json')
+const quranTextQPC2 = await import('@ghoran/text/json/quran-text-qpc-v2.json')
+const quranTextHafs = await import('@ghoran/text/json/quran-text-hafs.json')
 
 export type SelectedAyah = {
 	index: number

@@ -134,7 +134,7 @@
 						</div>
 					{/if}
 					<p
-						class="mb-4 text-[32px] leading-14 font-normal"
+						class="mb-4 text-[32px] leading-14 font-normal break-words break-all"
 						style:font-family={`qpc-v1-${ayah.pageNumber}`}
 					>
 						{text}

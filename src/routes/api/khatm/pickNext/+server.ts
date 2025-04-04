@@ -4,12 +4,16 @@ import type { RequestHandler } from './$types'
 import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 import translation from '@ghoran/translation/json/fa/tanzil-ansarian.json'
 import quranTextQPC1 from '@ghoran/text/json/quran-text-qpc-v1.json'
+import quranTextQPC2 from '@ghoran/text/json/quran-text-qpc-v2.json'
+import quranTextHafs from '@ghoran/text/json/quran-text-hafs.json'
 import type { Khatm } from '@prisma/client'
 import { verifyPrivateKhatm } from '$lib/server/security'
 
 export type SelectedAyah = {
 	index: number
-	text: string
+	textQPC1: string
+	textQPC2: string
+	textHafs: string
 	translation: string
 }
 
@@ -59,7 +63,9 @@ export const POST: RequestHandler = async (event) => {
 		const ayahIndex = result.currentAyahIndex - i
 		ayat.push({
 			index: ayahIndex,
-			text: quranTextQPC1[ayahIndex],
+			textQPC1: quranTextQPC1[ayahIndex],
+			textQPC2: quranTextQPC2[ayahIndex],
+			textHafs: quranTextHafs[ayahIndex],
 			translation: translation[ayahIndex],
 		})
 	}

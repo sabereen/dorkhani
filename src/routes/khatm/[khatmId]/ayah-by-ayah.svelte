@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '@ghoran/text/fonts/uthmanic-hafs/style.css'
 	import { fade, slide } from 'svelte/transition'
 	import type { SelectedAyah } from '../../api/khatm/pickNext/+server'
 	import { Ayah } from '@ghoran/entity'
@@ -34,8 +35,6 @@
 		selectedAyat[playingIndex] ? Ayah.get(selectedAyat[playingIndex].index) : null,
 	)
 	const audioSrc = $derived(playingAyah && ayah_getAudioLink(playingAyah))
-
-	$inspect(playingAyah?.surah.name + ' ' + playingAyah?.number)
 
 	const isFinished = $derived(selectedAyat[selectedAyat.length - 1]?.index === COUNT_OF_AYAHS - 1)
 
@@ -91,12 +90,29 @@
 			const ayah = Ayah.get(selectedAyat[i].index)
 			if (ayah.pageNumber === lastPage) continue
 			lastPage = ayah.pageNumber
-			const family = `qpc-v1-${lastPage}`
-			const src = `https://unpkg.com/@ghoran/font-page@latest/fonts/qpc-v1/woff2/p${lastPage}.woff2`
-			html.push(`@font-face {font-family: '${family}'; src: url('${src}'); font-display: block;}`)
+
+			const family1 = `qpc-v1-${lastPage}`
+			const src1 = `https://unpkg.com/@ghoran/font-page@latest/fonts/qpc-v1/woff2/p${lastPage}.woff2`
+			html.push(`@font-face {font-family: '${family1}'; src: url('${src1}'); font-display: block;}`)
+
+			const family2 = `qpc-v2-${lastPage}`
+			const src2 = `https://unpkg.com/@ghoran/font-page@latest/fonts/qpc-v2/woff2/p${lastPage}.woff2`
+			html.push(`@font-face {font-family: '${family2}'; src: url('${src2}'); font-display: block;}`)
 		}
 		return `<style>\n${html.join('\n')}\n</style>`
 	})
+
+	let font = $state<'hafs' | 'qpc1' | 'qpc2'>('hafs')
+	function getFontFamily(ayah: Ayah) {
+		if (font === 'hafs') {
+			// return `font-[uthmanic-hafs]`
+			return `'uthmanic-hafs', 'uthmanic-hafs-fallback'`
+		}
+		if (font === 'qpc1') {
+			return `qpc-v1-${ayah.pageNumber}`
+		}
+		return `qpc-v2-${ayah.pageNumber}`
+	}
 </script>
 
 {@html fontStyleHTML}
@@ -113,7 +129,8 @@
 				onended={tryPlayNext}
 			></audio>
 		{/key}
-		{#each selectedAyat as { index, text, translation }, i (index)}
+
+		{#each selectedAyat as { index, textQPC1, textQPC2, textHafs, translation }, i (index)}
 			{@const ayah = Ayah.get(index)}
 			<div class="card" id={`ayah-${index}`} transition:slide|global={{ axis: 'y' }}>
 				<div class="card-body">
@@ -133,10 +150,12 @@
 						</div>
 					{/if}
 					<p
-						class="mb-4 text-[32px] leading-14 font-normal break-words break-all"
-						style:font-family={`qpc-v1-${ayah.pageNumber}`}
+						class="mb-4 font-[uthmanic-hafs-v13] text-[32px] leading-14 font-normal break-words break-all"
+						style:font-family={getFontFamily(ayah)}
 					>
-						{text}
+						{#if font === 'hafs'}{textHafs}{/if}
+						{#if font === 'qpc1'}{textQPC1}{/if}
+						{#if font === 'qpc2'}{textQPC2}{/if}
 					</p>
 					<p class="text-md mb-4 opacity-80">{translation}</p>
 				</div>
@@ -213,6 +232,14 @@
 				{@render smallButton('پذیرفتن ۵ آیه متوالی', 5)}
 				{@render smallButton('پذیرفتن ۷ آیه متوالی', 7)}
 				{@render smallButton('پذیرفتن ۱۰ آیه متوالی', 10)}
+			</div>
+			<div class="mt-2">
+				<label class="label me-1 text-sm" for="inputFont">فونت</label>
+				<select class="select select-sm" id="inputFont" name="font" bind:value={font}>
+					<option value="hafs">پیش‌فرض</option>
+					<option value="qpc1">مصحف مدینه ۱</option>
+					<option value="qpc2">مصحف مدینه ۲</option>
+				</select>
 			</div>
 		{/if}
 	</div>

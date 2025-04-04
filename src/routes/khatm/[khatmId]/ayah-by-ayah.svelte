@@ -3,7 +3,6 @@
 	import type { PickAyahResult, SelectedAyah } from '../../api/khatm/pickNext/+server'
 	import { Ayah } from '@ghoran/entity'
 	import { surah_getName } from '$lib/entity/Surah'
-	import '@ghoran/text/fonts/uthmanic-hafs-v13/style.css'
 	import { invalidateAll } from '$app/navigation'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'

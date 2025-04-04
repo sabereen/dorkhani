@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { slide } from 'svelte/transition'
+	import { fade, slide } from 'svelte/transition'
 	import type { PickAyahResult, SelectedAyah } from '../../api/khatm/pickNext/+server'
 	import { Ayah } from '@ghoran/entity'
 	import { surah_getName } from '$lib/entity/Surah'
@@ -8,6 +8,9 @@
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 	import type { Khatm } from '$lib/entity/Khatm.svelte'
+	import IconPlay from '~icons/ic/round-play-arrow'
+	import IconPause from '~icons/ic/round-pause'
+	import IconContext from '~icons/ic/round-menu-book'
 
 	type Props = {
 		khatm: Khatm
@@ -21,6 +24,23 @@
 	let loading = $state(-1)
 	let selectedAyat = $state<SelectedAyah[]>([])
 
+	let paused = $state(true)
+	let audioCurrentTime = $state(-1)
+	let audioDuration = $state(-1)
+	let playingIndex = $state(-1)
+	const playingAyah = $derived(
+		selectedAyat[playingIndex] ? Ayah.get(selectedAyat[playingIndex].index) : null,
+	)
+	const audioSrc = $derived.by(() => {
+		if (!playingAyah) return null
+		const surahNumber = playingAyah.surahNumber.toString().padStart(3, '0')
+		const ayahNumber = playingAyah.number.toString().padStart(3, '0')
+		const fileName = `${surahNumber}${ayahNumber}`
+		return `https://asset.nasimrezvan.com/data/Minshawy_Murattal/${fileName}.mp3`
+	})
+
+	$inspect(playingAyah?.surah.name + ' ' + playingAyah?.number)
+
 	const isFinished = $derived(selectedAyat[selectedAyat.length - 1]?.index === COUNT_OF_AYAHS - 1)
 
 	let ayahWrapper = $state<HTMLElement>()
@@ -32,6 +52,7 @@
 
 		try {
 			const result = await khatm.pickNextAyat(count)
+			paused = true
 			selectedAyat = result.ayat
 			ayahWrapper?.scrollIntoView({ block: 'start', behavior: 'smooth' })
 
@@ -46,13 +67,40 @@
 			loading = -1
 		}
 	}
+
+	function play(index: number) {
+		if (index !== playingIndex) {
+			audioCurrentTime = 0
+		}
+		playingIndex = index
+		paused = false
+	}
+
+	function tryPlayNext() {
+		if (playingIndex < selectedAyat.length - 1) {
+			play(playingIndex + 1)
+
+			document
+				.getElementById(`ayah-${playingAyah!.index}`)!
+				.scrollIntoView({ block: 'start', behavior: 'smooth' })
+		}
+	}
 </script>
 
 {#if selectedAyat.length}
 	<div bind:this={ayahWrapper}>
-		{#each selectedAyat as { index, text, translation } (index)}
+		{#key audioSrc}
+			<audio
+				src={audioSrc}
+				bind:paused
+				bind:duration={audioDuration}
+				bind:currentTime={audioCurrentTime}
+				onended={tryPlayNext}
+			></audio>
+		{/key}
+		{#each selectedAyat as { index, text, translation }, i (index)}
 			{@const ayah = Ayah.get(index)}
-			<div class="card" transition:slide|global={{ axis: 'y' }}>
+			<div class="card" id={`ayah-${index}`} transition:slide|global={{ axis: 'y' }}>
 				<div class="card-body">
 					{#if ayah.isFirstOfSurah}
 						<div class="mb-3">
@@ -74,7 +122,33 @@
 						{ayah.number.toLocaleString('ar-IQ')}
 					</p>
 					<p class="text-md mb-4 opacity-80">{translation}</p>
-					<p class="self-end text-sm">آیه {ayah.number} {surah_getName(ayah.surah)}</p>
+				</div>
+				<div class="card-actions relative mx-6 pb-3">
+					{#if !paused && playingIndex === i}
+						<button class="btn btn-sm btn-outline relative" onclick={() => (paused = true)}>
+							<IconPause class="size-5" />
+							توقف صوت
+						</button>
+					{:else}
+						<button class="btn btn-sm btn-outline" onclick={() => play(i)}>
+							<IconPlay class="size-5" />
+							پخش صوت
+						</button>
+					{/if}
+					<button class="btn btn-sm btn-outline">
+						<IconContext class="size-5" />
+						آیات پیرامون
+					</button>
+					<span class="grow"></span>
+					<p class="self-center text-sm">آیه {ayah.number} {surah_getName(ayah.surah)}</p>
+					{#if audioDuration && !paused && playingIndex === i}
+						<progress
+							transition:fade
+							class="progress rounded-0 absolute inset-x-0 bottom-0 h-1 w-full"
+							value={audioCurrentTime}
+							max={audioDuration}
+						></progress>
+					{/if}
 				</div>
 			</div>
 		{/each}

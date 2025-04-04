@@ -186,7 +186,7 @@
 												<a
 													class="btn btn-circle btn-ghost btn-xs ms-1"
 													target="_blank"
-													href={'https://ketabmobin.com/ayah/' + range.start}
+													href={range.externalLink}
 												>
 													<IconEye />
 												</a>

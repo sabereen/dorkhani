@@ -10,6 +10,7 @@
 	import IconPlay from '~icons/ic/round-play-arrow'
 	import IconPause from '~icons/ic/round-pause'
 	import IconContext from '~icons/ic/round-menu-book'
+	import { ayah_getAudioLink, ayah_getExternalLink } from '$lib/entity/Ayah'
 
 	type Props = {
 		khatm: Khatm
@@ -30,13 +31,7 @@
 	const playingAyah = $derived(
 		selectedAyat[playingIndex] ? Ayah.get(selectedAyat[playingIndex].index) : null,
 	)
-	const audioSrc = $derived.by(() => {
-		if (!playingAyah) return null
-		const surahNumber = playingAyah.surahNumber.toString().padStart(3, '0')
-		const ayahNumber = playingAyah.number.toString().padStart(3, '0')
-		const fileName = `${surahNumber}${ayahNumber}`
-		return `https://asset.nasimrezvan.com/data/Minshawy_Murattal/${fileName}.mp3`
-	})
+	const audioSrc = $derived(playingAyah && ayah_getAudioLink(playingAyah))
 
 	$inspect(playingAyah?.surah.name + ' ' + playingAyah?.number)
 
@@ -152,10 +147,10 @@
 							پخش صوت
 						</button>
 					{/if}
-					<button class="btn btn-sm btn-outline">
+					<a href={ayah_getExternalLink(ayah)} target="_blank" class="btn btn-sm btn-outline">
 						<IconContext class="size-5" />
 						آیات پیرامون
-					</button>
+					</a>
 					<span class="grow"></span>
 					<p class="self-center text-sm">آیه {ayah.number} {surah_getName(ayah.surah)}</p>
 					{#if audioDuration && !paused && playingIndex === i}

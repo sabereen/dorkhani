@@ -4,6 +4,7 @@ import { surah_getName, surah_toRange } from './Surah'
 import type { KhatmPart } from './KhatmPart'
 import { splitInterval } from '$lib/utility/splitIntervals'
 import { hizbQuarter_toRange } from './HizbQuarter'
+import { ayah_getExternalLink } from './Ayah'
 
 export class QuranRange {
 	start: number
@@ -30,6 +31,10 @@ export class QuranRange {
 
 	get length() {
 		return this.end - this.start
+	}
+
+	get externalLink() {
+		return ayah_getExternalLink(this.startAyah)
 	}
 
 	getPages() {

@@ -44,7 +44,7 @@
 							<a
 								class="btn btn-circle btn-ghost btn-xs ms-1"
 								target="_blank"
-								href={'https://ketabmobin.com/ayah/' + item.range.start}
+								href={item.range.externalLink}
 							>
 								<IconEye />
 							</a>

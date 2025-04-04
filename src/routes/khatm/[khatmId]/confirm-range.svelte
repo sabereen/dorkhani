@@ -36,11 +36,7 @@
 	آیا قرائت این بازه را تقبل می‌کنید؟
 	<p class="my-2 text-sm">
 		{range.getTitle()}
-		<a
-			href={`https://ketabmobin.com/ayah/${range.start}`}
-			target="_blank"
-			class="badge badge-info badge-outline"
-		>
+		<a href={range.externalLink} target="_blank" class="badge badge-info badge-outline">
 			مشاهده آیات
 		</a>
 	</p>

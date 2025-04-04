@@ -111,8 +111,7 @@ export class Khatm {
 
 	get link() {
 		const origin = browser ? location.origin : 'https://khatm.esangar.ir'
-		const idBase36 = this.id.toString(36)
-		return `${origin}/k${idBase36}${this.accessToken ? `?t=${this.accessToken}` : ''}`
+		return `${origin}/k${this.id}${this.accessToken ? `?t=${this.accessToken}` : ''}`
 	}
 
 	async pickNextAyat(count = 1) {
@@ -143,7 +142,7 @@ export class Khatm {
 	}
 
 	async pickRange(range: QuranRange) {
-		const response = await fetch(`/k${this.id.toString(36)}`, {
+		const response = await fetch(`/k${this.id}`, {
 			method: 'POST',
 			body: JSON.stringify({
 				start: range.start,

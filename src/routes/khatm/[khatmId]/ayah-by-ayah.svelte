@@ -49,6 +49,8 @@
 		try {
 			const result = await khatm.pickNextAyat(count)
 			paused = true
+			playingIndex = -1
+
 			selectedAyat = result.ayat
 			ayahWrapper?.scrollIntoView({ block: 'start', behavior: 'smooth' })
 

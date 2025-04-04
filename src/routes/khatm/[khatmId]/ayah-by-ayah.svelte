@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { fade, slide } from 'svelte/transition'
-	import type { PickAyahResult, SelectedAyah } from '../../api/khatm/pickNext/+server'
+	import type { SelectedAyah } from '../../api/khatm/pickNext/+server'
 	import { Ayah } from '@ghoran/entity'
 	import { surah_getName } from '$lib/entity/Surah'
 	import { invalidateAll } from '$app/navigation'
@@ -28,6 +28,8 @@
 	let audioCurrentTime = $state(-1)
 	let audioDuration = $state(-1)
 	let playingIndex = $state(-1)
+	let audioReadyState = $state(0)
+	const audioLoading = $derived(audioReadyState <= 1)
 	const playingAyah = $derived(
 		selectedAyat[playingIndex] ? Ayah.get(selectedAyat[playingIndex].index) : null,
 	)
@@ -105,6 +107,7 @@
 				bind:paused
 				bind:duration={audioDuration}
 				bind:currentTime={audioCurrentTime}
+				bind:readyState={audioReadyState}
 				onended={tryPlayNext}
 			></audio>
 		{/key}
@@ -138,7 +141,11 @@
 				<div class="card-actions relative mx-6 pb-3">
 					{#if !paused && playingIndex === i}
 						<button class="btn btn-sm btn-outline relative" onclick={() => (paused = true)}>
-							<IconPause class="size-5" />
+							{#if audioLoading}
+								<span class="loading loading-ring block size-5"></span>
+							{:else}
+								<IconPause class="size-5" />
+							{/if}
 							توقف صوت
 						</button>
 					{:else}

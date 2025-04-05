@@ -5,10 +5,13 @@ import { error, type RequestHandler } from '@sveltejs/kit'
 const cache = new Map<string, Promise<Blob>>()
 
 if (!dev) {
-	for (let i = 1; i <= COUNT_OF_PAGES; i++) {
-		await getFontCacheFirst('qpc-v1', i).catch()
-		await getFontCacheFirst('qpc-v2', i).catch()
+	async function preloadAllFonts() {
+		for (let i = 1; i <= COUNT_OF_PAGES; i++) {
+			await getFontCacheFirst('qpc-v1', i).catch()
+			await getFontCacheFirst('qpc-v2', i).catch()
+		}
 	}
+	preloadAllFonts()
 }
 
 export const GET: RequestHandler = async ({ url }) => {

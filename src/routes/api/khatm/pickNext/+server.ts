@@ -6,9 +6,9 @@ import translation from '@ghoran/translation/json/fa/tanzil-ansarian.json'
 import type { Khatm } from '@prisma/client'
 import { verifyPrivateKhatm } from '$lib/server/security'
 
-// import quranTextQPC1 from '@ghoran/text/json/quran-text-qpc-v1.json'
-// import quranTextQPC2 from '@ghoran/text/json/quran-text-qpc-v2.json'
-import quranTextHafs from '@ghoran/text/json/quran-text-hafs.json'
+const quranTextQPC1 = await import('@ghoran/text/json/quran-text-qpc-v1.json')
+const quranTextQPC2 = await import('@ghoran/text/json/quran-text-qpc-v2.json')
+const quranTextHafs = await import('@ghoran/text/json/quran-text-hafs.json')
 
 export type SelectedAyah = {
 	index: number
@@ -64,8 +64,8 @@ export const POST: RequestHandler = async (event) => {
 		const ayahIndex = result.currentAyahIndex - i
 		ayat.push({
 			index: ayahIndex,
-			textQPC1: '', //quranTextQPC1[ayahIndex],
-			textQPC2: '', //quranTextQPC2[ayahIndex],
+			textQPC1: quranTextQPC1[ayahIndex],
+			textQPC2: quranTextQPC2[ayahIndex],
 			textHafs: quranTextHafs[ayahIndex],
 			translation: translation[ayahIndex],
 		})

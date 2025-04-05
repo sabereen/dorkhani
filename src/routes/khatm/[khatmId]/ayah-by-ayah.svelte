@@ -233,14 +233,14 @@
 				{@render smallButton('پذیرفتن ۷ آیه متوالی', 7)}
 				{@render smallButton('پذیرفتن ۱۰ آیه متوالی', 10)}
 			</div>
-			<!-- <div class="mt-2">
+			<div class="mt-2">
 				<label class="label me-1 text-sm" for="inputFont">فونت</label>
 				<select class="select select-sm" id="inputFont" name="font" bind:value={font}>
 					<option value="hafs">پیش‌فرض</option>
 					<option value="qpc1">مصحف مدینه ۱</option>
 					<option value="qpc2">مصحف مدینه ۲</option>
 				</select>
-			</div> -->
+			</div>
 		{/if}
 	</div>
 </div>

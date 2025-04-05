@@ -6,9 +6,9 @@ import translation from '@ghoran/translation/json/fa/tanzil-ansarian.json'
 import type { Khatm } from '@prisma/client'
 import { verifyPrivateKhatm } from '$lib/server/security'
 
-const quranTextQPC1 = await import('@ghoran/text/json/quran-text-qpc-v1.json')
-const quranTextQPC2 = await import('@ghoran/text/json/quran-text-qpc-v2.json')
-const quranTextHafs = await import('@ghoran/text/json/quran-text-hafs.json')
+const { default: quranTextQPC1 } = await import('@ghoran/text/json/quran-text-qpc-v1.json')
+const { default: quranTextQPC2 } = await import('@ghoran/text/json/quran-text-qpc-v2.json')
+const { default: quranTextHafs } = await import('@ghoran/text/json/quran-text-hafs.json')
 
 export type SelectedAyah = {
 	index: number

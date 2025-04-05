@@ -92,11 +92,11 @@
 			lastPage = ayah.pageNumber
 
 			const family1 = `qpc-v1-${lastPage}`
-			const src1 = `https://unpkg.com/@ghoran/font-page@latest/fonts/qpc-v1/woff2/p${lastPage}.woff2`
+			const src1 = `/api/font?font=qpc-v1&page=${lastPage}`
 			html.push(`@font-face {font-family: '${family1}'; src: url('${src1}'); font-display: block;}`)
 
 			const family2 = `qpc-v2-${lastPage}`
-			const src2 = `https://unpkg.com/@ghoran/font-page@latest/fonts/qpc-v2/woff2/p${lastPage}.woff2`
+			const src2 = `/api/font?font=qpc-v2&page=${lastPage}`
 			html.push(`@font-face {font-family: '${family2}'; src: url('${src2}'); font-display: block;}`)
 		}
 		return `<style>\n${html.join('\n')}\n</style>`

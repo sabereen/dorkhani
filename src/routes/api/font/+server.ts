@@ -1,10 +1,10 @@
 import { COUNT_OF_PAGES } from '@ghoran/metadata/constants'
-import { dev } from '$app/environment'
+import { dev, building } from '$app/environment'
 import { error, type RequestHandler } from '@sveltejs/kit'
 
 const cache = new Map<string, Promise<Blob>>()
 
-if (!dev) {
+if (!dev && !building) {
 	async function preloadAllFonts() {
 		for (let i = 1; i <= COUNT_OF_PAGES; i++) {
 			await getFontCacheFirst('qpc-v1', i).catch()

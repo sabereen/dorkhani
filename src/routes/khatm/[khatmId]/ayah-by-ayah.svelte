@@ -150,12 +150,17 @@
 						</div>
 					{/if}
 					<p
-						class="mb-4 font-[uthmanic-hafs-v13] text-[32px] leading-14 font-normal break-words break-all"
+						class={[
+							'mb-4 leading-14 font-normal break-words',
+							font === 'qpc1' ? 'text-[34px]' : 'text-3xl',
+						]}
+						class:break-all={font === 'qpc1' || font === 'qpc2'}
 						style:font-family={getFontFamily(ayah)}
 					>
 						{#if font === 'hafs'}{textHafs}{/if}
 						{#if font === 'qpc1'}{textQPC1}{/if}
 						{#if font === 'qpc2'}{textQPC2}{/if}
+						{#if font === 'hafs'}{ayah.number.toLocaleString('ar-IQ')}{/if}
 					</p>
 					<p class="text-md mb-4 opacity-80">{translation}</p>
 				</div>

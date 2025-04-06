@@ -44,7 +44,9 @@
 <div class="card card-xl bg-base-200 mt-4 shadow-sm">
 	<div class="card-body">
 		<h2 class="card-title">{khatm.title}</h2>
-		<p>{khatm.description}</p>
+		{#each khatm.description?.split('\n') as line}
+			<p dir="auto">{line}</p>
+		{/each}
 		<p class="text-sm" dir="ltr">
 			<a href={khatm.link} class="link font-sans" target="_blank">{khatm.link}</a>
 		</p>

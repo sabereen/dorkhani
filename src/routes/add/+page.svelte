@@ -38,7 +38,7 @@
 			<input class="input" type="text" name="title" id="input-title" />
 
 			<label for="input-description" class="fieldset-label mt-2">توضیحات</label>
-			<input class="input" type="text" name="description" id="input-description" />
+			<textarea class="textarea" name="description" id="input-description"></textarea>
 
 			{#if data.rangeType === 'ayah'}
 				<input type="hidden" name="rangeType" value="ayah" />

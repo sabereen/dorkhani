@@ -125,15 +125,17 @@
 <div class="hero">
 	<div class="hero-content flex flex-col text-center sm:flex-row">
 		<div class="max-w-md">
-			<h1 class="text-5xl font-black">
+			<h1 class="text-3xl font-black break-words">
 				{khatm.title}
 				{#if khatm.rangeType === 'ayah'}
 					<span class="badge badge-info">آیه به آیه</span>
 				{/if}
 			</h1>
-			<p class="pt-6 pb-1">
-				{khatm.description}
-			</p>
+			<div class="pt-5 pb-1 break-words">
+				{#each khatm.description.split('\n') as line}
+					<p dir="auto" class="mt-1">{line}</p>
+				{/each}
+			</div>
 			<div class="stats shadow">
 				<div class="stat">
 					<div class="stat-title">پیشرفت ختم</div>
@@ -150,7 +152,7 @@
 
 {#if percent >= 100}
 	<div class="alert alert-success">
-		<p>تبریک! این ختم قرآن کامل شده است.</p>
+		<p>این ختم قرآن کامل شده است.</p>
 	</div>
 {:else if data.khatm.rangeType === 'ayah'}
 	<AyahByAyah {khatm} />

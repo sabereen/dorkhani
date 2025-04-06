@@ -1,9 +1,9 @@
-import { db } from '$lib/server/db'
 import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
+import { khatmPartService_pickRange } from '$service/khatmPart'
 
 export const POST: RequestHandler = async (event) => {
-	const body: { start: number; end: number; token?: string } = await event.request.json()
+	const body: { start: number; end: number; accessToken?: string } = await event.request.json()
 
 	if (typeof body.start !== 'number' || typeof body.end !== 'number') {
 		throw error(400, 'ورودی معتبر نیست')
@@ -15,28 +15,11 @@ export const POST: RequestHandler = async (event) => {
 
 	const khatmId = parseInt(event.params.khatm.slice(1))
 
-	const result = await db.tKhatm.update({
-		where: {
-			id: khatmId,
-			accessToken: { equals: body.token || null },
-			parts: {
-				every: {
-					OR: [{ end: { lte: body.start } }, { start: { gte: body.end } }],
-				},
-			},
-		},
-		data: {
-			currentAyahIndex: {
-				increment: body.end - body.start,
-			},
-			parts: {
-				create: {
-					start: body.start,
-					end: body.end,
-					status: 'inprogress',
-				},
-			},
-		},
+	const result = await khatmPartService_pickRange({
+		khatmId,
+		accessToken: body.accessToken || null,
+		start: body.start,
+		end: body.end,
 	})
 
 	return json(result)

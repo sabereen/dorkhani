@@ -9,6 +9,10 @@ const config = {
 
 	kit: {
 		adapter: adapter(),
+		alias: {
+			'$api': 'src/routes/api',
+			'$service': 'src/lib/server/service',
+		},
 	},
 }
 

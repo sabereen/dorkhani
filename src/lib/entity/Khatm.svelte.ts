@@ -1,7 +1,6 @@
-import { page } from '$app/state'
 import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 import type { TKhatm, RangeType } from '@prisma/client'
-import type { PickAyahResult } from '../../routes/api/khatm/pickNext/+server'
+import type { PickAyahResult } from '$api/khatmPart/pickNext/+server'
 import { PickedKhatmPart } from './PickedKhatmPart'
 import type { QuranRange } from './Range'
 import { untrack } from 'svelte'
@@ -115,12 +114,12 @@ export class Khatm {
 	}
 
 	async pickNextAyat(count = 1) {
-		const response = await fetch('/api/khatm/pickNext', {
+		const response = await fetch('/api/khatmPart/pickNext', {
 			method: 'POST',
 			body: JSON.stringify({
 				khatmId: this.id,
 				count,
-				token: this.accessToken,
+				accessToken: this.accessToken,
 			}),
 		})
 
@@ -147,7 +146,7 @@ export class Khatm {
 			body: JSON.stringify({
 				start: range.start,
 				end: range.end,
-				token: this.accessToken,
+				accessToken: this.accessToken,
 			}),
 		})
 		if (response.status !== 200) throw new Error('خطا')

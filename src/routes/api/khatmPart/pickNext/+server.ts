@@ -1,9 +1,8 @@
-import { db } from '$lib/server/db'
 import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
-import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 import translation from '@ghoran/translation/json/fa/tanzil-ansarian.json'
 import type { TKhatm } from '@prisma/client'
+import { khatmPartService_pickNextAyat } from '$service/khatmPart'
 
 const { default: quranTextQPC1 } = await import('@ghoran/text/json/quran-text-qpc-v1.json')
 const { default: quranTextQPC2 } = await import('@ghoran/text/json/quran-text-qpc-v2.json')
@@ -23,7 +22,7 @@ export type PickAyahResult = {
 }
 
 export const POST: RequestHandler = async (event) => {
-	const body: { khatmId: number; count: number; token?: string } = await event.request.json()
+	const body: { khatmId: number; count: number; accessToken?: string } = await event.request.json()
 
 	if (typeof body.khatmId !== 'number' || body.count < 0 || body.count > 40) {
 		throw error(400, 'ورودی معتبر نیست')
@@ -31,16 +30,10 @@ export const POST: RequestHandler = async (event) => {
 
 	const count = Math.floor(body.count)
 
-	const result = await db.tKhatm.update({
-		where: {
-			id: body.khatmId,
-			accessToken: { equals: body.token || null },
-			rangeType: 'ayah',
-			currentAyahIndex: { lt: COUNT_OF_AYAHS - count + 1 },
-		},
-		data: {
-			currentAyahIndex: { increment: count },
-		},
+	const result = await khatmPartService_pickNextAyat({
+		khatmId: body.khatmId,
+		accessToken: body.accessToken || null,
+		count,
 	})
 
 	const ayat: SelectedAyah[] = []

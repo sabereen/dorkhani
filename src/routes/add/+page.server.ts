@@ -1,8 +1,7 @@
 import { fail } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
-import { db } from '$lib/server/db'
 import type { RangeType } from '@prisma/client'
-import { v4 as uuid } from 'uuid'
+import { khatmService_create } from '$service/khatm'
 
 export const load: PageServerLoad = ({ url }) => {
 	return {
@@ -22,14 +21,11 @@ export const actions = {
 			return fail(400, { errorMessage: 'عنوان اجباری است.' })
 		}
 
-		const khatm = await db.tKhatm.create({
-			data: {
-				title: String(title),
-				description: String(description),
-				rangeType: rangeType as RangeType,
-				private: isPrivate,
-				accessToken: isPrivate ? uuid().split('-').pop() : null,
-			},
+		const khatm = await khatmService_create({
+			title: String(title),
+			description: String(description),
+			rangeType: rangeType as RangeType,
+			private: isPrivate,
 		})
 
 		return { khatm }

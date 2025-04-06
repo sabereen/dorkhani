@@ -1,18 +1,21 @@
 import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
-import type { TKhatm, RangeType } from '@prisma/client'
+import type { TKhatm, RangeType, TKhatmPart } from '@prisma/client'
 import type { PickAyahResult } from '$api/khatmPart/pickNext/+server'
 import { PickedKhatmPart } from './PickedKhatmPart'
 import type { QuranRange } from './Range'
 import { untrack } from 'svelte'
 import { browser } from '$app/environment'
+import { KhatmPart } from './KhatmPart'
 
 const cache = new Map<number, Khatm>()
 
 export class Khatm {
 	plain = $state() as TKhatm
+	plainParts = $state([]) as TKhatmPart[]
 
-	private constructor(plain: TKhatm) {
+	private constructor(plain: TKhatm & { parts?: TKhatmPart[] }) {
 		this.plain = plain
+		this.plainParts = plain.parts || []
 	}
 
 	static fromPlain(plain: TKhatm) {
@@ -113,6 +116,10 @@ export class Khatm {
 		return `${origin}/k${this.id}${this.accessToken ? `?t=${this.accessToken}` : ''}`
 	}
 
+	getKhatmParts() {
+		return KhatmPart.fromList(this.plainParts)
+	}
+
 	async pickNextAyat(count = 1) {
 		const response = await fetch('/api/khatmPart/pickNext', {
 			method: 'POST',
@@ -138,6 +145,16 @@ export class Khatm {
 			title: `سامانه ختم قرآن گروهی | ${this.title}`,
 			text: this.description,
 		})
+	}
+
+	async refresh() {
+		const response = await fetch(
+			`/api/khatm?khatmId=${this.id}&accessToken=${this.accessToken || ''}`,
+		)
+		if (response.status !== 200) throw new Error('خطا')
+		const result: { khatm: TKhatm & { parts?: TKhatmPart[] } } = await response.json()
+		this.plain = result.khatm
+		this.plainParts = result.khatm.parts || []
 	}
 
 	async pickRange(range: QuranRange) {

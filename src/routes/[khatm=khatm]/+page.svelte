@@ -1,7 +1,5 @@
 <script lang="ts">
 	import type { PageProps } from './$types'
-	import { KhatmPart } from '$lib/entity/KhatmPart'
-	import { invalidateAll } from '$app/navigation'
 	import Header from '$lib/components/Header.svelte'
 	import IconViewWizard from '~icons/ic/twotone-view-carousel'
 	import IconViewList from '~icons/ic/outline-view-agenda'
@@ -37,7 +35,7 @@
 
 	const khatm = $derived(Khatm.fromPlain(data.khatm))
 
-	const parts = $derived(KhatmPart.fromList(data.khatm.parts))
+	const parts = $derived(khatm.getKhatmParts())
 
 	async function share() {
 		try {
@@ -130,7 +128,7 @@
 				{/if}
 			</h1>
 			<div class="pt-5 pb-1 break-words">
-				{#each khatm.description.split('\n') as line}
+				{#each khatm.description?.split('\n') as line}
 					<p dir="auto" class="mt-1">{line}</p>
 				{/each}
 			</div>
@@ -155,7 +153,7 @@
 {:else if data.khatm.rangeType === 'ayah'}
 	<AyahByAyah {khatm} />
 {:else}
-	<SelectPart {parts} {khatm} onFinished={invalidateAll} grid={layout === 'grid'} />
+	<SelectPart {parts} {khatm} onFinished={() => khatm.refresh()} grid={layout === 'grid'} />
 {/if}
 
 <div class="pt-10"></div>

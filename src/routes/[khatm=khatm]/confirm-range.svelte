@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { invalidateAll } from '$app/navigation'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import type { Khatm } from '$lib/entity/Khatm.svelte'
 	import type { QuranRange } from '$lib/entity/Range'
@@ -20,12 +19,12 @@
 		loading = true
 		try {
 			await khatm.pickRange(range)
-			invalidateAll()
+			await khatm.refresh().catch()
 			onFinished?.()
 			onClose?.()
 		} catch (err) {
 			toast('error', String(err))
-			invalidateAll()
+			khatm.refresh()
 		} finally {
 			loading = false
 		}

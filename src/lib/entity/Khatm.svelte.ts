@@ -18,11 +18,14 @@ export class Khatm {
 		this.plainParts = plain.parts || []
 	}
 
-	static fromPlain(plain: TKhatm) {
+	static fromPlain(plain: TKhatm & { parts?: TKhatmPart[] }) {
 		let khatm = cache.get(plain.id)
 		if (khatm) {
 			untrack(() => {
 				khatm!.plain = plain
+				if (plain.parts) {
+					khatm!.plainParts = plain.parts
+				}
 			})
 		} else {
 			untrack(() => {

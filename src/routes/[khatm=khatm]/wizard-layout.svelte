@@ -10,6 +10,8 @@
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 	import { hizbQuarter_toRange } from '$lib/entity/HizbQuarter'
 	import type { Khatm } from '$lib/entity/Khatm.svelte'
+	import { page } from '$app/state'
+	import { pushState } from '$app/navigation'
 
 	type Props = {
 		parts: KhatmPart[]
@@ -19,14 +21,34 @@
 
 	const { parts, khatm }: Props = $props()
 
+	type PageState = {
+		step?: number
+		modal?: boolean
+	}
+
 	let hideFinishedIntervals = $state(true)
 
-	let modal = $state(false)
+	const modal = $derived(!!(page.state as PageState).modal)
 	let selected = $state<QuranRange | null>(null)
 
 	function select(range: QuranRange) {
 		selected = range
-		modal = true
+		openModal()
+	}
+
+	function openModal() {
+		if (modal) return
+		pushState('', {
+			modal: true,
+			step,
+		})
+	}
+	function closeModal() {
+		if (modal) history.back()
+	}
+	function toggleModal(open = !modal) {
+		if (open) openModal()
+		else closeModal()
 	}
 
 	const juzList = Juz.getAll()
@@ -42,7 +64,7 @@
 		new QuranRange(0, COUNT_OF_AYAHS).divideByKahtmParts(parts).map(({ range }) => range),
 	)
 
-	let step = $state(1)
+	let step = $derived((page.state as PageState).step || 1)
 	let userRangeType = $state<'juz' | 'hizbQuarter' | 'page' | 'surah' | 'all'>('page')
 
 	// مقدار rangeType منطقا اینجا هیچ وقت ayah نیست.
@@ -57,11 +79,14 @@
 	}
 
 	function next() {
-		step++
+		pushState('', {
+			modal,
+			step: step + 1,
+		} satisfies PageState)
 	}
 
 	function goToStep(n: number) {
-		if (n < step) step = n
+		if (n < step) history.go(n - step)
 		selected = null
 	}
 
@@ -223,6 +248,6 @@
 	{/if}
 {/if}
 
-<Modal bind:open={modal}>
-	<ConfirmRange {khatm} onClose={() => (modal = false)} onFinished={next} range={selected} />
+<Modal bind:open={() => modal, toggleModal}>
+	<ConfirmRange {khatm} onClose={closeModal} onFinished={next} range={selected} />
 </Modal>

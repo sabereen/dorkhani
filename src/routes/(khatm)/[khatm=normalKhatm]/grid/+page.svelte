@@ -10,8 +10,10 @@
 	import { hizbQuarter_toRange } from '$lib/entity/HizbQuarter'
 	import ConfirmRange from '../confirm-range.svelte'
 	import { useKathmContext } from '../../khatm-context.svelte'
+	import { toast } from '$lib/components/TheToast.svelte'
 
 	const khatmContext = useKathmContext()
+	const khatm = $derived(khatmContext.khatm)
 	const parts = $derived(khatmContext.parts)
 
 	let showBadges = $state(false)
@@ -88,8 +90,15 @@
 	let selected = $state(new QuranRange(0, 0))
 
 	function openModal(start: number, end: number) {
+		const range = new QuranRange(start, end)
+
+		if (!range.matchRangeType(khatm.rangeType)) {
+			toast('error', `ختم جاری ${khatm.rangeTypeTitle} است و با این بازه هم‌خوانی ندارد.`)
+			return
+		}
+
 		modal = true
-		selected = new QuranRange(start, end)
+		selected = range
 	}
 </script>
 
@@ -176,5 +185,5 @@
 </div>
 
 <Modal bind:open={modal}>
-	<ConfirmRange khatm={khatmContext.khatm} onClose={() => (modal = false)} range={selected} />
+	<ConfirmRange {khatm} onClose={() => (modal = false)} range={selected} />
 </Modal>

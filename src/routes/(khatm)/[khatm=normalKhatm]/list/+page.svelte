@@ -6,8 +6,10 @@
 	import IconEye from '~icons/ic/outline-remove-red-eye'
 	import ConfirmRange from '../confirm-range.svelte'
 	import { useKathmContext } from '../../khatm-context.svelte'
+	import { toast } from '$lib/components/TheToast.svelte'
 
 	const khatmContext = useKathmContext()
+	const khatm = $derived(khatmContext.khatm)
 	const parts = $derived(khatmContext.parts)
 
 	let hideFinishedIntervals = $state(false)
@@ -48,9 +50,13 @@
 
 	let selected = $state(new QuranRange(0, 0))
 
-	function openModal(start: number, end: number) {
+	function openModal(range: QuranRange) {
+		if (!range.matchRangeType(khatm.rangeType)) {
+			toast('error', `ختم جاری ${khatm.rangeTypeTitle} است و با این بازه هم‌خوانی ندارد.`)
+			return
+		}
 		modal = true
-		selected = new QuranRange(start, end)
+		selected = range
 	}
 </script>
 
@@ -167,8 +173,10 @@
 													<span class="badge badge-xs opacity-75">قرائت‌شده</span>
 												{:else}
 													<button
-														class="btn btn-primary btn-xs ms-auto"
-														onclick={() => openModal(range.start, range.end)}
+														type="button"
+														class="btn btn-primary btn-xs pointer-events-auto! ms-auto"
+														class:btn-disabled={!range.matchRangeType(khatm.rangeType)}
+														onclick={() => openModal(range)}
 													>
 														انتخاب
 													</button>
@@ -194,5 +202,5 @@
 </div>
 
 <Modal bind:open={modal}>
-	<ConfirmRange khatm={khatmContext.khatm} onClose={() => (modal = false)} range={selected} />
+	<ConfirmRange {khatm} onClose={() => (modal = false)} range={selected} />
 </Modal>

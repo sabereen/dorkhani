@@ -47,9 +47,9 @@
 				<select id="input-range-type" class="select" name="rangeType" bind:value={rangeType}>
 					<option value="free">آزاد</option>
 					<option value="page">صفحه به صفحه</option>
-					<option value="hizbQuarter">جزء و حزب</option>
+					<option value="hizbQuarter">حزب به حزب (¼)</option>
 					<option value="surah">سوره به سوره</option>
-					<!-- <option value="juz">جزء به جزء</option> -->
+					<option value="juz">جزء به جزء</option>
 					<option value="ayah">آیه به آیه</option>
 				</select>
 				{#if rangeType === 'free'}

@@ -171,11 +171,12 @@ export class Khatm {
 	}
 
 	async pickRange(range: QuranRange) {
-		const response = await fetch(`/k${this.id}`, {
+		const response = await fetch('/api/khatmPart/pickRange', {
 			method: 'POST',
 			body: JSON.stringify({
 				start: range.start,
 				end: range.end,
+				khatmId: this.id,
 				accessToken: this.accessToken,
 			}),
 		})

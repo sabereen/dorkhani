@@ -1,10 +1,11 @@
 import { COUNT_OF_PAGES } from '@ghoran/metadata/constants'
 import { dev, building } from '$app/environment'
 import { error, type RequestHandler } from '@sveltejs/kit'
+import { FONT_PROXY } from '$lib/server/config'
 
 const cache = new Map<string, Promise<Blob>>()
 
-if (!dev && !building) {
+if (!dev && !building && FONT_PROXY) {
 	async function preloadAllFonts() {
 		for (let i = 1; i <= COUNT_OF_PAGES; i++) {
 			await getFontCacheFirst('qpc-v1', i).catch()
@@ -15,6 +16,8 @@ if (!dev && !building) {
 }
 
 export const GET: RequestHandler = async ({ url }) => {
+	if (!FONT_PROXY) throw error(403, { message: 'این قابلیت غیر فعال است.' })
+
 	const font = url.searchParams.get('font') as 'qpc-v1' | 'qpc-v2'
 	const page = parseInt(url.searchParams.get('page') || '0')
 

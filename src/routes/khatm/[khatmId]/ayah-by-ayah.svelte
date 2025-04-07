@@ -12,12 +12,15 @@
 	import IconPause from '~icons/ic/round-pause'
 	import IconContext from '~icons/ic/round-menu-book'
 	import { ayah_getAudioLink, ayah_getExternalLink } from '$lib/entity/Ayah'
+	import { PUBLIC_FONT_PROXY } from '$env/static/public'
 
 	type Props = {
 		khatm: Khatm
 	}
 
 	const { khatm }: Props = $props()
+
+	const fontProxy = PUBLIC_FONT_PROXY === '1'
 
 	// عدد -1 نمایش دهنده غیر فعال بودن لودینگ است
 	// برای اینکه مشخص باشد روی کدام دکمه لودینگ بخورد تعداد آیات را در لودینگ میریزیم
@@ -238,14 +241,16 @@
 				{@render smallButton('پذیرفتن ۷ آیه متوالی', 7)}
 				{@render smallButton('پذیرفتن ۱۰ آیه متوالی', 10)}
 			</div>
-			<div class="mt-2">
-				<label class="label me-1 text-sm" for="inputFont">فونت</label>
-				<select class="select select-sm" id="inputFont" name="font" bind:value={font}>
-					<option value="hafs">پیش‌فرض</option>
-					<option value="qpc1">مصحف مدینه ۱</option>
-					<option value="qpc2">مصحف مدینه ۲</option>
-				</select>
-			</div>
+			{#if fontProxy}
+				<div class="mt-2">
+					<label class="label me-1 text-sm" for="inputFont">فونت</label>
+					<select class="select select-sm" id="inputFont" name="font" bind:value={font}>
+						<option value="hafs">پیش‌فرض</option>
+						<option value="qpc1">مصحف مدینه ۱</option>
+						<option value="qpc2">مصحف مدینه ۲</option>
+					</select>
+				</div>
+			{/if}
 		{/if}
 	</div>
 </div>

@@ -11,7 +11,7 @@
 	import { hizbQuarter_toRange } from '$lib/entity/HizbQuarter'
 	import type { Khatm } from '$lib/entity/Khatm.svelte'
 	import { page } from '$app/state'
-	import { pushState } from '$app/navigation'
+	import { pushState, replaceState } from '$app/navigation'
 
 	type Props = {
 		parts: KhatmPart[]
@@ -81,6 +81,13 @@
 	function next() {
 		pushState('', {
 			modal,
+			step: step + 1,
+		} satisfies PageState)
+	}
+
+	function closeModalAndNext() {
+		replaceState('', {
+			modal: false,
 			step: step + 1,
 		} satisfies PageState)
 	}
@@ -249,5 +256,5 @@
 {/if}
 
 <Modal bind:open={() => modal, toggleModal}>
-	<ConfirmRange {khatm} onClose={closeModal} onFinished={next} range={selected} />
+	<ConfirmRange {khatm} onClose={closeModal} onFinished={closeModalAndNext} range={selected} />
 </Modal>

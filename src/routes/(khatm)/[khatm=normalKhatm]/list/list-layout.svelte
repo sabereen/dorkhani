@@ -16,7 +16,7 @@
 	import { juz_toRange } from '$lib/entity/Juz'
 	import { QuranRange } from '$lib/entity/Range'
 	import IconEye from '~icons/ic/outline-remove-red-eye'
-	import ConfirmRange from './confirm-range.svelte'
+	import ConfirmRange from '../confirm-range.svelte'
 
 	const props: Props = $props()
 

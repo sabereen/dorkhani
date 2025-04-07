@@ -6,18 +6,15 @@
 	import { surah_getName } from '$lib/entity/Surah'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
-	import type { Khatm } from '$lib/entity/Khatm.svelte'
 	import IconPlay from '~icons/ic/round-play-arrow'
 	import IconPause from '~icons/ic/round-pause'
 	import IconContext from '~icons/ic/round-menu-book'
 	import { ayah_getAudioLink, ayah_getExternalLink } from '$lib/entity/Ayah'
 	import { PUBLIC_FONT_PROXY } from '$env/static/public'
+	import { useKathmContext } from '../khatm-context.svelte'
 
-	type Props = {
-		khatm: Khatm
-	}
-
-	const { khatm }: Props = $props()
+	const khatmContext = useKathmContext()
+	const khatm = $derived(khatmContext.khatm)
 
 	const fontProxy = PUBLIC_FONT_PROXY === '1'
 

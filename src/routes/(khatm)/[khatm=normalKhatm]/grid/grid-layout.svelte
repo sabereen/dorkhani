@@ -20,7 +20,7 @@
 	import { QuranRange } from '$lib/entity/Range'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 	import { hizbQuarter_toRange } from '$lib/entity/HizbQuarter'
-	import ConfirmRange from './confirm-range.svelte'
+	import ConfirmRange from '../confirm-range.svelte'
 
 	const props: Props = $props()
 

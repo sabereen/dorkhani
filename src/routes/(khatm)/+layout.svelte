@@ -1,20 +1,17 @@
 <script lang="ts">
-	import type { PageProps } from './$types'
+	import type { LayoutProps } from './$types'
 	import Header from '$lib/components/Header.svelte'
 	import IconViewWizard from '~icons/ic/twotone-view-carousel'
 	import IconViewList from '~icons/ic/outline-view-agenda'
 	import IconViewTable from '~icons/ic/round-calendar-view-month'
 	import IconShare from '~icons/ic/outline-share'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
-	import AyahByAyah from './ayah-by-ayah.svelte'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
-	import GridLayout from './grid-layout.svelte'
-	import ListLayout from './list-layout.svelte'
-	import WizardLayout from './wizard-layout.svelte'
 	import { page } from '$app/state'
 	import { toast } from '$lib/components/TheToast.svelte'
+	import { setKhatmContext } from './khatm-context.svelte'
 
-	const { data }: PageProps = $props()
+	const { data, children }: LayoutProps = $props()
 
 	let layout = $state<'wizard' | 'list' | 'grid'>('wizard')
 	const CurrentLayoutIcon = $derived(
@@ -25,17 +22,21 @@
 		}[layout],
 	)
 
-	const SelectPart = $derived(
-		{
-			wizard: WizardLayout,
-			grid: GridLayout,
-			list: ListLayout,
-		}[layout],
-	)
-
 	const khatm = $derived(Khatm.fromPlain(data.khatm))
 
 	const parts = $derived(khatm.getKhatmParts())
+
+	setKhatmContext({
+		get khatm() {
+			return khatm
+		},
+		get parts() {
+			return parts
+		},
+		get layout() {
+			return layout
+		},
+	})
 
 	async function share() {
 		try {
@@ -150,10 +151,8 @@
 	<div class="alert alert-success">
 		<p>این ختم قرآن کامل شده است.</p>
 	</div>
-{:else if data.khatm.rangeType === 'ayah'}
-	<AyahByAyah {khatm} />
 {:else}
-	<SelectPart {parts} {khatm} onFinished={() => khatm.refresh()} grid={layout === 'grid'} />
+	{@render children()}
 {/if}
 
 <div class="pt-10"></div>

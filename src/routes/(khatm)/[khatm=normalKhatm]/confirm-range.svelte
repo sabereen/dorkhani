@@ -21,7 +21,6 @@
 			await khatm.pickRange(range)
 			await khatm.refresh().catch()
 			onFinished?.()
-			onClose?.()
 		} catch (err) {
 			toast('error', String(err))
 			khatm.refresh()

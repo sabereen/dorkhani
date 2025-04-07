@@ -116,7 +116,8 @@ export class Khatm {
 
 	get link() {
 		const origin = browser ? location.origin : 'https://khatm.esangar.ir'
-		return `${origin}/k${this.id}${this.accessToken ? `?t=${this.accessToken}` : ''}`
+		const prefix = this.isAyahOriented ? 'a' : 'k'
+		return `${origin}/${prefix}${this.id}${this.accessToken ? `?t=${this.accessToken}` : ''}`
 	}
 
 	getKhatmParts() {

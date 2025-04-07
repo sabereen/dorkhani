@@ -114,10 +114,15 @@ export class Khatm {
 		return Khatm.getRangeTypeTitle(this.rangeType)
 	}
 
-	get link() {
+	getLink(layout: 'wizard' | 'grid' | 'list' = 'wizard') {
 		const origin = browser ? location.origin : 'https://khatm.esangar.ir'
 		const prefix = this.isAyahOriented ? 'a' : 'k'
-		return `${origin}/${prefix}${this.id}${this.accessToken ? `?t=${this.accessToken}` : ''}`
+		const layoutPart = layout === 'wizard' ? '' : `/${layout}`
+		return `${origin}/${prefix}${this.id}${layoutPart}${this.accessToken ? `?t=${this.accessToken}` : ''}`
+	}
+
+	get link() {
+		return this.getLink()
 	}
 
 	getKhatmParts() {

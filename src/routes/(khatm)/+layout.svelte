@@ -7,13 +7,17 @@
 	import IconShare from '~icons/ic/outline-share'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
-	import { page } from '$app/state'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { setKhatmContext } from './khatm-context.svelte'
+	import { page } from '$app/state'
 
 	const { data, children }: LayoutProps = $props()
 
-	let layout = $state<'wizard' | 'list' | 'grid'>('wizard')
+	let layout = $derived.by<'wizard' | 'list' | 'grid'>(() => {
+		if (page.url.pathname.includes('grid')) return 'grid'
+		if (page.url.pathname.includes('list')) return 'list'
+		return 'wizard'
+	})
 	const CurrentLayoutIcon = $derived(
 		{
 			wizard: IconViewWizard,
@@ -32,9 +36,6 @@
 		},
 		get parts() {
 			return parts
-		},
-		get layout() {
-			return layout
 		},
 	})
 
@@ -87,22 +88,22 @@
 							<summary><CurrentLayoutIcon /></summary>
 							<ul class="bg-base-200 rounded-t-none p-2">
 								<li>
-									<button onclick={() => (layout = 'wizard')}>
+									<a href={khatm.getLink('wizard')}>
 										<IconViewWizard />
 										مرحله‌ای
-									</button>
+									</a>
 								</li>
 								<li>
-									<button onclick={() => (layout = 'list')}>
+									<a href={khatm.getLink('list')}>
 										<IconViewList />
 										لیستی
-									</button>
+									</a>
 								</li>
 								<li>
-									<button onclick={() => (layout = 'grid')}>
+									<a href={khatm.getLink('grid')}>
 										<IconViewTable />
 										جدولی
-									</button>
+									</a>
 								</li>
 							</ul>
 						</details>

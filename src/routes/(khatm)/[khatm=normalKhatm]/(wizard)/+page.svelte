@@ -4,13 +4,13 @@
 	import { page_toRange } from '$lib/entity/Page'
 	import { surah_toRange } from '$lib/entity/Surah'
 	import { Juz, Page, Surah, HizbQuarter } from '@ghoran/entity'
-	import ConfirmRange from './confirm-range.svelte'
+	import ConfirmRange from '../confirm-range.svelte'
 	import { QuranRange } from '$lib/entity/Range'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 	import { hizbQuarter_toRange } from '$lib/entity/HizbQuarter'
 	import { page } from '$app/state'
 	import { pushState, replaceState } from '$app/navigation'
-	import { useKathmContext } from '../khatm-context.svelte'
+	import { useKathmContext } from '../../khatm-context.svelte'
 
 	const khatmContext = useKathmContext()
 	const khatm = $derived(khatmContext.khatm)

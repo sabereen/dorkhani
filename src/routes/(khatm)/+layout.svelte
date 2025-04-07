@@ -5,7 +5,6 @@
 	import IconViewList from '~icons/ic/outline-view-agenda'
 	import IconViewTable from '~icons/ic/round-calendar-view-month'
 	import IconShare from '~icons/ic/outline-share'
-	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { setKhatmContext } from './khatm-context.svelte'
@@ -48,19 +47,9 @@
 		}
 	}
 
-	const count = $derived(
-		khatm.sequential
-			? khatm.currentAyahIndex
-			: parts.map((p) => p.length).reduce((a, b) => a + b, 0),
-	)
+	const percent = $derived(khatm.percent)
 
-	const percentSequential = $derived(
-		Math.floor((100_00 * khatm.currentAyahIndex) / COUNT_OF_AYAHS) / 100,
-	)
-	const percentNonSequential = $derived(Math.floor((100_00 * count) / COUNT_OF_AYAHS) / 100)
-	const percent = $derived(khatm.sequential ? percentSequential : percentNonSequential)
-
-	const canSelectLayout = $derived(percent < 100 && !khatm.sequential && khatm.rangeType === 'free')
+	const canSelectLayout = $derived(!khatm.finished && khatm.isFree)
 </script>
 
 <svelte:head>
@@ -139,8 +128,7 @@
 					<div class="stat-title">پیشرفت ختم</div>
 					<div class="stat-value px-2">{percent.toLocaleString('fa')}٪</div>
 					<div class="stat-desc">
-						<progress class="progress progress-success w-23" max={COUNT_OF_AYAHS} value={count}
-						></progress>
+						<progress class="progress progress-success w-23" max={100} value={percent}></progress>
 					</div>
 				</div>
 			</div>
@@ -148,7 +136,7 @@
 	</div>
 </div>
 
-{#if percent >= 100}
+{#if khatm.finished}
 	<div class="alert alert-success">
 		<p>این ختم قرآن کامل شده است.</p>
 	</div>

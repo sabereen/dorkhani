@@ -114,6 +114,10 @@ export class Khatm {
 		return Khatm.getRangeTypeTitle(this.rangeType)
 	}
 
+	get finished() {
+		return this.progress >= 1
+	}
+
 	getLink(layout: 'wizard' | 'grid' | 'list' = 'wizard') {
 		const origin = browser ? location.origin : 'https://khatm.esangar.ir'
 		const prefix = this.isAyahOriented ? 'a' : 'k'

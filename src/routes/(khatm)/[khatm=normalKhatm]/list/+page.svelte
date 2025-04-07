@@ -7,6 +7,12 @@
 	import ConfirmRange from '../confirm-range.svelte'
 	import { useKathmContext } from '../../khatm-context.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
+	import { page } from '$app/state'
+	import { pushState } from '$app/navigation'
+
+	type PageState = {
+		modal?: boolean
+	}
 
 	const khatmContext = useKathmContext()
 	const khatm = $derived(khatmContext.khatm)
@@ -46,17 +52,23 @@
 		return list
 	})
 
-	let modal = $state(false)
+	const modal = $derived(!!(page.state as PageState).modal)
 
 	let selected = $state(new QuranRange(0, 0))
 
 	function openModal(range: QuranRange) {
+		if (modal) return
+
 		if (!range.matchRangeType(khatm.rangeType)) {
 			toast('error', `ختم جاری ${khatm.rangeTypeTitle} است و با این بازه هم‌خوانی ندارد.`)
 			return
 		}
-		modal = true
 		selected = range
+		pushState('', { modal: true } satisfies PageState)
+	}
+
+	function closeModal() {
+		if (modal) history.back()
 	}
 </script>
 
@@ -201,6 +213,6 @@
 	{/each}
 </div>
 
-<Modal bind:open={modal}>
-	<ConfirmRange {khatm} onClose={() => (modal = false)} range={selected} />
+<Modal bind:open={() => modal, closeModal}>
+	<ConfirmRange {khatm} onClose={closeModal} onFinished={closeModal} range={selected} />
 </Modal>

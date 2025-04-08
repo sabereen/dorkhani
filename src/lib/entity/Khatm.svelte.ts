@@ -76,7 +76,7 @@ export class Khatm {
 	}
 
 	get progress() {
-		return this.plain.currentAyahIndex / COUNT_OF_AYAHS
+		return this.plain.versesRead / COUNT_OF_AYAHS
 	}
 
 	get percent() {
@@ -95,8 +95,8 @@ export class Khatm {
 		return this.isAyahOriented
 	}
 
-	get currentAyahIndex() {
-		return this.plain.currentAyahIndex
+	get versesRead() {
+		return this.plain.versesRead
 	}
 
 	get accessToken() {

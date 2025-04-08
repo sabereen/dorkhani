@@ -43,7 +43,7 @@ export async function khatmPartService_pickRange(body: CreatingKhatmPart) {
 				},
 			},
 			data: {
-				currentAyahIndex: {
+				versesRead: {
 					increment: body.end - body.start,
 				},
 				parts: {
@@ -80,10 +80,10 @@ export async function khatmPartService_pickNextAyat(body: PickNextAyatInput) {
 			id: body.khatmId,
 			accessToken: { equals: body.accessToken || null },
 			rangeType: 'ayah',
-			currentAyahIndex: { lt: COUNT_OF_AYAHS - body.count + 1 },
+			versesRead: { lt: COUNT_OF_AYAHS - body.count + 1 },
 		},
 		data: {
-			currentAyahIndex: { increment: body.count },
+			versesRead: { increment: body.count },
 		},
 	})
 

@@ -38,7 +38,7 @@ export const POST: RequestHandler = async (event) => {
 
 	const ayat: SelectedAyah[] = []
 	for (let i = count; i > 0; i--) {
-		const ayahIndex = result.currentAyahIndex - i
+		const ayahIndex = result.versesRead - i
 		ayat.push({
 			index: ayahIndex,
 			textQPC1: quranTextQPC1[ayahIndex],

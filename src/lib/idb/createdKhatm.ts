@@ -8,7 +8,7 @@ export async function idb_createdKhatm_add(item: Omit<CreatedKhatm, 'id'>) {
 		khatm: {
 			id: item.khatm.id,
 			created: item.khatm.created,
-			currentAyahIndex: item.khatm.currentAyahIndex,
+			versesRead: item.khatm.versesRead,
 			description: item.khatm.description,
 			private: item.khatm.private,
 			rangeType: item.khatm.rangeType,

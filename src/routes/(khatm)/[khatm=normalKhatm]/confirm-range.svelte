@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { toast } from '$lib/components/TheToast.svelte'
 	import type { Khatm } from '$lib/entity/Khatm.svelte'
 	import type { QuranRange } from '$lib/entity/Range'
+	import { handleError } from '$lib/utility/handleError'
 
 	type Props = {
 		range: QuranRange | null
@@ -22,7 +22,7 @@
 			await khatm.refresh().catch()
 			onFinished?.()
 		} catch (err) {
-			toast('error', String(err))
+			handleError(err)
 			khatm.refresh()
 		} finally {
 			loading = false

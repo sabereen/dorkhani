@@ -180,8 +180,10 @@ export class Khatm {
 				accessToken: this.accessToken,
 			}),
 		})
-		if (response.status !== 200) throw new Error('خطا')
-		await response.json()
+
+		const result = await response.json().catch()
+
+		if (response.status !== 200) throw new Error(result?.message || '')
 
 		new PickedKhatmPart({
 			id: undefined as unknown as number,

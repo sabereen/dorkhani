@@ -16,10 +16,7 @@ export class KhatmPart {
 		const mergedRanges: KhatmPart[] = []
 		let currentPart = parts[parts.length - 1]
 		for (let i = parts.length - 2; i >= 0; i--) {
-			if (
-				currentPart.start === parts[i].end &&
-				currentPart.plain.status === parts[i].plain.status
-			) {
+			if (currentPart.start === parts[i].end) {
 				currentPart = currentPart.clone()
 				currentPart.plain.start = parts[i].start
 				currentPart.plain.khatmId = NaN

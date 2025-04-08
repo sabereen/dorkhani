@@ -49,7 +49,6 @@ model TKhatmPart {
   khatmId Int    @map("khatm_id")
   start   Int
   end     Int
-  status  String
 
   @@map("khatm_part")
 }

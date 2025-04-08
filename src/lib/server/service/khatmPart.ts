@@ -26,7 +26,6 @@ export async function khatmPartService_pickRange(body: CreatingKhatmPart) {
 				create: {
 					start: body.start,
 					end: body.end,
-					status: 'inprogress',
 				},
 			},
 		},

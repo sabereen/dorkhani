@@ -36,7 +36,7 @@
 			{/if}
 			<ul class="list">
 				{#each history as item}
-					<li class="list-row flex flex-col">
+					<li class="list-row !flex !flex-col">
 						<span>
 							<strong>ختم:</strong>
 							«<a class="link link-info" href={item.khatm.link}>{item.khatm.title}</a>»
@@ -55,7 +55,7 @@
 				{/each}
 				{#if hasMore}
 					<li class="list-row">
-						<a class="btn btn-primary btn-outline" href="/history">نمایش همه‌ی موارد...</a>
+						<a class="btn btn-primary !btn-outline" href="/history">نمایش همه‌ی موارد...</a>
 					</li>
 				{/if}
 			</ul>

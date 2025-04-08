@@ -27,7 +27,7 @@ model TKhatm {
   // عنوان
   title       String       @db.VarChar(255)
   // توضیحات
-  description String       @default("") @db.Text()
+  description String       @db.Text()
   // نوع بازه‌ی قابل انتخاب توسط کاربر
   rangeType   RangeType    @default(free) @map("range_type")
   // تعداد کل آیات خوانده شده از ختم را نگهداری می‌کند

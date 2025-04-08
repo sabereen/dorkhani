@@ -2,7 +2,7 @@
 CREATE TABLE `khatm` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(255) NOT NULL,
-    `description` TEXT NOT NULL DEFAULT '',
+    `description` TEXT NOT NULL,
     `range_type` ENUM('free', 'juz', 'hizbQuarter', 'page', 'surah', 'ayah') NOT NULL DEFAULT 'free',
     `verses_read` SMALLINT UNSIGNED NOT NULL DEFAULT 0,
     `private` BOOLEAN NOT NULL DEFAULT false,

@@ -120,7 +120,7 @@
 			</h1>
 			<div class="pt-5 pb-1 break-words">
 				{#each khatm.description?.split('\n') as line}
-					<p dir="auto" class="mt-1">{line}</p>
+					<p dir="auto" class="mt-1 min-h-3">{line}</p>
 				{/each}
 			</div>
 			<div class="stats shadow">

@@ -97,3 +97,12 @@ body {
 	--btn-border: var(--btn-color);
 	--btn-noise: none;
 }
+
+.checkbox {
+	vertical-align: middle;
+}
+
+.steps-horizontal .step:before {
+	margin-left: 0;
+	margin-right: -100%;
+}

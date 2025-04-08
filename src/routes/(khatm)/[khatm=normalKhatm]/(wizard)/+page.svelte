@@ -121,7 +121,7 @@
 			<div class="grid grid-cols-2 gap-2">
 				{#snippet button(type: typeof rangeType, title: string, span = 1)}
 					<button
-						class="btn btn-primary btn-soft btn-block"
+						class="btn btn-primary !btn-outline btn-block"
 						style:grid-column-end={`span ${span}`}
 						type="button"
 						onclick={() => selectRangeType(type)}
@@ -157,7 +157,7 @@
 			{#each selectableRanges as { range, percent }}
 				<li class="list-row grow">
 					<button
-						class="btn btn-primary btn-soft btn-block"
+						class="? btn btn-primary !btn-outline btn-block"
 						type="button"
 						disabled={percent > 0}
 						onclick={() => select(range)}
@@ -166,7 +166,7 @@
 						{#if percent > 0 && percent < 100}
 							<span class="flex items-center">
 								<span
-									class="radial-progress text-primary ms-1 me-1 text-[0.6rem] opacity-50"
+									class="radial-progress text-primary me-1 ms-1 text-[0.6rem] opacity-50"
 									style:--value={percent}
 									style:--size="1.4rem"
 									aria-valuenow={percent}
@@ -202,7 +202,7 @@
 			</div>
 		</div>
 		<div class="mt-3">
-			<button type="button" class="btn btn-outline btn-primary" onclick={() => goToStep(1)}>
+			<button type="button" class="btn !btn-outline btn-primary" onclick={() => goToStep(1)}>
 				می‌خواهم بیشتر مشارکت کنم
 			</button>
 		</div>

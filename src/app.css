@@ -1,8 +1,4 @@
-@import 'tailwindcss';
 @import 'vazirmatn/misc/UI-Farsi-Digits/Vazirmatn-UI-FD-font-face.css';
-@plugin "daisyui" {
-  themes: autumn --default, dim --prefersdark;
-}
 
 html {
   overflow-y: scroll;

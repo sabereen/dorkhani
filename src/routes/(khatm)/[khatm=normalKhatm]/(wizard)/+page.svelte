@@ -1,32 +1,49 @@
 <script lang="ts">
 	import Modal from '$lib/components/Modal.svelte'
 	import { juz_toRange } from '$lib/entity/Juz'
-	import type { KhatmPart } from '$lib/entity/KhatmPart'
 	import { page_toRange } from '$lib/entity/Page'
 	import { surah_toRange } from '$lib/entity/Surah'
 	import { Juz, Page, Surah, HizbQuarter } from '@ghoran/entity'
-	import ConfirmRange from './confirm-range.svelte'
+	import ConfirmRange from '../confirm-range.svelte'
 	import { QuranRange } from '$lib/entity/Range'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 	import { hizbQuarter_toRange } from '$lib/entity/HizbQuarter'
-	import type { Khatm } from '$lib/entity/Khatm.svelte'
+	import { page } from '$app/state'
+	import { pushState, replaceState } from '$app/navigation'
+	import { useKathmContext } from '../../khatm-context.svelte'
 
-	type Props = {
-		parts: KhatmPart[]
-		khatm: Khatm
-		onFinished?: () => void
+	const khatmContext = useKathmContext()
+	const khatm = $derived(khatmContext.khatm)
+	const parts = $derived(khatmContext.parts)
+
+	type PageState = {
+		step?: number
+		modal?: boolean
 	}
-
-	const { parts, khatm }: Props = $props()
 
 	let hideFinishedIntervals = $state(true)
 
-	let modal = $state(false)
+	const modal = $derived(!!(page.state as PageState).modal)
 	let selected = $state<QuranRange | null>(null)
 
 	function select(range: QuranRange) {
 		selected = range
-		modal = true
+		openModal()
+	}
+
+	function openModal() {
+		if (modal) return
+		pushState('', {
+			modal: true,
+			step,
+		})
+	}
+	function closeModal() {
+		if (modal) history.back()
+	}
+	function toggleModal(open = !modal) {
+		if (open) openModal()
+		else closeModal()
 	}
 
 	const juzList = Juz.getAll()
@@ -42,7 +59,7 @@
 		new QuranRange(0, COUNT_OF_AYAHS).divideByKahtmParts(parts).map(({ range }) => range),
 	)
 
-	let step = $state(1)
+	let step = $derived((page.state as PageState).step || 1)
 	let userRangeType = $state<'juz' | 'hizbQuarter' | 'page' | 'surah' | 'all'>('page')
 
 	// مقدار rangeType منطقا اینجا هیچ وقت ayah نیست.
@@ -57,11 +74,21 @@
 	}
 
 	function next() {
-		step++
+		pushState('', {
+			modal,
+			step: step + 1,
+		} satisfies PageState)
+	}
+
+	function closeModalAndNext() {
+		replaceState('', {
+			modal: false,
+			step: step + 1,
+		} satisfies PageState)
 	}
 
 	function goToStep(n: number) {
-		if (n < step) step = n
+		if (n < step) history.go(n - step)
 		selected = null
 	}
 
@@ -223,6 +250,6 @@
 	{/if}
 {/if}
 
-<Modal bind:open={modal}>
-	<ConfirmRange {khatm} onClose={() => (modal = false)} onFinished={next} range={selected} />
+<Modal bind:open={() => modal, toggleModal}>
+	<ConfirmRange {khatm} onClose={closeModal} onFinished={closeModalAndNext} range={selected} />
 </Modal>

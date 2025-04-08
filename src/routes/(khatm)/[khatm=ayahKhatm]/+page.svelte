@@ -1,24 +1,20 @@
 <script lang="ts">
 	import '@ghoran/text/fonts/uthmanic-hafs/style.css'
 	import { fade, slide } from 'svelte/transition'
-	import type { SelectedAyah } from '../../api/khatm/pickNext/+server'
+	import type { SelectedAyah } from '$api/khatmPart/pickNext/+server'
 	import { Ayah } from '@ghoran/entity'
 	import { surah_getName } from '$lib/entity/Surah'
-	import { invalidateAll } from '$app/navigation'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
-	import type { Khatm } from '$lib/entity/Khatm.svelte'
 	import IconPlay from '~icons/ic/round-play-arrow'
 	import IconPause from '~icons/ic/round-pause'
 	import IconContext from '~icons/ic/round-menu-book'
 	import { ayah_getAudioLink, ayah_getExternalLink } from '$lib/entity/Ayah'
 	import { PUBLIC_FONT_PROXY } from '$env/static/public'
+	import { useKathmContext } from '../khatm-context.svelte'
 
-	type Props = {
-		khatm: Khatm
-	}
-
-	const { khatm }: Props = $props()
+	const khatmContext = useKathmContext()
+	const khatm = $derived(khatmContext.khatm)
 
 	const fontProxy = PUBLIC_FONT_PROXY === '1'
 
@@ -58,7 +54,7 @@
 
 			// این شرط را گذاشته ایم که آیه آخر سوره ناس را نمایش بدهد
 			if (!isFinished) {
-				invalidateAll()
+				khatm.refresh()
 			}
 		} catch (err) {
 			console.error(err)
@@ -212,7 +208,7 @@
 	<div class="mt-5 px-4">
 		{#if isFinished}
 			<div>
-				<button class="btn btn-primary btn-block" onclick={invalidateAll}>پایان</button>
+				<button class="btn btn-primary btn-block" onclick={() => khatm.refresh()}>پایان</button>
 			</div>
 		{:else}
 			<div class="grid grid-cols-2 gap-2">

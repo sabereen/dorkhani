@@ -5,6 +5,7 @@ import type { KhatmPart } from './KhatmPart'
 import { splitInterval } from '$lib/utility/splitIntervals'
 import { hizbQuarter_toRange } from './HizbQuarter'
 import { ayah_getExternalLink } from './Ayah'
+import type { RangeType } from '@prisma/client'
 
 export class QuranRange {
 	start: number
@@ -35,6 +36,40 @@ export class QuranRange {
 
 	get externalLink() {
 		return ayah_getExternalLink(this.startAyah)
+	}
+
+	matchRangeType(type: RangeType): boolean {
+		const firstAyah = this.startAyah
+		const lastAyah = this.lastAyah
+
+		switch (type) {
+			case 'free':
+				return true
+			case 'ayah':
+				return firstAyah === lastAyah
+			case 'surah':
+				return (
+					firstAyah.surahNumber === lastAyah.surahNumber &&
+					firstAyah.isFirstOfSurah &&
+					lastAyah.isLastOfSurah
+				)
+			case 'page':
+				return (
+					firstAyah.pageIndex === lastAyah.pageIndex &&
+					firstAyah.isFirstOfPage &&
+					lastAyah.isLastOfPage
+				)
+			case 'hizbQuarter':
+				return (
+					firstAyah.hizbQuarterIndex === lastAyah.hizbQuarterIndex &&
+					firstAyah.hizbQuarter.firstAyah === firstAyah &&
+					firstAyah.hizbQuarter.lastAyah === lastAyah
+				)
+			case 'juz':
+				return (
+					firstAyah.juzIndex === lastAyah.juzIndex && firstAyah.isFirstOfJuz && lastAyah.isLastOfJuz
+				)
+		}
 	}
 
 	getPages() {

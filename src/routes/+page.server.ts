@@ -1,12 +1,8 @@
-import { db } from '$lib/server/db'
+import { khatmService_getPublicList } from '$service/khatm'
 import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async () => {
-	const khatms = await db.khatm.findMany({
-		where: { private: false },
-		orderBy: { id: 'desc' },
-		take: 10,
-	})
+	const khatms = await khatmService_getPublicList()
 
 	return {
 		khatms,

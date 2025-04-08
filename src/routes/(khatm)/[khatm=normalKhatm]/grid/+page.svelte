@@ -1,15 +1,3 @@
-<script lang="ts" module>
-	import { KhatmPart } from '$lib/entity/KhatmPart'
-	import type { Khatm } from '$lib/entity/Khatm.svelte'
-
-	export type Props = {
-		parts: KhatmPart[]
-		khatm: Khatm
-		grid?: boolean
-		onFinished?: () => void
-	}
-</script>
-
 <script lang="ts">
 	import Modal from '$lib/components/Modal.svelte'
 	import { Ayah, HizbQuarter, Juz, Page, Surah } from '@ghoran/entity'
@@ -20,9 +8,19 @@
 	import { QuranRange } from '$lib/entity/Range'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 	import { hizbQuarter_toRange } from '$lib/entity/HizbQuarter'
-	import ConfirmRange from './confirm-range.svelte'
+	import ConfirmRange from '../confirm-range.svelte'
+	import { useKathmContext } from '../../khatm-context.svelte'
+	import { toast } from '$lib/components/TheToast.svelte'
+	import { page } from '$app/state'
+	import { pushState } from '$app/navigation'
 
-	const props: Props = $props()
+	type PageState = {
+		modal?: boolean
+	}
+
+	const khatmContext = useKathmContext()
+	const khatm = $derived(khatmContext.khatm)
+	const parts = $derived(khatmContext.parts)
 
 	let showBadges = $state(false)
 	let hideFinishedIntervals = $state(false)
@@ -39,12 +37,10 @@
 	const surahRanges = surahList.map(surah_toRange)
 	const pageRanges = pageList.map(page_toRange)
 
-	const selectableJuzParts = $derived(findNonOverlappingSubranges(props.parts, juzRanges))
-	const selectableHizbQuarterParts = $derived(
-		findNonOverlappingSubranges(props.parts, hizbQuarterRanges),
-	)
-	const selectableSurahParts = $derived(findNonOverlappingSubranges(props.parts, surahRanges))
-	const selectablePageParts = $derived(findNonOverlappingSubranges(props.parts, pageRanges))
+	const selectableJuzParts = $derived(findNonOverlappingSubranges(parts, juzRanges))
+	const selectableHizbQuarterParts = $derived(findNonOverlappingSubranges(parts, hizbQuarterRanges))
+	const selectableSurahParts = $derived(findNonOverlappingSubranges(parts, surahRanges))
+	const selectablePageParts = $derived(findNonOverlappingSubranges(parts, pageRanges))
 
 	let openedAccardeon = $state(-1)
 	let accardeonJuz = $derived(juzList[openedAccardeon] as Juz | undefined)
@@ -60,7 +56,7 @@
 		let list =
 			accardeonSubranges?.map((item) => ({
 				...item,
-				parts: item.range.divideByKahtmParts(props.parts),
+				parts: item.range.divideByKahtmParts(parts),
 			})) || []
 
 		if (hideFinishedIntervals) {
@@ -74,15 +70,15 @@
 	})
 
 	const gridTemplateRows = $derived.by(() => {
-		if (!hideFinishedIntervals || props.parts.length === 0) return null
+		if (!hideFinishedIntervals || parts.length === 0) return null
 
 		let rows: string[] = []
 		let currentPartIndex = 0
 		for (let i = 0; i < COUNT_OF_AYAHS; i++) {
-			let currentPart = props.parts[currentPartIndex]
+			let currentPart = parts[currentPartIndex]
 			if (currentPart.end === i) {
 				currentPartIndex++
-				currentPart = props.parts[currentPartIndex]
+				currentPart = parts[currentPartIndex]
 				if (!currentPart) break
 			}
 			if (currentPart.start <= i && currentPart.end > i) {
@@ -95,13 +91,24 @@
 		return rows.join(' ')
 	})
 
-	let modal = $state(false)
+	const modal = $derived(!!(page.state as PageState).modal)
 
 	let selected = $state(new QuranRange(0, 0))
 
 	function openModal(start: number, end: number) {
-		modal = true
-		selected = new QuranRange(start, end)
+		const range = new QuranRange(start, end)
+
+		// if (!range.matchRangeType(khatm.rangeType)) {
+		// 	toast('error', `ختم جاری ${khatm.rangeTypeTitle} است و با این بازه هم‌خوانی ندارد.`)
+		// 	return
+		// }
+
+		pushState('', { modal: true } satisfies PageState)
+		selected = range
+	}
+
+	function closeModal() {
+		if (modal) history.back()
 	}
 </script>
 
@@ -171,7 +178,7 @@
 	{@render renderSelectableRanges(selectablePageParts, 3)}
 
 	{#if !hideFinishedIntervals}
-		{#each props.parts as part (part.plain.id)}
+		{#each parts as part (part.plain.id)}
 			<div
 				class="hatched col-span-3 col-start-1 flex min-h-4 w-full items-center justify-center border-y border-dashed border-gray-500 bg-gray-100 opacity-75"
 				style:grid-row-start={part.start + 1}
@@ -187,6 +194,6 @@
 	{@render renderRanges(pageRanges, 3)}
 </div>
 
-<Modal bind:open={modal}>
-	<ConfirmRange khatm={props.khatm} onClose={() => (modal = false)} range={selected} />
+<Modal bind:open={() => modal, closeModal}>
+	<ConfirmRange {khatm} onClose={closeModal} onFinished={closeModal} range={selected} />
 </Modal>

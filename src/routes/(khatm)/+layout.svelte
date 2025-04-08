@@ -1,24 +1,22 @@
 <script lang="ts">
-	import type { PageProps } from './$types'
-	import { KhatmPart } from '$lib/entity/KhatmPart'
-	import { invalidateAll } from '$app/navigation'
+	import type { LayoutProps } from './$types'
 	import Header from '$lib/components/Header.svelte'
 	import IconViewWizard from '~icons/ic/twotone-view-carousel'
 	import IconViewList from '~icons/ic/outline-view-agenda'
 	import IconViewTable from '~icons/ic/round-calendar-view-month'
 	import IconShare from '~icons/ic/outline-share'
-	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
-	import AyahByAyah from './ayah-by-ayah.svelte'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
-	import GridLayout from './grid-layout.svelte'
-	import ListLayout from './list-layout.svelte'
-	import WizardLayout from './wizard-layout.svelte'
-	import { page } from '$app/state'
 	import { toast } from '$lib/components/TheToast.svelte'
+	import { setKhatmContext } from './khatm-context.svelte'
+	import { page } from '$app/state'
 
-	const { data }: PageProps = $props()
+	const { data, children }: LayoutProps = $props()
 
-	let layout = $state<'wizard' | 'list' | 'grid'>('wizard')
+	let layout = $derived.by<'wizard' | 'list' | 'grid'>(() => {
+		if (page.url.pathname.includes('grid')) return 'grid'
+		if (page.url.pathname.includes('list')) return 'list'
+		return 'wizard'
+	})
 	const CurrentLayoutIcon = $derived(
 		{
 			wizard: IconViewWizard,
@@ -27,42 +25,31 @@
 		}[layout],
 	)
 
-	const SelectPart = $derived(
-		{
-			wizard: WizardLayout,
-			grid: GridLayout,
-			list: ListLayout,
-		}[layout],
-	)
-
 	const khatm = $derived(Khatm.fromPlain(data.khatm))
 
-	const parts = $derived(KhatmPart.fromList(data.khatm.parts))
+	const parts = $derived(khatm.getKhatmParts())
 
-	const khatmLink = $derived(khatm.getLink(page.url.searchParams.get('token')))
+	setKhatmContext({
+		get khatm() {
+			return khatm
+		},
+		get parts() {
+			return parts
+		},
+	})
 
 	async function share() {
 		try {
-			await khatm.share(khatmLink)
+			await khatm.share()
 		} catch (err) {
 			console.error(err)
 			toast('error', String(err))
 		}
 	}
 
-	const count = $derived(
-		khatm.sequential
-			? khatm.currentAyahIndex
-			: parts.map((p) => p.length).reduce((a, b) => a + b, 0),
-	)
+	const percent = $derived(khatm.percent)
 
-	const percentSequential = $derived(
-		Math.floor((100_00 * khatm.currentAyahIndex) / COUNT_OF_AYAHS) / 100,
-	)
-	const percentNonSequential = $derived(Math.floor((100_00 * count) / COUNT_OF_AYAHS) / 100)
-	const percent = $derived(khatm.sequential ? percentSequential : percentNonSequential)
-
-	const canSelectLayout = $derived(percent < 100 && !khatm.sequential && khatm.rangeType === 'free')
+	const canSelectLayout = $derived(!khatm.finished && khatm.isFree)
 </script>
 
 <svelte:head>
@@ -72,7 +59,7 @@
 	<meta property="og:description" content={khatm.description} />
 	<meta property="og:logo" content="https://khatm.esangar.ir/hero.png" />
 	<meta property="og:image" content="https://khatm.esangar.ir/hero.png" />
-	<meta property="og:url" content="https://khatm.esangar.ir/khatm/{khatm.id}" />
+	<meta property="og:url" content={khatm.link} />
 	<meta property="og:type" content="website" />
 	{#if khatm.private}
 		<meta name="robots" content="noindex" />
@@ -90,22 +77,22 @@
 							<summary><CurrentLayoutIcon /></summary>
 							<ul class="bg-base-200 rounded-t-none p-2">
 								<li>
-									<button onclick={() => (layout = 'wizard')}>
+									<a href={khatm.getLink('wizard')}>
 										<IconViewWizard />
 										مرحله‌ای
-									</button>
+									</a>
 								</li>
 								<li>
-									<button onclick={() => (layout = 'list')}>
+									<a href={khatm.getLink('list')}>
 										<IconViewList />
 										لیستی
-									</button>
+									</a>
 								</li>
 								<li>
-									<button onclick={() => (layout = 'grid')}>
+									<a href={khatm.getLink('grid')}>
 										<IconViewTable />
 										جدولی
-									</button>
+									</a>
 								</li>
 							</ul>
 						</details>
@@ -132,8 +119,8 @@
 				{/if}
 			</h1>
 			<div class="pt-5 pb-1 break-words">
-				{#each khatm.description.split('\n') as line}
-					<p dir="auto" class="mt-1">{line}</p>
+				{#each khatm.description?.split('\n') as line}
+					<p dir="auto" class="mt-1 min-h-3">{line}</p>
 				{/each}
 			</div>
 			<div class="stats shadow">
@@ -141,8 +128,7 @@
 					<div class="stat-title">پیشرفت ختم</div>
 					<div class="stat-value px-2">{percent.toLocaleString('fa')}٪</div>
 					<div class="stat-desc">
-						<progress class="progress progress-success w-23" max={COUNT_OF_AYAHS} value={count}
-						></progress>
+						<progress class="progress progress-success w-23" max={100} value={percent}></progress>
 					</div>
 				</div>
 			</div>
@@ -150,14 +136,12 @@
 	</div>
 </div>
 
-{#if percent >= 100}
+{#if khatm.finished}
 	<div class="alert alert-success">
 		<p>این ختم قرآن کامل شده است.</p>
 	</div>
-{:else if data.khatm.rangeType === 'ayah'}
-	<AyahByAyah {khatm} />
 {:else}
-	<SelectPart {parts} {khatm} onFinished={invalidateAll} grid={layout === 'grid'} />
+	{@render children()}
 {/if}
 
 <div class="pt-10"></div>

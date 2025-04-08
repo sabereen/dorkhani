@@ -14,10 +14,10 @@ export async function idb_pickedKhatmPart_add(item: Omit<PickedKhatmPart, 'id'>)
 			title: item.khatm.title,
 			description: item.khatm.description,
 			created: item.khatm.created,
-			currentAyahIndex: item.khatm.currentAyahIndex,
+			versesRead: item.khatm.versesRead,
 			private: item.khatm.private,
 			rangeType: item.khatm.rangeType,
-			sequential: item.khatm.sequential,
+			accessToken: item.khatm.accessToken,
 		},
 	})
 }

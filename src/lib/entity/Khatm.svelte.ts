@@ -1,25 +1,32 @@
-import { page } from '$app/state'
 import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
-import type { Khatm as KhatmPlain, RangeType } from '@prisma/client'
-import type { PickAyahResult } from '../../routes/api/khatm/pickNext/+server'
+import type { TKhatm, RangeType, TKhatmPart } from '@prisma/client'
+import type { PickAyahResult } from '$api/khatmPart/pickNext/+server'
 import { PickedKhatmPart } from './PickedKhatmPart'
 import type { QuranRange } from './Range'
 import { untrack } from 'svelte'
+import { browser } from '$app/environment'
+import { KhatmPart } from './KhatmPart'
+import { request } from '$lib/utility/request'
 
 const cache = new Map<number, Khatm>()
 
 export class Khatm {
-	plain = $state() as KhatmPlain
+	plain = $state() as TKhatm
+	plainParts = $state([]) as TKhatmPart[]
 
-	private constructor(plain: KhatmPlain) {
+	private constructor(plain: TKhatm & { parts?: TKhatmPart[] }) {
 		this.plain = plain
+		this.plainParts = plain.parts || []
 	}
 
-	static fromPlain(plain: KhatmPlain) {
+	static fromPlain(plain: TKhatm & { parts?: TKhatmPart[] }) {
 		let khatm = cache.get(plain.id)
 		if (khatm) {
 			untrack(() => {
 				khatm!.plain = plain
+				if (plain.parts) {
+					khatm!.plainParts = plain.parts
+				}
 			})
 		} else {
 			untrack(() => {
@@ -30,7 +37,7 @@ export class Khatm {
 		return khatm!
 	}
 
-	static fromPlainList(plainList: KhatmPlain[]) {
+	static fromPlainList(plainList: TKhatm[]) {
 		return plainList.map((plain) => this.fromPlain(plain))
 	}
 
@@ -69,7 +76,7 @@ export class Khatm {
 	}
 
 	get progress() {
-		return this.plain.currentAyahIndex / COUNT_OF_AYAHS
+		return this.plain.versesRead / COUNT_OF_AYAHS
 	}
 
 	get percent() {
@@ -85,11 +92,15 @@ export class Khatm {
 	}
 
 	get sequential() {
-		return this.plain.sequential
+		return this.isAyahOriented
 	}
 
-	get currentAyahIndex() {
-		return this.plain.currentAyahIndex
+	get versesRead() {
+		return this.plain.versesRead
+	}
+
+	get accessToken() {
+		return this.plain.accessToken || null
 	}
 
 	get isAyahOriented() {
@@ -104,48 +115,63 @@ export class Khatm {
 		return Khatm.getRangeTypeTitle(this.rangeType)
 	}
 
-	getLink(hash?: string | null) {
-		return `https://khatm.esangar.ir/khatm/${this.id}${hash ? `?token=${hash}` : ''}`
+	get finished() {
+		return this.progress >= 1
+	}
+
+	getLink(layout: 'wizard' | 'grid' | 'list' = 'wizard') {
+		const origin = browser ? location.origin : 'https://khatm.esangar.ir'
+		const prefix = this.isAyahOriented ? 'a' : 'k'
+		const layoutPart = layout === 'wizard' ? '' : `/${layout}`
+		return `${origin}/${prefix}${this.id}${layoutPart}${this.accessToken ? `?t=${this.accessToken}` : ''}`
+	}
+
+	get link() {
+		return this.getLink()
+	}
+
+	getKhatmParts() {
+		return KhatmPart.fromList(this.plainParts)
 	}
 
 	async pickNextAyat(count = 1) {
-		const response = await fetch('/api/khatm/pickNext', {
-			method: 'POST',
-			body: JSON.stringify({
-				khatmId: this.id,
-				count,
-				token: page.url.searchParams.get('token'),
-			}),
+		const result = await request<PickAyahResult>('post', '/api/khatmPart/pickNext', {
+			khatmId: this.id,
+			count,
+			accessToken: this.accessToken,
 		})
-
-		const result: PickAyahResult = await response.json()
-
-		if (!response.ok) {
-			throw result
-		}
 
 		return result
 	}
 
-	share(link = this.getLink()) {
+	share() {
 		return navigator.share({
-			url: link,
+			url: this.link,
 			title: `سامانه ختم قرآن گروهی | ${this.title}`,
 			text: this.description,
 		})
 	}
 
+	async refresh() {
+		const result = await request<{ khatm: TKhatm & { parts?: TKhatmPart[] } }>(
+			'get',
+			'/api/khatm',
+			{
+				khatmId: this.id,
+				accessToken: this.accessToken || '',
+			},
+		)
+		this.plain = result.khatm
+		this.plainParts = result.khatm.parts || []
+	}
+
 	async pickRange(range: QuranRange) {
-		const response = await fetch(`/khatm/${this.id}`, {
-			method: 'POST',
-			body: JSON.stringify({
-				start: range.start,
-				end: range.end,
-				token: page.url.searchParams.get('token'),
-			}),
+		await request('post', '/api/khatmPart/pickRange', {
+			start: range.start,
+			end: range.end,
+			khatmId: this.id,
+			accessToken: this.accessToken,
 		})
-		if (response.status !== 200) throw new Error('خطا')
-		await response.json()
 
 		new PickedKhatmPart({
 			id: undefined as unknown as number,
@@ -153,7 +179,7 @@ export class Khatm {
 			start: range.start,
 			end: range.end,
 			khatm: this.plain,
-			hash: page.url.searchParams.get('token'),
+			hash: this.accessToken,
 		}).save()
 	}
 }

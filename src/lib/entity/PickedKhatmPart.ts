@@ -35,10 +35,6 @@ export class PickedKhatmPart {
 		return this._khatm
 	}
 
-	get link() {
-		return this.khatm.getLink(this.plain.hash)
-	}
-
 	get date() {
 		return this.plain.date
 	}

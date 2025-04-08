@@ -30,14 +30,6 @@ export class CreatedKhatm {
 		return this._khatm
 	}
 
-	get hash() {
-		return this.plain.hash
-	}
-
-	get link() {
-		return this.khatm.getLink(this.hash)
-	}
-
 	save() {
 		return idb_createdKhatm_add(this.plain)
 	}

@@ -5,16 +5,15 @@ export async function idb_createdKhatm_add(item: Omit<CreatedKhatm, 'id'>) {
 
 	await db.createdKhatms.add({
 		id: item.khatm.id,
-		hash: item.hash,
 		khatm: {
 			id: item.khatm.id,
 			created: item.khatm.created,
-			currentAyahIndex: item.khatm.currentAyahIndex,
+			versesRead: item.khatm.versesRead,
 			description: item.khatm.description,
 			private: item.khatm.private,
 			rangeType: item.khatm.rangeType,
-			sequential: item.khatm.sequential,
 			title: item.khatm.title,
+			accessToken: item.khatm.accessToken,
 		},
 	})
 }

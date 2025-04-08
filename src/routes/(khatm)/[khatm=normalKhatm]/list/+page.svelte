@@ -1,24 +1,22 @@
-<script lang="ts" module>
-	import { KhatmPart } from '$lib/entity/KhatmPart'
-	import type { Khatm } from '$lib/entity/Khatm.svelte'
-
-	export type Props = {
-		parts: KhatmPart[]
-		khatm: Khatm
-		grid?: boolean
-		onFinished?: () => void
-	}
-</script>
-
 <script lang="ts">
 	import Modal from '$lib/components/Modal.svelte'
 	import { Juz } from '@ghoran/entity'
 	import { juz_toRange } from '$lib/entity/Juz'
 	import { QuranRange } from '$lib/entity/Range'
 	import IconEye from '~icons/ic/outline-remove-red-eye'
-	import ConfirmRange from './confirm-range.svelte'
+	import ConfirmRange from '../confirm-range.svelte'
+	import { useKathmContext } from '../../khatm-context.svelte'
+	import { toast } from '$lib/components/TheToast.svelte'
+	import { page } from '$app/state'
+	import { pushState } from '$app/navigation'
 
-	const props: Props = $props()
+	type PageState = {
+		modal?: boolean
+	}
+
+	const khatmContext = useKathmContext()
+	const khatm = $derived(khatmContext.khatm)
+	const parts = $derived(khatmContext.parts)
 
 	let hideFinishedIntervals = $state(false)
 	/** نوع زیربازه‌ها در چیدمان آکاردئونی */
@@ -41,7 +39,7 @@
 		let list =
 			accardeonSubranges?.map((item) => ({
 				...item,
-				parts: item.range.divideByKahtmParts(props.parts),
+				parts: item.range.divideByKahtmParts(parts),
 			})) || []
 
 		if (hideFinishedIntervals) {
@@ -54,13 +52,23 @@
 		return list
 	})
 
-	let modal = $state(false)
+	const modal = $derived(!!(page.state as PageState).modal)
 
 	let selected = $state(new QuranRange(0, 0))
 
-	function openModal(start: number, end: number) {
-		modal = true
-		selected = new QuranRange(start, end)
+	function openModal(range: QuranRange) {
+		if (modal) return
+
+		if (!range.matchRangeType(khatm.rangeType)) {
+			toast('error', `ختم جاری ${khatm.rangeTypeTitle} است و با این بازه هم‌خوانی ندارد.`)
+			return
+		}
+		selected = range
+		pushState('', { modal: true } satisfies PageState)
+	}
+
+	function closeModal() {
+		if (modal) history.back()
 	}
 </script>
 
@@ -73,7 +81,7 @@
 
 <div class="join join-vertical bg-base-100 w-full">
 	{#each juzRanges as range, i}
-		{@const percent = range.getFillPercent(props.parts)}
+		{@const percent = range.getFillPercent(parts)}
 		<div
 			class="collapse-plus join-item bg-base-100 collapse border border-gray-500"
 			class:hidden={hideFinishedIntervals && percent >= 100}
@@ -150,7 +158,7 @@
 					{#snippet tabContent()}
 						<ul class="rounded-box py-2">
 							{#each accardeonDevidedRanges as { parts, range }}
-								{@const percent = range.getFillPercent(props.parts)}
+								{@const percent = range.getFillPercent(khatmContext.parts)}
 								<li
 									class="bg-base-100 flex items-center border border-gray-200 px-1 py-1 first:rounded-t last:rounded-b dark:border-gray-700"
 								>
@@ -177,8 +185,10 @@
 													<span class="badge badge-xs opacity-75">قرائت‌شده</span>
 												{:else}
 													<button
-														class="btn btn-primary btn-xs ms-auto"
-														onclick={() => openModal(range.start, range.end)}
+														type="button"
+														class="btn btn-primary btn-xs pointer-events-auto! ms-auto"
+														class:btn-disabled={!range.matchRangeType(khatm.rangeType)}
+														onclick={() => openModal(range)}
 													>
 														انتخاب
 													</button>
@@ -203,6 +213,6 @@
 	{/each}
 </div>
 
-<Modal bind:open={modal}>
-	<ConfirmRange khatm={props.khatm} onClose={() => (modal = false)} range={selected} />
+<Modal bind:open={() => modal, closeModal}>
+	<ConfirmRange {khatm} onClose={closeModal} onFinished={closeModal} range={selected} />
 </Modal>

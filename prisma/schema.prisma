@@ -9,8 +9,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 enum RangeType {
@@ -22,33 +22,34 @@ enum RangeType {
   ayah
 }
 
-model Khatm {
-  id               Int         @id @default(autoincrement())
-  title            String
-  description      String      @default("")
+model TKhatm {
+  id          Int          @id @default(autoincrement())
+  // عنوان
+  title       String       @db.VarChar(255)
+  // توضیحات
+  description String       @db.Text()
   // نوع بازه‌ی قابل انتخاب توسط کاربر
-  rangeType        RangeType   @default(free)
-  // در حالت ترتیبی سیستم به صورت خودکار بازه را به کاربر انتساب می‌دهد
-  // بازه آیه‌ای فقط می‌تواند به صورت ترتیبی استفاده شود
-  // و بازه‌ی آزاد اصلا نمی‌تواند به صورت ترتیبی استفاده شود
-  sequential       Boolean     @default(false)
-  // فقط برای ترتیبی‌ها کاربرد دارد
-  currentAyahIndex Int         @default(0)
-  // ختم خصوصی فقط با داشتن هش مربوطه نمایش داده می‌شود و در صفحه اصلی نمایش داده نمی‌شود
-  private          Boolean     @default(false)
-  created          DateTime    @default(now())
-  parts            KhatmPart[]
+  rangeType   RangeType    @default(free) @map("range_type")
+  // تعداد کل آیات خوانده شده از ختم را نگهداری می‌کند
+  versesRead  Int          @default(0) @map("verses_read") @db.UnsignedSmallInt()
+  // ختم خصوصی فقط با داشتن اکسس‌توکن مربوطه نمایش داده می‌شود و در صفحه اصلی نمایش داده نمی‌شود
+  private     Boolean      @default(false)
+  // توکن مربوط به ختم‌های خصوصی
+  accessToken String?      @map("access_token")
+  // تاریخ ایجاد ختم
+  created     DateTime     @default(now())
+  parts       TKhatmPart[]
 
   @@map("khatm")
 }
 
-model KhatmPart {
-  id      Int    @id @default(autoincrement())
-  khatm   Khatm  @relation(fields: [khatmId], references: [id])
-  khatmId Int
-  start   Int
-  end     Int
-  status  String
+model TKhatmPart {
+  id      Int      @id @default(autoincrement())
+  khatm   TKhatm   @relation(fields: [khatmId], references: [id])
+  khatmId Int      @map("khatm_id")
+  start   Int      @db.UnsignedSmallInt()
+  end     Int      @db.UnsignedSmallInt()
+  created DateTime @default(now())
 
   @@map("khatm_part")
 }

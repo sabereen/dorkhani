@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { invalidateAll } from '$app/navigation'
-	import { toast } from '$lib/components/TheToast.svelte'
 	import type { Khatm } from '$lib/entity/Khatm.svelte'
 	import type { QuranRange } from '$lib/entity/Range'
+	import { handleError } from '$lib/utility/handleError'
 
 	type Props = {
 		range: QuranRange | null
@@ -20,12 +19,14 @@
 		loading = true
 		try {
 			await khatm.pickRange(range)
-			invalidateAll()
+			await khatm.refresh().catch()
 			onFinished?.()
-			onClose?.()
 		} catch (err) {
-			toast('error', String(err))
-			invalidateAll()
+			await khatm.refresh().catch()
+			handleError(err)
+			if ((err as App.Error)?.type === 'conflict-ranges') {
+				onClose?.()
+			}
 		} finally {
 			loading = false
 		}

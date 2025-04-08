@@ -1,5 +1,5 @@
 <script lang="ts">
-	import '@unocss/reset/tailwind.css'
+	import '@unocss/reset/tailwind-compat.css'
 	import 'virtual:uno.css'
 	import '../app.css'
 	import TheToast from '$lib/components/TheToast.svelte'

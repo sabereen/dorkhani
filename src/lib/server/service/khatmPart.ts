@@ -2,8 +2,7 @@ import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 import { db } from '../db'
 import { error } from '@sveltejs/kit'
 import { QuranRange } from '$lib/entity/Range'
-import { Prisma } from '@prisma/client'
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
+import type { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 
 type CreatingKhatmPart = {
 	khatmId: number
@@ -57,8 +56,9 @@ export async function khatmPartService_pickRange(body: CreatingKhatmPart) {
 
 		return result
 	} catch (err) {
-		if (err instanceof PrismaClientKnownRequestError) {
-			if (err.code === 'P2025' && err.meta?.modelName === 'TKhatm') {
+		const prismaKnownError = err as PrismaClientKnownRequestError
+		if (prismaKnownError?.name === 'PrismaClientKnownRequestError') {
+			if (prismaKnownError.code === 'P2025' && prismaKnownError.meta?.modelName === 'TKhatm') {
 				throw error(409, {
 					type: 'conflict-ranges',
 					message: 'متأسفانه دیگران همزمان با شما بازه‌ای متداخل با این بازه انتخاب کرده اند.',

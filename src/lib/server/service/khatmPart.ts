@@ -2,6 +2,8 @@ import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 import { db } from '../db'
 import { error } from '@sveltejs/kit'
 import { QuranRange } from '$lib/entity/Range'
+import { Prisma } from '@prisma/client'
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 
 type CreatingKhatmPart = {
 	khatmId: number
@@ -29,30 +31,42 @@ export async function khatmPartService_pickRange(body: CreatingKhatmPart) {
 		}
 	}
 
-	const result = await db.tKhatm.update({
-		where: {
-			id: body.khatmId,
-			accessToken: { equals: body.accessToken || null },
-			parts: {
-				every: {
-					OR: [{ end: { lte: body.start } }, { start: { gte: body.end } }],
+	try {
+		const result = await db.tKhatm.update({
+			where: {
+				id: body.khatmId,
+				accessToken: { equals: body.accessToken || null },
+				parts: {
+					every: {
+						OR: [{ end: { lte: body.start } }, { start: { gte: body.end } }],
+					},
 				},
 			},
-		},
-		data: {
-			currentAyahIndex: {
-				increment: body.end - body.start,
-			},
-			parts: {
-				create: {
-					start: body.start,
-					end: body.end,
+			data: {
+				currentAyahIndex: {
+					increment: body.end - body.start,
+				},
+				parts: {
+					create: {
+						start: body.start,
+						end: body.end,
+					},
 				},
 			},
-		},
-	})
+		})
 
-	return result
+		return result
+	} catch (err) {
+		if (err instanceof PrismaClientKnownRequestError) {
+			if (err.code === 'P2025' && err.meta?.modelName === 'TKhatm') {
+				throw error(409, {
+					type: 'conflict-ranges',
+					message: 'متأسفانه دیگران همزمان با شما بازه‌ای متداخل با این بازه انتخاب کرده اند.',
+				})
+			}
+		}
+		throw err
+	}
 }
 
 type PickNextAyatInput = {

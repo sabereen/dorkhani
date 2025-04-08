@@ -2,7 +2,13 @@
 // for information about these interfaces
 declare global {
 	namespace App {
-		// interface Error {}
+		type ErrorType =
+			/** به علت تداخل بازه‌ها امکان درج رکورد جدید نیست */
+			'conflict-ranges'
+
+		interface Error {
+			type?: ErrorType
+		}
 		// interface Locals {}
 		// interface PageData {}
 		// interface PageState {}

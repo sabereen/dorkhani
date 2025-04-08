@@ -22,8 +22,11 @@
 			await khatm.refresh().catch()
 			onFinished?.()
 		} catch (err) {
+			await khatm.refresh().catch()
 			handleError(err)
-			khatm.refresh()
+			if ((err as App.Error)?.type === 'conflict-ranges') {
+				onClose?.()
+			}
 		} finally {
 			loading = false
 		}

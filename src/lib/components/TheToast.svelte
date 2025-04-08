@@ -26,7 +26,7 @@
 			state.timer = window.setTimeout(() => {
 				state.open = false
 				state.timer = NaN
-			}, 4000)
+			}, 5_000)
 		})
 	}
 </script>

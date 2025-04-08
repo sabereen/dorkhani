@@ -15,7 +15,7 @@ if (!dev && !building && FONT_PROXY) {
 	preloadAllFonts()
 }
 
-export const GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url, fetch }) => {
 	if (!FONT_PROXY) throw error(403, { message: 'این قابلیت غیر فعال است.' })
 
 	const font = url.searchParams.get('font') as 'qpc-v1' | 'qpc-v2'
@@ -24,11 +24,11 @@ export const GET: RequestHandler = async ({ url }) => {
 	if (!isFinite(page) || page <= 0 || page > COUNT_OF_PAGES) throw error(400)
 	if (font !== 'qpc-v1' && font !== 'qpc-v2') throw error(400)
 
-	const blob = await getFontCacheFirst(font, page)
+	const blob = await getFontCacheFirst(font, page, fetch)
 	return new Response(blob)
 }
 
-function getFontCacheFirst(font: 'qpc-v1' | 'qpc-v2', page: number) {
+function getFontCacheFirst(font: 'qpc-v1' | 'qpc-v2', page: number, fetch = globalThis.fetch) {
 	const key = `${font}:${page}`
 
 	let promise = cache.get(key)

@@ -98,10 +98,10 @@
 	function openModal(start: number, end: number) {
 		const range = new QuranRange(start, end)
 
-		if (!range.matchRangeType(khatm.rangeType)) {
-			toast('error', `ختم جاری ${khatm.rangeTypeTitle} است و با این بازه هم‌خوانی ندارد.`)
-			return
-		}
+		// if (!range.matchRangeType(khatm.rangeType)) {
+		// 	toast('error', `ختم جاری ${khatm.rangeTypeTitle} است و با این بازه هم‌خوانی ندارد.`)
+		// 	return
+		// }
 
 		pushState('', { modal: true } satisfies PageState)
 		selected = range

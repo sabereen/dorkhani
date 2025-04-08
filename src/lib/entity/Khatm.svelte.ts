@@ -6,6 +6,7 @@ import type { QuranRange } from './Range'
 import { untrack } from 'svelte'
 import { browser } from '$app/environment'
 import { KhatmPart } from './KhatmPart'
+import { request } from '$lib/utility/request'
 
 const cache = new Map<number, Khatm>()
 
@@ -134,20 +135,11 @@ export class Khatm {
 	}
 
 	async pickNextAyat(count = 1) {
-		const response = await fetch('/api/khatmPart/pickNext', {
-			method: 'POST',
-			body: JSON.stringify({
-				khatmId: this.id,
-				count,
-				accessToken: this.accessToken,
-			}),
+		const result = await request<PickAyahResult>('post', '/api/khatmPart/pickNext', {
+			khatmId: this.id,
+			count,
+			accessToken: this.accessToken,
 		})
-
-		const result: PickAyahResult = await response.json()
-
-		if (!response.ok) {
-			throw result
-		}
 
 		return result
 	}
@@ -161,29 +153,25 @@ export class Khatm {
 	}
 
 	async refresh() {
-		const response = await fetch(
-			`/api/khatm?khatmId=${this.id}&accessToken=${this.accessToken || ''}`,
+		const result = await request<{ khatm: TKhatm & { parts?: TKhatmPart[] } }>(
+			'get',
+			'/api/khatm',
+			{
+				khatmId: this.id,
+				accessToken: this.accessToken || '',
+			},
 		)
-		if (response.status !== 200) throw new Error('خطا')
-		const result: { khatm: TKhatm & { parts?: TKhatmPart[] } } = await response.json()
 		this.plain = result.khatm
 		this.plainParts = result.khatm.parts || []
 	}
 
 	async pickRange(range: QuranRange) {
-		const response = await fetch('/api/khatmPart/pickRange', {
-			method: 'POST',
-			body: JSON.stringify({
-				start: range.start,
-				end: range.end,
-				khatmId: this.id,
-				accessToken: this.accessToken,
-			}),
+		await request('post', '/api/khatmPart/pickRange', {
+			start: range.start,
+			end: range.end,
+			khatmId: this.id,
+			accessToken: this.accessToken,
 		})
-
-		const result = await response.json().catch()
-
-		if (response.status !== 200) throw new Error(result?.message || '')
 
 		new PickedKhatmPart({
 			id: undefined as unknown as number,

@@ -25,7 +25,7 @@
 
 {#if !form || !form.khatm}
 	<form use:enhance class="flex justify-center p-2" action="" method="POST">
-		<fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+		<fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border px-4 !pb-4">
 			<legend class="fieldset-legend">
 				ختم قرآن
 				{#if data.rangeType === 'ayah'}
@@ -65,13 +65,12 @@
 				{/if}
 			{/if}
 
-			<label class="mt-2">
-				<input type="checkbox" name="private" class="checkbox" />
-				<span>خصوصی</span>
-				<span class="badge badge-xs">آزمایشی</span>
+			<label class="mt-2 flex items-center">
+				<input type="checkbox" name="private" class="checkbox me-2" />
+				<span class="text-md">خصوصی</span>
 			</label>
 
-			<input class="btn btn-primary mt-4" type="submit" value="ایجاد" />
+			<input class="btn btn-primary mt-3" type="submit" value="ایجاد" />
 		</fieldset>
 	</form>
 {:else}

@@ -15,14 +15,14 @@
 		name="description"
 		content="از طریق این سامانه می‌توانید به صورت گروهی ختم قرآن انجام دهید؛ و وضعیت بازه‌های قرائت شده را رصد کنید."
 	/>
-	<meta property="og:image" content="https://khatm.esangar.ir/hero.png" />
+	<meta property="og:image" content="https://dorkhani.ir/hero.png" />
 </svelte:head>
 
 <div class="hero mt-7">
 	<div class="hero-content flex flex-col text-center sm:flex-row">
 		<img
 			src="/hero.png"
-			class="h-auto max-w-50 rounded-lg shadow-2xl"
+			class="max-w-50 h-auto rounded-lg shadow-2xl"
 			width="250"
 			height="250"
 			alt="logo"

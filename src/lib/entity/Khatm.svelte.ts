@@ -120,7 +120,7 @@ export class Khatm {
 	}
 
 	getLink(layout: 'wizard' | 'grid' | 'list' = 'wizard') {
-		const origin = browser ? location.origin : 'https://khatm.esangar.ir'
+		const origin = browser ? location.origin : 'https://dorkhani.ir'
 		const prefix = this.isAyahOriented ? 'a' : 'k'
 		const layoutPart = layout === 'wizard' ? '' : `/${layout}`
 		return `${origin}/${prefix}${this.id}${layoutPart}${this.accessToken ? `?t=${this.accessToken}` : ''}`

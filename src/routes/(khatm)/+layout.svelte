@@ -57,8 +57,8 @@
 	<meta name="description" content={khatm.description} />
 	<meta property="og:title" content="ختم قرآن | {khatm.title}" />
 	<meta property="og:description" content={khatm.description} />
-	<meta property="og:logo" content="https://khatm.esangar.ir/hero.png" />
-	<meta property="og:image" content="https://khatm.esangar.ir/hero.png" />
+	<meta property="og:logo" content="https://dorkhani.ir/hero.png" />
+	<meta property="og:image" content="https://dorkhani.ir/hero.png" />
 	<meta property="og:url" content={khatm.link} />
 	<meta property="og:type" content="website" />
 	{#if khatm.private}
@@ -112,13 +112,13 @@
 <div class="hero">
 	<div class="hero-content flex flex-col text-center sm:flex-row">
 		<div class="max-w-md">
-			<h1 class="text-3xl font-black break-words">
+			<h1 class="break-words text-3xl font-black">
 				{khatm.title}
 				{#if khatm.rangeType === 'ayah'}
 					<span class="badge badge-info">آیه به آیه</span>
 				{/if}
 			</h1>
-			<div class="pt-5 pb-1 break-words">
+			<div class="break-words pb-1 pt-5">
 				{#each khatm.description?.split('\n') as line}
 					<p dir="auto" class="mt-1 min-h-3">{line}</p>
 				{/each}

@@ -9,6 +9,7 @@
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { page } from '$app/state'
 	import { pushState } from '$app/navigation'
+	import Tab from '$lib/components/Tab.svelte'
 
 	type PageState = {
 		modal?: boolean
@@ -85,17 +86,9 @@
 		<div
 			class="collapse-plus join-item bg-base-100 collapse border border-gray-500"
 			class:hidden={hideFinishedIntervals && percent >= 100}
-			class:opacity-50={percent >= 100}
-			class:pointer-events-none={percent >= 100}
 		>
-			<input
-				type="radio"
-				name="juz"
-				bind:group={openedAccardeon}
-				value={i}
-				disabled={percent >= 100}
-			/>
-			<div class="collapse-title font-semibold">
+			<input type="radio" name="juz" bind:group={openedAccardeon} value={i} />
+			<div class="collapse-title font-semibold" class:opacity-50={percent >= 100}>
 				<span
 					class="radial-progress text-primary ms-1 text-[0.6rem]"
 					style:--value={percent}
@@ -110,52 +103,21 @@
 					<span class="badge badge-xs">قبلا قرائت شده است</span>
 				{/if}
 			</div>
-			<div class="collapse-content w-full text-xs sm:text-sm">
+			<div class="collapse-content z-1 relative w-full text-xs sm:text-sm">
 				{#if openedAccardeon === i}
 					<!-- انتخاب نوع زیربازه -->
-					<div class="tabs tabs-box justify-center">
-						<input
-							class="tab"
-							type="radio"
-							name="subrangeType"
-							bind:group={subrangeType}
-							value="hizbQuarter"
-							aria-label="ربع حزب"
-						/>
-						<div class="tab-content">
-							{#if subrangeType === 'hizbQuarter'}
-								{@render tabContent()}
-							{/if}
+					<div class="bg-#dadadb mt-15 w-full rounded-xl p-2">
+						<div class="mx-auto max-w-[270px] text-[13px]">
+							<Tab
+								tabs={[
+									{ title: 'ربع حزب', slug: 'hizbQuarter' },
+									{ title: 'صفحه', slug: 'page' },
+									{ title: 'سوره', slug: 'surah' },
+								]}
+								bind:value={subrangeType}
+							/>
 						</div>
-						<input
-							class="tab"
-							type="radio"
-							name="subrangeType"
-							bind:group={subrangeType}
-							value="surah"
-							aria-label="سوره"
-						/>
-						<div class="tab-content">
-							{#if subrangeType === 'surah'}
-								{@render tabContent()}
-							{/if}
-						</div>
-						<input
-							class="tab"
-							type="radio"
-							name="subrangeType"
-							bind:group={subrangeType}
-							value="page"
-							aria-label="صفحه"
-						/>
-						<div class="tab-content">
-							{#if subrangeType === 'page'}
-								{@render tabContent()}
-							{/if}
-						</div>
-					</div>
 
-					{#snippet tabContent()}
 						<ul class="rounded-box py-2">
 							{#each accardeonDevidedRanges as { parts, range }}
 								{@const percent = range.getFillPercent(khatmContext.parts)}
@@ -164,7 +126,7 @@
 								>
 									<div class="ml-2 flex w-24 items-center">
 										<span
-											class="radial-progress text-primary ms-1 me-1 text-[0.5rem]"
+											class="radial-progress text-primary me-1 ms-1 text-[0.5rem]"
 											style:--value={percent}
 											style:--size="1.4rem"
 											aria-valuenow={percent}
@@ -194,7 +156,7 @@
 													</button>
 												{/if}
 												<a
-													class="btn btn-circle btn-ghost btn-xs ms-1"
+													class="btn !btn-circle btn-ghost btn-xs ms-1"
 													target="_blank"
 													href={range.externalLink}
 												>
@@ -206,7 +168,7 @@
 								</li>
 							{/each}
 						</ul>
-					{/snippet}
+					</div>
 				{/if}
 			</div>
 		</div>

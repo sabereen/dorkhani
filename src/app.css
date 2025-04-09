@@ -106,3 +106,86 @@ body {
 	margin-left: 0;
 	margin-right: -100%;
 }
+
+/* .tabs {
+	--tabs-height: auto;
+	--tabs-direction: row;
+	height: var(--tabs-height);
+	flex-wrap: wrap;
+	flex-direction: var(--tabs-direction);
+	display: flex;
+}
+.tabs-box {
+	background-color: var(--color-base-200);
+	box-shadow:
+		0 -0.5px oklch(100% 0 0 / calc(var(--depth) * 0.1)) inset,
+		0 0.5px oklch(0% 0 0 / calc(var(--depth) * 0.05)) inset;
+	border-radius: calc(
+		var(--radius-field) +
+			min(0.25rem, calc(var(--radius-field) + var(--radius-field) + var(--radius-field)))
+	);
+	padding: 0.25rem;
+}
+
+.tab {
+	cursor: pointer;
+	appearance: none;
+	text-align: center;
+	user-select: none;
+	--tab-p: 1rem;
+	--tab-bg: var(--color-base-100);
+	--tab-border-color: var(--color-base-300);
+	--tab-radius-ss: 0;
+	--tab-radius-se: 0;
+	--tab-radius-es: 0;
+	--tab-radius-ee: 0;
+	--tab-order: 0;
+	--tab-radius-min: calc(0.75rem - var(--border));
+	flex-wrap: wrap;
+	order: var(--tab-order);
+	height: calc(var(--size-field, 0.25rem) * 10);
+	justify-content: center;
+	align-items: center;
+	padding-inline-start: var(--tab-p);
+	padding-inline-end: var(--tab-p);
+	font-size: 0.875rem;
+	display: inline-flex;
+	position: relative;
+	border-color: rgba(0, 0, 0, 0);
+}
+.tabs-box .tab {
+	border-radius: var(--radius-field);
+	border-style: none;
+}
+.tab:is(input[type='radio']) {
+	min-width: fit-content;
+}
+.tab:not(:checked, label:has(:checked), :hover, .tab-active, [aria-selected='true']) {
+	color: color-mix(in oklab, var(--color-base-content) 50%, transparent);
+}
+
+.tab-content {
+	order: var(--tabcontent-order);
+	--tabcontent-radius-ss: 0;
+	--tabcontent-radius-se: 0;
+	--tabcontent-radius-es: 0;
+	--tabcontent-radius-ee: 0;
+	--tabcontent-order: 1;
+	width: 100%;
+	border-start-start-radius: var(--tabcontent-radius-ss);
+	border-start-end-radius: var(--tabcontent-radius-se);
+	border-end-end-radius: var(--tabcontent-radius-ee);
+	border-end-start-radius: var(--tabcontent-radius-es);
+	display: none;
+	margin: var(--tabcontent-margin);
+	border-color: rgba(0, 0, 0, 0);
+	border-width: var(--border);
+}
+:is(.tab:checked, .tab:is(label:has(:checked)), .tab:is(.tab-active, [aria-selected='true']))
+	+ .tab-content {
+	height: 100%;
+	display: block;
+}
+.tab:is(input[type='radio'])::after {
+	content: attr(aria-label);
+} */

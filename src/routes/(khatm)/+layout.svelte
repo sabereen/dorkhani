@@ -77,19 +77,19 @@
 							<summary><CurrentLayoutIcon /></summary>
 							<ul class="bg-base-200 rounded-t-none p-2">
 								<li>
-									<a href={khatm.getLink('wizard')}>
+									<a class="justify-start" href={khatm.getLink('wizard')}>
 										<IconViewWizard />
 										مرحله‌ای
 									</a>
 								</li>
 								<li>
-									<a href={khatm.getLink('list')}>
+									<a class="justify-start" href={khatm.getLink('list')}>
 										<IconViewList />
 										لیستی
 									</a>
 								</li>
 								<li>
-									<a href={khatm.getLink('grid')}>
+									<a class="justify-start" href={khatm.getLink('grid')}>
 										<IconViewTable />
 										جدولی
 									</a>

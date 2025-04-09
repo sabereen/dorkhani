@@ -8,8 +8,9 @@
 <input class="modal-toggle" type="checkbox" hidden checked={open} />
 
 {#if open}
-	<div class="modal" transition:fade>
+	<div class="modal" out:fade>
 		<button
+			in:fade|global
 			type="button"
 			aria-label="close"
 			class="absolute inset-0 bg-white/20"

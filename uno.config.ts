@@ -4,11 +4,13 @@ import presetLegacyCompat from '@unocss/preset-legacy-compat'
 
 export default defineConfig({
 	presets: [
-		presetWind3(),
+		presetWind3({
+			dark: 'media',
+		}),
 		presetDaisy({
 			rtl: true,
-			themes: ['autumn', 'dim'],
-			darkTheme: 'dim',
+			themes: ['autumn', 'dark'],
+			darkTheme: 'dark',
 		}),
 		presetLegacyCompat({
 			legacyColorSpace: true,

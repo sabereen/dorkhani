@@ -16,7 +16,7 @@
 </script>
 
 <div
-	class="bg-#dadadb relative grid select-none rounded-[9px] p-0.5"
+	class="relative grid select-none rounded-[9px] p-0.5"
 	style:grid-template-columns={`repeat(${tabs.length}, 1fr)`}
 >
 	<div
@@ -24,13 +24,13 @@
 		style:transform={`translate3d(${-100 * selectedIndex}%, 0, 0)`}
 		class="z-9 absolute inset-0 p-[2px] transition-transform"
 	>
-		<div class="indicator"></div>
+		<div class="indicator bg-white dark:bg-gray-200"></div>
 	</div>
 
 	{#each tabs as { slug, title }, i}
 		{@const htmlId = `${id}-tab-${slug}`}
 		<input type="radio" name="tab" id={htmlId} value={slug} bind:group={value} class="tab" />
-		<label class="tab_label" for={htmlId}>{title}</label>
+		<label class="tab_label" class:text-black={value === slug} for={htmlId}>{title}</label>
 	{/each}
 </div>
 
@@ -39,7 +39,6 @@
 		content: '';
 		height: 36px;
 		width: 100%;
-		background: #ffffff;
 		border: 0.5px solid rgba(0, 0, 0, 0.04);
 		box-shadow:
 			0px 3px 8px rgba(0, 0, 0, 0.12),

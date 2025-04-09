@@ -106,7 +106,7 @@
 			<div class="collapse-content z-1 relative w-full text-xs sm:text-sm">
 				{#if openedAccardeon === i}
 					<!-- انتخاب نوع زیربازه -->
-					<div class="bg-#dadadb mt-15 w-full rounded-xl p-2">
+					<div class="bg-base-300 mt-15 w-full rounded-xl p-2">
 						<div class="mx-auto max-w-[270px] text-[13px]">
 							<Tab
 								tabs={[

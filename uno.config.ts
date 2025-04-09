@@ -9,8 +9,8 @@ export default defineConfig({
 		}),
 		presetDaisy({
 			rtl: true,
-			themes: ['autumn', 'dark'],
-			darkTheme: 'dark',
+			themes: ['autumn', 'forest'],
+			darkTheme: 'forest',
 		}),
 		presetLegacyCompat({
 			legacyColorSpace: true,

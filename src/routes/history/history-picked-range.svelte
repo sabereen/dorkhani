@@ -37,16 +37,16 @@
 			{/if}
 			<ul class="list">
 				{#each history as item}
-					<li class="list-row flex flex-col">
+					<li class="list-row !flex !flex-col">
 						<span>
 							<strong>بازه:</strong>
 							{item.range.getTitle()}
 							<a
-								class="btn btn-circle btn-ghost btn-xs ms-1"
+								class="btn btn-circle btn-ghost btn-xs vertical-middle ms-1 !p-0"
 								target="_blank"
 								href={item.range.externalLink}
 							>
-								<IconEye />
+								<IconEye class="size-4" />
 							</a>
 						</span>
 						<span>
@@ -67,7 +67,7 @@
 				{/each}
 				{#if hasMore}
 					<li class="list-row">
-						<a class="btn btn-primary btn-outline" href="/history">نمایش همه‌ی موارد...</a>
+						<a class="btn btn-primary !btn-outline" href="/history">نمایش همه‌ی موارد...</a>
 					</li>
 				{/if}
 			</ul>

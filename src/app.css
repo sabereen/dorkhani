@@ -1,20 +1,130 @@
-@import 'tailwindcss';
 @import 'vazirmatn/misc/UI-Farsi-Digits/Vazirmatn-UI-FD-font-face.css';
-@plugin "daisyui" {
-  themes: autumn --default, dim --prefersdark;
-}
 
 html {
-  overflow-y: scroll;
+	overflow-y: scroll;
 }
 
 body {
-  font-family: 'Vazirmatn UI FD', tahoma;
-  margin: auto;
-  max-width: 600px;
+	font-family: 'Vazirmatn UI FD', tahoma;
+	margin: auto;
+	max-width: 600px;
 }
 
 .hatched {
-  background-image: repeating-linear-gradient(-45deg, var(--color-base-100), var(--color-base-100) 13px, var(--color-base-200) 13px, var(--color-base-200) 14px);
-  background-size: 40px 40px;
+	background-image: repeating-linear-gradient(
+		-45deg,
+		hsl(var(--b1)),
+		hsl(var(--b1)) 13px,
+		hsl(var(--b2)) 13px,
+		hsl(var(--b2)) 14px
+	);
+	background-size: 40px 40px;
+}
+
+.fieldset-label {
+	align-items: center;
+	display: flex;
+}
+
+.fieldset-legend {
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: -0.25rem;
+	font-weight: 600;
+	display: flex;
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+}
+
+.input,
+.textarea,
+.select {
+	width: 100%;
+	display: block;
+}
+
+.fieldset {
+	grid-template-columns: 1fr;
+	grid-auto-rows: max-content;
+	font-size: 0.75rem;
+	display: grid;
+	grid-gap: 0.375rem;
+	padding-top: 0.25rem;
+	padding-bottom: 0.25rem;
+}
+
+.list {
+	flex-direction: column;
+	font-size: 0.875rem;
+	display: flex;
+}
+
+.list > :not(:last-child).list-row::after,
+.list > :not(:last-child) .list-row::after {
+	content: '';
+	border-bottom-width: 0.8px;
+	border-bottom-style: solid;
+	position: absolute;
+	bottom: 0px;
+	right: var(--radius-box, 1rem);
+	left: var(--radius-box, 1rem);
+	border-color: #00000014;
+	border-color: color-mix(in oklab, hsl(var(--bc)) 5%, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+	.list > :not(:last-child).list-row::after,
+	.list > :not(:last-child) .list-row::after {
+		border-color: #ffffff14;
+		border-color: color-mix(in oklab, hsl(var(--bc)) 5%, transparent);
+	}
+}
+
+.list .list-row {
+	word-break: break-word;
+	grid-auto-flow: column;
+	grid-template-columns: minmax(0, auto) 1fr;
+	display: grid;
+	position: relative;
+	border-radius: var(--radius-box, 1rem);
+	grid-gap: 1rem;
+	padding: 1rem;
+}
+
+.btn {
+	animation-name: none;
+}
+
+.checkbox {
+	vertical-align: middle;
+}
+
+.steps-horizontal .step:before {
+	margin-left: 0;
+	margin-right: -100%;
+}
+
+.badge-xs {
+	font-size: 0.625rem;
+	height: 1rem;
+	line-height: 1rem;
+}
+
+.link-info {
+	color: hsl(var(--in));
+}
+.link-info:hover {
+	color: hsl(var(--in) / 85%);
+}
+
+.\!btn-soft.btn-primary:not(:hover) {
+	background-color: #ebdfdf;
+	border-color: #ebdfdf;
+	color: hsl(var(--p));
+}
+@media (prefers-color-scheme: dark) {
+	.\!btn-soft.btn-primary:not(:hover) {
+		background-color: #0e2014;
+		border-color: #122b1b;
+	}
 }

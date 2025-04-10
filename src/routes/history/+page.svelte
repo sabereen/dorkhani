@@ -7,7 +7,7 @@
 <Header title="تاریخچه ختم‌ها و مشارکت‌های شما" />
 
 <div class="mt-4">
-	<h2 class="mb-1 text-xl font-bold">ختم‌هایی که ایجاد کرده اید:</h2>
+	<h2 class="mx-4 mb-1 text-xl font-bold">ختم‌هایی که ایجاد کرده اید:</h2>
 	<HistoryKhatm>
 		{#snippet fallback()}
 			<div class="alert alert-info mt-4">موردی جهت نمایش وجود ندارد</div>
@@ -16,7 +16,7 @@
 </div>
 
 <div class="mt-4">
-	<h2 class="mb-1 text-xl font-bold">بازه‌هایی که برای قرائت پذیرفته اید:</h2>
+	<h2 class="mx-4 mb-1 text-xl font-bold">بازه‌هایی که برای قرائت پذیرفته اید:</h2>
 	<HistoryPickedRange>
 		{#snippet fallback()}
 			<div class="alert alert-info mt-4">موردی جهت نمایش وجود ندارد</div>

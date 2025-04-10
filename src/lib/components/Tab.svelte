@@ -1,0 +1,46 @@
+<script lang="ts" generics="TabSlug">
+	type TabItem<TabSlug> = {
+		title: string
+		slug: TabSlug
+	}
+	type Props = {
+		tabs: TabItem<TabSlug>[]
+		value: TabSlug
+	}
+
+	let { tabs, value = $bindable() }: Props = $props()
+
+	const id = $props.id()
+
+	const selectedIndex = $derived(tabs.findIndex((t) => t.slug === value))
+</script>
+
+<div
+	class="relative grid select-none rounded-[9px] p-0.5"
+	style:grid-template-columns={`repeat(${tabs.length}, 1fr)`}
+>
+	<div
+		style:width={`${100 / tabs.length}%`}
+		style:transform={`translate3d(${-100 * selectedIndex}%, 0, 0)`}
+		class="absolute inset-0 p-[2px] transition-transform"
+	>
+		<div class="indicator h-[36px] w-full rounded-[7px] bg-white shadow-md dark:bg-gray-200"></div>
+	</div>
+
+	{#each tabs as { slug, title }, i}
+		{@const htmlId = `${id}-tab-${slug}`}
+		<input
+			type="radio"
+			name="tab"
+			id={htmlId}
+			value={slug}
+			bind:group={value}
+			class="absolute size-0 opacity-0 outline-none"
+		/>
+		<label
+			class="relative flex h-[36px] w-full cursor-pointer items-center justify-center border-0 opacity-60 ring-red-500"
+			class:text-black={value === slug}
+			for={htmlId}>{title}</label
+		>
+	{/each}
+</div>

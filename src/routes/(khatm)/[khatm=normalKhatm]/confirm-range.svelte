@@ -37,7 +37,7 @@
 	آیا قرائت این بازه را تقبل می‌کنید؟
 	<p class="my-2 text-sm">
 		{range.getTitle()}
-		<a href={range.externalLink} target="_blank" class="badge badge-info badge-outline">
+		<a href={range.externalLink} target="_blank" class="badge badge-info badge-outline h-6">
 			مشاهده آیات
 		</a>
 	</p>

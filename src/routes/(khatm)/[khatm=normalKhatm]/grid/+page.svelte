@@ -145,11 +145,11 @@
 				onclick={() => openModal(range.start, range.end)}
 			>
 				{#if showBadges}
-					<span class="badge badge-xs badge-neutral rounded-t-none rounded-l-none">
+					<span class="badge badge-xs badge-neutral rounded-l-none rounded-t-none">
 						{start.number}
 						{surah_getName(start.surah)}
 					</span>
-					<span class="badge badge-xs badge-neutral rounded-l-none rounded-b-none">
+					<span class="badge badge-xs badge-neutral rounded-b-none rounded-l-none">
 						{end.number}
 						{surah_getName(end.surah)}
 					</span>
@@ -180,7 +180,7 @@
 	{#if !hideFinishedIntervals}
 		{#each parts as part (part.plain.id)}
 			<div
-				class="hatched col-span-3 col-start-1 flex min-h-4 w-full items-center justify-center border-y border-dashed border-gray-500 bg-gray-100 opacity-75"
+				class="hatched col-span-3 col-start-1 flex min-h-4 w-full items-center justify-center border-y border-dashed border-gray-500 bg-gray-100 opacity-75 dark:bg-gray-900"
 				style:grid-row-start={part.start + 1}
 				style:grid-row-end={part.end + 1}
 			>

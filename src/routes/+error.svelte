@@ -9,7 +9,7 @@
 			<p class="py-6">
 				{page.error?.message || 'خطایی رخ داده است.'}
 			</p>
-			<a class="btn btn-primary btn-outline font-bold" href="/">صفحه اصلی</a>
+			<a class="btn btn-primary !btn-outline font-bold" href="/">صفحه اصلی</a>
 		</div>
 	</div>
 </div>

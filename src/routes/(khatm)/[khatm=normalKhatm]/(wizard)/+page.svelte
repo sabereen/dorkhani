@@ -155,18 +155,23 @@
 			]}
 		>
 			{#each selectableRanges as { range, percent }}
+				{@const disabled = percent > 0}
+				{@const completed = percent >= 100}
 				<li class="list-row grow">
 					<button
-						class="? btn btn-primary !btn-outline btn-block"
+						class="btn btn-primary !btn-outline btn-block"
 						type="button"
-						disabled={percent > 0}
+						{disabled}
+						class:!btn-disabled={disabled}
 						onclick={() => select(range)}
 					>
-						{range.title || range.getTitleSurahOrinted()}
-						{#if percent > 0 && percent < 100}
-							<span class="flex items-center">
+						<span class:opacity-50={disabled}>
+							{range.title || range.getTitleSurahOrinted()}
+						</span>
+						{#if disabled && !completed}
+							<span class="flex items-center opacity-50">
 								<span
-									class="radial-progress text-primary me-1 ms-1 text-[0.6rem] opacity-50"
+									class="radial-progress text-primary me-1 ms-1 text-[0.6rem]"
 									style:--value={percent}
 									style:--size="1.4rem"
 									aria-valuenow={percent}

@@ -22,52 +22,25 @@
 	<div
 		style:width={`${100 / tabs.length}%`}
 		style:transform={`translate3d(${-100 * selectedIndex}%, 0, 0)`}
-		class="z-9 absolute inset-0 p-[2px] transition-transform"
+		class="absolute inset-0 p-[2px] transition-transform"
 	>
-		<div class="indicator bg-white dark:bg-gray-200"></div>
+		<div class="indicator h-[36px] w-full rounded-[7px] bg-white shadow-md dark:bg-gray-200"></div>
 	</div>
 
 	{#each tabs as { slug, title }, i}
 		{@const htmlId = `${id}-tab-${slug}`}
-		<input type="radio" name="tab" id={htmlId} value={slug} bind:group={value} class="tab" />
-		<label class="tab_label" class:text-black={value === slug} for={htmlId}>{title}</label>
+		<input
+			type="radio"
+			name="tab"
+			id={htmlId}
+			value={slug}
+			bind:group={value}
+			class="absolute size-0 opacity-0 outline-none"
+		/>
+		<label
+			class="relative flex h-[36px] w-full cursor-pointer items-center justify-center border-0 opacity-60 ring-red-500"
+			class:text-black={value === slug}
+			for={htmlId}>{title}</label
+		>
 	{/each}
 </div>
-
-<style>
-	.indicator {
-		content: '';
-		height: 36px;
-		width: 100%;
-		border: 0.5px solid rgba(0, 0, 0, 0.04);
-		box-shadow:
-			0px 3px 8px rgba(0, 0, 0, 0.12),
-			0px 3px 1px rgba(0, 0, 0, 0.04);
-		border-radius: 7px;
-	}
-
-	.tab {
-		width: 100%;
-		height: 36px;
-		position: absolute;
-		z-index: 99;
-		outline: none;
-		opacity: 0;
-	}
-	.tab:focus-visible + .tab_label {
-		outline: 2px solid rgba(0, 0, 0, 0.4);
-	}
-
-	.tab_label {
-		width: 100%;
-		height: 36px;
-		position: relative;
-		z-index: 999;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border: 0;
-		opacity: 0.6;
-		cursor: pointer;
-	}
-</style>

@@ -66,7 +66,7 @@
 	{/if}
 </svelte:head>
 
-<Header title="ختم قرآن گروهی">
+<Header title="ختم قرآن گروهی" link="/">
 	{#snippet start()}
 		<div class="flex-none">
 			<ul class="menu menu-horizontal px-1">

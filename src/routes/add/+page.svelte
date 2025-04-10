@@ -29,7 +29,7 @@
 			<legend class="fieldset-legend">
 				ختم قرآن
 				{#if data.rangeType === 'ayah'}
-					<span class="badge badge-info badge-xs">آیه به آیه</span>
+					<span class="badge badge-info badge-xs ms-1">آیه به آیه</span>
 				{/if}
 			</legend>
 

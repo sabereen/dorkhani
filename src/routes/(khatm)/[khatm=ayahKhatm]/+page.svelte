@@ -150,7 +150,7 @@
 					{/if}
 					<p
 						class={[
-							'mb-4 leading-14 font-normal break-words',
+							'leading-14 mb-4 break-words font-normal',
 							font === 'qpc1' ? 'text-[34px]' : 'text-3xl',
 						]}
 						class:break-all={font === 'qpc1' || font === 'qpc2'}
@@ -201,7 +201,7 @@
 
 <div class="mt-5 flex flex-col text-center">
 	{#if !selectedAyat.length}
-		<p class="px-4 text-lg text-balance">
+		<p class="text-balance px-4 text-lg">
 			جهت پذیرفتن قرائت یک آیه از این ختم روی دکمه زیر کلیک کنید.
 		</p>
 	{/if}
@@ -221,7 +221,10 @@
 					</button>
 				{/snippet}
 
-				<button class="btn btn-primary btn-xl col-span-2" onclick={() => pick(1)}>
+				<button
+					class="btn btn-primary btn-xl col-span-2 h-[3.3rem] text-xl font-bold"
+					onclick={() => pick(1)}
+				>
 					{#if loading === 1}
 						<div class="loading loading-md" transition:slide={{ axis: 'x' }}></div>
 					{/if}
@@ -238,9 +241,9 @@
 				{@render smallButton('پذیرفتن ۱۰ آیه متوالی', 10)}
 			</div>
 			{#if fontProxy}
-				<div class="mt-2">
+				<div class="mt-2 flex items-center">
 					<label class="label me-1 text-sm" for="inputFont">فونت</label>
-					<select class="select select-sm" id="inputFont" name="font" bind:value={font}>
+					<select class="input input-sm" id="inputFont" name="font" bind:value={font}>
 						<option value="hafs">پیش‌فرض</option>
 						<option value="qpc1">مصحف مدینه ۱</option>
 						<option value="qpc2">مصحف مدینه ۲</option>

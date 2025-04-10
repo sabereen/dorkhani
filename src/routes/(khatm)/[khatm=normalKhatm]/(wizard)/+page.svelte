@@ -121,7 +121,7 @@
 			<div class="grid grid-cols-2 gap-2">
 				{#snippet button(type: typeof rangeType, title: string, span = 1)}
 					<button
-						class="btn btn-primary !btn-outline btn-block"
+						class="btn btn-primary !btn-soft btn-block"
 						style:grid-column-end={`span ${span}`}
 						type="button"
 						onclick={() => selectRangeType(type)}
@@ -159,15 +159,13 @@
 				{@const completed = percent >= 100}
 				<li class="list-row grow">
 					<button
-						class="btn btn-primary !btn-outline btn-block"
+						class="btn btn-primary !btn-soft btn-block whitespace-nowrap"
 						type="button"
 						{disabled}
 						class:!btn-disabled={disabled}
 						onclick={() => select(range)}
 					>
-						<span class:opacity-50={disabled}>
-							{range.title || range.getTitleSurahOrinted()}
-						</span>
+						{range.title || range.getTitleSurahOrinted()}
 						{#if disabled && !completed}
 							<span class="flex items-center opacity-50">
 								<span

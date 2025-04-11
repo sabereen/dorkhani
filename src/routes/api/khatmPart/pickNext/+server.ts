@@ -4,9 +4,9 @@ import translation from '@ghoran/translation/json/fa/tanzil-ansarian.json'
 import type { TKhatm } from '@prisma/client'
 import { khatmPartService_pickNextAyat } from '$service/khatmPart'
 
-const { default: quranTextQPC1 } = await import('@ghoran/text/json/quran-text-qpc-v1.json')
-const { default: quranTextQPC2 } = await import('@ghoran/text/json/quran-text-qpc-v2.json')
-const { default: quranTextHafs } = await import('@ghoran/text/json/quran-text-hafs.json')
+import quranTextQPC1 from '@ghoran/text/json/quran-text-qpc-v1.json'
+import quranTextQPC2 from '@ghoran/text/json/quran-text-qpc-v2.json'
+import quranTextHafs from '@ghoran/text/json/quran-text-hafs.json'
 
 export type SelectedAyah = {
 	index: number

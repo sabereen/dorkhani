@@ -163,9 +163,13 @@
 					</p>
 					<p class="text-md mb-4 opacity-80">{translation}</p>
 				</div>
-				<div class="card-actions relative mx-6 pb-3">
+				<div class="card-actions relative mx-6 gap-0 pb-3">
 					{#if !paused && playingIndex === i}
-						<button class="btn btn-sm btn-outline relative" onclick={() => (paused = true)}>
+						<button
+							type="button"
+							class="btn btn-sm btn-outline relative"
+							onclick={() => (paused = true)}
+						>
 							{#if audioLoading}
 								<span class="loading loading-ring block size-5"></span>
 							{:else}
@@ -174,12 +178,12 @@
 							توقف صوت
 						</button>
 					{:else}
-						<button class="btn btn-sm btn-outline" onclick={() => play(i)}>
+						<button type="button" class="btn btn-sm btn-outline" onclick={() => play(i)}>
 							<IconPlay class="size-5" />
 							پخش صوت
 						</button>
 					{/if}
-					<a href={ayah_getExternalLink(ayah)} target="_blank" class="btn btn-sm btn-outline">
+					<a href={ayah_getExternalLink(ayah)} target="_blank" class="btn btn-sm btn-outline ms-2">
 						<IconContext class="size-5" />
 						آیات پیرامون
 					</a>

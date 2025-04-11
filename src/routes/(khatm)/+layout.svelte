@@ -103,7 +103,12 @@
 	{/snippet}
 
 	{#snippet end()}
-		<button class="btn !btn-square btn-xs btn-soft" onclick={share} aria-label="Share">
+		<button
+			type="button"
+			class="btn !btn-square btn-xs btn-soft"
+			onclick={share}
+			aria-label="Share"
+		>
 			<IconShare class="size-5" />
 		</button>
 	{/snippet}

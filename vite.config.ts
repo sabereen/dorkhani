@@ -3,6 +3,7 @@ import { sveltekit } from '@sveltejs/kit/vite'
 import icons from 'unplugin-icons/vite'
 import UnoCSS from 'unocss/vite'
 import legacy from '@vitejs/plugin-legacy'
+import packageJson from './package.json'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
@@ -14,12 +15,12 @@ export default defineConfig({
 			renderLegacyChunks: false,
 			renderModernChunks: true,
 			modernPolyfills: true,
-			modernTargets: ['edge>=79, firefox>=67, chrome>=64, safari>=12'],
+			modernTargets: packageJson.browserslist,
 		}),
 	],
 
 	build: {
-		target: ['edge79', 'firefox67', 'chrome64', 'safari12'],
+		target: packageJson.browserslist.split(', ').map((b) => b.replaceAll('>=', '')),
 	},
 
 	test: {

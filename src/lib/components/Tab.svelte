@@ -1,8 +1,13 @@
 <script lang="ts" generics="TabSlug">
+	import type { Component } from 'svelte'
+
 	type TabItem<TabSlug> = {
 		title: string
 		slug: TabSlug
+		link?: string
+		icon?: Component
 	}
+
 	type Props = {
 		tabs: TabItem<TabSlug>[]
 		value: TabSlug
@@ -27,7 +32,7 @@
 		<div class="indicator h-[36px] w-full rounded-[7px] bg-white shadow-md dark:bg-gray-200"></div>
 	</div>
 
-	{#each tabs as { slug, title }, i}
+	{#each tabs as { slug, title, link, icon: Icon }, i}
 		{@const htmlId = `${id}-tab-${slug}`}
 		<input
 			type="radio"
@@ -40,7 +45,17 @@
 		<label
 			class="relative flex h-[36px] w-full cursor-pointer items-center justify-center border-0 opacity-60 ring-red-500"
 			class:text-black={value === slug}
-			for={htmlId}>{title}</label
+			for={htmlId}
 		>
+			{#if link}
+				<a href={link} class="flex grow items-center justify-center self-stretch">
+					{#if Icon}<Icon class="me-1" />{/if}
+					{title}
+				</a>
+			{:else}
+				{#if Icon}<Icon class="me-1" />{/if}
+				{title}
+			{/if}
+		</label>
 	{/each}
 </div>

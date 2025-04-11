@@ -9,6 +9,7 @@
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { setKhatmContext } from './khatm-context.svelte'
 	import { page } from '$app/state'
+	import Tab from '$lib/components/Tab.svelte'
 
 	const { data, children }: LayoutProps = $props()
 
@@ -67,41 +68,6 @@
 </svelte:head>
 
 <Header title="ختم قرآن گروهی" link="/">
-	{#snippet start()}
-		<div class="flex-none">
-			<ul class="menu menu-horizontal px-1">
-				<!-- <li><a><CurrentLayoutIcon /></a></li> -->
-				{#if canSelectLayout}
-					<li>
-						<details>
-							<summary><CurrentLayoutIcon /></summary>
-							<ul class="bg-base-200 rounded-t-none p-2">
-								<li>
-									<a class="flex justify-start" href={khatm.getLink('wizard')}>
-										<IconViewWizard />
-										مرحله‌ای
-									</a>
-								</li>
-								<li>
-									<a class="flex justify-start" href={khatm.getLink('list')}>
-										<IconViewList />
-										لیستی
-									</a>
-								</li>
-								<li>
-									<a class="flex justify-start" href={khatm.getLink('grid')}>
-										<IconViewTable />
-										جدولی
-									</a>
-								</li>
-							</ul>
-						</details>
-					</li>
-				{/if}
-			</ul>
-		</div>
-	{/snippet}
-
 	{#snippet end()}
 		<button
 			type="button"
@@ -113,6 +79,19 @@
 		</button>
 	{/snippet}
 </Header>
+
+{#if canSelectLayout}
+	<div class="bg-base-300 rounded-b px-2 pb-2 text-sm shadow-sm">
+		<Tab
+			tabs={[
+				{ slug: 'wizard', icon: IconViewWizard, title: 'مرحله‌ای', link: khatm.getLink('wizard') },
+				{ slug: 'list', icon: IconViewList, title: 'لیستی', link: khatm.getLink('list') },
+				{ slug: 'grid', icon: IconViewTable, title: 'جدولی', link: khatm.getLink('grid') },
+			]}
+			bind:value={() => layout, () => {}}
+		/>
+	</div>
+{/if}
 
 <div class="hero">
 	<div class="hero-content flex flex-col text-center sm:flex-row">

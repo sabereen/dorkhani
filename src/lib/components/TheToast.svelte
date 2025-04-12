@@ -33,7 +33,8 @@
 
 {#key state.counter}
 	{#if state.open}
-		<div class="toast z-10" transition:fly|global={{ y: 75 }}>
+		<!-- مقدار باتم صفر برای پشتیبانی مرورگرهای قدیمی نوشته شده است. -->
+		<div class="toast toast-bottom toast-end bottom-0 z-10" transition:fly|global={{ y: 75 }}>
 			<div class={['alert', state.type === 'info' ? 'alert-info' : 'alert-error']}>
 				<span>{state.message}</span>
 			</div>

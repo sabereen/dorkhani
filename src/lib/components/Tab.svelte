@@ -40,10 +40,10 @@
 			id={htmlId}
 			value={slug}
 			bind:group={value}
-			class="absolute size-0 opacity-0 outline-none"
+			class="peer absolute size-0 opacity-0 outline-none"
 		/>
 		<label
-			class="relative flex h-[36px] w-full cursor-pointer items-center justify-center border-0 opacity-60 ring-red-500"
+			class="relative flex h-[36px] w-full cursor-pointer items-center justify-center border-0 opacity-60 [.peer:focus-visible_+_&]:ring"
 			class:text-black={value === slug}
 			for={htmlId}
 		>

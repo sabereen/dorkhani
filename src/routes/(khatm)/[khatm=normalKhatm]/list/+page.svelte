@@ -10,6 +10,7 @@
 	import { page } from '$app/state'
 	import { pushState } from '$app/navigation'
 	import Tab from '$lib/components/Tab.svelte'
+	import Accardeon from '$lib/components/Accardeon.svelte'
 
 	type PageState = {
 		modal?: boolean
@@ -80,15 +81,11 @@
 	</label>
 </div>
 
-<div class="join join-vertical bg-base-100 w-full">
-	{#each juzRanges as range, i}
-		{@const percent = range.getFillPercent(parts)}
-		<div
-			class="collapse-plus join-item bg-base-100 collapse border border-gray-500"
-			class:hidden={hideFinishedIntervals && percent >= 100}
-		>
-			<input type="radio" name="juz" bind:group={openedAccardeon} value={i} />
-			<div class="collapse-title font-semibold" class:opacity-50={percent >= 100}>
+<div class="bg-base-100">
+	<Accardeon items={juzRanges} bind:selectedIndex={openedAccardeon}>
+		{#snippet title(range)}
+			{@const percent = range.getFillPercent(parts)}
+			<div class="p-4 font-semibold" class:opacity-50={percent >= 100}>
 				<span
 					class="radial-progress text-primary ms-1 text-[0.6rem]"
 					style:--value={percent}
@@ -103,77 +100,77 @@
 					<span class="badge badge-xs">قبلا قرائت شده است</span>
 				{/if}
 			</div>
-			<div class="collapse-content z-1 relative w-full text-xs sm:text-sm">
-				{#if openedAccardeon === i}
-					<div class="pt-15"></div>
-					<!-- انتخاب نوع زیربازه -->
-					<div class="bg-base-300 w-full rounded-xl p-2">
-						<div class="mx-auto max-w-[270px] text-[13px]">
-							<Tab
-								tabs={[
-									{ title: 'ربع حزب', slug: 'hizbQuarter' },
-									{ title: 'صفحه', slug: 'page' },
-									{ title: 'سوره', slug: 'surah' },
-								]}
-								bind:value={subrangeType}
-							/>
-						</div>
+		{/snippet}
 
-						<ul class="rounded-box py-2">
-							{#each accardeonDevidedRanges as { parts, range }}
-								{@const percent = range.getFillPercent(khatmContext.parts)}
-								<li
-									class="bg-base-100 flex items-center border border-gray-200 px-1 py-1 first:rounded-t last:rounded-b dark:border-gray-700"
-								>
-									<div class="ml-2 flex w-24 items-center">
-										<span
-											class="radial-progress text-primary me-1 ms-1 text-[0.5rem]"
-											style:--value={percent}
-											style:--size="1.4rem"
-											aria-valuenow={percent}
-											role="progressbar"
-										>
-											&lrm;{percent.toLocaleString('fa')}٪&lrm;
-										</span>
-										{range.title}
-									</div>
-									<div class="flex grow flex-col">
-										{#each parts as { khatmPart, range }}
-											<div class="flex items-center px-1 py-1">
-												<span class:text-gray-500={!!khatmPart}>
-													{range.getTitleSurahOrinted()}
-												</span>
-												<span class="m-3 h-0 grow border border-dashed border-gray-500/20"></span>
-												{#if khatmPart}
-													<span class="badge badge-xs opacity-75">قرائت‌شده</span>
-												{:else}
-													<button
-														type="button"
-														class="btn btn-primary btn-xs pointer-events-auto! ms-auto"
-														class:btn-disabled={!range.matchRangeType(khatm.rangeType)}
-														onclick={() => openModal(range)}
-													>
-														انتخاب
-													</button>
-												{/if}
-												<a
-													class="btn !btn-circle btn-ghost btn-xs ms-1"
-													target="_blank"
-													href={range.externalLink}
-												>
-													<IconEye />
-												</a>
-											</div>
-										{/each}
-									</div>
-								</li>
-							{/each}
-						</ul>
+		{#snippet content(range, i)}
+			<div class="z-1 relative w-full px-4 pb-4 text-xs sm:text-sm">
+				<!-- انتخاب نوع زیربازه -->
+				<div class="bg-base-300 w-full rounded-xl p-2">
+					<div class="mx-auto max-w-[270px] text-[13px]">
+						<Tab
+							tabs={[
+								{ title: 'ربع حزب', slug: 'hizbQuarter' },
+								{ title: 'صفحه', slug: 'page' },
+								{ title: 'سوره', slug: 'surah' },
+							]}
+							bind:value={subrangeType}
+						/>
 					</div>
-				{/if}
+
+					<ul class="rounded-box py-2">
+						{#each accardeonDevidedRanges as { parts, range }}
+							{@const percent = range.getFillPercent(khatmContext.parts)}
+							<li
+								class="bg-base-100 flex items-center border border-gray-200 px-1 py-1 first:rounded-t last:rounded-b dark:border-gray-700"
+							>
+								<div class="ml-2 flex w-24 items-center">
+									<span
+										class="radial-progress text-primary me-1 ms-1 text-[0.5rem]"
+										style:--value={percent}
+										style:--size="1.4rem"
+										aria-valuenow={percent}
+										role="progressbar"
+									>
+										&lrm;{percent.toLocaleString('fa')}٪&lrm;
+									</span>
+									{range.title}
+								</div>
+								<div class="flex grow flex-col">
+									{#each parts as { khatmPart, range }}
+										<div class="flex items-center px-1 py-1">
+											<span class:text-gray-500={!!khatmPart}>
+												{range.getTitleSurahOrinted()}
+											</span>
+											<span class="m-3 h-0 grow border border-dashed border-gray-500/20"></span>
+											{#if khatmPart}
+												<span class="badge badge-xs opacity-75">قرائت‌شده</span>
+											{:else}
+												<button
+													type="button"
+													class="btn btn-primary btn-xs pointer-events-auto! ms-auto"
+													class:btn-disabled={!range.matchRangeType(khatm.rangeType)}
+													onclick={() => openModal(range)}
+												>
+													انتخاب
+												</button>
+											{/if}
+											<a
+												class="btn !btn-circle btn-ghost btn-xs ms-1"
+												target="_blank"
+												href={range.externalLink}
+											>
+												<IconEye />
+											</a>
+										</div>
+									{/each}
+								</div>
+							</li>
+						{/each}
+					</ul>
+				</div>
 			</div>
-		</div>
-	{/each}
+		{/snippet}
+	</Accardeon>
 </div>
 
 <Modal bind:open={() => modal, closeModal}>

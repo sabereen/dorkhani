@@ -1,5 +1,4 @@
-# Stage 1: Builder
-FROM node:22-alpine AS builder
+FROM node:22-alpine
 
 WORKDIR /app
 
@@ -12,24 +11,21 @@ RUN corepack enable && corepack install
 # Install dependencies
 RUN pnpm install --frozen-lockfile
 
-# run database migrations
+# run database 
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
 RUN npx prisma migrate deploy
 
 # Copy all files
 COPY . .
 
+ENV PUBLIC_FONT_PROXY="1"
+
 # Build the app
 RUN pnpm run build
 
-# Stage 2: Runner
-FROM node:22-alpine AS runner
-
-WORKDIR /app
-
-# Copy necessary files from builder
-COPY --from=builder /app/package.json /app/pnpm-lock.yaml /app/.npmrc ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/build ./build
+ENV PORT="3000"
+ENV ORIGIN="https://dorkhani.ir"
 
 # Expose port
 EXPOSE 3000

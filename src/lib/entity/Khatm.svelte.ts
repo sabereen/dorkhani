@@ -4,9 +4,9 @@ import type { PickAyahResult } from '$api/khatmPart/pickNext/+server'
 import { PickedKhatmPart } from './PickedKhatmPart'
 import type { QuranRange } from './Range'
 import { untrack } from 'svelte'
-import { browser } from '$app/environment'
 import { KhatmPart } from './KhatmPart'
 import { request } from '$lib/utility/request'
+import { page } from '$app/state'
 
 const cache = new Map<number, Khatm>()
 
@@ -120,7 +120,7 @@ export class Khatm {
 	}
 
 	getLink(layout: 'wizard' | 'grid' | 'list' = 'wizard') {
-		const origin = browser ? location.origin : 'https://dorkhani.ir'
+		const origin = page.url.origin
 		const prefix = this.isAyahOriented ? 'a' : 'k'
 		const layoutPart = layout === 'wizard' ? '' : `/${layout}`
 		return `${origin}/${prefix}${this.id}${layoutPart}${this.accessToken ? `?t=${this.accessToken}` : ''}`

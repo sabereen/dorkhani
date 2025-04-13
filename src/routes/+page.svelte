@@ -15,7 +15,7 @@
 		name="description"
 		content="از طریق این سامانه می‌توانید به صورت گروهی ختم قرآن انجام دهید؛ و وضعیت بازه‌های قرائت شده را رصد کنید."
 	/>
-	<meta property="og:image" content="https://dorkhani.ir/hero.png" />
+	<meta property="og:image" content={`${data.origin}/hero.png`} />
 </svelte:head>
 
 <div class="hero mt-7">

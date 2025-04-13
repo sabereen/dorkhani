@@ -23,5 +23,6 @@ export const load: LayoutServerLoad = async ({ params, url }) => {
 
 	return {
 		khatm,
+		origin: url.origin,
 	}
 }

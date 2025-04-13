@@ -5,6 +5,7 @@
 	"type": "module",
 	"browserslist": "edge>=79, firefox>=67, chrome>=64, safari>=12",
 	"scripts": {
+		"start": "node build/index",
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",

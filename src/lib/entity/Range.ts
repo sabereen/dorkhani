@@ -35,7 +35,10 @@ export class QuranRange {
 	}
 
 	get externalLink() {
-		return ayah_getExternalLink(this.startAyah)
+		if (this.matchRangeType('ayah')) return ayah_getExternalLink(this.startAyah)
+		const start = `${this.startAyah.surahNumber}:${this.startAyah.number}`
+		const end = `${this.lastAyah.surahNumber}:${this.lastAyah.number}`
+		return `https://quran.com/fa/${start}-${end}`
 	}
 
 	matchRangeType(type: RangeType): boolean {

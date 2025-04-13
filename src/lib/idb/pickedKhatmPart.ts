@@ -24,8 +24,9 @@ export async function idb_pickedKhatmPart_add(item: Omit<PickedKhatmPart, 'id'>)
 
 export async function idb_pickedKhatmPart_getList(limit?: number) {
 	const { db } = await import('./idb')
+	const collection = db.pickedKhatmParts.orderBy('date').reverse()
 	if (limit) {
-		return db.pickedKhatmParts.reverse().limit(limit).toArray()
+		return collection.limit(limit).toArray()
 	}
-	return db.pickedKhatmParts.toArray()
+	return collection.toArray()
 }

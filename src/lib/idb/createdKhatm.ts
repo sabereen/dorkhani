@@ -20,8 +20,9 @@ export async function idb_createdKhatm_add(item: Omit<CreatedKhatm, 'id'>) {
 
 export async function idb_createdKhatm_getList(limit?: number) {
 	const { db } = await import('./idb')
+	const collection = db.createdKhatms.orderBy('khatm.created').reverse()
 	if (limit) {
-		return db.createdKhatms.reverse().limit(limit).toArray()
+		return collection.limit(limit).toArray()
 	}
-	return db.createdKhatms.toArray()
+	return collection.toArray()
 }

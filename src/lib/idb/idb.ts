@@ -28,9 +28,9 @@ const db = new Dexie('Khatm') as Dexie & {
 }
 
 // Schema declaration:
-db.version(2).stores({
+db.version(3).stores({
 	pickedKhatmParts: '++id, date',
-	createdKhatms: 'id',
+	createdKhatms: 'id, khatm.created',
 })
 
 export type { PickedKhatmPart, CreatedKhatm }

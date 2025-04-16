@@ -65,6 +65,7 @@
 		"@ghoran/text": "^0.0.8",
 		"@ghoran/translation": "^0.0.9",
 		"@unocss/reset": "66.1.0-beta.10",
+		"clipboard-copy": "^4.0.1",
 		"dexie": "^4.0.11",
 		"module": "^1.2.5",
 		"uuid": "^11.1.0",

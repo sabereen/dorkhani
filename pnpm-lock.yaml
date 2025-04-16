@@ -23,6 +23,9 @@ importers:
       '@unocss/reset':
         specifier: 66.1.0-beta.10
         version: 66.1.0-beta.10
+      clipboard-copy:
+        specifier: ^4.0.1
+        version: 4.0.1
       dexie:
         specifier: ^4.0.11
         version: 4.0.11
@@ -1337,6 +1340,9 @@ packages:
   chokidar@4.0.3:
     resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
     engines: {node: '>= 14.16.0'}
+
+  clipboard-copy@4.0.1:
+    resolution: {integrity: sha512-wOlqdqziE/NNTUJsfSgXmBMIrYmfd5V0HCGsR8uAKHcg+h9NENWINcfRjtWGU77wDHC8B8ijV4hMTGYbrKovng==}
 
   cliui@3.2.0:
     resolution: {integrity: sha512-0yayqDxWQbqk3ojkYqUKqaAQ6AfNKeKWRNA8kR0WXzAsdHpP4BIaOmMAG87JGuO6qcobyW4GjxHd9PmhEd+T9w==}
@@ -4622,6 +4628,8 @@ snapshots:
   chokidar@4.0.3:
     dependencies:
       readdirp: 4.1.2
+
+  clipboard-copy@4.0.1: {}
 
   cliui@3.2.0:
     dependencies:

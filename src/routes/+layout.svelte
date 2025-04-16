@@ -9,6 +9,10 @@
 
 {@render children()}
 
+{#await import('$lib/components/TheBProgress.svelte') then { default: TheBProgress }}
+	<TheBProgress />
+{/await}
+
 <div class="z-1000 relative">
 	<TheToast />
 </div>

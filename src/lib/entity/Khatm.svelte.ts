@@ -7,6 +7,7 @@ import { untrack } from 'svelte'
 import { KhatmPart } from './KhatmPart'
 import { request } from '$lib/utility/request'
 import { page } from '$app/state'
+import copy from 'clipboard-copy'
 
 const cache = new Map<number, Khatm>()
 
@@ -144,12 +145,26 @@ export class Khatm {
 		return result
 	}
 
-	share() {
-		return navigator.share({
-			url: this.link,
-			title: `سامانه ختم قرآن گروهی | ${this.title}`,
-			text: this.description,
-		})
+	async share() {
+		try {
+			await navigator.share({
+				url: this.link,
+				title: `سامانه ختم قرآن گروهی | ${this.title}`,
+				text: this.description,
+			})
+		} catch (err) {
+			console.error(err)
+			await copy(this.link)
+		}
+	}
+
+	async copy() {
+		try {
+			await navigator.clipboard.writeText(this.link)
+		} catch (err) {
+			console.error(err)
+			await copy(this.link)
+		}
 	}
 
 	async refresh() {

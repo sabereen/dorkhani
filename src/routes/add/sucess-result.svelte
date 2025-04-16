@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { browser } from '$app/environment'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { CreatedKhatm } from '$lib/entity/CreatedKhatm'
 	import type { Khatm } from '$lib/entity/Khatm.svelte'
@@ -12,13 +13,15 @@
 
 	const { khatm }: Props = $props()
 
+	const canShare = !browser || navigator.share
+
 	async function copy() {
 		try {
-			await navigator.clipboard.writeText(khatm.link)
+			await khatm.copy()
 			toast('info', 'لینک ختم قرآن شما کپی شد.')
 		} catch (err) {
 			console.error(err)
-			toast('error', String(err))
+			toast('error', 'خطا در کپی.')
 		}
 	}
 
@@ -51,10 +54,12 @@
 			<a href={khatm.link} class="link font-sans" target="_blank">{khatm.link}</a>
 		</p>
 		<div class="card-actions">
-			<button class="btn btn-primary" onclick={share}>
-				<IconShare class="size-5" />
-				اشتراک گذاری
-			</button>
+			{#if canShare}
+				<button class="btn btn-primary" onclick={share}>
+					<IconShare class="size-5" />
+					اشتراک گذاری
+				</button>
+			{/if}
 			<button class="btn btn-outline" onclick={copy}>
 				<IconCopy class="size-5" />
 				کپی لینک

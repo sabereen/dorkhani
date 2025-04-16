@@ -5,13 +5,17 @@
 	import IconViewList from '~icons/ic/outline-view-agenda'
 	import IconViewTable from '~icons/ic/round-calendar-view-month'
 	import IconShare from '~icons/ic/outline-share'
+	import IconCopy from '~icons/ic/outline-copy-all'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { setKhatmContext } from './khatm-context.svelte'
 	import { page } from '$app/state'
 	import Tab from '$lib/components/Tab.svelte'
+	import { browser } from '$app/environment'
 
 	const { data, children }: LayoutProps = $props()
+
+	const canShare = !browser || navigator.share
 
 	let layout = $derived.by<'wizard' | 'list' | 'grid'>(() => {
 		if (page.url.pathname.includes('grid')) return 'grid'
@@ -39,12 +43,17 @@
 		},
 	})
 
-	async function share() {
+	function share() {
+		khatm.share()
+	}
+
+	async function copy() {
 		try {
-			await khatm.share()
+			await khatm.copy()
+			toast('info', 'لینک ختم قرآن شما کپی شد.')
 		} catch (err) {
 			console.error(err)
-			toast('error', String(err))
+			toast('error', 'خطا در کپی.')
 		}
 	}
 
@@ -69,14 +78,25 @@
 
 <Header title="ختم قرآن گروهی" link="/">
 	{#snippet end()}
-		<button
-			type="button"
-			class="btn !btn-square btn-xs btn-soft"
-			onclick={share}
-			aria-label="Share"
-		>
-			<IconShare class="size-5" />
-		</button>
+		{#if canShare}
+			<button
+				type="button"
+				class="btn !btn-square btn-xs btn-soft"
+				onclick={share}
+				aria-label="Share"
+			>
+				<IconShare class="size-5" />
+			</button>
+		{:else}
+			<button
+				type="button"
+				class="btn !btn-square btn-xs btn-soft"
+				onclick={copy}
+				aria-label="Copy"
+			>
+				<IconCopy class="size-5" />
+			</button>
+		{/if}
 	{/snippet}
 </Header>
 

@@ -19,4 +19,14 @@ export default defineConfig({
 	],
 	transformers: [transformerVariantGroup()],
 	outputToCssLayers: false,
+	postprocess: [
+		(util) => {
+			// support old browsers gap
+			util.entries.forEach((entry) => {
+				if (entry[0] === 'gap') entry[0] = 'grid-gap'
+				if (entry[0] === 'row-gap') entry[0] = 'grid-row-gap'
+				if (entry[0] === 'column-gap') entry[0] = 'grid-column-gap'
+			})
+		},
+	],
 })

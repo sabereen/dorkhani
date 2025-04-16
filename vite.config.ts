@@ -2,22 +2,11 @@ import { svelteTesting } from '@testing-library/svelte/vite'
 import { sveltekit } from '@sveltejs/kit/vite'
 import icons from 'unplugin-icons/vite'
 import UnoCSS from 'unocss/vite'
-import legacy from '@vitejs/plugin-legacy'
 import packageJson from './package.json'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-	plugins: [
-		sveltekit(),
-		UnoCSS(),
-		icons({ autoInstall: true, compiler: 'svelte' }),
-		legacy({
-			renderLegacyChunks: false,
-			renderModernChunks: true,
-			modernPolyfills: true,
-			modernTargets: packageJson.browserslist,
-		}),
-	],
+	plugins: [sveltekit(), UnoCSS(), icons({ autoInstall: true, compiler: 'svelte' })],
 
 	build: {
 		target: packageJson.browserslist.split(', ').map((b) => b.replaceAll('>=', '')),

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '@ghoran/text/fonts/uthmanic-hafs/style.css'
 	import { fade, slide } from 'svelte/transition'
+	import { onMount } from 'svelte'
 	import type { SelectedAyah } from '$api/khatmPart/pickNext/+server'
 	import { Ayah } from '@ghoran/entity'
 	import { surah_getName } from '$lib/entity/Surah'
@@ -81,6 +82,11 @@
 				.scrollIntoView({ block: 'start', behavior: 'smooth' })
 		}
 	}
+
+	onMount(() => {
+		// فونت را از قبل لود می‌کنیم که متن سریع و بدون پرش نمایش داده شود
+		document.fonts.load('30px uthmanic-hafs')
+	})
 
 	const fontStyleHTML = $derived.by(() => {
 		let html: string[] = []

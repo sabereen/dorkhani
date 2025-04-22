@@ -12,6 +12,8 @@
 	import { page } from '$app/state'
 	import Tab from '$lib/components/Tab.svelte'
 	import { browser } from '$app/environment'
+	import { base } from '$app/paths'
+	import { rebaseFullPath } from '$lib/utility/path'
 
 	const { data, children }: LayoutProps = $props()
 
@@ -67,8 +69,8 @@
 	<meta name="description" content={khatm.description} />
 	<meta property="og:title" content="ختم قرآن | {khatm.title}" />
 	<meta property="og:description" content={khatm.description} />
-	<meta property="og:logo" content={`${data.origin}/hero.png`} />
-	<meta property="og:image" content={`${data.origin}/hero.png`} />
+	<meta property="og:logo" content={rebaseFullPath('/hero.png')} />
+	<meta property="og:image" content={rebaseFullPath('/hero.png')} />
 	<meta property="og:url" content={khatm.link} />
 	<meta property="og:type" content="website" />
 	{#if khatm.private}
@@ -76,7 +78,7 @@
 	{/if}
 </svelte:head>
 
-<Header title="ختم قرآن گروهی" link="/">
+<Header title="ختم قرآن گروهی" link={`${base}/`}>
 	{#snippet end()}
 		{#if canShare}
 			<button

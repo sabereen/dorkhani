@@ -6,8 +6,8 @@ import type { QuranRange } from './Range'
 import { untrack } from 'svelte'
 import { KhatmPart } from './KhatmPart'
 import { request } from '$lib/utility/request'
-import { page } from '$app/state'
 import copy from 'clipboard-copy'
+import { rebaseFullPath } from '$lib/utility/path'
 
 const cache = new Map<number, Khatm>()
 
@@ -121,10 +121,11 @@ export class Khatm {
 	}
 
 	getLink(layout: 'wizard' | 'grid' | 'list' = 'wizard') {
-		const origin = page.url.origin
 		const prefix = this.isAyahOriented ? 'a' : 'k'
 		const layoutPart = layout === 'wizard' ? '' : `/${layout}`
-		return `${origin}/${prefix}${this.id}${layoutPart}${this.accessToken ? `?t=${this.accessToken}` : ''}`
+		return rebaseFullPath(
+			`${prefix}${this.id}${layoutPart}${this.accessToken ? `?t=${this.accessToken}` : ''}`,
+		)
 	}
 
 	get link() {
@@ -136,7 +137,7 @@ export class Khatm {
 	}
 
 	async pickNextAyat(count = 1) {
-		const result = await request<PickAyahResult>('post', '/api/khatmPart/pickNext', {
+		const result = await request<PickAyahResult>('post', '/khatmPart/pickNext', {
 			khatmId: this.id,
 			count,
 			accessToken: this.accessToken,
@@ -168,20 +169,16 @@ export class Khatm {
 	}
 
 	async refresh() {
-		const result = await request<{ khatm: TKhatm & { parts?: TKhatmPart[] } }>(
-			'get',
-			'/api/khatm',
-			{
-				khatmId: this.id,
-				accessToken: this.accessToken || '',
-			},
-		)
+		const result = await request<{ khatm: TKhatm & { parts?: TKhatmPart[] } }>('get', '/khatm', {
+			khatmId: this.id,
+			accessToken: this.accessToken || '',
+		})
 		this.plain = result.khatm
 		this.plainParts = result.khatm.parts || []
 	}
 
 	async pickRange(range: QuranRange) {
-		await request('post', '/api/khatmPart/pickRange', {
+		await request('post', '/khatmPart/pickRange', {
 			start: range.start,
 			end: range.end,
 			khatmId: this.id,

@@ -13,6 +13,10 @@ const config = {
 			$api: 'src/routes/api',
 			$service: 'src/lib/server/service',
 		},
+		paths: {
+			base: process.env.BASE_PATH || '',
+			relative: false,
+		},
 	},
 }
 

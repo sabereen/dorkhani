@@ -16,6 +16,7 @@
 PORT = 3000
 ORIGIN = 'https://dorkhani.ir'
 DATABASE_URL = 'mysql://user:pass@host:3306/khatm'
+BASE_PATH = ''
 PUBLIC_FONT_PROXY=1
 ```
 

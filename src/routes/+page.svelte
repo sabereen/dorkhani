@@ -3,6 +3,8 @@
 	import type { PageProps } from './$types'
 	import HistoryKhatm from './history/history-khatm.svelte'
 	import HistoryPickedRange from './history/history-picked-range.svelte'
+	import { base } from '$app/paths'
+	import { rebaseFullPath } from '$lib/utility/path'
 
 	const { data }: PageProps = $props()
 
@@ -15,13 +17,13 @@
 		name="description"
 		content="از طریق این سامانه می‌توانید به صورت گروهی ختم قرآن انجام دهید؛ و وضعیت بازه‌های قرائت شده را رصد کنید."
 	/>
-	<meta property="og:image" content={`${data.origin}/hero.png`} />
+	<meta property="og:image" content={rebaseFullPath('/hero.png')} />
 </svelte:head>
 
 <div class="hero mt-7">
 	<div class="hero-content flex flex-col text-center sm:flex-row">
 		<img
-			src="/hero.png"
+			src={`${base}/hero.png`}
 			class="max-w-50 h-auto rounded-lg shadow-2xl"
 			width="250"
 			height="250"
@@ -33,8 +35,10 @@
 				از طریق این سامانه می‌توانید به صورت گروهی ختم قرآن انجام دهید؛ و وضعیت بازه‌های قرائت شده
 				را رصد کنید.
 			</p>
-			<a class="btn btn-primary font-bold" href="/add">ایجاد ختم قرآن جدید</a>
-			<a class="btn btn-outline font-bold" href="/add?rangeType=ayah">ایجاد ختم آیه به آیه</a>
+			<a class="btn btn-primary font-bold" href={`${base}/add`}>ایجاد ختم قرآن جدید</a>
+			<a class="btn btn-outline font-bold" href={`${base}/add?rangeType=ayah`}>
+				ایجاد ختم آیه به آیه
+			</a>
 		</div>
 	</div>
 </div>

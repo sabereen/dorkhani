@@ -1,5 +1,7 @@
+import { base } from '$app/paths'
+
 export async function request<T>(method: 'get' | 'post', path: string, body?: object): Promise<T> {
-	const url = new URL(path, location.origin)
+	const url = new URL(`${base}/api${path}`, location.origin)
 
 	if (body != null && method === 'get') {
 		for (const key in body) {

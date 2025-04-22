@@ -2,6 +2,7 @@
 	import { PickedKhatmPart } from '$lib/entity/PickedKhatmPart'
 	import { onMount, type Snippet } from 'svelte'
 	import { slide } from 'svelte/transition'
+	import { base } from '$app/paths'
 	import IconEye from '~icons/ic/outline-remove-red-eye'
 
 	type Props = {
@@ -67,7 +68,8 @@
 				{/each}
 				{#if hasMore}
 					<li class="list-row">
-						<a class="btn btn-primary !btn-outline" href="/history">نمایش همه‌ی موارد...</a>
+						<a class="btn btn-primary !btn-outline" href={`${base}/history`}>نمایش همه‌ی موارد...</a
+						>
 					</li>
 				{/if}
 			</ul>

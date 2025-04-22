@@ -2,6 +2,7 @@
 	import { CreatedKhatm } from '$lib/entity/CreatedKhatm'
 	import { onMount, type Snippet } from 'svelte'
 	import { slide } from 'svelte/transition'
+	import { base } from '$app/paths'
 
 	type Props = {
 		/** حداکثر چند آیتم رندر شود؟ */
@@ -55,7 +56,9 @@
 				{/each}
 				{#if hasMore}
 					<li class="list-row">
-						<a class="btn btn-primary !btn-outline" href="/history">نمایش همه‌ی موارد...</a>
+						<a class="btn btn-primary !btn-outline" href={`${base}/history`}>
+							نمایش همه‌ی موارد...
+						</a>
 					</li>
 				{/if}
 			</ul>

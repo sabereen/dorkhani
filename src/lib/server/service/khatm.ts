@@ -6,7 +6,7 @@ export async function khatmService_getPublicList() {
 	const khatms = await db.tKhatm.findMany({
 		where: { private: false },
 		orderBy: { id: 'desc' },
-		take: 10,
+		take: 50,
 	})
 
 	return khatms

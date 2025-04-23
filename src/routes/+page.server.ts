@@ -1,8 +1,8 @@
-import { khatmService_getPublicList } from '$service/khatm'
+import { appSettingsService_getShowcase } from '$service/appSettings'
 import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async () => {
-	const khatms = await khatmService_getPublicList()
+	const khatms = appSettingsService_getShowcase()
 
 	return {
 		khatms,

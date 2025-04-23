@@ -53,3 +53,10 @@ model TKhatmPart {
 
   @@map("khatm_part")
 }
+
+model TAppSettings {
+  id     Int  @id @default(1)
+  config Json
+
+  @@map("app_settings")
+}

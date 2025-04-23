@@ -51,7 +51,7 @@
 {#if khatms.length}
 	<section class="card card-border bg-base-200 mt-4">
 		<div class="card-body">
-			<h2 class="card-title">آخرین ختم‌های ثبت شده</h2>
+			<h2 class="card-title">برخی از آخرین ختم‌ها</h2>
 			<ul class="list">
 				{#each khatms as khatm}
 					<li class="">

@@ -125,9 +125,11 @@
 					<span class="badge badge-info">آیه به آیه</span>
 				{/if}
 			</h1>
-			<div dir="auto" class="self-center break-words pb-1 pt-5 text-start">
-				<ExpandableText text={khatm.description.trim()} maxLength={250} threshold={10} />
-			</div>
+			{#if khatm.description}
+				<div dir="auto" class="self-center break-words pb-1 pt-5 text-start">
+					<ExpandableText text={khatm.description} maxLength={250} threshold={10} />
+				</div>
+			{/if}
 			<div class="stats shadow">
 				<div class="stat">
 					<div class="stat-title">پیشرفت ختم</div>

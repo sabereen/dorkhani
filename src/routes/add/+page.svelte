@@ -34,10 +34,11 @@
 			</legend>
 
 			<label for="input-title" class="fieldset-label mt-2">عنوان</label>
-			<input class="input" type="text" name="title" id="input-title" />
+			<input class="input" type="text" name="title" id="input-title" maxlength="100" />
 
 			<label for="input-description" class="fieldset-label mt-2">توضیحات</label>
-			<textarea class="textarea" name="description" id="input-description"></textarea>
+			<textarea class="textarea" name="description" id="input-description" maxlength="65535">
+			</textarea>
 
 			{#if data.rangeType === 'ayah'}
 				<input type="hidden" name="rangeType" value="ayah" />

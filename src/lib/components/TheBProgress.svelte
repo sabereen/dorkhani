@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '@bprogress/core/css'
 	import { BProgress } from '@bprogress/core'
-	import { beforeNavigate } from '$app/navigation'
+	import { beforeNavigate, afterNavigate } from '$app/navigation'
 	import { onMount } from 'svelte'
 
 	onMount(() => {
@@ -11,10 +11,13 @@
 		})
 	})
 
-	beforeNavigate((navigation) => {
-		BProgress.start()
-		navigation.complete.finally(() => {
-			BProgress.done()
-		})
+	beforeNavigate(() => {
+		if (!BProgress.isStarted()) {
+			BProgress.start()
+		}
+	})
+
+	afterNavigate(() => {
+		BProgress.done()
 	})
 </script>

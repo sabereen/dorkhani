@@ -4,8 +4,9 @@
 	import '../app.css'
 	import TheToast from '$lib/components/TheToast.svelte'
 	import TheFooter from '$lib/components/TheFooter.svelte'
+	import type { LayoutProps } from './$types'
 
-	let { children } = $props()
+	let { children, data }: LayoutProps = $props()
 </script>
 
 {@render children()}
@@ -20,4 +21,4 @@
 
 <div class="grow"></div>
 
-<TheFooter class="mt-5" />
+<TheFooter class="mt-5" supportLink={data.supportLink} />

@@ -2,8 +2,7 @@
 	import IconSupport from '~icons/ic/round-support-agent'
 	import IconGithub from './IconGithub.svelte'
 
-	const { class: className } = $props()
-	const supportLink = ''
+	const { class: className, supportLink } = $props()
 </script>
 
 <div class={[className, 'navbar bg-base-300 rounded-t-xl shadow-sm']}>

@@ -22,8 +22,8 @@ export const actions = {
 		}
 
 		const khatm = await khatmService_create({
-			title: String(title),
-			description: String(description),
+			title: String(title).trim(),
+			description: String(description).trim(),
 			rangeType: rangeType as RangeType,
 			private: isPrivate,
 		})

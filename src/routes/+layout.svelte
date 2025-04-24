@@ -3,6 +3,7 @@
 	import 'virtual:uno.css'
 	import '../app.css'
 	import TheToast from '$lib/components/TheToast.svelte'
+	import TheFooter from '$lib/components/TheFooter.svelte'
 
 	let { children } = $props()
 </script>
@@ -16,3 +17,7 @@
 <div class="z-1000 relative">
 	<TheToast />
 </div>
+
+<div class="grow"></div>
+
+<TheFooter class="mt-5" />

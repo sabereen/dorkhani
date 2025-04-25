@@ -69,7 +69,7 @@
 {/if}
 
 {#snippet khatmItem(khatm: Khatm)}
-	<div class="flex flex-col">
+	<div class="flex min-w-0 grow basis-0 flex-col">
 		<div>
 			{khatm.title}
 			<span class="badge badge-xs" class:badge-info={khatm.isAyahOriented}>
@@ -78,7 +78,7 @@
 		</div>
 		<p class="whitespace-pre-wrap text-xs opacity-85">{khatm.description}</p>
 	</div>
-	<div class="grid-gap-1 ms-auto grid grid-cols-2 items-center">
+	<div class="grid-gap-1 ms-auto grid shrink-0 grid-cols-2 items-center">
 		<a class="btn btn-xs btn-primary btn-square !btn-ghost p-0" href={khatm.link} target="_blank">
 			<IconLink class="size-5" />
 		</a>
@@ -100,7 +100,7 @@
 		<h2 class="card-title">ختم‌های صفحه اصلی</h2>
 		<ul class="list">
 			{#each showcase as khatm (khatm.id)}
-				<li animate:flip class="list-row w-full">
+				<li animate:flip class="list-row !flex w-full">
 					{@render khatmItem(khatm)}
 				</li>
 			{/each}
@@ -121,7 +121,7 @@
 		<h2 class="card-title">آخرین ختم‌های ثبت شده</h2>
 		<ul class="list">
 			{#each lastKhatms as khatm (khatm.id)}
-				<li class="list-row w-full">
+				<li class="list-row !flex w-full">
 					{@render khatmItem(khatm)}
 				</li>
 			{/each}

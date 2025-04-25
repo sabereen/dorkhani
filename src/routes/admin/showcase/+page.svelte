@@ -62,6 +62,12 @@
 
 <Header title="مدیریت ختم‌های صفحه اصلی" />
 
+{#if data.autoShowcase}
+	<div class="alert alert-error mt-4">
+		<p>ویترین خودکار فعال است! لذا تنظیمات این صفحه نادیده گرفته می‌شود.</p>
+	</div>
+{/if}
+
 {#snippet khatmItem(khatm: Khatm)}
 	<div class="flex flex-col">
 		<div>

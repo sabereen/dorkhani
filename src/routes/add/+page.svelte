@@ -66,7 +66,7 @@
 				{/if}
 			{/if}
 
-			<div class="bg-base-200 mt-2 flex flex-col">
+			<div class="bg-base-100 mt-2 flex flex-col rounded-lg px-2 py-1">
 				{#snippet radioItem(value: 'public' | 'private', title: string, description: string)}
 					<label class="flex items-center py-1">
 						<input class="radio" type="radio" name="access" {value} checked={value === 'public'} />

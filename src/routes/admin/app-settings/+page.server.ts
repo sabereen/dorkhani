@@ -1,4 +1,5 @@
 import { appSettings_store, appSettingsService_setKey } from '$service/appSettings'
+import { auth_ensureIsAdmin } from '$service/auth'
 import type { PageServerLoad, Actions } from './$types'
 
 export const load: PageServerLoad = () => {
@@ -11,6 +12,8 @@ export const load: PageServerLoad = () => {
 
 export const actions = {
 	default: async (event) => {
+		auth_ensureIsAdmin(event)
+
 		const form = await event.request.formData()
 		const supportLink = form.get('supportLink')?.toString()
 		if (supportLink !== appSettings_store.config.supportLink) {

@@ -6,8 +6,8 @@ import { page } from '$app/state'
  * @param path
  * @returns
  */
-export function rebaseFullPath(path = '') {
+export function rebaseFullPath(path = '', origin = page.url.origin) {
 	path = path.replace(/^\/?/, '/')
-	const url = new URL(base + path, page.url)
+	const url = new URL(base + path, origin)
 	return url.href
 }

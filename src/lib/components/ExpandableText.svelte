@@ -14,7 +14,7 @@
 </script>
 
 <!-- استفاده از دیتیلز سامری صرفا برای دسترس‌پذیری است -->
-<span class="whitespace-pre-wrap">{open ? text : `${firstPart}...`}</span>
+<span class="whitespace-pre-wrap">{open || !secondPart ? text : `${firstPart}...`}</span>
 {#if secondPart}
 	<details bind:open class="inline">
 		<summary class="link text-primary inline-block text-sm">

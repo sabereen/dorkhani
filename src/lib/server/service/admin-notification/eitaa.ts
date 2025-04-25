@@ -58,4 +58,17 @@ export class EitaaAdminNotification implements AdminNotification {
 
 		await this.send(message)
 	}
+
+	async sendError(message: string, meta = ''): Promise<void> {
+		let metaToShow = String(meta)
+		try {
+			metaToShow = JSON.stringify(metaToShow, null, 2)
+		} catch {
+			/* empty */
+		}
+
+		const msg = ['خطای غیر منتظره', message, metaToShow].join('\n')
+
+		await this.send(msg)
+	}
 }

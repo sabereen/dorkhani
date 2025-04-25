@@ -7,6 +7,7 @@
 	import { onMount } from 'svelte'
 	import IconCopy from '~icons/ic/outline-copy-all'
 	import IconShare from '~icons/ic/outline-share'
+	import IconOpen from '~icons/ic/round-open-in-new'
 
 	type Props = {
 		khatm: Khatm
@@ -54,7 +55,13 @@
 			</div>
 		{/if}
 		<p class="text-sm" dir="ltr">
-			<a href={khatm.link} class="link font-sans" target="_blank">{khatm.link}</a>
+			<a href={khatm.link} class="link font-sans" target="_blank">
+				{khatm.link}
+			</a>
+			<a href={khatm.link} class="btn !btn-outline btn-xs vertical-middle" dir="auto">
+				<IconOpen class="size-4" />
+				باز کردن
+			</a>
 		</p>
 		<div class="card-actions">
 			{#if canShare}

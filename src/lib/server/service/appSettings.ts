@@ -2,8 +2,15 @@ import type { TKhatm } from '@prisma/client'
 import { db } from '../db'
 
 type Config = {
-	readonly showcase: ReadonlyArray<number>
+	/** لینک پشتیبانی سایت */
 	readonly supportLink?: string
+	/** آیا ختم هاص صفحه اصلی خودکار تولید شوند؟ */
+	readonly autoShowcase?: boolean
+	/**
+	 * ختم‌های صفحه اصلی
+	 * اگر automaticShowcase فعال باشد این فیلد کاربردی ندارد.
+	 */
+	readonly showcase: ReadonlyArray<number>
 }
 
 type Store = {
@@ -15,6 +22,7 @@ const store: Store = {
 	config: {
 		showcase: [],
 		supportLink: '',
+		autoShowcase: true,
 	},
 	showcaseKhatms: [],
 }

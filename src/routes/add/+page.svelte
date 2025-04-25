@@ -37,8 +37,8 @@
 			<input class="input" type="text" name="title" id="input-title" maxlength="100" />
 
 			<label for="input-description" class="fieldset-label mt-2">توضیحات</label>
-			<textarea class="textarea" name="description" id="input-description" maxlength="65535">
-			</textarea>
+			<textarea class="textarea" name="description" id="input-description" maxlength="65535"
+			></textarea>
 
 			{#if data.rangeType === 'ayah'}
 				<input type="hidden" name="rangeType" value="ayah" />
@@ -66,10 +66,27 @@
 				{/if}
 			{/if}
 
-			<label class="mt-2 flex items-center">
-				<input type="checkbox" name="private" class="checkbox me-2" />
-				<span class="text-md">خصوصی</span>
-			</label>
+			<div class="bg-base-200 mt-2 flex flex-col">
+				{#snippet radioItem(value: 'public' | 'private', title: string, description: string)}
+					<label class="flex items-center py-1">
+						<input class="radio" type="radio" name="access" {value} checked={value === 'public'} />
+						<span class="ms-2 flex min-w-0 grow basis-0 flex-col">
+							<span class="text-[.9rem] font-bold">{title}</span>
+							<span class="text-xs">{description}</span>
+						</span>
+					</label>
+				{/snippet}
+				{@render radioItem(
+					'public',
+					'عمومی',
+					'لینک ختم کوتاه‌تر است و در صورت تأیید مدیر در صفحه اصلی نمایش داده می‌شود.',
+				)}
+				{@render radioItem(
+					'private',
+					'خصوصی',
+					'لینک ختم بلندتر است و هرگز در صفحه اصلی سایت نمایش داده نمی‌شود.',
+				)}
+			</div>
 
 			<input class="btn btn-primary mt-3" type="submit" value="ایجاد" />
 		</fieldset>

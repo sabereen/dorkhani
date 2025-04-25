@@ -15,7 +15,7 @@ export const actions = {
 		const title = form.get('title')
 		const rangeType = String(form.get('rangeType'))
 		const description = form.get('description') || ''
-		const isPrivate = form.get('private') === 'on'
+		const isPrivate = form.get('access') === 'private'
 
 		if (!title) {
 			return fail(400, { errorMessage: 'عنوان اجباری است.' })

@@ -20,6 +20,10 @@
 	)
 </script>
 
+<svelte:head>
+	<title>ختم قرآن | تنیمات کلی سایت</title>
+</svelte:head>
+
 <Header title="مدیریت تنظیات کلی" />
 
 <form use:enhance class="mt-4 flex justify-center p-2" action="" method="POST">

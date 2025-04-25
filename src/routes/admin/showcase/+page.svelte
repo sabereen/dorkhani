@@ -56,6 +56,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>ختم قرآن | ختم‌های صفحه اصلی</title>
+</svelte:head>
+
 <Header title="مدیریت ختم‌های صفحه اصلی" />
 
 {#snippet khatmItem(khatm: Khatm)}

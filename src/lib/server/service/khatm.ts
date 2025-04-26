@@ -2,11 +2,11 @@ import type { RangeType } from '@prisma/client'
 import { v4 as uuid } from 'uuid'
 import { db } from '$lib/server/db'
 
-export async function khatmService_getPublicList() {
+export async function khatmService_getPublicList({ limit = 20 } = {}) {
 	const khatms = await db.tKhatm.findMany({
 		where: { private: false },
 		orderBy: { id: 'desc' },
-		take: 10,
+		take: limit,
 	})
 
 	return khatms

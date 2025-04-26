@@ -14,6 +14,7 @@
 	import { browser } from '$app/environment'
 	import { base } from '$app/paths'
 	import { rebaseFullPath } from '$lib/utility/path'
+	import ExpandableText from '$lib/components/ExpandableText.svelte'
 
 	const { data, children }: LayoutProps = $props()
 
@@ -117,18 +118,18 @@
 
 <div class="hero">
 	<div class="hero-content flex flex-col text-center sm:flex-row">
-		<div class="max-w-md">
-			<h1 class="break-words text-3xl font-black">
+		<div class="w-full max-w-md">
+			<h1 class="break-words text-2xl font-black">
 				{khatm.title}
 				{#if khatm.rangeType === 'ayah'}
 					<span class="badge badge-info">آیه به آیه</span>
 				{/if}
 			</h1>
-			<div class="break-words pb-1 pt-5">
-				{#each khatm.description?.split('\n') as line}
-					<p dir="auto" class="mt-1 min-h-3">{line}</p>
-				{/each}
-			</div>
+			{#if khatm.description}
+				<div dir="auto" class="self-center break-words pb-1 pt-5 text-start">
+					<ExpandableText text={khatm.description} maxLength={250} threshold={10} />
+				</div>
+			{/if}
 			<div class="stats shadow">
 				<div class="stat">
 					<div class="stat-title">پیشرفت ختم</div>

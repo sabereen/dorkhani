@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { browser } from '$app/environment'
+	import ExpandableText from '$lib/components/ExpandableText.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { CreatedKhatm } from '$lib/entity/CreatedKhatm'
 	import type { Khatm } from '$lib/entity/Khatm.svelte'
 	import { onMount } from 'svelte'
 	import IconCopy from '~icons/ic/outline-copy-all'
 	import IconShare from '~icons/ic/outline-share'
+	import IconOpen from '~icons/ic/round-open-in-new'
 
 	type Props = {
 		khatm: Khatm
@@ -47,11 +49,19 @@
 <div class="card card-xl bg-base-200 mt-4 shadow-sm">
 	<div class="card-body">
 		<h2 class="card-title">{khatm.title}</h2>
-		{#each khatm.description?.split('\n') as line}
-			<p dir="auto">{line}</p>
-		{/each}
+		{#if khatm.description}
+			<div dir="auto" class="whitespace-pre-wrap break-words">
+				<ExpandableText text={khatm.description} maxLength={250} />
+			</div>
+		{/if}
 		<p class="text-sm" dir="ltr">
-			<a href={khatm.link} class="link font-sans" target="_blank">{khatm.link}</a>
+			<a href={khatm.link} class="link font-sans" target="_blank">
+				{khatm.link}
+			</a>
+			<a href={khatm.link} class="btn !btn-outline btn-xs vertical-middle" dir="auto">
+				<IconOpen class="size-4" />
+				باز کردن
+			</a>
 		</p>
 		<div class="card-actions">
 			{#if canShare}

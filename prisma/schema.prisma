@@ -25,7 +25,7 @@ enum RangeType {
 model TKhatm {
   id          Int          @id @default(autoincrement())
   // عنوان
-  title       String       @db.VarChar(255)
+  title       String       @db.VarChar(100)
   // توضیحات
   description String       @db.Text()
   // نوع بازه‌ی قابل انتخاب توسط کاربر
@@ -52,4 +52,11 @@ model TKhatmPart {
   created DateTime @default(now())
 
   @@map("khatm_part")
+}
+
+model TAppSettings {
+  id     Int  @id @default(1)
+  config Json
+
+  @@map("app_settings")
 }

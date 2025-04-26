@@ -8,6 +8,12 @@
 به صورت کلی استفاده از کدهای این ریپازیتوری در سایر پروژه‌ها مجاز است،
 به شرط اینکه کد آن پروژه‌ها نیز به صورت متن‌باز منتشر شود.
 
+# مستندات محصولی
+
+مستندات محصولی پروژه دورخوانی:
+
+https://docs.google.com/document/d/1pfFlyGtX7q5XsaEhDGlUMa7GrybwvR06ERrzLZmvRlw
+
 # راه اندازی
 
 برای بیلد و اجرای پروژه متغیرهای محیطی زیر را ست کنید:
@@ -16,6 +22,9 @@
 PORT = 3000
 ORIGIN = 'https://dorkhani.ir'
 DATABASE_URL = 'mysql://user:pass@host:3306/khatm'
+ADMIN_USER = "admin"
+ADMIN_PASS = "123456"
+BASE_PATH = ''
 PUBLIC_FONT_PROXY=1
 ```
 

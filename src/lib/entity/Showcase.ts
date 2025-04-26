@@ -1,5 +1,5 @@
 import { request } from '$lib/utility/request'
 
-export async function showcase_save(showcase: number[]) {
-	await request('post', '/showcase', { showcase })
+export async function showcase_save(body: { showcase: number[]; autoShowcase: boolean }) {
+	await request('post', '/showcase', body)
 }

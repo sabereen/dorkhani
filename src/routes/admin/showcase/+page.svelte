@@ -6,17 +6,19 @@
 	import IconShowcaseEnabled from '~icons/ic/baseline-campaign'
 	import IconLink from '~icons/ic/round-link'
 	import { SvelteSet } from 'svelte/reactivity'
-	import { slide } from 'svelte/transition'
+	import { fly, slide } from 'svelte/transition'
 	import { showcase_save } from '$lib/entity/Showcase'
 	import { handleError } from '$lib/utility/handleError'
 	import { flip } from 'svelte/animate'
+	import { watch } from '$lib/hooks/watch.svelte'
 
 	const { data }: PageProps = $props()
 
-	const lastKhatms = $derived(Khatm.fromPlainList(data.lastKhatms))
-
 	const MAX_LENGTH = 20
 
+	const lastKhatms = $derived(Khatm.fromPlainList(data.lastKhatms))
+
+	let autoShowcase = $state(data.autoShowcase)
 	let loading = $state(false)
 	let showcase = $state(Khatm.fromPlainList(data.showcaseKhatms))
 	let showcaseSet = $derived(new SvelteSet(showcase.map((i) => i.id)))
@@ -45,7 +47,7 @@
 		if (loading) return
 		loading = true
 
-		showcase_save(showcase.map((k) => k.id))
+		showcase_save({ showcase: showcase.map((k) => k.id), autoShowcase })
 			.then(() => {
 				isDirty = false
 			})
@@ -54,6 +56,13 @@
 				loading = false
 			})
 	}
+
+	watch(
+		() => autoShowcase,
+		() => {
+			isDirty = true
+		},
+	)
 </script>
 
 <svelte:head>
@@ -61,12 +70,6 @@
 </svelte:head>
 
 <Header title="مدیریت ختم‌های صفحه اصلی" />
-
-{#if data.autoShowcase}
-	<div class="alert alert-error mt-4">
-		<p>ویترین خودکار فعال است! لذا تنظیمات این صفحه نادیده گرفته می‌شود.</p>
-	</div>
-{/if}
 
 {#snippet khatmItem(khatm: Khatm)}
 	<div class="flex min-w-0 grow basis-0 flex-col">
@@ -98,13 +101,31 @@
 <section class="card card-border bg-base-200 mt-4">
 	<div class="card-body">
 		<h2 class="card-title">ختم‌های صفحه اصلی</h2>
-		<ul class="list">
-			{#each showcase as khatm (khatm.id)}
-				<li animate:flip class="list-row !flex w-full">
-					{@render khatmItem(khatm)}
-				</li>
-			{/each}
-		</ul>
+
+		<label class="bg-base-100 mt-2 flex cursor-pointer items-center rounded-lg px-2 py-1 py-2">
+			<input class="checkbox" type="checkbox" name="autoShowcase" bind:checked={autoShowcase} />
+			<span class="ms-2 flex min-w-0 grow basis-0 flex-col">
+				<span class="text-[.9rem] font-bold">ویترین خودکار</span>
+				<p class="text-xs">
+					بدون نیاز به تأیید مدیر آخرین ختم‌های عمومی در صفحه اصلی نمایش داده شوند.
+				</p>
+			</span>
+		</label>
+
+		{#if !autoShowcase}
+			<ul class="list" in:fly={{ y: 50 }}>
+				{#each showcase as khatm (khatm.id)}
+					<li
+						animate:flip={{ duration: 300 }}
+						transition:fly={{ x: 20 }}
+						class="list-row !flex w-full"
+					>
+						{@render khatmItem(khatm)}
+					</li>
+				{/each}
+			</ul>
+		{/if}
+
 		<div class="card-actions justify-end">
 			<button disabled={!isDirty} class="btn btn-primary" onclick={save}>
 				{#if loading}
@@ -118,7 +139,7 @@
 
 <section class="card card-border bg-base-200 mt-4">
 	<div class="card-body">
-		<h2 class="card-title">آخرین ختم‌های ثبت شده</h2>
+		<h2 class="card-title">آخرین ختم‌های عمومی</h2>
 		<ul class="list">
 			{#each lastKhatms as khatm (khatm.id)}
 				<li class="list-row !flex w-full">

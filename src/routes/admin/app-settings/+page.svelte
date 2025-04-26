@@ -9,7 +9,6 @@
 
 	const formData = $state({
 		supportLink: data.supportLink,
-		autoShowcase: data.autoShowcase,
 		eitaa: data.notification.eitaa,
 		eitaaToken: data.notification.eitaaToken || '',
 		eitaaChatId: data.notification.eitaaChatId || '',
@@ -20,7 +19,6 @@
 		() => {
 			toast('info', 'تنظیمات ذخیره شد.')
 			formData.supportLink = form?.supportLink || ''
-			formData.autoShowcase = form?.autoShowcase
 			formData.eitaa = form?.eitaa
 			formData.eitaaToken = form?.eitaaToken || ''
 			formData.eitaaChatId = form?.eitaaChatId || ''
@@ -45,21 +43,6 @@
 			dir="ltr"
 			id="input-support-link"
 		/>
-
-		<label class="bg-base-100 mt-2 flex cursor-pointer items-center rounded-lg px-2 py-1 py-2">
-			<input
-				class="checkbox"
-				type="checkbox"
-				name="autoShowcase"
-				bind:checked={formData.autoShowcase}
-			/>
-			<span class="ms-2 flex min-w-0 grow basis-0 flex-col">
-				<span class="text-[.9rem] font-bold">ویترین خودکار</span>
-				<p class="text-xs">
-					بدون نیاز به تأیید مدیر آخرین ختم‌های عمومی در صفحه اصلی نمایش داده شوند.
-				</p>
-			</span>
-		</label>
 
 		<label class="bg-base-100 mt-2 flex cursor-pointer items-center rounded-lg px-2 py-1 py-2">
 			<input class="checkbox" type="checkbox" name="eitaa" bind:checked={formData.eitaa} />

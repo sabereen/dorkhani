@@ -12,7 +12,7 @@
 <Header title="مدیریت" />
 
 <section class="mt-5">
-	<ul class="grid-gap-2 grid grid-cols-2">
+	<ul class="grid-gap-2 grid grid-cols-2 whitespace-nowrap">
 		<li>
 			<a class="btn !btn-soft btn-primary w-full" href={`${base}/admin/app-settings`}>
 				<IconSettings class="size-7" />

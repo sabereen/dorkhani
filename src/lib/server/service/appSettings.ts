@@ -5,7 +5,7 @@ type Config = {
 	/** لینک پشتیبانی سایت */
 	readonly supportLink?: string
 	/** آیا ختم هاص صفحه اصلی خودکار تولید شوند؟ */
-	readonly autoShowcase?: boolean
+	readonly autoShowcase: boolean
 	/**
 	 * ختم‌های صفحه اصلی
 	 * اگر automaticShowcase فعال باشد این فیلد کاربردی ندارد.

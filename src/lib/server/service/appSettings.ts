@@ -11,6 +11,14 @@ type Config = {
 	 * اگر automaticShowcase فعال باشد این فیلد کاربردی ندارد.
 	 */
 	readonly showcase: ReadonlyArray<number>
+	/**
+	 * تنظیمات مربوط به نوتیفیکیشن
+	 */
+	readonly notification: {
+		eitaa?: boolean
+		eitaaToken?: string
+		eitaaChatId?: string
+	}
 }
 
 type Store = {
@@ -23,6 +31,9 @@ const store: Store = {
 		showcase: [],
 		supportLink: '',
 		autoShowcase: true,
+		notification: {
+			eitaa: false,
+		},
 	},
 	showcaseKhatms: [],
 }

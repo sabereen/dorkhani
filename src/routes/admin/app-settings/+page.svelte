@@ -10,6 +10,9 @@
 	const formData = $state({
 		supportLink: data.supportLink,
 		autoShowcase: data.autoShowcase,
+		eitaa: data.notification.eitaa,
+		eitaaToken: data.notification.eitaaToken || '',
+		eitaaChatId: data.notification.eitaaChatId || '',
 	})
 
 	watch(
@@ -18,6 +21,9 @@
 			toast('info', 'تنظیمات ذخیره شد.')
 			formData.supportLink = form?.supportLink || ''
 			formData.autoShowcase = form?.autoShowcase
+			formData.eitaa = form?.eitaa
+			formData.eitaaToken = form?.eitaaToken || ''
+			formData.eitaaChatId = form?.eitaaChatId || ''
 		},
 	)
 </script>
@@ -54,6 +60,48 @@
 				</p>
 			</span>
 		</label>
+
+		<label class="bg-base-100 mt-2 flex cursor-pointer items-center rounded-lg px-2 py-1 py-2">
+			<input class="checkbox" type="checkbox" name="eitaa" bind:checked={formData.eitaa} />
+			<span class="ms-2 flex min-w-0 grow basis-0 flex-col">
+				<span class="text-[.9rem] font-bold">نوتیفیکشن ایتا</span>
+				<p class="text-xs">
+					هرگاه خطایی غیر منتظره در سیستم رخ دهد یا اینکه ختم جدیدی ایجاد شود نوتیفیکیشن به ایتا
+					ارسال شود.
+				</p>
+			</span>
+		</label>
+
+		<label for="input-eitaa-token" class="fieldset-label mt-2">توکن ایتا (API Key)</label>
+		<input
+			bind:value={formData.eitaaToken}
+			class="input"
+			type="password"
+			autocomplete="off"
+			name="eitaaToken"
+			dir="ltr"
+			id="input-eitaa-token"
+		/>
+		<p class="text-xs">
+			در پنل <a class="link" href="https://eitaayar.ir" target="_blank">eitaayar.ir</a>
+			از منوی API توکن را دریافت کنید.
+		</p>
+
+		<label for="input-eitaa-chat-id" class="fieldset-label mt-2">شناسه گفتگوی ایتا (Chat ID)</label>
+		<input
+			bind:value={formData.eitaaChatId}
+			class="input"
+			type="text"
+			autocomplete="off"
+			name="eitaaChatId"
+			inputmode="numeric"
+			dir="ltr"
+			id="input-eitaa-chat-id"
+		/>
+		<p class="text-xs">
+			کانال یا گروه مورد نظر را در قسمت «کانال‌ها» و «افزودن کانال جدید» در پنل ایتایار تعریف کنید
+			تا شناسه را در اختیارتان قرار دهد.
+		</p>
 
 		<button type="submit" class="btn btn-primary mt-3">ذخیره</button>
 	</fieldset>

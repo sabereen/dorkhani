@@ -1,11 +1,7 @@
 import type { TKhatm } from '@prisma/client'
 import { rebaseFullPath } from '$lib/utility/path'
+import { appSettings_store } from '$service/appSettings'
 import type { AdminNotification } from './adminNotification'
-
-import { env } from '$env/dynamic/private'
-
-const token = env.EITAA_TOKEN
-const chatId = env.EITAA_CHAT_ID
 
 type SendMessageBody = {
 	chat_id: string | number
@@ -20,11 +16,13 @@ type SendMessageBody = {
 
 export class EitaaAdminNotification implements AdminNotification {
 	static enabled() {
-		return !!(token && chatId)
+		const { eitaa, eitaaChatId, eitaaToken } = appSettings_store.config.notification
+		return !!(eitaa && eitaaChatId && eitaaToken)
 	}
 
 	private async request(method: string, data: object) {
-		const url = `https://eitaayar.ir/api/${token}/${method}`
+		const { eitaaToken } = appSettings_store.config.notification
+		const url = `https://eitaayar.ir/api/${eitaaToken}/${method}`
 		const response = await fetch(url, {
 			method: 'POST',
 			body: JSON.stringify(data),
@@ -41,8 +39,9 @@ export class EitaaAdminNotification implements AdminNotification {
 	}
 
 	async send(text: string) {
+		const { eitaaChatId } = appSettings_store.config.notification
 		await this.requestSendMessage({
-			chat_id: chatId,
+			chat_id: eitaaChatId!,
 			text,
 		})
 	}

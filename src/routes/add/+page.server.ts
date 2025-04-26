@@ -2,6 +2,7 @@ import { fail } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import type { RangeType } from '@prisma/client'
 import { khatmService_create } from '$service/khatm'
+import { getNotificationProvider } from '$service/admin-notification'
 
 export const load: PageServerLoad = ({ url }) => {
 	return {
@@ -27,6 +28,11 @@ export const actions = {
 			rangeType: rangeType as RangeType,
 			private: isPrivate,
 		})
+
+		if (!isPrivate) {
+			const notif = getNotificationProvider()
+			notif.sendNewKhatm(khatm, event.url.origin)
+		}
 
 		return { khatm }
 	},

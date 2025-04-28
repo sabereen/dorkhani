@@ -55,13 +55,30 @@
 			<ul class="list">
 				{#each khatms as khatm}
 					<li class="">
-						<a class="list-row !block w-full hover:bg-green-500/15" href={khatm.link}>
-							{khatm.title}
-							{#if !khatm.isFree}
-								<span class="badge badge-xs" class:badge-info={khatm.isAyahOriented}>
-									{khatm.rangeTypeTitle}
+						<a
+							class="list-row clear-both !block !flex w-full hover:bg-green-500/15"
+							href={khatm.link}
+						>
+							<!-- Title & Badge -->
+							<span class="min-w-0 grow">
+								{khatm.title}
+								{#if !khatm.isFree}
+									<span class="badge badge-xs" class:badge-info={khatm.isAyahOriented}>
+										{khatm.rangeTypeTitle}
+									</span>
+								{/if}
+							</span>
+							<!-- Percent -->
+							<span class="flex shrink-0 flex-col items-end">
+								<span class="-mt-1 px-0.5 text-[13px]">
+									{khatm.percent.toLocaleString('fa')}%
 								</span>
-							{/if}
+								<progress
+									class="progress progress-success h-1.5 w-10"
+									max={100}
+									value={khatm.percent}
+								></progress>
+							</span>
 						</a>
 					</li>
 				{/each}

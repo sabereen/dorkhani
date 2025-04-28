@@ -8,8 +8,7 @@ export const init: ServerInit = async () => {
 
 export const handleError: HandleServerError = async ({ error, event, status, message }) => {
 	getNotificationProvider()
-		.sendError(message, {
-			status,
+		.sendError(`${status} ${message}`, {
 			href: event.url.href,
 			error: String(error),
 		})

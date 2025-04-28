@@ -36,7 +36,7 @@
 			if (~index) showcase.splice(index, 1)
 		} else {
 			showcase.push(khatm)
-			showcase.sort((a, b) => b.id - a.id)
+			showcase.sort((a, b) => a.id - b.id)
 			if (showcase.length > MAX_LENGTH) {
 				showcase.length = MAX_LENGTH
 			}

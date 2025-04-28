@@ -61,7 +61,7 @@ export class EitaaAdminNotification implements AdminNotification {
 	async sendError(message: string, meta = ''): Promise<void> {
 		let metaToShow = String(meta)
 		try {
-			metaToShow = JSON.stringify(metaToShow, null, 2)
+			metaToShow = JSON.stringify(meta, null, 2)
 		} catch {
 			/* empty */
 		}

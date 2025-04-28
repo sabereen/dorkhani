@@ -8,6 +8,7 @@ import { KhatmPart } from './KhatmPart'
 import { request } from '$lib/utility/request'
 import copy from 'clipboard-copy'
 import { rebaseFullPath } from '$lib/utility/path'
+import { browser } from '$app/environment'
 
 const cache = new Map<number, Khatm>()
 
@@ -21,11 +22,16 @@ export class Khatm {
 	}
 
 	static fromPlain(plain: TKhatm & { parts?: TKhatmPart[] }) {
+		if (!browser) return new this(plain)
+
 		let khatm = cache.get(plain.id)
 		if (khatm) {
 			untrack(() => {
-				khatm!.plain = plain
-				if (plain.parts) {
+				const isNewer = plain.versesRead > khatm!.versesRead
+				if (isNewer) {
+					khatm!.plain = plain
+				}
+				if (plain.parts && khatm!.plainParts.length < plain.parts.length) {
 					khatm!.plainParts = plain.parts
 				}
 			})
@@ -77,7 +83,7 @@ export class Khatm {
 	}
 
 	get progress() {
-		return this.plain.versesRead / COUNT_OF_AYAHS
+		return this.versesRead / COUNT_OF_AYAHS
 	}
 
 	get percent() {

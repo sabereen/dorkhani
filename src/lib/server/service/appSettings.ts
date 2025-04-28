@@ -74,7 +74,19 @@ async function apply(newConfig?: Config | null) {
 	store.showcaseKhatms = result
 }
 
-export function appSettingsService_getShowcase() {
+export function appSettingsService_getStaleShowcaseWhileRevalidate() {
+	const currentShowcase = store.config.showcase
+	db.tKhatm
+		.findMany({
+			where: {
+				id: { in: currentShowcase as number[] },
+			},
+		})
+		.then((result) => {
+			if (currentShowcase === store.config.showcase) {
+				store.showcaseKhatms = result
+			}
+		})
 	return store.showcaseKhatms
 }
 

@@ -4,6 +4,7 @@ import '@ghoran/text/fonts/uthmanic-hafs/style.css'
 import { noop } from '$lib/utility/noop'
 import type { Ayah } from '@ghoran/entity'
 import { SvelteSet } from 'svelte/reactivity'
+import { base } from '$app/paths'
 
 export type FontSlug = 'hafs' | 'qpc1' | 'qpc2'
 
@@ -79,7 +80,7 @@ abstract class QPCFontManager implements FontManager {
 		this.loadingPages.add(pageNumber)
 
 		try {
-			const src = `/api/font?font=qpc-v${this.version}&page=${pageNumber}`
+			const src = `${base}/api/font?font=qpc-v${this.version}&page=${pageNumber}`
 			const fontFamily = `qpc-v${this.version}-${pageNumber}`
 			const fontFace = new FontFace(fontFamily, `url(${src})`, { display: 'block' })
 			document.fonts.add(fontFace)

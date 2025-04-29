@@ -1,7 +1,6 @@
 <script lang="ts">
 	import '@ghoran/text/fonts/uthmanic-hafs/style.css'
 	import { fade, slide } from 'svelte/transition'
-	import { onMount } from 'svelte'
 	import type { SelectedAyah } from '$api/khatmPart/pickNext/+server'
 	import { Ayah } from '@ghoran/entity'
 	import { surah_getName } from '$lib/entity/Surah'
@@ -13,6 +12,8 @@
 	import { ayah_getAudioLink, ayah_getExternalLink } from '$lib/entity/Ayah'
 	import { PUBLIC_FONT_PROXY } from '$env/static/public'
 	import { useKathmContext } from '../khatm-context.svelte'
+	import { getFontManager, type FontSlug } from './font.svelte'
+	import { watchEager } from '$lib/hooks/watch.svelte'
 
 	const khatmContext = useKathmContext()
 	const khatm = $derived(khatmContext.khatm)
@@ -83,44 +84,24 @@
 		}
 	}
 
-	onMount(() => {
-		// فونت را از قبل لود می‌کنیم که متن سریع و بدون پرش نمایش داده شود
-		document.fonts.load('30px uthmanic-hafs')
-	})
+	let font = $state<FontSlug>('hafs')
+	const fontManager = $derived(getFontManager(font))
 
-	const fontStyleHTML = $derived.by(() => {
-		let html: string[] = []
-		let lastPage = 0
-		for (let i = 0; i < selectedAyat.length; i++) {
-			const ayah = Ayah.get(selectedAyat[i].index)
-			if (ayah.pageNumber === lastPage) continue
-			lastPage = ayah.pageNumber
+	watchEager(
+		() => [font, selectedAyat],
+		() => {
+			if (!selectedAyat.length && !khatm.finished) {
+				const ayah = Ayah.get(khatm.versesRead)
+				fontManager.preloadAyah(ayah)
+			}
 
-			const family1 = `qpc-v1-${lastPage}`
-			const src1 = `/api/font?font=qpc-v1&page=${lastPage}`
-			html.push(`@font-face {font-family: '${family1}'; src: url('${src1}'); font-display: block;}`)
-
-			const family2 = `qpc-v2-${lastPage}`
-			const src2 = `/api/font?font=qpc-v2&page=${lastPage}`
-			html.push(`@font-face {font-family: '${family2}'; src: url('${src2}'); font-display: block;}`)
-		}
-		return `<style>\n${html.join('\n')}\n</style>`
-	})
-
-	let font = $state<'hafs' | 'qpc1' | 'qpc2'>('hafs')
-	function getFontFamily(ayah: Ayah) {
-		if (font === 'hafs') {
-			// return `font-[uthmanic-hafs]`
-			return `'uthmanic-hafs', 'uthmanic-hafs-fallback'`
-		}
-		if (font === 'qpc1') {
-			return `qpc-v1-${ayah.pageNumber}`
-		}
-		return `qpc-v2-${ayah.pageNumber}`
-	}
+			selectedAyat.forEach(({ index }) => {
+				const ayah = Ayah.get(index)
+				fontManager.preloadAyah(ayah)
+			})
+		},
+	)
 </script>
-
-{@html fontStyleHTML}
 
 {#if selectedAyat.length}
 	<div bind:this={ayahWrapper}>
@@ -156,11 +137,11 @@
 					{/if}
 					<p
 						class={[
-							'leading-14 mb-4 break-words font-normal',
-							font === 'qpc1' ? 'text-[34px]' : 'text-3xl',
+							'leading-14 mb-4 break-words font-normal transition-opacity',
+							fontManager.className,
 						]}
-						class:break-all={font === 'qpc1' || font === 'qpc2'}
-						style:font-family={getFontFamily(ayah)}
+						class:opacity-0={fontManager.isLoading(ayah)}
+						style:font-family={fontManager.getFontFamily(ayah)}
 					>
 						{#if font === 'hafs'}{textHafs}{/if}
 						{#if font === 'qpc1'}{textQPC1}{/if}

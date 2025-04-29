@@ -25,7 +25,11 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
 	if (font !== 'qpc-v1' && font !== 'qpc-v2') throw error(400)
 
 	const blob = await getFontCacheFirst(font, page, fetch)
-	return new Response(blob)
+	return new Response(blob, {
+		headers: {
+			'Cache-Control': 'public, max-age=2592000', // 1 month
+		},
+	})
 }
 
 function getFontCacheFirst(font: 'qpc-v1' | 'qpc-v2', page: number, fetch = globalThis.fetch) {

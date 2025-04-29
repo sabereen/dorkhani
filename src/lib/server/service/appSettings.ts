@@ -1,5 +1,6 @@
 import type { TKhatm } from '@prisma/client'
 import { db } from '../db'
+import { khatmService_getList } from './khatm'
 
 type Config = {
 	/** لینک پشتیبانی سایت */
@@ -66,27 +67,17 @@ async function apply(newConfig?: Config | null) {
 		...store.config,
 		...newConfig,
 	}
-	const result = await db.tKhatm.findMany({
-		where: {
-			id: { in: newConfig.showcase as number[] },
-		},
-	})
+	const result = await khatmService_getList(newConfig.showcase)
 	store.showcaseKhatms = result
 }
 
 export function appSettingsService_getStaleShowcaseWhileRevalidate() {
 	const currentShowcase = store.config.showcase
-	db.tKhatm
-		.findMany({
-			where: {
-				id: { in: currentShowcase as number[] },
-			},
-		})
-		.then((result) => {
-			if (currentShowcase === store.config.showcase) {
-				store.showcaseKhatms = result
-			}
-		})
+	khatmService_getList(currentShowcase).then((result) => {
+		if (currentShowcase === store.config.showcase) {
+			store.showcaseKhatms = result
+		}
+	})
 	return store.showcaseKhatms
 }
 

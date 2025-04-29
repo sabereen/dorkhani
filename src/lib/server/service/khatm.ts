@@ -12,6 +12,14 @@ export async function khatmService_getPublicList({ limit = 20 } = {}) {
 	return khatms
 }
 
+export async function khatmService_getList(ids: ReadonlyArray<number>) {
+	const khatms = await db.tKhatm.findMany({
+		where: { id: { in: ids as number[] } },
+		orderBy: { id: 'desc' },
+	})
+	return khatms
+}
+
 type CreatingKhatm = {
 	title: string
 	description: string

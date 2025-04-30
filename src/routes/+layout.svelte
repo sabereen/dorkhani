@@ -5,8 +5,11 @@
 	import TheToast from '$lib/components/TheToast.svelte'
 	import TheFooter from '$lib/components/TheFooter.svelte'
 	import type { LayoutProps } from './$types'
+	import { LocalSettings } from '$lib/entity/LocalSettings.svelte'
 
 	let { children, data }: LayoutProps = $props()
+
+	LocalSettings.provide()
 </script>
 
 {@render children()}

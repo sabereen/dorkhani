@@ -9,6 +9,7 @@ import { request } from '$lib/utility/request'
 import copy from 'clipboard-copy'
 import { rebaseFullPath } from '$lib/utility/path'
 import { browser } from '$app/environment'
+import type { Translation } from './LocalSettings.svelte'
 
 const cache = new Map<number, Khatm>()
 
@@ -142,11 +143,12 @@ export class Khatm {
 		return KhatmPart.fromList(this.plainParts)
 	}
 
-	async pickNextAyat(count = 1) {
+	async pickNextAyat({ count = 1, translation }: { count: number; translation: Translation }) {
 		const result = await request<PickAyahResult>('post', '/khatmPart/pickNext', {
 			khatmId: this.id,
 			count,
 			accessToken: this.accessToken,
+			translation,
 		})
 
 		return result

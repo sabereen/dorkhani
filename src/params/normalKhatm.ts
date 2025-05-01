@@ -1,5 +1,7 @@
 import type { ParamMatcher } from '@sveltejs/kit'
 
+const regex = /^k\d+$/
+
 export const match = ((param: string): param is `k${string}` => {
-	return param.length > 1 && param[0] === 'k'
+	return regex.test(param)
 }) satisfies ParamMatcher

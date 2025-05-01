@@ -17,6 +17,8 @@
 	import { type QuranFont, SettingsEditor } from '$lib/entity/LocalSettings.svelte'
 	import Modal from '$lib/components/Modal.svelte'
 	import SettingsAyahKhatm from '../../settings/SettingsAyahKhatm.svelte'
+	import { page } from '$app/state'
+	import { pushState } from '$app/navigation'
 
 	const khatmContext = useKathmContext()
 	const khatm = $derived(khatmContext.khatm)
@@ -24,7 +26,14 @@
 	const settingsEditor = SettingsEditor.use()
 	settingsEditor.live = true
 
-	let modalSettings = $state(false)
+	type PageState = {
+		modalSettings?: boolean
+	}
+
+	const modalSettings = $derived(!!(page.state as PageState).modalSettings)
+	function openSettings() {
+		pushState('', { modalSettings: true } satisfies PageState)
+	}
 
 	// عدد -1 نمایش دهنده غیر فعال بودن لودینگ است
 	// برای اینکه مشخص باشد روی کدام دکمه لودینگ بخورد تعداد آیات را در لودینگ میریزیم
@@ -242,11 +251,7 @@
 				{@render smallButton('پذیرفتن ۷ آیه متوالی', 7)}
 				{@render smallButton('پذیرفتن ۱۰ آیه متوالی', 10)}
 
-				<button
-					type="button"
-					class="btn btn-primary !btn-ghost col-span-2"
-					onclick={() => (modalSettings = true)}
-				>
+				<button type="button" class="btn btn-primary !btn-ghost col-span-2" onclick={openSettings}>
 					<IconSettings class="size-6" />
 					تنظیمات
 				</button>
@@ -255,6 +260,6 @@
 	</div>
 </div>
 
-<Modal bind:open={modalSettings} contentClass="bg-transparent p-0">
+<Modal bind:open={() => modalSettings, () => history.back()} contentClass="bg-transparent p-0">
 	<SettingsAyahKhatm class="!w-full" />
 </Modal>

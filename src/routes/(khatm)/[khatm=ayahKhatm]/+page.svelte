@@ -15,7 +15,6 @@
 	import { getFontManager } from './font.svelte'
 	import { watchEager } from '$lib/hooks/watch.svelte'
 	import { type QuranFont, SettingsEditor } from '$lib/entity/LocalSettings.svelte'
-	import { onMount } from 'svelte'
 
 	const khatmContext = useKathmContext()
 	const khatm = $derived(khatmContext.khatm)
@@ -40,7 +39,9 @@
 	const playingAyah = $derived(
 		selectedAyat[playingIndex] ? Ayah.get(selectedAyat[playingIndex].index) : null,
 	)
-	const audioSrc = $derived(playingAyah && ayah_getAudioLink(playingAyah))
+	const audioSrc = $derived(
+		playingAyah && ayah_getAudioLink(playingAyah, settingsEditor.config.reciter),
+	)
 
 	const isFinished = $derived(selectedAyat[selectedAyat.length - 1]?.index === COUNT_OF_AYAHS - 1)
 
@@ -52,7 +53,10 @@
 		loading = count
 
 		try {
-			const result = await khatm.pickNextAyat(count)
+			const result = await khatm.pickNextAyat({
+				count,
+				translation: settingsEditor.config.translation,
+			})
 			paused = true
 			playingIndex = -1
 

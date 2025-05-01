@@ -3,8 +3,8 @@ import { localStore } from '$lib/utility/localStore'
 import { getContext, setContext } from 'svelte'
 
 export type QuranFont = 'hafs' | 'qpc1' | 'qpc2'
-export type Translation = 'ansarian'
-export type Reciter = 'minshawi' | 'parhizgar' | 'alafasi' | 'husari'
+export type Translation = 'ansarian' | 'makarem' | 'gharaati'
+export type Reciter = 'minshawi' | 'parhizgar' | 'alafasi' | 'husari' | 'abdulbasit'
 
 export interface ILocalSettings {
 	quranFont: QuranFont
@@ -31,7 +31,7 @@ export class LocalSettings {
 
 	static provide() {
 		const localSettings = new LocalSettings()
-		localSettings.updateByLocalStore()
+		localSettings.init()
 		setContext(this.contextKey, localSettings)
 	}
 
@@ -42,24 +42,36 @@ export class LocalSettings {
 	private storedConfig: Partial<ILocalSettings> = $state({})
 	public config: Readonly<ILocalSettings> = $derived({ ...defaultSettings, ...this.storedConfig })
 
-	update(config: Partial<ILocalSettings>) {
+	update(config: Partial<ILocalSettings>, { bypassLocalStore = false } = {}) {
 		const finalConfig = {
 			...this.storedConfig,
 			...config,
 		}
-		localStore.set(localStoreKey, finalConfig)
+		if (!bypassLocalStore) {
+			localStore.set(localStoreKey, finalConfig)
+		}
 		this.storedConfig = finalConfig
 	}
 
 	updateByLocalStore() {
 		if (!browser) return
 		const storedSettings = localStore.getOrDefault(localStoreKey, {})
-		this.update(storedSettings)
+		this.update(storedSettings, { bypassLocalStore: true })
 	}
 
 	edit() {
 		const editor = new SettingsEditor(this)
 		return editor
+	}
+
+	private init() {
+		if (!browser) return
+		this.updateByLocalStore()
+		window.addEventListener('storage', (event) => {
+			if (event.key === localStore.prepareKey(localStoreKey)) {
+				this.updateByLocalStore()
+			}
+		})
 	}
 }
 

@@ -9,12 +9,14 @@
 	import IconPlay from '~icons/ic/round-play-arrow'
 	import IconPause from '~icons/ic/round-pause'
 	import IconContext from '~icons/ic/round-menu-book'
+	import IconSettings from '~icons/ic/round-settings'
 	import { ayah_getAudioLink, ayah_getExternalLink } from '$lib/entity/Ayah'
-	import { PUBLIC_FONT_PROXY } from '$env/static/public'
 	import { useKathmContext } from '../khatm-context.svelte'
 	import { getFontManager } from './font.svelte'
 	import { watchEager } from '$lib/hooks/watch.svelte'
 	import { type QuranFont, SettingsEditor } from '$lib/entity/LocalSettings.svelte'
+	import Modal from '$lib/components/Modal.svelte'
+	import SettingsAyahKhatm from '../../settings/SettingsAyahKhatm.svelte'
 
 	const khatmContext = useKathmContext()
 	const khatm = $derived(khatmContext.khatm)
@@ -22,7 +24,7 @@
 	const settingsEditor = SettingsEditor.use()
 	settingsEditor.live = true
 
-	const fontProxy = PUBLIC_FONT_PROXY === '1'
+	let modalSettings = $state(false)
 
 	// عدد -1 نمایش دهنده غیر فعال بودن لودینگ است
 	// برای اینکه مشخص باشد روی کدام دکمه لودینگ بخورد تعداد آیات را در لودینگ میریزیم
@@ -239,22 +241,20 @@
 				{@render smallButton('پذیرفتن ۵ آیه متوالی', 5)}
 				{@render smallButton('پذیرفتن ۷ آیه متوالی', 7)}
 				{@render smallButton('پذیرفتن ۱۰ آیه متوالی', 10)}
+
+				<button
+					type="button"
+					class="btn btn-primary !btn-ghost col-span-2"
+					onclick={() => (modalSettings = true)}
+				>
+					<IconSettings class="size-6" />
+					تنظیمات
+				</button>
 			</div>
-			{#if fontProxy}
-				<div class="mt-2 flex items-center">
-					<label class="label me-1 text-sm" for="inputFont">فونت</label>
-					<select
-						class="input input-sm"
-						id="inputFont"
-						name="font"
-						bind:value={settingsEditor.config.quranFont}
-					>
-						<option value="hafs">پیش‌فرض</option>
-						<option value="qpc1">مصحف مدینه ۱</option>
-						<option value="qpc2">مصحف مدینه ۲</option>
-					</select>
-				</div>
-			{/if}
 		{/if}
 	</div>
 </div>
+
+<Modal bind:open={modalSettings} contentClass="bg-transparent p-0">
+	<SettingsAyahKhatm class="!w-full" />
+</Modal>

@@ -9,16 +9,31 @@
 	import IconPlay from '~icons/ic/round-play-arrow'
 	import IconPause from '~icons/ic/round-pause'
 	import IconContext from '~icons/ic/round-menu-book'
+	import IconSettings from '~icons/ic/round-settings'
 	import { ayah_getAudioLink, ayah_getExternalLink } from '$lib/entity/Ayah'
-	import { PUBLIC_FONT_PROXY } from '$env/static/public'
 	import { useKathmContext } from '../khatm-context.svelte'
-	import { getFontManager, type FontSlug } from './font.svelte'
+	import { getFontManager } from './font.svelte'
 	import { watchEager } from '$lib/hooks/watch.svelte'
+	import { type QuranFont, SettingsEditor } from '$lib/entity/LocalSettings.svelte'
+	import Modal from '$lib/components/Modal.svelte'
+	import SettingsAyahKhatm from '../../settings/SettingsAyahKhatm.svelte'
+	import { page } from '$app/state'
+	import { pushState } from '$app/navigation'
 
 	const khatmContext = useKathmContext()
 	const khatm = $derived(khatmContext.khatm)
 
-	const fontProxy = PUBLIC_FONT_PROXY === '1'
+	const settingsEditor = SettingsEditor.use()
+	settingsEditor.live = true
+
+	type PageState = {
+		modalSettings?: boolean
+	}
+
+	const modalSettings = $derived(!!(page.state as PageState).modalSettings)
+	function openSettings() {
+		pushState('', { modalSettings: true } satisfies PageState)
+	}
 
 	// عدد -1 نمایش دهنده غیر فعال بودن لودینگ است
 	// برای اینکه مشخص باشد روی کدام دکمه لودینگ بخورد تعداد آیات را در لودینگ میریزیم
@@ -35,7 +50,9 @@
 	const playingAyah = $derived(
 		selectedAyat[playingIndex] ? Ayah.get(selectedAyat[playingIndex].index) : null,
 	)
-	const audioSrc = $derived(playingAyah && ayah_getAudioLink(playingAyah))
+	const audioSrc = $derived(
+		playingAyah && ayah_getAudioLink(playingAyah, settingsEditor.config.reciter),
+	)
 
 	const isFinished = $derived(selectedAyat[selectedAyat.length - 1]?.index === COUNT_OF_AYAHS - 1)
 
@@ -47,7 +64,10 @@
 		loading = count
 
 		try {
-			const result = await khatm.pickNextAyat(count)
+			const result = await khatm.pickNextAyat({
+				count,
+				translation: settingsEditor.config.translation,
+			})
 			paused = true
 			playingIndex = -1
 
@@ -84,7 +104,7 @@
 		}
 	}
 
-	let font = $state<FontSlug>('hafs')
+	const font = $derived<QuranFont>(settingsEditor.config.quranFont)
 	const fontManager = $derived(getFontManager(font))
 
 	watchEager(
@@ -230,17 +250,16 @@
 				{@render smallButton('پذیرفتن ۵ آیه متوالی', 5)}
 				{@render smallButton('پذیرفتن ۷ آیه متوالی', 7)}
 				{@render smallButton('پذیرفتن ۱۰ آیه متوالی', 10)}
+
+				<button type="button" class="btn btn-primary !btn-ghost col-span-2" onclick={openSettings}>
+					<IconSettings class="size-6" />
+					تنظیمات
+				</button>
 			</div>
-			{#if fontProxy}
-				<div class="mt-2 flex items-center">
-					<label class="label me-1 text-sm" for="inputFont">فونت</label>
-					<select class="input input-sm" id="inputFont" name="font" bind:value={font}>
-						<option value="hafs">پیش‌فرض</option>
-						<option value="qpc1">مصحف مدینه ۱</option>
-						<option value="qpc2">مصحف مدینه ۲</option>
-					</select>
-				</div>
-			{/if}
 		{/if}
 	</div>
 </div>
+
+<Modal bind:open={() => modalSettings, () => history.back()} contentClass="bg-transparent p-0">
+	<SettingsAyahKhatm class="!w-full" />
+</Modal>

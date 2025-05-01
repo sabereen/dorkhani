@@ -5,18 +5,17 @@ import { noop } from '$lib/utility/noop'
 import type { Ayah } from '@ghoran/entity'
 import { SvelteSet } from 'svelte/reactivity'
 import { base } from '$app/paths'
-
-export type FontSlug = 'hafs' | 'qpc1' | 'qpc2'
+import type { QuranFont } from '$lib/entity/LocalSettings.svelte'
 
 export interface FontManager {
-	readonly font: FontSlug
+	readonly font: QuranFont
 	get className(): string
 	preloadAyah(ayah: Ayah): Promise<void>
 	getFontFamily(ayah: Ayah): string
 	isLoading(ayah: Ayah): boolean
 }
 
-export function getFontManager(font: FontSlug): FontManager {
+export function getFontManager(font: QuranFont): FontManager {
 	switch (font) {
 		case 'hafs':
 			return new HafsFontManager()
@@ -28,7 +27,7 @@ export function getFontManager(font: FontSlug): FontManager {
 }
 
 export class HafsFontManager implements FontManager {
-	font: FontSlug = 'hafs'
+	font: QuranFont = 'hafs'
 	loading = $state(false)
 
 	get className() {

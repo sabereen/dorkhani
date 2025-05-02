@@ -1,4 +1,5 @@
 import { browser } from '$app/environment'
+import { isEmptyObject } from '$lib/utility/isEmptyObject'
 import { localStore } from '$lib/utility/localStore'
 import { getContext, setContext } from 'svelte'
 
@@ -93,6 +94,8 @@ export class SettingsEditor {
 	 * برای اینکه فقط تغییرات ذخیره شود (نه کل تنظیمات)
 	 */
 	private tempConfig: Partial<ILocalSettings> = $state({})
+
+	dirty = $derived(!isEmptyObject(this.tempConfig))
 
 	static use() {
 		const localSettings = LocalSettings.use()

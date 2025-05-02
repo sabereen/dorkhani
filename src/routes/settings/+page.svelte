@@ -10,5 +10,5 @@
 <Header title="تنظیمات" />
 
 <form class="flex justify-center p-2" action="" method="POST" onsubmit={(e) => e.preventDefault()}>
-	<SettingsAyahKhatm />
+	<SettingsAyahKhatm legend="تنظیمات ختم آیه به آیه" />
 </form>

@@ -13,9 +13,6 @@ export const handle: Handle = async ({ resolve, event }) => {
 				case 'css':
 				case 'js':
 					return true
-				case 'font':
-					console.log(input.path)
-					return true
 				default:
 					return false
 			}

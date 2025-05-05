@@ -8,15 +8,6 @@ export const init: ServerInit = async () => {
 
 export const handle: Handle = async ({ resolve, event }) => {
 	return resolve(event, {
-		preload(input) {
-			switch (input.type) {
-				case 'css':
-				case 'js':
-					return true
-				default:
-					return false
-			}
-		},
 		transformPageChunk(input) {
 			let html = input.html
 			const daisyTheme = event.cookies.get('daisyTheme')

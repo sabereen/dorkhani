@@ -1,4 +1,4 @@
-import { defineConfig, presetWind3, transformerVariantGroup } from 'unocss'
+import { defineConfig, presetWind3, transformerVariantGroup, transformerDirectives } from 'unocss'
 import { presetDaisy } from '@unscatty/unocss-preset-daisy'
 import presetLegacyCompat from '@unocss/preset-legacy-compat'
 
@@ -47,7 +47,7 @@ export default defineConfig({
 			commaStyleColorFunction: true,
 		}),
 	],
-	transformers: [transformerVariantGroup()],
+	transformers: [transformerVariantGroup(), transformerDirectives()],
 	outputToCssLayers: false,
 	postprocess: [
 		(util) => {

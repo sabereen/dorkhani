@@ -42,7 +42,7 @@
 				>
 					<path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"></path>
 				</svg>
-				<span class="min-w-0 flex-grow truncate text-xs">{title}</span>
+				<span class="min-w-0 flex-grow select-none truncate text-xs">{title}</span>
 				<span class="flex h-full flex-shrink-0 flex-wrap gap-1">
 					<span class="bg-primary w-2 rounded"></span>
 					<span class="bg-secondary w-2 rounded"></span>

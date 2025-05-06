@@ -16,6 +16,6 @@
 	method="POST"
 	onsubmit={(e) => e.preventDefault()}
 >
-	<SettingsTheme />
-	<SettingsAyahKhatm legend="تنظیمات ختم آیه به آیه" />
+	<SettingsTheme class="w-full!" />
+	<SettingsAyahKhatm class="mt-3" legend="تنظیمات ختم آیه به آیه" />
 </form>

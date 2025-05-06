@@ -121,7 +121,7 @@
 						{#each accardeonDevidedRanges as { parts, range }}
 							{@const percent = range.getFillPercent(khatmContext.parts)}
 							<li
-								class="bg-base-100 flex items-center border border-gray-200 px-1 py-1 first:rounded-t last:rounded-b dark:border-gray-700"
+								class="bg-base-100 flex items-center border px-1 py-1 first:rounded-t last:rounded-b"
 							>
 								<div class="ml-2 flex w-24 items-center">
 									<span

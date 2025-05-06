@@ -146,3 +146,10 @@ html[data-theme='autumn'] .\!btn-soft.btn-primary:not(:hover) {
 html[data-theme]:not([data-theme='autumn']):not([data-theme='forest']) .\!btn-soft {
 	--uno: '!btn-neutral';
 }
+
+.border {
+	border-color: hsl(var(--bc) / 0.2);
+}
+.border-bold {
+	border-color: hsl(var(--bc) / 0.6);
+}

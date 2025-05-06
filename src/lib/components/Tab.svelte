@@ -44,7 +44,7 @@
 		/>
 		<label
 			class="relative flex h-[36px] w-full cursor-pointer items-center justify-center border-0 opacity-60 [.peer:focus-visible_+_&]:ring"
-			class:text-neutral-content={value === slug}
+			class:text-base-content={value === slug}
 			for={htmlId}
 		>
 			{#if link}

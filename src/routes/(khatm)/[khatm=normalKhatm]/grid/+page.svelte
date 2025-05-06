@@ -161,7 +161,7 @@
 	{#snippet renderRanges(list: QuranRange[], column: number)}
 		{#each list as range (range.title)}
 			<div
-				class="dark:border-neutral pointer-events-none min-h-4 overflow-hidden border border-gray-300 p-1"
+				class="pointer-events-none min-h-4 overflow-hidden border p-1"
 				title={range.title}
 				style:grid-column-start={column}
 				style:grid-row-start={range.start + 1}
@@ -180,7 +180,7 @@
 	{#if !hideFinishedIntervals}
 		{#each parts as part (part.plain.id)}
 			<div
-				class="hatched col-span-3 col-start-1 flex min-h-4 w-full items-center justify-center border-y border-dashed border-gray-500 bg-gray-100 opacity-75 dark:bg-gray-900"
+				class="hatched bg-base-300 border-bold col-span-3 col-start-1 flex min-h-4 w-full items-center justify-center border-y border-dashed opacity-75"
 				style:grid-row-start={part.start + 1}
 				style:grid-row-end={part.end + 1}
 			>

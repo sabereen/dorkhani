@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { base } from '$app/paths'
 	import type { Snippet } from 'svelte'
 	import IconBack from '~icons/ic/round-arrow-forward-ios'
+	import IconSettings from '~icons/ic/round-settings'
 
 	type Props = {
 		title: string
@@ -35,5 +37,13 @@
 			{/if}
 		</h1>
 	</div>
-	<div class="navbar-end flex items-center">{@render end?.()}</div>
+	<div class="navbar-end flex items-center">
+		{#if end}
+			{@render end()}
+		{:else}
+			<a href={`${base}/settings`} class="btn btn-circle !btn-ghost" aria-label="Settings">
+				<IconSettings />
+			</a>
+		{/if}
+	</div>
 </div>

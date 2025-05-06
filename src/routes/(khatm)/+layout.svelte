@@ -6,6 +6,7 @@
 	import IconViewTable from '~icons/ic/round-calendar-view-month'
 	import IconShare from '~icons/ic/outline-share'
 	import IconCopy from '~icons/ic/outline-copy-all'
+	import IconSettings from '~icons/ic/round-settings'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { setKhatmContext } from './khatm-context.svelte'
@@ -81,22 +82,16 @@
 
 <Header title="ختم قرآن گروهی" link={`${base}/`}>
 	{#snippet end()}
+		<a href={`${base}/settings`} class="btn !btn-circle btn-ghost" aria-label="Settings">
+			<IconSettings class="size-5" />
+		</a>
+
 		{#if canShare}
-			<button
-				type="button"
-				class="btn !btn-square btn-xs btn-soft"
-				onclick={share}
-				aria-label="Share"
-			>
+			<button type="button" class="btn !btn-circle btn-ghost" onclick={share} aria-label="Share">
 				<IconShare class="size-5" />
 			</button>
 		{:else}
-			<button
-				type="button"
-				class="btn !btn-square btn-xs btn-soft"
-				onclick={copy}
-				aria-label="Copy"
-			>
+			<button type="button" class="btn !btn-circle btn-ghost" onclick={copy} aria-label="Copy">
 				<IconCopy class="size-5" />
 			</button>
 		{/if}

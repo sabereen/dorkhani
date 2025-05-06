@@ -8,7 +8,9 @@
 	<title>ختم قرآن | تنظیمات</title>
 </svelte:head>
 
-<Header title="تنظیمات" />
+<Header title="تنظیمات">
+	{#snippet end()}{/snippet}
+</Header>
 
 <form
 	class="flex flex-col items-center p-2"

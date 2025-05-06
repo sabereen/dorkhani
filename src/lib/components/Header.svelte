@@ -3,6 +3,8 @@
 	import type { Snippet } from 'svelte'
 	import IconBack from '~icons/ic/round-arrow-forward-ios'
 	import IconSettings from '~icons/ic/round-settings'
+	import { navigating } from '$app/state'
+	import { goto } from '$app/navigation'
 
 	type Props = {
 		title: string
@@ -13,8 +15,14 @@
 
 	const { title = '', link, end, start }: Props = $props()
 
+	const from = navigating.from
+
 	function back() {
-		history.back()
+		if (from) {
+			history.back()
+		} else {
+			goto(`${base}/`, { replaceState: true })
+		}
 	}
 </script>
 

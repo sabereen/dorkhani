@@ -130,14 +130,26 @@ body {
 	color: hsl(var(--in) / 85%);
 }
 
-.\!btn-soft.btn-primary:not(:hover) {
+html:not([data-theme]) .\!btn-soft.btn-primary:not(:hover),
+html[data-theme='autumn'] .\!btn-soft.btn-primary:not(:hover) {
 	background-color: #ebdfdf;
 	border-color: #ebdfdf;
 	color: hsl(var(--p));
 }
 @media (prefers-color-scheme: dark) {
-	.\!btn-soft.btn-primary:not(:hover) {
+	html:not([data-theme]) .\!btn-soft.btn-primary:not(:hover),
+	html[data-theme='forest'] .\!btn-soft.btn-primary:not(:hover) {
 		background-color: #0e2014;
 		border-color: #122b1b;
 	}
+}
+html[data-theme]:not([data-theme='autumn']):not([data-theme='forest']) .\!btn-soft {
+	--uno: '!btn-neutral';
+}
+
+.border {
+	border-color: hsl(var(--bc) / 0.2);
+}
+.border-bold {
+	border-color: hsl(var(--bc) / 0.6);
 }

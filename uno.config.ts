@@ -1,4 +1,4 @@
-import { defineConfig, presetWind3, transformerVariantGroup } from 'unocss'
+import { defineConfig, presetWind3, transformerVariantGroup, transformerDirectives } from 'unocss'
 import { presetDaisy } from '@unscatty/unocss-preset-daisy'
 import presetLegacyCompat from '@unocss/preset-legacy-compat'
 
@@ -9,15 +9,45 @@ export default defineConfig({
 		}),
 		presetDaisy({
 			rtl: true,
-			themes: ['autumn', 'forest'],
 			darkTheme: 'forest',
+			themes: [
+				'autumn',
+				'forest',
+				'light',
+				'dark',
+				'cupcake',
+				'bumblebee',
+				'emerald',
+				'corporate',
+				'synthwave',
+				'retro',
+				'cyberpunk',
+				'valentine',
+				'halloween',
+				'garden',
+				'aqua',
+				'lofi',
+				'pastel',
+				'fantasy',
+				'wireframe',
+				'black',
+				'luxury',
+				'dracula',
+				'cmyk',
+				'business',
+				'acid',
+				'lemonade',
+				'night',
+				'coffee',
+				'winter',
+			],
 		}),
 		presetLegacyCompat({
 			legacyColorSpace: true,
 			commaStyleColorFunction: true,
 		}),
 	],
-	transformers: [transformerVariantGroup()],
+	transformers: [transformerVariantGroup(), transformerDirectives()],
 	outputToCssLayers: false,
 	postprocess: [
 		(util) => {

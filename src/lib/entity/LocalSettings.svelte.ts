@@ -1,7 +1,9 @@
 import { browser } from '$app/environment'
 import { isEmptyObject } from '$lib/utility/isEmptyObject'
 import { localStore } from '$lib/utility/localStore'
+import { setCookie } from '$lib/utility/setCookie'
 import { getContext, setContext } from 'svelte'
+import type { DaisyThemeSlug } from './Theme'
 
 export type QuranFont = 'hafs' | 'qpc1' | 'qpc2'
 export type Translation = 'ansarian' | 'makarem' | 'gharaati'
@@ -13,6 +15,7 @@ export interface ILocalSettings {
 	reciter: Reciter
 	readedRangesVisibility: 'visible' | 'invisible' | 'auto'
 	externalQuranProvider: 'ketabmobin' | 'quran-com' | 'quran-projector'
+	daisyTheme: DaisyThemeSlug | null
 }
 
 export type SettingKey = keyof ILocalSettings
@@ -23,6 +26,7 @@ const defaultSettings = {
 	reciter: 'minshawi',
 	translation: 'ansarian',
 	externalQuranProvider: 'quran-com',
+	daisyTheme: null,
 } as const satisfies ILocalSettings
 
 const localStoreKey = 'localSettings'
@@ -50,8 +54,21 @@ export class LocalSettings {
 		}
 		if (!bypassLocalStore) {
 			localStore.set(localStoreKey, finalConfig)
+			this.updateCookies(config)
 		}
 		this.storedConfig = finalConfig
+	}
+
+	/**
+	 * کانفیگ تغییریافته را می‌گیرد
+	 * و اگر شامل فیلدهایی بود که سمت سرور به آن‌ها نیاز داریم
+	 * فیلدهای مربوطه را در کوکی مرورگر نیز ذخیره می‌کند
+	 * @param config
+	 */
+	private updateCookies(config: Partial<ILocalSettings>) {
+		if (config.daisyTheme) {
+			setCookie('daisyTheme', config.daisyTheme, 365 * 24 * 3600 /** 1 year */)
+		}
 	}
 
 	updateByLocalStore() {

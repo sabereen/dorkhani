@@ -10,6 +10,11 @@
 	let { children, data }: LayoutProps = $props()
 
 	LocalSettings.provide()
+	const localSettings = LocalSettings.use()
+
+	$effect(() => {
+		document.documentElement.dataset.theme = localSettings.config.daisyTheme || undefined
+	})
 </script>
 
 {@render children()}

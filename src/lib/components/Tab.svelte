@@ -29,7 +29,7 @@
 		style:transform={`translate3d(${-100 * selectedIndex}%, 0, 0)`}
 		class="absolute inset-0 p-[2px] transition-transform"
 	>
-		<div class="indicator h-[36px] w-full rounded-[7px] bg-white shadow-md dark:bg-gray-200"></div>
+		<div class="indicator bg-base-100 h-[36px] w-full rounded-[7px] shadow-md"></div>
 	</div>
 
 	{#each tabs as { slug, title, link, icon: Icon }, i}
@@ -44,7 +44,7 @@
 		/>
 		<label
 			class="relative flex h-[36px] w-full cursor-pointer items-center justify-center border-0 opacity-60 [.peer:focus-visible_+_&]:ring"
-			class:text-black={value === slug}
+			class:text-base-content={value === slug}
 			for={htmlId}
 		>
 			{#if link}

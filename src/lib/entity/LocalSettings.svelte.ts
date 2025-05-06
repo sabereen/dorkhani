@@ -67,7 +67,7 @@ export class LocalSettings {
 	 */
 	private updateCookies(config: Partial<ILocalSettings>) {
 		if (config.daisyTheme) {
-			setCookie('daisyTheme', config.daisyTheme)
+			setCookie('daisyTheme', config.daisyTheme, 365 * 24 * 3600 /** 1 year */)
 		}
 	}
 

@@ -1,0 +1,27 @@
+# فایل‌های حساس و محیطی
+.env
+.env.*
+*.env
+
+# سیستم‌های کنترل نسخه
+.git
+.gitignore
+
+# پوشه‌ها و فایل‌های توسعه
+node_modules
+.npm
+.cache
+dist
+build
+.svelte-kit
+.DS_Store
+
+# لاگ‌ها و فایل‌های موقت
+*.log
+*.tmp
+temp/
+
+# فایل‌های IDE/Editor
+.idea
+.vscode
+*.swp

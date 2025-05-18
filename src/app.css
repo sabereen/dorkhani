@@ -130,21 +130,10 @@ body {
 	color: hsl(var(--in) / 85%);
 }
 
-html:not([data-theme]) .\!btn-soft.btn-primary:not(:hover),
-html[data-theme='autumn'] .\!btn-soft.btn-primary:not(:hover) {
-	background-color: #ebdfdf;
-	border-color: #ebdfdf;
+.\!btn-soft.btn-primary:not(:hover) {
 	color: hsl(var(--p));
-}
-@media (prefers-color-scheme: dark) {
-	html:not([data-theme]) .\!btn-soft.btn-primary:not(:hover),
-	html[data-theme='forest'] .\!btn-soft.btn-primary:not(:hover) {
-		background-color: #0e2014;
-		border-color: #122b1b;
-	}
-}
-html[data-theme]:not([data-theme='autumn']):not([data-theme='forest']) .\!btn-soft {
-	--uno: '!btn-neutral';
+	background-color: hsl(var(--pf) / 9%);
+	border-color: hsl(var(--p) / 8%);
 }
 
 .border {

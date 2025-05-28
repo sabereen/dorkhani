@@ -19,6 +19,7 @@
 	import SettingsAyahKhatm from '../../settings/SettingsAyahKhatm.svelte'
 	import { page } from '$app/state'
 	import { pushState } from '$app/navigation'
+	import { wait } from '$lib/utility/wait'
 
 	const khatmContext = useKathmContext()
 	const khatm = $derived(khatmContext.khatm)
@@ -63,6 +64,8 @@
 
 		loading = count
 
+		const waitPromise = wait(1500)
+
 		try {
 			const result = await khatm.pickNextAyat({
 				count,
@@ -82,6 +85,9 @@
 			console.error(err)
 			toast('error', (err as any)?.message || String(err))
 		} finally {
+			// برای اینکه بین دو کلیک متوالی مدتی فاصله باشد
+			// که کاربر اشتباهی چند مرتبه روی دکمه کلیک نکند
+			await waitPromise
 			loading = -1
 		}
 	}

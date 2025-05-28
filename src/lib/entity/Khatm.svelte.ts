@@ -158,8 +158,7 @@ export class Khatm {
 		try {
 			await navigator.share({
 				url: this.link,
-				title: `سامانه ختم قرآن گروهی | ${this.title}`,
-				text: this.description,
+				text: `سامانه ختم قرآن گروهی | ${this.title}\n` + this.description + '\n',
 			})
 		} catch (err) {
 			console.error(err)

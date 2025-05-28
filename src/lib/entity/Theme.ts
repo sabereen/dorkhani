@@ -4,7 +4,7 @@ type DaisyTheme = {
 }
 
 export const daisyThemes = [
-	{ slug: '', name: 'پیش‌فرض' },
+	{ slug: 'default', name: 'پیش‌فرض' },
 	{ slug: 'light', name: 'روز' },
 	{ slug: 'dark', name: 'شب' },
 	{ slug: 'cupcake', name: 'شیرینی' },

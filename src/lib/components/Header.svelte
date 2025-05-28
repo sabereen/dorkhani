@@ -7,13 +7,13 @@
 	import { goto } from '$app/navigation'
 
 	type Props = {
-		title: string
+		title?: string
 		link?: string
 		start?: Snippet
 		end?: Snippet
 	}
 
-	const { title = '', link, end, start }: Props = $props()
+	const { title, link, end, start }: Props = $props()
 
 	const from = navigating.from
 
@@ -37,13 +37,15 @@
 		{/if}
 	</div>
 	<div class="navbar-center">
-		<h1 class="select-none text-xl font-black">
-			{#if link}
-				<a href={link}>{title}</a>
-			{:else}
-				{title}
-			{/if}
-		</h1>
+		{#if title}
+			<h1 class="select-none text-xl font-black">
+				{#if link}
+					<a href={link}>{title}</a>
+				{:else}
+					{title}
+				{/if}
+			</h1>
+		{/if}
 	</div>
 	<div class="navbar-end flex items-center">
 		{#if end}

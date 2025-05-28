@@ -5,6 +5,7 @@
 	import HistoryPickedRange from './history/history-picked-range.svelte'
 	import { base } from '$app/paths'
 	import { rebaseFullPath } from '$lib/utility/path'
+	import Header from '$lib/components/Header.svelte'
 
 	const { data }: PageProps = $props()
 
@@ -19,6 +20,12 @@
 	/>
 	<meta property="og:image" content={rebaseFullPath('/hero.png')} />
 </svelte:head>
+
+<Header>
+	{#snippet start()}
+		<p class="select-none ps-4 text-xl font-black">سامانه ختم جمعی قرآن</p>
+	{/snippet}
+</Header>
 
 <div class="hero mt-7">
 	<div class="hero-content flex flex-col text-center sm:flex-row">

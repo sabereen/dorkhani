@@ -75,17 +75,36 @@ type PickNextAyatInput = {
 	count: number
 }
 export async function khatmPartService_pickNextAyat(body: PickNextAyatInput) {
-	const khatm = await db.tKhatm.update({
+	const khatm = await db.tKhatm.findUnique({
 		where: {
 			id: body.khatmId,
 			accessToken: { equals: body.accessToken || null },
 			rangeType: 'ayah',
-			versesRead: { lt: COUNT_OF_AYAHS - body.count + 1 },
-		},
-		data: {
-			versesRead: { increment: body.count },
 		},
 	})
 
-	return khatm
+	if (!khatm) {
+		throw error(404, { message: 'ختم مورد نظر وجود ندارد' })
+	}
+
+	if (khatm.versesRead === COUNT_OF_AYAHS) {
+		throw error(400, { message: 'این ختم به پایان رسیده است.' })
+	}
+
+	const count = Math.min(body.count, COUNT_OF_AYAHS - khatm.versesRead)
+
+	const updated = await db.tKhatm.update({
+		where: {
+			id: body.khatmId,
+			versesRead: { lt: COUNT_OF_AYAHS - count + 1 },
+		},
+		data: {
+			versesRead: { increment: count },
+		},
+	})
+
+	return {
+		khatm: updated,
+		count,
+	}
 }

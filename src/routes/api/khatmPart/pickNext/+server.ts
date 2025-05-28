@@ -53,8 +53,8 @@ export const POST: RequestHandler = async (event) => {
 	})
 
 	const ayat: SelectedAyah[] = []
-	for (let i = count; i > 0; i--) {
-		const ayahIndex = result.versesRead - i
+	for (let i = result.count; i > 0; i--) {
+		const ayahIndex = result.khatm.versesRead - i
 		const translation = translationMap[body.translation!] || translationAnsarian
 		ayat.push({
 			index: ayahIndex,
@@ -65,5 +65,5 @@ export const POST: RequestHandler = async (event) => {
 		})
 	}
 
-	return json({ khatm: result, ayat } satisfies PickAyahResult)
+	return json({ khatm: result.khatm, ayat } satisfies PickAyahResult)
 }

@@ -38,7 +38,7 @@
 </script>
 
 <div class="mt-5 flex flex-col text-center">
-	<p class="text-balance px-4 text-lg">چه تعداد مشارکت می‌کنید؟</p>
+	<p class="text-balance px-4 text-lg">شما چه تعداد مشارکت می‌کنید؟</p>
 	<div class="mt-5 px-4">
 		<div class="grid grid-cols-2 gap-2">
 			{#snippet smallButton(text: string, count: number)}

@@ -81,17 +81,14 @@
 					<ExpandableText text={zekr.description} maxLength={250} threshold={10} />
 				</div>
 			{/if}
-			{#if zekr.zekrText}
-				<div dir="auto" class="self-center break-words pb-1 pt-5 text-start">
-					<ExpandableText text={zekr.zekrText} maxLength={250} threshold={10} />
-				</div>
-			{/if}
-			<div class="stats shadow">
+			<div class="stats of-visible shadow">
 				<div class="stat">
 					<div class="stat-title">میزان مشارکت</div>
-					<div class="stat-value px-2">
+					<div class="stat-value h-auto px-2">
 						<span class="text-6xl">{zekr.count.toLocaleString('fa')}</span>
-						<span class="badge badge-info">{percent.toLocaleString('fa')}٪</span>
+						{#if zekr.isFinite}
+							<span class="badge badge-info">{percent.toLocaleString('fa')}٪</span>
+						{/if}
 					</div>
 					{#if zekr.isFinite}
 						<div class="stat-desc">
@@ -104,6 +101,16 @@
 	</div>
 </div>
 
+{#if zekr.finished}
+	<div class="alert alert-success">این ختم به هدف خود رسیده است.</div>
+{/if}
+
 <ZekrActions {zekr} />
+
+{#if zekr.zekrText}
+	<div dir="auto" class="ws-pre-wrap w-full break-words px-4 pb-1 pt-5 text-start text-xl">
+		{zekr.zekrText}
+	</div>
+{/if}
 
 <div class="pt-10"></div>

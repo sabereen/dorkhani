@@ -23,7 +23,7 @@
 
 <Header>
 	{#snippet start()}
-		<p class="select-none ps-4 text-xl font-black">سامانه ختم جمعی قرآن</p>
+		<p class="ws-nowrap select-none ps-4 text-xl font-black">سامانه ختم جمعی قرآن</p>
 	{/snippet}
 </Header>
 

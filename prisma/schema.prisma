@@ -49,6 +49,8 @@ model TZekr {
   title       String   @db.VarChar(100)
   // توضیحات
   description String   @db.Text()
+  // متن ذکر مورد نظر
+  zekrText    String?  @map("zekr_text") @db.Text()
   // تعداد مرتبه‌ی خوانده شده از ذکر را نگهداری می‌کند
   count       Int      @default(0) @map("count") @db.UnsignedInt()
   // تعداد ذکر هدف این ختم

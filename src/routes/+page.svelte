@@ -7,6 +7,7 @@
 	import { rebaseFullPath } from '$lib/utility/path'
 	import Header from '$lib/components/Header.svelte'
 	import { Zekr } from '$lib/entity/Zekr.svelte'
+	import HistoryZekr from './history/history-zekr.svelte'
 
 	const { data }: PageProps = $props()
 
@@ -53,7 +54,8 @@
 </div>
 
 <div class="grid grid-cols-1 gap-3">
-	<HistoryKhatm limit={3} title="آخرین ختم‌هایی که ایجاد کرده اید" />
+	<HistoryKhatm limit={3} title="آخرین ختم‌های قرآن که ایجاد کرده اید" />
+	<HistoryZekr limit={3} title="آخرین ختم‌های ذکر که ایجاد کرده اید" />
 	<HistoryPickedRange limit={3} title="آخرین مشارکت‌های شما" />
 </div>
 
@@ -110,6 +112,9 @@
 							<!-- Title & Badge -->
 							<span class="min-w-0 grow">
 								{zekr.title}
+								{#if zekr.isFinite}
+									<span class="badge badge-info badge-xs">{zekr.targetCount} تایی</span>
+								{/if}
 							</span>
 							<!-- Stats -->
 							<span class="flex shrink-0 flex-col items-end">

@@ -29,7 +29,7 @@ export async function idb_localZekr_add(item: Omit<LocalZekr, 'id'>) {
 export async function idb_localZekr_getList(limit?: number) {
 	const { db } = await import('./idb')
 	const collection = db.localZekr
-		.orderBy('khatm.created')
+		.orderBy('zekr.created')
 		.reverse()
 		.filter((l) => l.isMine)
 

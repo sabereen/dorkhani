@@ -6,10 +6,12 @@
 	import { base } from '$app/paths'
 	import { rebaseFullPath } from '$lib/utility/path'
 	import Header from '$lib/components/Header.svelte'
+	import { Zekr } from '$lib/entity/Zekr.svelte'
 
 	const { data }: PageProps = $props()
 
 	const khatms = $derived(Khatm.fromPlainList(data.khatms))
+	const zekrList = $derived(Zekr.fromPlainList(data.zekrList))
 </script>
 
 <svelte:head>
@@ -58,7 +60,7 @@
 {#if khatms.length}
 	<section class="card card-border bg-base-200 mt-4">
 		<div class="card-body">
-			<h2 class="card-title">برخی از آخرین ختم‌ها</h2>
+			<h2 class="card-title">برخی از آخرین ختم‌های قرآن</h2>
 			<ul class="list">
 				{#each khatms as khatm}
 					<li class="">
@@ -85,6 +87,42 @@
 									max={100}
 									value={khatm.percent}
 								></progress>
+							</span>
+						</a>
+					</li>
+				{/each}
+			</ul>
+		</div>
+	</section>
+{/if}
+
+{#if zekrList.length}
+	<section class="card card-border bg-base-200 mt-4">
+		<div class="card-body">
+			<h2 class="card-title">آخرین ختم‌های اذکار</h2>
+			<ul class="list">
+				{#each zekrList as zekr}
+					<li class="">
+						<a
+							class="list-row clear-both !block !flex w-full hover:bg-green-500/15"
+							href={zekr.link}
+						>
+							<!-- Title & Badge -->
+							<span class="min-w-0 grow">
+								{zekr.title}
+							</span>
+							<!-- Stats -->
+							<span class="flex shrink-0 flex-col items-end">
+								<span class="-mt-1 px-0.5 text-[13px]">
+									{zekr.count.toLocaleString('fa')} عدد
+								</span>
+								{#if zekr.isFinite}
+									<progress
+										class="progress progress-success h-1.5 w-10"
+										max={100}
+										value={zekr.percent}
+									></progress>
+								{/if}
 							</span>
 						</a>
 					</li>

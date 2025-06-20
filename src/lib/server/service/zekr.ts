@@ -8,6 +8,15 @@ export async function zekrService_getList(ids: ReadonlyArray<number>) {
 	return zekrList
 }
 
+export async function zekrService_getPublicList({ limit = 20 } = {}) {
+	const zekrList = await db.tZekr.findMany({
+		orderBy: { id: 'desc' },
+		take: limit,
+	})
+
+	return zekrList
+}
+
 type CreatingZekr = {
 	title: string
 	description: string

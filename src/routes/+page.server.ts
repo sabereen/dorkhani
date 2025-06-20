@@ -3,6 +3,7 @@ import {
 	appSettingsService_getStaleShowcaseWhileRevalidate,
 } from '$service/appSettings'
 import { khatmService_getPublicList } from '$service/khatm'
+import { zekrService_getPublicList } from '$service/zekr'
 import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async () => {
@@ -13,7 +14,10 @@ export const load: PageServerLoad = async () => {
 		khatms = appSettingsService_getStaleShowcaseWhileRevalidate()
 	}
 
+	const zekrList = await zekrService_getPublicList()
+
 	return {
 		khatms,
+		zekrList,
 	}
 }

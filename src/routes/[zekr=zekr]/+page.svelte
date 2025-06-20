@@ -73,7 +73,7 @@
 			<h1 class="break-words text-2xl font-black">
 				{zekr.title}
 				{#if zekr.isFinite}
-					<span class="badge badge-info">{zekr.targetCount} تا</span>
+					<span class="badge badge-info">{zekr.targetCount} مرتبه</span>
 				{/if}
 			</h1>
 			{#if zekr.description}
@@ -86,17 +86,20 @@
 					<ExpandableText text={zekr.zekrText} maxLength={250} threshold={10} />
 				</div>
 			{/if}
-			{#if zekr.isFinite}
-				<div class="stats shadow">
-					<div class="stat">
-						<div class="stat-title">پیشرفت ختم</div>
-						<div class="stat-value px-2">{percent.toLocaleString('fa')}٪</div>
+			<div class="stats shadow">
+				<div class="stat">
+					<div class="stat-title">میزان مشارکت</div>
+					<div class="stat-value px-2">
+						<span class="text-6xl">{zekr.count.toLocaleString('fa')}</span>
+						<span class="badge badge-info">{percent.toLocaleString('fa')}٪</span>
+					</div>
+					{#if zekr.isFinite}
 						<div class="stat-desc">
 							<progress class="progress progress-success w-23" max={100} value={percent}></progress>
 						</div>
-					</div>
+					{/if}
 				</div>
-			{/if}
+			</div>
 		</div>
 	</div>
 </div>

@@ -22,23 +22,33 @@ enum RangeType {
   ayah
 }
 
+model TKhatmGroup {
+  id          Int    @id
+  lastKhatmId Int    @map("last_khatm_id")
+  lastKhatm   TKhatm @relation(fields: [lastKhatmId], references: [id])
+  maxRounds   Int?   @map("max_rounds") @db.UnsignedSmallInt()
+
+  @@map("khatm_group")
+}
+
 model TKhatm {
-  id          Int          @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   // عنوان
-  title       String       @db.VarChar(100)
+  title       String        @db.VarChar(100)
   // توضیحات
-  description String       @db.Text()
+  description String        @db.Text()
   // نوع بازه‌ی قابل انتخاب توسط کاربر
-  rangeType   RangeType    @default(free) @map("range_type")
+  rangeType   RangeType     @default(free) @map("range_type")
   // تعداد کل آیات خوانده شده از ختم را نگهداری می‌کند
-  versesRead  Int          @default(0) @map("verses_read") @db.UnsignedSmallInt()
+  versesRead  Int           @default(0) @map("verses_read") @db.UnsignedSmallInt()
   // ختم خصوصی فقط با داشتن اکسس‌توکن مربوطه نمایش داده می‌شود و در صفحه اصلی نمایش داده نمی‌شود
-  private     Boolean      @default(false)
+  private     Boolean       @default(false)
   // توکن مربوط به ختم‌های خصوصی
-  accessToken String?      @map("access_token")
+  accessToken String?       @map("access_token")
   // تاریخ ایجاد ختم
-  created     DateTime     @default(now())
+  created     DateTime      @default(now())
   parts       TKhatmPart[]
+  khatmGroups TKhatmGroup[]
 
   @@map("khatm")
 }

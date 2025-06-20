@@ -43,6 +43,22 @@ model TKhatm {
   @@map("khatm")
 }
 
+model TZekr {
+  id          Int      @id @default(autoincrement())
+  // عنوان
+  title       String   @db.VarChar(100)
+  // توضیحات
+  description String   @db.Text()
+  // تعداد مرتبه‌ی خوانده شده از ذکر را نگهداری می‌کند
+  count       Int      @default(0) @map("count") @db.UnsignedInt()
+  // تعداد ذکر هدف این ختم
+  targetCount Int?     @map("target_count") @db.UnsignedInt()
+  // تاریخ ایجاد ختم
+  created     DateTime @default(now())
+
+  @@map("zekr")
+}
+
 model TKhatmPart {
   id      Int      @id @default(autoincrement())
   khatm   TKhatm   @relation(fields: [khatmId], references: [id])

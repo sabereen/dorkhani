@@ -1,0 +1,11 @@
+-- CreateTable
+CREATE TABLE `zekr` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(100) NOT NULL,
+    `description` TEXT NOT NULL,
+    `count` INTEGER UNSIGNED NOT NULL DEFAULT 0,
+    `target_count` INTEGER UNSIGNED NULL,
+    `created` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

@@ -11,9 +11,6 @@
 
 	const { zekr }: Props = $props()
 
-	/** آیا موردی در این ختم توسط کاربر پذیرفته شده است؟ */
-	let isPicked = $state(false)
-
 	// عدد -1 نمایش دهنده غیر فعال بودن لودینگ است
 	// برای اینکه مشخص باشد روی کدام دکمه لودینگ بخورد تعداد آیات را در لودینگ میریزیم
 	// هر دکمه‌ای که تعداد آیاتش با این متغیر یکسان بود باید لودینگ بخورد
@@ -41,7 +38,7 @@
 </script>
 
 <div class="mt-5 flex flex-col text-center">
-	<p class="text-balance px-4 text-lg">تعدادی را که می‌خواهید مشارکت کنید تایپ کنید:</p>
+	<p class="text-balance px-4 text-lg">چه تعداد مشارکت می‌کنید؟</p>
 	<div class="mt-5 px-4">
 		<div class="grid grid-cols-2 gap-2">
 			{#snippet smallButton(text: string, count: number)}
@@ -60,17 +57,13 @@
 				{#if loading === 1}
 					<div class="loading loading-md" transition:slide={{ axis: 'x' }}></div>
 				{/if}
-				{#if isPicked}
-					پذیرفتن یک مرتبه
-				{:else}
-					پذیرفتن یک مرتبه دیگر
-				{/if}
+				یک عدد
 			</button>
 
-			{@render smallButton('پذیرفتن ۳ تا', 3)}
-			{@render smallButton('پذیرفتن ۵ تا', 5)}
-			{@render smallButton('پذیرفتن ۷ تا', 7)}
-			{@render smallButton('پذیرفتن ۱۰ تا', 10)}
+			{@render smallButton('۳ عدد', 3)}
+			{@render smallButton('۵ عدد', 5)}
+			{@render smallButton('۷ عدد', 7)}
+			{@render smallButton('۱۰ عدد', 10)}
 		</div>
 	</div>
 </div>

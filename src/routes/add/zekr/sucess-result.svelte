@@ -3,6 +3,8 @@
 	import ExpandableText from '$lib/components/ExpandableText.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import type { Zekr } from '$lib/entity/Zekr.svelte'
+	import { idb_localZekr_add } from '$lib/idb/localZekr'
+	import { onMount } from 'svelte'
 	import IconCopy from '~icons/ic/outline-copy-all'
 	import IconShare from '~icons/ic/outline-share'
 	import IconOpen from '~icons/ic/round-open-in-new'
@@ -34,11 +36,13 @@
 		}
 	}
 
-	// onMount(() => {
-	// 	new CreatedKhatm({
-	// 		khatm: khatm.plain,
-	// 	}).save()
-	// })
+	onMount(() => {
+		idb_localZekr_add({
+			isMine: true,
+			myCount: 0,
+			zekr: zekr.plain,
+		})
+	})
 </script>
 
 <div class="alert alert-success">

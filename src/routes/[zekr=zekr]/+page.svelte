@@ -11,12 +11,21 @@
 	import { rebaseFullPath } from '$lib/utility/path'
 	import ExpandableText from '$lib/components/ExpandableText.svelte'
 	import ZekrActions from './ZekrActions.svelte'
+	import { idb_localZekr_get } from '$lib/idb/localZekr'
+	import { slide } from 'svelte/transition'
 
 	const { data }: PageProps = $props()
 
 	const canShare = !browser || navigator.share
 
 	const zekr = $derived(Zekr.fromPlain(data.zekr))
+
+	let myCount = $state(0)
+	$effect(() => {
+		idb_localZekr_get(zekr.id).then((result) => {
+			myCount = result?.myCount || 0
+		})
+	})
 
 	function share() {
 		zekr.share()
@@ -76,12 +85,20 @@
 					<span class="badge badge-info">{zekr.targetCount} مرتبه</span>
 				{/if}
 			</h1>
+
+			{#if zekr.finished}
+				<div class="mt-2">
+					<div class="badge badge-success m-auto">این ختم به هدف خود رسیده است.</div>
+				</div>
+			{/if}
+
 			{#if zekr.description}
 				<div dir="auto" class="self-center break-words pb-1 pt-5 text-start">
 					<ExpandableText text={zekr.description} maxLength={250} threshold={10} />
 				</div>
 			{/if}
-			<div class="stats of-visible shadow">
+
+			<div class="stats of-visible -mb-2 shadow">
 				<div class="stat">
 					<div class="stat-title">میزان مشارکت</div>
 					<div class="stat-value h-auto px-2">
@@ -97,15 +114,17 @@
 					{/if}
 				</div>
 			</div>
+
+			{#if myCount}
+				<p class="text-xs" transition:slide={{ axis: 'y' }}>
+					از این تعداد <span class="badge badge-accent">{myCount} عدد</span> را شما تقبل کرده اید.
+				</p>
+			{/if}
 		</div>
 	</div>
 </div>
 
-{#if zekr.finished}
-	<div class="alert alert-success">این ختم به هدف خود رسیده است.</div>
-{/if}
-
-<ZekrActions {zekr} />
+<ZekrActions {zekr} bind:myCount />
 
 {#if zekr.zekrText}
 	<div

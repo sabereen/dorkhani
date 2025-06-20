@@ -4,6 +4,7 @@ import copy from 'clipboard-copy'
 import { rebaseFullPath } from '$lib/utility/path'
 import { browser } from '$app/environment'
 import { request } from '$lib/utility/request'
+import { idb_localZekr_increaseMyCount } from '$lib/idb/localZekr'
 
 const cache = new Map<number, Zekr>()
 
@@ -92,6 +93,7 @@ export class Zekr {
 			count,
 		})
 		this.plain.count += count
+		idb_localZekr_increaseMyCount(this.plain, count)
 	}
 
 	async share() {

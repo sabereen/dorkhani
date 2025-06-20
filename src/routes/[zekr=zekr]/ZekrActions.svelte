@@ -7,9 +7,10 @@
 
 	type Props = {
 		zekr: Zekr
+		myCount?: number
 	}
 
-	const { zekr }: Props = $props()
+	let { zekr, myCount = $bindable(0) }: Props = $props()
 
 	// عدد -1 نمایش دهنده غیر فعال بودن لودینگ است
 	// برای اینکه مشخص باشد روی کدام دکمه لودینگ بخورد تعداد آیات را در لودینگ میریزیم
@@ -25,6 +26,7 @@
 
 		try {
 			await zekr.pick({ count })
+			myCount += count
 		} catch (err) {
 			console.error(err)
 			toast('error', (err as any)?.message || String(err))
@@ -38,7 +40,13 @@
 </script>
 
 <div class="mt-5 flex flex-col text-center">
-	<p class="text-balance px-4 text-lg">شما چه تعداد مشارکت می‌کنید؟</p>
+	<p class="text-balance px-4 text-lg">
+		{#if myCount}
+			شما چه تعداد دیگر می‌خواهید مشارکت کنید؟
+		{:else}
+			شما چه تعداد مشارکت می‌کنید؟
+		{/if}
+	</p>
 	<div class="mt-5 px-4">
 		<div class="grid grid-cols-2 gap-2">
 			{#snippet smallButton(text: string, count: number)}

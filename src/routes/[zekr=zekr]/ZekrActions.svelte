@@ -60,10 +60,10 @@
 				یک عدد
 			</button>
 
-			{@render smallButton('۳ عدد', 3)}
 			{@render smallButton('۵ عدد', 5)}
-			{@render smallButton('۷ عدد', 7)}
 			{@render smallButton('۱۰ عدد', 10)}
+			{@render smallButton('۲۰ عدد', 20)}
+			{@render smallButton('۳۰ عدد', 30)}
 		</div>
 	</div>
 </div>

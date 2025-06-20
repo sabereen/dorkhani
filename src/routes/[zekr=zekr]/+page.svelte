@@ -108,7 +108,10 @@
 <ZekrActions {zekr} />
 
 {#if zekr.zekrText}
-	<div dir="auto" class="ws-pre-wrap w-full break-words px-4 pb-1 pt-5 text-start text-xl">
+	<div
+		dir="auto"
+		class="ws-pre-wrap w-full break-words px-4 pb-1 pt-5 text-start text-xl leading-9"
+	>
 		{zekr.zekrText}
 	</div>
 {/if}

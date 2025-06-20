@@ -3,6 +3,7 @@ import { untrack } from 'svelte'
 import copy from 'clipboard-copy'
 import { rebaseFullPath } from '$lib/utility/path'
 import { browser } from '$app/environment'
+import { request } from '$lib/utility/request'
 
 const cache = new Map<number, Zekr>()
 
@@ -49,6 +50,10 @@ export class Zekr {
 		return this.plain.description
 	}
 
+	get zekrText() {
+		return this.plain.zekrText
+	}
+
 	get count() {
 		return this.plain.count
 	}
@@ -57,8 +62,12 @@ export class Zekr {
 		return this.plain.targetCount || Infinity
 	}
 
+	get isFinite() {
+		return this.targetCount !== Infinity
+	}
+
 	get progress() {
-		return this.count / this.targetCount
+		return Math.min(this.count / this.targetCount, 1)
 	}
 
 	get percent() {
@@ -77,16 +86,13 @@ export class Zekr {
 		return this.getLink()
 	}
 
-	// async pickNextAyat({ count = 1, translation }: { count: number; translation: Translation }) {
-	// 	const result = await request<PickAyahResult>('post', '/khatmPart/pickNext', {
-	// 		khatmId: this.id,
-	// 		count,
-	// 		accessToken: this.accessToken,
-	// 		translation,
-	// 	})
-
-	// 	return result
-	// }
+	async pick({ count = 1 }: { count: number }) {
+		await request('post', '/zekr/pick', {
+			zekrId: this.id,
+			count,
+		})
+		this.plain.count += count
+	}
 
 	async share() {
 		try {

@@ -1,11 +1,11 @@
 import { db } from '$lib/server/db'
 
 export async function zekrService_getList(ids: ReadonlyArray<number>) {
-	const khatms = await db.tZekr.findMany({
+	const zekrList = await db.tZekr.findMany({
 		where: { id: { in: ids as number[] } },
 		orderBy: { id: 'desc' },
 	})
-	return khatms
+	return zekrList
 }
 
 type CreatingZekr = {
@@ -15,16 +15,24 @@ type CreatingZekr = {
 	zekrText?: string
 }
 export async function zekrService_create(data: CreatingZekr) {
-	const khatm = await db.tZekr.create({
+	const zekr = await db.tZekr.create({
 		data,
 	})
-	return khatm
+	return zekr
+}
+
+export async function zekrService_pick(data: { count: number; id: number }) {
+	const zekr = await db.tZekr.update({
+		where: { id: data.id },
+		data: { count: { increment: data.count } },
+	})
+	return zekr
 }
 
 export async function zekrService_get(id: number) {
-	const khatm = await db.tZekr.findUnique({
+	const zekr = await db.tZekr.findUnique({
 		where: { id },
 	})
 
-	return khatm
+	return zekr
 }

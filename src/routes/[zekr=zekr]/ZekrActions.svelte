@@ -70,8 +70,8 @@
 
 			{@render smallButton('۵ عدد', 5)}
 			{@render smallButton('۱۰ عدد', 10)}
-			{@render smallButton('۲۰ عدد', 20)}
-			{@render smallButton('۳۰ عدد', 30)}
+			{@render smallButton('۵۰ عدد', 50)}
+			{@render smallButton('۱۰۰ عدد', 100)}
 		</div>
 	</div>
 </div>

@@ -13,8 +13,8 @@ export const POST: RequestHandler = async ({ request }) => {
 		throw error(400, 'ورودی معتبر نیست')
 	}
 
-	if (body.count > 100) {
-		throw error(400, { message: 'حداکثر عدد قابل قبول ۱۰۰ است.' })
+	if (body.count > 1000) {
+		throw error(400, { message: 'حداکثر عدد قابل قبول ۱۰۰۰ است.' })
 	}
 
 	const count = Math.floor(body.count)

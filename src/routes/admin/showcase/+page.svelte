@@ -82,15 +82,20 @@
 		<p class="whitespace-pre-wrap text-xs opacity-85">{khatm.description}</p>
 	</div>
 	<div class="grid-gap-1 ms-auto grid shrink-0 grid-cols-3 items-center">
-        <span
-            class="badge text-xs"
-            class:text-green-500={khatm.percent === 100}
-            class:opacity-75={khatm.percent !== 100}
+        <a
+            class="btn btn-xs btn-square !btn-ghost p-0 grid grid-cols-3 items-center"
+            href={khatm.link}
+            target="_blank"
+            style="background-color: {khatm.percent === 100 ? '#10B981' : '#6c757d'};"
         >
-            {khatm.percent.toLocaleString('fa')}%
-        </span>
-        <a class="btn btn-xs btn-primary btn-square !btn-ghost p-0" href={khatm.link} target="_blank">
-            <IconLink class="size-5" />
+            <span
+                class="badge text-xs text-white"
+                class:text-green-500={khatm.percent === 100}
+                class:opacity-75={khatm.percent !== 100}
+            >
+                {khatm.percent.toLocaleString('fa')}%
+            </span>
+            <IconLink class="size-5 ml-2" />
         </a>
         <button
             class="btn btn-xs btn-primary btn-square !btn-ghost p-0"

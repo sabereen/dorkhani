@@ -97,8 +97,7 @@
 		</button>
 	</div>
 	<div class="mt-2">
-    		<p class="text-sm">پیشرفت: {khatm.percent.toLocaleString('fa')}%</p>
-    		<progress class="progress progress-success h-1.5 w-full" max="100" value={khatm.percent}></progress>
+        <span class="badge badge-info">{khatm.percent.toLocaleString('fa')}%</span>
     </div>
 {/snippet}
 

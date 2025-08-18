@@ -96,6 +96,10 @@
 			{/if}
 		</button>
 	</div>
+	<div class="mt-2">
+    		<p class="text-sm">پیشرفت: {khatm.percent.toLocaleString('fa')}%</p>
+    		<progress class="progress progress-success h-1.5 w-full" max="100" value={khatm.percent}></progress>
+    </div>
 {/snippet}
 
 <section class="card card-border bg-base-200 mt-4">

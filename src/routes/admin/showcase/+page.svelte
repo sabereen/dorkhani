@@ -84,7 +84,7 @@
 	<div class="flex items-center gap-2 shrink-0">
         <span
             class="badge text-xs px-2 py-1 rounded"
-            class:bg-green-500/20={khatm.percent === 100}
+            class:bg-green-500={khatm.percent === 100}
             class:opacity-75={khatm.percent !== 100}
         >
             {khatm.percent.toLocaleString('fa')}%

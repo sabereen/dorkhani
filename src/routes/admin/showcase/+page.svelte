@@ -81,23 +81,27 @@
 		</div>
 		<p class="whitespace-pre-wrap text-xs opacity-85">{khatm.description}</p>
 	</div>
-	<div class="grid-gap-1 ms-auto grid shrink-0 grid-cols-2 items-center">
-		<a class="btn btn-xs btn-primary btn-square !btn-ghost p-0" href={khatm.link} target="_blank">
-			<IconLink class="size-5" />
-		</a>
-		<button
-			class="btn btn-xs btn-primary btn-square !btn-ghost p-0"
-			onclick={toggleShowcase.bind(null, khatm)}
-		>
-			{#if isInShowcase(khatm)}
-				<IconShowcaseEnabled class="size-5 text-green-500" />
-			{:else}
-				<IconShowcaseDisabled class="size-5 opacity-75" />
-			{/if}
-		</button>
-	</div>
-	<div class="mt-2">
-        <span class="badge badge-info">{khatm.percent.toLocaleString('fa')}%</span>
+	<div class="grid-gap-1 ms-auto grid shrink-0 grid-cols-3 items-center">
+        <span
+            class="badge text-xs"
+            class:text-green-500={khatm.percent === 100}
+            class:opacity-75={khatm.percent !== 100}
+        >
+            {khatm.percent.toLocaleString('fa')}%
+        </span>
+        <a class="btn btn-xs btn-primary btn-square !btn-ghost p-0" href={khatm.link} target="_blank">
+            <IconLink class="size-5" />
+        </a>
+        <button
+            class="btn btn-xs btn-primary btn-square !btn-ghost p-0"
+            onclick={toggleShowcase.bind(null, khatm)}
+        >
+            {#if isInShowcase(khatm)}
+                <IconShowcaseEnabled class="size-5 text-green-500" />
+            {:else}
+                <IconShowcaseDisabled class="size-5 opacity-75" />
+            {/if}
+        </button>
     </div>
 {/snippet}
 

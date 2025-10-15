@@ -62,6 +62,8 @@
 	}
 
 	const percent = $derived(khatm.percent)
+	const percentByPage = $derived(khatm.getProgressByPage())
+	let usingAyahProgress = $state(true)
 
 	const canSelectLayout = $derived(!khatm.finished && khatm.isFree)
 </script>
@@ -127,10 +129,29 @@
 			{/if}
 			<div class="stats shadow">
 				<div class="stat">
-					<div class="stat-title">پیشرفت ختم</div>
-					<div class="stat-value px-2">{percent.toLocaleString('fa')}٪</div>
+					<div class="stat-title">
+						پیشرفت ختم
+						<button
+							type="button"
+							class="btn btn-primary btn-xs"
+							onclick={() => (usingAyahProgress = !usingAyahProgress)}
+						>
+							{usingAyahProgress ? 'آیه‌محور' : 'صفحه‌محور'}
+						</button>
+					</div>
+					{#if usingAyahProgress}
+						<div class="stat-value px-2">
+							{percent.toLocaleString('fa')}٪
+						</div>
+					{:else}
+						<div class="stat-value px-2">{(percentByPage! * 100).toLocaleString('fa')}٪</div>
+					{/if}
 					<div class="stat-desc">
-						<progress class="progress progress-success w-23" max={100} value={percent}></progress>
+						<progress
+							class="progress progress-success w-23"
+							max={100}
+							value={usingAyahProgress ? percent : percentByPage! * 100}
+						></progress>
 					</div>
 				</div>
 			</div>

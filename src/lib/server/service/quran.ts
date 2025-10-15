@@ -35,7 +35,7 @@ export function getAyahInfo(ayahIndex: number, translation: Translation) {
 
 export function getAyahInfoRange(range: { start: number; end: number }, translation: Translation) {
 	const result: AyahInfo[] = []
-	for (let i = range.start; i <= range.end; i++) {
+	for (let i = range.start; i < range.end; i++) {
 		result.push(getAyahInfo(i, translation))
 	}
 	return result

@@ -26,9 +26,9 @@ export class QuranRange {
 		if (!result) return null
 		const [, startSurahNumber, startAyahNumber, endSurahNumber, endAyahNumber] = result
 		const start = Ayah.getBySurahNumber(+startSurahNumber, +startAyahNumber)
-		const end = Ayah.getBySurahNumber(+endSurahNumber, +endAyahNumber)
-		if (!start || !end) return null
-		return new QuranRange(start.index, end.index, title)
+		const last = Ayah.getBySurahNumber(+endSurahNumber, +endAyahNumber)
+		if (!start || !last) return null
+		return new QuranRange(start.index, last.index + 1, title)
 	}
 
 	get startAyah() {
@@ -61,7 +61,7 @@ export class QuranRange {
 	}
 
 	toRangeParam() {
-		return `${this.startAyah.key}-${this.endAyah.key}`
+		return `${this.startAyah.key}-${this.lastAyah.key}`
 	}
 
 	matchRangeType(type: RangeType): boolean {
@@ -117,11 +117,11 @@ export class QuranRange {
 
 	getPageCount() {
 		const startPage = this.startAyah.page
-		const endPage = this.endAyah.page
-		const betweenPagesCount = endPage.index - startPage.index - 1
+		const lastPage = this.lastAyah.page
+		const betweenPagesCount = lastPage.index - startPage.index - 1
 
 		const startFraction = 1 - (this.start - startPage.firstAyahIndex) / startPage.ayahCount
-		const endFraction = (this.end - endPage.firstAyahIndex + 1) / endPage.ayahCount
+		const endFraction = (this.end - lastPage.firstAyahIndex) / lastPage.ayahCount
 
 		return betweenPagesCount + startFraction + endFraction
 	}

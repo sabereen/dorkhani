@@ -35,7 +35,7 @@ export const POST: RequestHandler = async (event) => {
 	const ayat = getAyahInfoRange(
 		{
 			start: result.khatm.versesRead - count,
-			end: result.khatm.versesRead - 1,
+			end: result.khatm.versesRead,
 		},
 		body.translation!,
 	)

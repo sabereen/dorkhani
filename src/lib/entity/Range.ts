@@ -18,6 +18,17 @@ export class QuranRange {
 		this.title = title || ''
 	}
 
+	static fromRangeParam(rangeParam: string, title?: string) {
+		const regex = /^(\d\d?\d?):(\d\d?\d?)-(\d\d?\d?):(\d\d?\d?)$/
+		const result = regex.exec(rangeParam)
+		if (!result) return null
+		const [, startSurahNumber, startAyahNumber, endSurahNumber, endAyahNumber] = result
+		const start = Ayah.getBySurahNumber(+startSurahNumber, +startAyahNumber)
+		const end = Ayah.getBySurahNumber(+endSurahNumber, +endAyahNumber)
+		if (!start || !end) return null
+		return new QuranRange(start.index, end.index, title)
+	}
+
 	get startAyah() {
 		return Ayah.get(this.start)
 	}
@@ -39,6 +50,10 @@ export class QuranRange {
 		const start = `${this.startAyah.surahNumber}:${this.startAyah.number}`
 		const end = `${this.lastAyah.surahNumber}:${this.lastAyah.number}`
 		return `https://quran.com/fa/${start}-${end}`
+	}
+
+	toRangeParam() {
+		return `${this.startAyah.key}:${this.endAyah.key}`
 	}
 
 	matchRangeType(type: RangeType): boolean {

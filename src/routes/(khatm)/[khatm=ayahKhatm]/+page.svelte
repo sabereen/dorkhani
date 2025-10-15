@@ -2,22 +2,18 @@
 	import '@ghoran/text/fonts/uthmanic-hafs/style.css'
 	import { slide } from 'svelte/transition'
 	import type { AyahInfo } from '$service/quran'
-	import { Ayah } from '@ghoran/entity'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 	import IconSettings from '~icons/ic/round-settings'
-	import { ayah_getAudioLink, ayah_getExternalLink } from '$lib/entity/Ayah'
 	import { useKathmContext } from '../khatm-context.svelte'
-	import { getFontManager } from './font.svelte'
-	import { watchEager } from '$lib/hooks/watch.svelte'
-	import { type QuranFont, SettingsEditor } from '$lib/entity/LocalSettings.svelte'
+	import { SettingsEditor } from '$lib/entity/LocalSettings.svelte'
 	import Modal from '$lib/components/Modal.svelte'
 	import SettingsAyahKhatm from '../../settings/SettingsAyahKhatm.svelte'
 	import { page } from '$app/state'
 	import { pushState } from '$app/navigation'
 	import { wait } from '$lib/utility/wait'
-	import SingleAyah from '$lib/components/Quran/SingleAyah.svelte'
 	import { AudioManager } from '$lib/components/Quran/AudioManager.svelte'
+	import MultipleAyah from '$lib/components/Quran/MultipleAyah.svelte'
 
 	const khatmContext = useKathmContext()
 	const khatm = $derived(khatmContext.khatm)
@@ -81,56 +77,13 @@
 			loading = -1
 		}
 	}
-
-	function tryPlayNext() {
-		if (audioManager.playingIndex < selectedAyat[0].index + selectedAyat.length - 1) {
-			audioManager.play(audioManager.playingIndex + 1)
-
-			document
-				.getElementById(`ayah-${audioManager.playingAyah!.index}`)!
-				.scrollIntoView({ block: 'start', behavior: 'smooth' })
-		}
-	}
-
-	const font = $derived<QuranFont>(settingsEditor.config.quranFont)
-	const fontManager = $derived(getFontManager(font))
-
-	watchEager(
-		() => [font, selectedAyat],
-		() => {
-			if (!selectedAyat.length && !khatm.finished) {
-				const ayah = Ayah.get(khatm.versesRead)
-				fontManager.preloadAyah(ayah)
-			}
-
-			selectedAyat.forEach(({ index }) => {
-				const ayah = Ayah.get(index)
-				fontManager.preloadAyah(ayah)
-			})
-		},
-	)
 </script>
 
 {#if selectedAyat.length}
 	<div bind:this={ayahWrapper}>
-		{#key audioManager.audioSrc}
-			<audio
-				bind:this={audioManager.audio}
-				src={audioManager.audioSrc}
-				bind:paused={audioManager.paused}
-				bind:duration={audioManager.audioDuration}
-				bind:currentTime={audioManager.audioCurrentTime}
-				bind:readyState={audioManager.audioReadyState}
-				onended={tryPlayNext}
-			></audio>
-		{/key}
-
-		{#each selectedAyat as ayahInfo (ayahInfo.index)}
-			<SingleAyah {font} {ayahInfo} {fontManager} {audioManager} />
-		{/each}
+		<MultipleAyah ayahInfoList={selectedAyat} {audioManager} />
 	</div>
 {/if}
-
 <div class="mt-5 flex flex-col text-center">
 	{#if !selectedAyat.length}
 		<p class="text-balance px-4 text-lg">

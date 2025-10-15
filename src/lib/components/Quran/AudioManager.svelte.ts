@@ -3,7 +3,7 @@ import type { Reciter } from '$lib/entity/LocalSettings.svelte'
 import { Ayah } from '@ghoran/entity'
 
 export class AudioManager {
-	audio = $state(new Audio())
+	audio = $state<HTMLAudioElement>()
 	reciter = $state<Reciter>('parhizgar')
 	playingIndex = $state(-1)
 	paused = $state(true)

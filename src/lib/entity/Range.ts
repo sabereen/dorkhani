@@ -54,7 +54,9 @@ export class QuranRange {
 	}
 
 	getLink(khatm: Khatm) {
-		return `${khatm.link}/${this.toRangeParam()}`
+		const url = new URL(khatm.link)
+		url.pathname += '/' + this.toRangeParam()
+		return url.href
 	}
 
 	toRangeParam() {

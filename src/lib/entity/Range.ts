@@ -6,6 +6,7 @@ import { splitInterval } from '$lib/utility/splitIntervals'
 import { hizbQuarter_toRange } from './HizbQuarter'
 import { ayah_getExternalLink } from './Ayah'
 import type { RangeType } from '@prisma/client'
+import type { Khatm } from './Khatm.svelte'
 
 export class QuranRange {
 	start: number
@@ -52,8 +53,12 @@ export class QuranRange {
 		return `https://quran.com/fa/${start}-${end}`
 	}
 
+	getLink(khatm: Khatm) {
+		return `${khatm.link}/${this.toRangeParam()}`
+	}
+
 	toRangeParam() {
-		return `${this.startAyah.key}:${this.endAyah.key}`
+		return `${this.startAyah.key}-${this.endAyah.key}`
 	}
 
 	matchRangeType(type: RangeType): boolean {

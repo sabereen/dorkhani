@@ -45,7 +45,7 @@
 							<a
 								class="btn btn-circle btn-ghost btn-xs vertical-middle ms-1 !p-0"
 								target="_blank"
-								href={item.range.externalLink}
+								href={item.range.getLink(item.khatm)}
 							>
 								<IconEye class="size-4" />
 							</a>

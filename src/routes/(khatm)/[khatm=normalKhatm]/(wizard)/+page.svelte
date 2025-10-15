@@ -200,7 +200,9 @@
 					{selected.getTitle()}
 				</p>
 				<div class="card-actions justify-end">
-					<a href={selected.externalLink} target="_blank" class="btn btn-primary"> مشاهده آیات </a>
+					<a href={selected.getLink(khatm)} target="_blank" class="btn btn-primary">
+						مشاهده آیات
+					</a>
 				</div>
 			</div>
 		</div>

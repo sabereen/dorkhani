@@ -8,6 +8,10 @@
 	const range = $derived(QuranRange.fromRangeParam(data.rangeParam)!)
 </script>
 
+<svelte:head>
+	<title>ختم قرآن | {range.getTitle()}</title>
+</svelte:head>
+
 <Header title={range.getTitle()} />
 
 <MultipleAyah ayahInfoList={data.ayat} />

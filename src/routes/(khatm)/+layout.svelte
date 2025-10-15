@@ -16,10 +16,14 @@
 	import { base } from '$app/paths'
 	import { rebaseFullPath } from '$lib/utility/path'
 	import ExpandableText from '$lib/components/ExpandableText.svelte'
+	import { SettingsEditor } from '$lib/entity/LocalSettings.svelte'
 
 	const { data, children }: LayoutProps = $props()
 
 	const canShare = !browser || navigator.share
+
+	const settingsEditor = SettingsEditor.use()
+	settingsEditor.live = true
 
 	let layout = $derived.by<'wizard' | 'list' | 'grid'>(() => {
 		if (page.url.pathname.includes('grid')) return 'grid'
@@ -61,9 +65,13 @@
 		}
 	}
 
-	const percent = $derived(khatm.percent)
-	const percentByPage = $derived(khatm.getProgressByPage())
-	let usingAyahProgress = $state(true)
+	const percentByAyah = $derived(khatm.percent)
+	const percentByPage = $derived((khatm.getProgressByPage() || 0) * 100)
+	const pageBasedProgress = $derived(settingsEditor.config.pageBasedProgress)
+	function togglePageBasedProgress() {
+		settingsEditor.config.pageBasedProgress = !pageBasedProgress
+	}
+	const percent = $derived(pageBasedProgress ? percentByPage : percentByAyah)
 
 	const canSelectLayout = $derived(!khatm.finished && khatm.isFree)
 </script>
@@ -131,27 +139,15 @@
 				<div class="stat">
 					<div class="stat-title">
 						پیشرفت ختم
-						<button
-							type="button"
-							class="btn btn-primary btn-xs"
-							onclick={() => (usingAyahProgress = !usingAyahProgress)}
-						>
-							{usingAyahProgress ? 'آیه‌محور' : 'صفحه‌محور'}
+						<button type="button" class="btn btn-primary btn-xs" onclick={togglePageBasedProgress}>
+							{pageBasedProgress ? 'صفحه‌محور' : 'آیه‌محور'}
 						</button>
 					</div>
-					{#if usingAyahProgress}
-						<div class="stat-value px-2">
-							{percent.toLocaleString('fa')}٪
-						</div>
-					{:else}
-						<div class="stat-value px-2">{(percentByPage! * 100).toLocaleString('fa')}٪</div>
-					{/if}
+					<div class="stat-value px-2">
+						{percent.toLocaleString('fa')}٪
+					</div>
 					<div class="stat-desc">
-						<progress
-							class="progress progress-success w-23"
-							max={100}
-							value={usingAyahProgress ? percent : percentByPage! * 100}
-						></progress>
+						<progress class="progress progress-success w-23" max={100} value={percent}></progress>
 					</div>
 				</div>
 			</div>

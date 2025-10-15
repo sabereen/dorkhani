@@ -16,6 +16,7 @@ export interface ILocalSettings {
 	readedRangesVisibility: 'visible' | 'invisible' | 'auto'
 	externalQuranProvider: 'ketabmobin' | 'quran-com' | 'quran-projector'
 	daisyTheme: DaisyThemeSlug | null
+	pageBasedProgress: boolean
 }
 
 export type SettingKey = keyof ILocalSettings
@@ -27,6 +28,7 @@ const defaultSettings = {
 	translation: 'ansarian',
 	externalQuranProvider: 'quran-com',
 	daisyTheme: null,
+	pageBasedProgress: false,
 } as const satisfies ILocalSettings
 
 const localStoreKey = 'localSettings'

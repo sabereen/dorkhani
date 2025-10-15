@@ -1,4 +1,5 @@
 import { Ayah, HizbQuarter, Page, Surah } from '@ghoran/entity'
+import { COUNT_OF_PAGES } from '@ghoran/metadata/constants'
 import { page_toRange } from './Page'
 import { surah_getName, surah_toRange } from './Surah'
 import type { KhatmPart } from './KhatmPart'
@@ -112,6 +113,21 @@ export class QuranRange {
 		} while (page && page.firstAyah.index < this.end)
 
 		return list
+	}
+
+	getPageCount() {
+		const startPage = this.startAyah.page
+		const endPage = this.endAyah.page
+		const betweenPagesCount = endPage.index - startPage.index - 1
+
+		const startFraction = 1 - (this.start - startPage.firstAyahIndex) / startPage.ayahCount
+		const endFraction = (this.end - endPage.firstAyahIndex + 1) / endPage.ayahCount
+
+		return betweenPagesCount + startFraction + endFraction
+	}
+
+	getCoveragePercent() {
+		return this.getPageCount() / COUNT_OF_PAGES
 	}
 
 	getHizbQuarters() {

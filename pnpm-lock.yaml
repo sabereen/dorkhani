@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@ghoran/entity':
-        specifier: ^0.1.4
-        version: 0.1.4
+        specifier: ^0.2.0
+        version: 0.2.0
       '@ghoran/metadata':
         specifier: ^0.0.7
         version: 0.0.7
@@ -627,14 +627,11 @@ packages:
     resolution: {integrity: sha512-JubJ5B2pJ4k4yGxaNLdbjrnk9d/iDz6/q8wOilpIowd6PJPgaxCuHBnBszq7Ce2TyMrywm5r4PnKm6V3iiZF+g==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@ghoran/entity@0.1.4':
-    resolution: {integrity: sha512-PdQXmJQsBJ+0JfW9XlgtJraCXx0rCqDMiqV9rX2TUePqwYt99fNgAq8WhR2lYGBiAClUOcEpH0oiep2oemQ5fA==}
+  '@ghoran/entity@0.2.0':
+    resolution: {integrity: sha512-l/eemCQtVXzICQR7onMRq3nxMPbhJqhaj+1TN+vWQj9mZn/kCav+BXnSQmZ9Kb/1/ihdb9+lMrY6iXh6vStZ2w==}
 
   '@ghoran/metadata@0.0.7':
     resolution: {integrity: sha512-g+B+S87M6wKZ1HW4vpe13dG2307vht0dGZm5ts/B9cGLZUDpj8h5i/yZX4kV6Ma6utZEop8NW2d46nLfQnmZdg==}
-
-  '@ghoran/text@0.0.7':
-    resolution: {integrity: sha512-CZ/qtyvo2TaKF1nwkAlx7ayDmrWn8QyEBB025PsNSfecl5yfVkNP7kvfEPWER3eMOSX/T+/bD2Leab0Ud9VRkg==}
 
   '@ghoran/text@0.0.8':
     resolution: {integrity: sha512-418ZMGVDWb0hioYv6y+YAouIckgZHBSNNMnHuk3YVfGuF6+Cgf39e0YogykO5T0K0N8Etx26bqb9I6qSC9ZQGQ==}
@@ -3813,15 +3810,13 @@ snapshots:
       '@eslint/core': 0.12.0
       levn: 0.4.1
 
-  '@ghoran/entity@0.1.4':
+  '@ghoran/entity@0.2.0':
     dependencies:
       '@ghoran/metadata': 0.0.7
-      '@ghoran/text': 0.0.7
+      '@ghoran/text': 0.0.8
       '@ghoran/utils': 0.0.7
 
   '@ghoran/metadata@0.0.7': {}
-
-  '@ghoran/text@0.0.7': {}
 
   '@ghoran/text@0.0.8': {}
 

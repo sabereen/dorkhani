@@ -4,7 +4,7 @@
 	import { watchEager } from '$lib/hooks/watch.svelte'
 	import { AudioManager } from './AudioManager.svelte'
 	import { SettingsEditor, type QuranFont } from '$lib/entity/LocalSettings.svelte'
-	import { getFontManager } from '../../../routes/(khatm)/[khatm=ayahKhatm]/font.svelte'
+	import { getFontManager } from './FontManager.svelte'
 	import type { AyahInfo } from '$service/quran'
 
 	type Props = {

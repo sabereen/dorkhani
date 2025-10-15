@@ -4,7 +4,7 @@
 	import type { AyahInfo } from '$service/quran'
 	import { Ayah } from '@ghoran/entity'
 	import { fade, slide } from 'svelte/transition'
-	import type { FontManager } from '../../../routes/(khatm)/[khatm=ayahKhatm]/font.svelte'
+	import type { FontManager } from './FontManager.svelte'
 	import type { AudioManager } from './AudioManager.svelte'
 
 	import IconPlay from '~icons/ic/round-play-arrow'

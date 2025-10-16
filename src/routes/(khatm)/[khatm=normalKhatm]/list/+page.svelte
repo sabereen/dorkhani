@@ -157,7 +157,7 @@
 											<a
 												class="btn !btn-circle btn-ghost btn-xs ms-1"
 												target="_blank"
-												href={range.externalLink}
+												href={range.getLink(khatm)}
 											>
 												<IconEye />
 											</a>

@@ -2,7 +2,7 @@ import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 import type { TKhatm, RangeType, TKhatmPart } from '@prisma/client'
 import type { PickAyahResult } from '$api/khatmPart/pickNext/+server'
 import { PickedKhatmPart } from './PickedKhatmPart'
-import type { QuranRange } from './Range'
+import { QuranRange } from './Range'
 import { untrack } from 'svelte'
 import { KhatmPart } from './KhatmPart'
 import { request } from '$lib/utility/request'
@@ -81,6 +81,18 @@ export class Khatm {
 
 	get description() {
 		return this.plain.description
+	}
+
+	getProgressByPage() {
+		if (this.rangeType === 'ayah') {
+			return new QuranRange(0, this.versesRead).getCoveragePercent()
+		}
+		if (!this.plainParts) return null
+		let progress = 0
+		for (const part of this.plainParts) {
+			progress += new QuranRange(part.start, part.end).getCoveragePercent()
+		}
+		return progress
 	}
 
 	get progress() {

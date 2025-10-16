@@ -1,4 +1,5 @@
 import { Ayah, HizbQuarter, Page, Surah } from '@ghoran/entity'
+import { COUNT_OF_PAGES } from '@ghoran/metadata/constants'
 import { page_toRange } from './Page'
 import { surah_getName, surah_toRange } from './Surah'
 import type { KhatmPart } from './KhatmPart'
@@ -6,6 +7,7 @@ import { splitInterval } from '$lib/utility/splitIntervals'
 import { hizbQuarter_toRange } from './HizbQuarter'
 import { ayah_getExternalLink } from './Ayah'
 import type { RangeType } from '@prisma/client'
+import type { Khatm } from './Khatm.svelte'
 
 export class QuranRange {
 	start: number
@@ -16,6 +18,17 @@ export class QuranRange {
 		this.start = start
 		this.end = end
 		this.title = title || ''
+	}
+
+	static fromRangeParam(rangeParam: string, title?: string) {
+		const regex = /^(\d\d?\d?):(\d\d?\d?)-(\d\d?\d?):(\d\d?\d?)$/
+		const result = regex.exec(rangeParam)
+		if (!result) return null
+		const [, startSurahNumber, startAyahNumber, endSurahNumber, endAyahNumber] = result
+		const start = Ayah.getBySurahNumber(+startSurahNumber, +startAyahNumber)
+		const last = Ayah.getBySurahNumber(+endSurahNumber, +endAyahNumber)
+		if (!start || !last) return null
+		return new QuranRange(start.index, last.index + 1, title)
 	}
 
 	get startAyah() {
@@ -39,6 +52,16 @@ export class QuranRange {
 		const start = `${this.startAyah.surahNumber}:${this.startAyah.number}`
 		const end = `${this.lastAyah.surahNumber}:${this.lastAyah.number}`
 		return `https://quran.com/fa/${start}-${end}`
+	}
+
+	getLink(khatm: Khatm) {
+		const url = new URL(khatm.link)
+		url.pathname += '/' + this.toRangeParam()
+		return url.href
+	}
+
+	toRangeParam() {
+		return `${this.startAyah.key}-${this.lastAyah.key}`
 	}
 
 	matchRangeType(type: RangeType): boolean {
@@ -90,6 +113,21 @@ export class QuranRange {
 		} while (page && page.firstAyah.index < this.end)
 
 		return list
+	}
+
+	getPageCount() {
+		const startPage = this.startAyah.page
+		const lastPage = this.lastAyah.page
+		const betweenPagesCount = lastPage.index - startPage.index - 1
+
+		const startFraction = 1 - (this.start - startPage.firstAyahIndex) / startPage.ayahCount
+		const endFraction = (this.end - lastPage.firstAyahIndex) / lastPage.ayahCount
+
+		return betweenPagesCount + startFraction + endFraction
+	}
+
+	getCoveragePercent() {
+		return this.getPageCount() / COUNT_OF_PAGES
 	}
 
 	getHizbQuarters() {

@@ -3,38 +3,18 @@ import type { RequestHandler } from './$types'
 import type { TKhatm } from '@prisma/client'
 import { khatmPartService_pickNextAyat } from '$service/khatmPart'
 
-import translationAnsarian from '@ghoran/translation/json/fa/tanzil-ansarian.json'
-import translationMakarem from '@ghoran/translation/json/fa/tanzil-makarem.json'
-import translationGharaati from '@ghoran/translation/json/fa/tanzil-gharaati.json'
-
-import quranTextQPC1 from '@ghoran/text/json/quran-text-qpc-v1.json'
-import quranTextQPC2 from '@ghoran/text/json/quran-text-qpc-v2.json'
-import quranTextHafs from '@ghoran/text/json/quran-text-hafs.json'
-
-export type SelectedAyah = {
-	index: number
-	textQPC1: string
-	textQPC2: string
-	textHafs: string
-	translation: string
-}
+import { type Translation, type AyahInfo, getAyahInfoRange } from '$service/quran'
 
 export type PickAyahResult = {
 	khatm: TKhatm
-	ayat: SelectedAyah[]
-}
-
-const translationMap = {
-	ansarian: translationAnsarian,
-	makarem: translationMakarem,
-	gharaati: translationGharaati,
+	ayat: AyahInfo[]
 }
 
 type Body = {
 	khatmId: number
 	count: number
 	accessToken?: string
-	translation?: keyof typeof translationMap
+	translation?: Translation
 }
 
 export const POST: RequestHandler = async (event) => {
@@ -52,18 +32,13 @@ export const POST: RequestHandler = async (event) => {
 		count,
 	})
 
-	const ayat: SelectedAyah[] = []
-	for (let i = result.count; i > 0; i--) {
-		const ayahIndex = result.khatm.versesRead - i
-		const translation = translationMap[body.translation!] || translationAnsarian
-		ayat.push({
-			index: ayahIndex,
-			textQPC1: quranTextQPC1[ayahIndex],
-			textQPC2: quranTextQPC2[ayahIndex],
-			textHafs: quranTextHafs[ayahIndex],
-			translation: translation[ayahIndex],
-		})
-	}
+	const ayat = getAyahInfoRange(
+		{
+			start: result.khatm.versesRead - count,
+			end: result.khatm.versesRead,
+		},
+		body.translation!,
+	)
 
 	return json({ khatm: result.khatm, ayat } satisfies PickAyahResult)
 }

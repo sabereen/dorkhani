@@ -7,7 +7,7 @@ import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async () => {
 	const showcaseKhatms = appSettingsService_getStaleShowcaseWhileRevalidate()
-	const lastKhatms = await khatmService_getPublicList({ limit: 50 })
+	const lastKhatms = await khatmService_getPublicList({ limit: 150 })
 
 	return {
 		lastKhatms,

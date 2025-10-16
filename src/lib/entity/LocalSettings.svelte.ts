@@ -68,8 +68,12 @@ export class LocalSettings {
 	 * @param config
 	 */
 	private updateCookies(config: Partial<ILocalSettings>) {
+		const ONE_YEAR = 365 * 24 * 3600
 		if (config.daisyTheme) {
-			setCookie('daisyTheme', config.daisyTheme, 365 * 24 * 3600 /** 1 year */)
+			setCookie('daisyTheme', config.daisyTheme, ONE_YEAR)
+		}
+		if (config.translation != null) {
+			setCookie('translation', config.translation, ONE_YEAR)
 		}
 	}
 

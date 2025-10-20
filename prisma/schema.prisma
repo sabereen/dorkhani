@@ -22,13 +22,17 @@ enum RangeType {
   ayah
 }
 
-model TKhatmGroup {
-  id          Int    @id
-  lastKhatmId Int    @map("last_khatm_id")
-  lastKhatm   TKhatm @relation(fields: [lastKhatmId], references: [id])
-  maxRounds   Int?   @map("max_rounds") @db.UnsignedSmallInt()
+enum KhatmStatus {
+  inProgress
+  completed
+}
 
-  @@map("khatm_group")
+model TKhatmSeries {
+  id        Int      @id
+  maxRounds Int?     @map("max_rounds") @db.UnsignedSmallInt()
+  TKhatm    TKhatm[]
+
+  @@map("khatm_series")
 }
 
 model TKhatm {
@@ -47,8 +51,16 @@ model TKhatm {
   accessToken String?       @map("access_token")
   // تاریخ ایجاد ختم
   created     DateTime      @default(now())
+  // تاریخ پایان ختم
+  endDate     DateTime?
+  // وضعیت ختم
+  status      KhatmStatus   @default(inProgress)
+  // شماره دور جاری در دنباله
+  roundNumber Int           @default(1) @map("round_number") @db.UnsignedSmallInt()
+  // شناسه دنباله
+  seriesId    Int?          @map("series_id")
+  series      TKhatmSeries? @relation(fields: [seriesId], references: [id])
   parts       TKhatmPart[]
-  khatmGroups TKhatmGroup[]
 
   @@map("khatm")
 }

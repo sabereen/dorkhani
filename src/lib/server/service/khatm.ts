@@ -42,3 +42,31 @@ export async function khatmService_getFull(id: number, accessToken: string | nul
 
 	return khatm
 }
+
+export async function khatmService_setAsCompleted(id: number) {
+	const result = await db.tKhatm.update({
+		where: { id },
+		include: { series: true },
+		data: {
+			status: 'completed',
+			endDate: new Date(),
+		},
+	})
+
+	const { series, roundNumber } = result
+
+	if (!series) return
+	if (series.maxRounds && roundNumber >= series.maxRounds) return
+
+	await db.tKhatm.create({
+		data: {
+			title: result.title,
+			description: result.description,
+			accessToken: result.accessToken,
+			private: result.private,
+			rangeType: result.rangeType,
+			seriesId: result.seriesId,
+			roundNumber: roundNumber + 1,
+		},
+	})
+}

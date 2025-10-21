@@ -30,7 +30,7 @@ enum KhatmStatus {
 model TKhatmSeries {
   id        Int      @id
   maxRounds Int?     @map("max_rounds") @db.UnsignedSmallInt()
-  TKhatm    TKhatm[]
+  khatms    TKhatm[]
 
   @@map("khatm_series")
 }

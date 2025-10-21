@@ -37,8 +37,21 @@ export async function khatmService_create(body: CreatingKhatm) {
 
 export async function khatmService_getFull(id: number, accessToken: string | null) {
 	const khatm = await db.tKhatm.findUnique({
-		include: { parts: true },
+		include: { parts: true, series: true },
 		where: { id, accessToken: { equals: accessToken } },
+	})
+
+	return khatm
+}
+
+export async function khatmService_getBySeries(seriesId: number, accessToken: string | null) {
+	const khatm = await db.tKhatm.findFirst({
+		include: { parts: true, series: true },
+		where: {
+			seriesId,
+			accessToken: { equals: accessToken },
+			status: 'inProgress',
+		},
 	})
 
 	return khatm

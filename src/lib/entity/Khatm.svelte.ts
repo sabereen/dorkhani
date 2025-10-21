@@ -112,12 +112,20 @@ export class Khatm {
 		return Math.floor(100_00 * this.progress) / 100
 	}
 
+	get isSerial() {
+		return this.seriesId != null
+	}
+
 	get rangeType() {
 		return this.plain.rangeType
 	}
 
 	get private() {
 		return this.plain.private
+	}
+
+	get seriesId() {
+		return this.plain.seriesId
 	}
 
 	get sequential() {
@@ -149,7 +157,8 @@ export class Khatm {
 	}
 
 	getLink(layout: 'wizard' | 'grid' | 'list' = 'wizard') {
-		const prefix = this.isAyahOriented ? 'a' : 'k'
+		let prefix = this.isAyahOriented ? 'a' : 'k'
+		if (this.isSerial) prefix += 's'
 		const layoutPart = layout === 'wizard' ? '' : `/${layout}`
 		return rebaseFullPath(
 			`${prefix}${this.id}${layoutPart}${this.accessToken ? `?t=${this.accessToken}` : ''}`,

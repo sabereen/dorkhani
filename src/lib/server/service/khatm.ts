@@ -1,6 +1,7 @@
 import type { RangeType } from '@prisma/client'
 import { v4 as uuid } from 'uuid'
 import { db } from '$lib/server/db'
+import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 
 export async function khatmService_getPublicList({ limit = 20 } = {}) {
 	const khatms = await db.tKhatm.findMany({
@@ -69,4 +70,19 @@ export async function khatmService_setAsCompleted(id: number) {
 			roundNumber: roundNumber + 1,
 		},
 	})
+}
+
+export async function khatmService_checkAndUpdateStatus() {
+	const result = await db.tKhatm.updateMany({
+		where: {
+			status: 'inProgress',
+			versesRead: { gte: COUNT_OF_AYAHS },
+		},
+		data: {
+			status: 'completed',
+			endDate: new Date(),
+		},
+	})
+
+	return result
 }

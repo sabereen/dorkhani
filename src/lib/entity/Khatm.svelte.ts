@@ -49,6 +49,15 @@ export class Khatm {
 		return plainList.map((plain) => this.fromPlain(plain))
 	}
 
+	/**
+	 * این متد مخصوص استفاده در سمت ادمین است
+	 * ختم‌ها را بررسی می‌کند و وضعیت ختم‌هایی که جا افتاده اند را اصلاح می‌کند
+	 * و اگر کامل شده باشند آن‌ها را به عنوان کامل شده علامت می‌زند
+	 */
+	static refreshStatusList() {
+		return request<void>('post', '/khatm/refreshStatus')
+	}
+
 	static getRangeTypeTitle(rangeType: RangeType) {
 		return {
 			ayah: 'آیه به آیه',

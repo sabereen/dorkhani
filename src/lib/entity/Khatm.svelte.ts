@@ -93,6 +93,7 @@ export class Khatm {
 	}
 
 	getProgressByPage() {
+		if (this.versesRead === 0) return 0
 		if (this.rangeType === 'ayah') {
 			return new QuranRange(0, this.versesRead).getCoveragePercent()
 		}

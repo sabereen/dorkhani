@@ -65,6 +65,13 @@
 		}
 	}
 
+	const roundTitle = $derived.by(() => {
+		if (!khatm.isSerial) return ''
+		if (khatm.roundNumber === 1) return 'دور اوّل'
+		if (khatm.roundNumber === 2) return 'دور دوم'
+		return 'دور ' + khatm.roundNumber.toLocaleString('fa')
+	})
+
 	const percentByAyah = $derived(khatm.percent)
 	const percentByPage = $derived((khatm.getProgressByPage() || 0) * 100)
 	const pageBasedProgress = $derived(settingsEditor.config.pageBasedProgress)
@@ -126,6 +133,9 @@
 		<div class="w-full max-w-md">
 			<h1 class="break-words text-2xl font-black">
 				{khatm.title}
+				{#if khatm.isSerial}
+					<span class="badge badge-accent">{roundTitle}</span>
+				{/if}
 				{#if khatm.rangeType === 'ayah'}
 					<span class="badge badge-info">آیه به آیه</span>
 				{/if}

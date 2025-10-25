@@ -124,6 +124,10 @@ export class Khatm {
 		return this.plain.private
 	}
 
+	get roundNumber() {
+		return this.plain.roundNumber
+	}
+
 	get seriesId() {
 		return this.plain.seriesId
 	}

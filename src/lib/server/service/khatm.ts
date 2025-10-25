@@ -86,16 +86,17 @@ export async function khatmService_setAsCompleted(id: number) {
 }
 
 export async function khatmService_checkAndUpdateStatus() {
-	const result = await db.tKhatm.updateMany({
+	const result = await db.tKhatm.findMany({
+		select: { id: true },
 		where: {
 			status: 'inProgress',
 			versesRead: { gte: COUNT_OF_AYAHS },
 		},
-		data: {
-			status: 'completed',
-			endDate: new Date(),
-		},
 	})
 
-	return result
+	result.forEach((khatm) => {
+		khatmService_setAsCompleted(khatm.id)
+	})
+
+	return { count: result.length }
 }

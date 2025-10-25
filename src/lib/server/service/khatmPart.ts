@@ -108,6 +108,10 @@ export async function khatmPartService_pickNextAyat(body: PickNextAyatInput) {
 		},
 	})
 
+	if (updated.versesRead >= COUNT_OF_AYAHS) {
+		khatmService_setAsCompleted(updated.id)
+	}
+
 	return {
 		khatm: updated,
 		count,

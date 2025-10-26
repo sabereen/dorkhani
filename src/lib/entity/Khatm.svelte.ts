@@ -175,9 +175,10 @@ export class Khatm {
 	getLink(layout: 'wizard' | 'grid' | 'list' = 'wizard') {
 		let prefix = this.isAyahOriented ? 'a' : 'k'
 		if (this.isSerial) prefix += 's'
+		const id = this.isSerial ? this.seriesId : this.id
 		const layoutPart = layout === 'wizard' ? '' : `/${layout}`
 		return rebaseFullPath(
-			`${prefix}${this.id}${layoutPart}${this.accessToken ? `?t=${this.accessToken}` : ''}`,
+			`${prefix}${id}${layoutPart}${this.accessToken ? `?t=${this.accessToken}` : ''}`,
 		)
 	}
 

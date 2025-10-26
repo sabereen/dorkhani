@@ -17,6 +17,7 @@
 	import { rebaseFullPath } from '$lib/utility/path'
 	import ExpandableText from '$lib/components/ExpandableText.svelte'
 	import { SettingsEditor } from '$lib/entity/LocalSettings.svelte'
+	import { invalidateAll } from '$app/navigation'
 
 	const { data, children }: LayoutProps = $props()
 
@@ -64,6 +65,8 @@
 			toast('error', 'خطا در کپی.')
 		}
 	}
+
+	const roundTitle = $derived(khatm.getRoundTitle())
 
 	const percentByAyah = $derived(khatm.percent)
 	const percentByPage = $derived((khatm.getProgressByPage() || 0) * 100)
@@ -126,6 +129,9 @@
 		<div class="w-full max-w-md">
 			<h1 class="break-words text-2xl font-black">
 				{khatm.title}
+				{#if khatm.isSerial}
+					<span class="badge badge-accent">{roundTitle}</span>
+				{/if}
 				{#if khatm.rangeType === 'ayah'}
 					<span class="badge badge-info">آیه به آیه</span>
 				{/if}
@@ -157,7 +163,16 @@
 
 {#if khatm.finished}
 	<div class="alert alert-success">
-		<p>این ختم قرآن کامل شده است.</p>
+		<p>
+			{#if khatm.isSerial}
+				این دور از ختم کامل شده است ({roundTitle})
+			{:else}
+				این ختم قرآن کامل شده است.
+			{/if}
+		</p>
+		{#if khatm.isSerial}
+			<button class="btn !btn-outline" onclick={invalidateAll}>شروع دور جدید</button>
+		{/if}
 	</div>
 {:else}
 	{@render children()}

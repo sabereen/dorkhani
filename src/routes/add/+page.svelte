@@ -66,7 +66,7 @@
 				{/if}
 			{/if}
 
-			<div class="bg-base-100 mt-2 flex flex-col rounded-lg px-2 py-1">
+			<div class="bg-base-100 mt-2 flex select-none flex-col rounded-lg px-2 py-1">
 				{#snippet radioItem(value: 'public' | 'private', title: string, description: string)}
 					<label class="flex items-center py-1">
 						<input class="radio" type="radio" name="access" {value} checked={value === 'public'} />
@@ -87,6 +87,19 @@
 					'لینک ختم بلندتر است و هرگز در صفحه اصلی سایت نمایش داده نمی‌شود.',
 				)}
 			</div>
+
+			<label
+				class="bg-base-100 mt-2 flex cursor-pointer select-none items-center rounded-lg px-2 py-1 py-2"
+			>
+				<input class="checkbox" type="checkbox" name="series" />
+				<span class="ms-2 flex min-w-0 grow basis-0 flex-col">
+					<span class="text-[.9rem] font-bold">تمام نشدنی!</span>
+					<p class="text-xs">
+						در صورت فعال کردن این گزینه، پس از پایان ختم، یک دور ختم جدید به صورت خودکار آغاز
+						می‌گردد.
+					</p>
+				</span>
+			</label>
 
 			<input class="btn btn-primary mt-3" type="submit" value="ایجاد" />
 		</fieldset>

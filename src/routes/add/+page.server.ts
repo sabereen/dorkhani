@@ -3,6 +3,7 @@ import type { Actions, PageServerLoad } from './$types'
 import type { RangeType } from '@prisma/client'
 import { khatmService_create } from '$service/khatm'
 import { getNotificationProvider } from '$service/admin-notification'
+import { khatmSeries_createForKhatmId } from '$service/khatmSeries'
 
 export const load: PageServerLoad = ({ url }) => {
 	return {
@@ -17,6 +18,7 @@ export const actions = {
 		const rangeType = String(form.get('rangeType'))
 		const description = form.get('description') || ''
 		const isPrivate = form.get('access') === 'private'
+		const hasSeries = form.get('series') === 'on'
 
 		if (!title) {
 			return fail(400, { errorMessage: 'عنوان اجباری است.' })
@@ -28,6 +30,11 @@ export const actions = {
 			rangeType: rangeType as RangeType,
 			private: isPrivate,
 		})
+
+		if (hasSeries) {
+			const series = await khatmSeries_createForKhatmId(khatm.id)
+			khatm.seriesId = series.id
+		}
 
 		if (!isPrivate) {
 			const notif = getNotificationProvider()

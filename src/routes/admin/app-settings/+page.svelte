@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms'
 	import Header from '$lib/components/Header.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
+	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import { watch } from '$lib/hooks/watch.svelte'
 	import type { PageProps } from './$types'
 
@@ -24,6 +25,19 @@
 			formData.eitaaChatId = form?.eitaaChatId || ''
 		},
 	)
+
+	let refreshKhatmStatusLoading = $state(false)
+	async function refreshKhatmsStatus() {
+		try {
+			refreshKhatmStatusLoading = true
+			await Khatm.refreshStatusList()
+			toast('info', 'تازه سازی انجام شد.')
+		} catch (err) {
+			toast('error', String(err))
+		} finally {
+			refreshKhatmStatusLoading = false
+		}
+	}
 </script>
 
 <svelte:head>
@@ -31,6 +45,16 @@
 </svelte:head>
 
 <Header title="مدیریت تنظیمات کلی" />
+
+<div class="mt-4 text-center">
+	<button
+		disabled={refreshKhatmStatusLoading}
+		class="btn btn-primary !btn-outline"
+		onclick={refreshKhatmsStatus}
+	>
+		تازه‌سازی وضعیت تمام ختم‌ها
+	</button>
+</div>
 
 <form use:enhance class="mt-4 flex justify-center p-2" action="" method="POST">
 	<fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border px-4 !pb-4">

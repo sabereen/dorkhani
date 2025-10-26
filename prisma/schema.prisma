@@ -22,22 +22,44 @@ enum RangeType {
   ayah
 }
 
+enum KhatmStatus {
+  inProgress
+  completed
+}
+
+model TKhatmSeries {
+  id        Int      @id
+  maxRounds Int?     @map("max_rounds") @db.UnsignedSmallInt()
+  khatms    TKhatm[]
+
+  @@map("khatm_series")
+}
+
 model TKhatm {
-  id          Int          @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   // عنوان
-  title       String       @db.VarChar(100)
+  title       String        @db.VarChar(100)
   // توضیحات
-  description String       @db.Text()
+  description String        @db.Text()
   // نوع بازه‌ی قابل انتخاب توسط کاربر
-  rangeType   RangeType    @default(free) @map("range_type")
+  rangeType   RangeType     @default(free) @map("range_type")
   // تعداد کل آیات خوانده شده از ختم را نگهداری می‌کند
-  versesRead  Int          @default(0) @map("verses_read") @db.UnsignedSmallInt()
+  versesRead  Int           @default(0) @map("verses_read") @db.UnsignedSmallInt()
   // ختم خصوصی فقط با داشتن اکسس‌توکن مربوطه نمایش داده می‌شود و در صفحه اصلی نمایش داده نمی‌شود
-  private     Boolean      @default(false)
+  private     Boolean       @default(false)
   // توکن مربوط به ختم‌های خصوصی
-  accessToken String?      @map("access_token")
+  accessToken String?       @map("access_token")
   // تاریخ ایجاد ختم
-  created     DateTime     @default(now())
+  created     DateTime      @default(now())
+  // تاریخ پایان ختم
+  endDate     DateTime?
+  // وضعیت ختم
+  status      KhatmStatus   @default(inProgress)
+  // شماره دور جاری در دنباله
+  roundNumber Int           @default(1) @map("round_number") @db.UnsignedSmallInt()
+  // شناسه دنباله
+  seriesId    Int?          @map("series_id")
+  series      TKhatmSeries? @relation(fields: [seriesId], references: [id])
   parts       TKhatmPart[]
 
   @@map("khatm")

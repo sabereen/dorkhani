@@ -1,3 +1,4 @@
+import { browser, dev } from '$app/environment'
 import { getNotificationProvider } from '$service/admin-notification'
 import { appSettingsService_init } from '$service/appSettings'
 import type { ServerInit, HandleServerError, Handle } from '@sveltejs/kit'
@@ -20,6 +21,10 @@ export const handle: Handle = async ({ resolve, event }) => {
 }
 
 export const handleError: HandleServerError = async ({ error, event, status, message }) => {
+	if (dev || browser) {
+		console.error(error)
+	}
+
 	getNotificationProvider()
 		.sendError(`${status} ${message}`, {
 			href: event.url.href,

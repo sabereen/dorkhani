@@ -3,6 +3,7 @@ import { db } from '../db'
 import { error } from '@sveltejs/kit'
 import { QuranRange } from '$lib/entity/Range'
 import type { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
+import { khatmService_setAsCompleted } from './khatm'
 
 type CreatingKhatmPart = {
 	khatmId: number
@@ -54,6 +55,10 @@ export async function khatmPartService_pickRange(body: CreatingKhatmPart) {
 			},
 		})
 
+		if (result.versesRead >= COUNT_OF_AYAHS) {
+			khatmService_setAsCompleted(result.id)
+		}
+
 		return result
 	} catch (err) {
 		const prismaKnownError = err as PrismaClientKnownRequestError
@@ -102,6 +107,10 @@ export async function khatmPartService_pickNextAyat(body: PickNextAyatInput) {
 			versesRead: { increment: count },
 		},
 	})
+
+	if (updated.versesRead >= COUNT_OF_AYAHS) {
+		khatmService_setAsCompleted(updated.id)
+	}
 
 	return {
 		khatm: updated,

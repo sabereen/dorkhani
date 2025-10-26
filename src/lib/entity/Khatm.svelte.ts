@@ -49,6 +49,15 @@ export class Khatm {
 		return plainList.map((plain) => this.fromPlain(plain))
 	}
 
+	/**
+	 * این متد مخصوص استفاده در سمت ادمین است
+	 * ختم‌ها را بررسی می‌کند و وضعیت ختم‌هایی که جا افتاده اند را اصلاح می‌کند
+	 * و اگر کامل شده باشند آن‌ها را به عنوان کامل شده علامت می‌زند
+	 */
+	static refreshStatusList() {
+		return request<void>('post', '/khatm/refreshStatus')
+	}
+
 	static getRangeTypeTitle(rangeType: RangeType) {
 		return {
 			ayah: 'آیه به آیه',
@@ -84,6 +93,7 @@ export class Khatm {
 	}
 
 	getProgressByPage() {
+		if (this.versesRead === 0) return 0
 		if (this.rangeType === 'ayah') {
 			return new QuranRange(0, this.versesRead).getCoveragePercent()
 		}
@@ -103,12 +113,28 @@ export class Khatm {
 		return Math.floor(100_00 * this.progress) / 100
 	}
 
+	get isSerial() {
+		return this.seriesId != null
+	}
+
 	get rangeType() {
 		return this.plain.rangeType
 	}
 
 	get private() {
 		return this.plain.private
+	}
+
+	get roundNumber() {
+		return this.plain.roundNumber
+	}
+
+	get seriesId() {
+		return this.plain.seriesId
+	}
+
+	get status() {
+		return this.plain.status
 	}
 
 	get sequential() {
@@ -136,14 +162,23 @@ export class Khatm {
 	}
 
 	get finished() {
-		return this.progress >= 1
+		return this.status === 'completed'
+	}
+
+	getRoundTitle() {
+		if (!this.isSerial) return ''
+		if (this.roundNumber === 1) return 'دور اوّل'
+		if (this.roundNumber === 2) return 'دور دوم'
+		return 'دور ' + this.roundNumber.toLocaleString('fa')
 	}
 
 	getLink(layout: 'wizard' | 'grid' | 'list' = 'wizard') {
-		const prefix = this.isAyahOriented ? 'a' : 'k'
+		let prefix = this.isAyahOriented ? 'a' : 'k'
+		if (this.isSerial) prefix += 's'
+		const id = this.isSerial ? this.seriesId : this.id
 		const layoutPart = layout === 'wizard' ? '' : `/${layout}`
 		return rebaseFullPath(
-			`${prefix}${this.id}${layoutPart}${this.accessToken ? `?t=${this.accessToken}` : ''}`,
+			`${prefix}${id}${layoutPart}${this.accessToken ? `?t=${this.accessToken}` : ''}`,
 		)
 	}
 

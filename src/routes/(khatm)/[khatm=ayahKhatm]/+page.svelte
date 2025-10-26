@@ -63,6 +63,8 @@
 			selectedAyat = result.ayat
 			ayahWrapper?.scrollIntoView({ block: 'start', behavior: 'smooth' })
 
+			khatm.plain.versesRead += result.ayat.length
+
 			// این شرط را گذاشته ایم که آیه آخر سوره ناس را نمایش بدهد
 			if (!isFinished) {
 				khatm.refresh()
@@ -93,7 +95,12 @@
 	<div class="mt-5 px-4">
 		{#if isFinished}
 			<div>
-				<button class="btn btn-primary btn-block" onclick={() => khatm.refresh()}>پایان</button>
+				<button class="btn btn-primary btn-block" onclick={() => khatm.refresh()}>
+					پایان
+					{#if khatm.isSerial}
+						{khatm.getRoundTitle()}
+					{/if}
+				</button>
 			</div>
 		{:else}
 			<div class="grid grid-cols-2 gap-2">

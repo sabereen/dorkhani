@@ -14,6 +14,10 @@ export async function idb_createdKhatm_add(item: Omit<CreatedKhatm, 'id'>) {
 			rangeType: item.khatm.rangeType,
 			title: item.khatm.title,
 			accessToken: item.khatm.accessToken,
+			endDate: item.khatm.endDate,
+			roundNumber: item.khatm.roundNumber,
+			seriesId: item.khatm.seriesId,
+			status: item.khatm.status,
 		},
 	})
 }

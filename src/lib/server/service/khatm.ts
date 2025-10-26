@@ -5,7 +5,10 @@ import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 
 export async function khatmService_getPublicList({ limit = 20 } = {}) {
 	const khatms = await db.tKhatm.findMany({
-		where: { private: false },
+		where: {
+			private: false,
+			OR: [{ seriesId: { not: null }, status: 'inProgress' }, { seriesId: null }],
+		},
 		orderBy: { id: 'desc' },
 		take: limit,
 	})

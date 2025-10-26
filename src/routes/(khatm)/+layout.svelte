@@ -17,6 +17,7 @@
 	import { rebaseFullPath } from '$lib/utility/path'
 	import ExpandableText from '$lib/components/ExpandableText.svelte'
 	import { SettingsEditor } from '$lib/entity/LocalSettings.svelte'
+	import { invalidateAll } from '$app/navigation'
 
 	const { data, children }: LayoutProps = $props()
 
@@ -65,12 +66,7 @@
 		}
 	}
 
-	const roundTitle = $derived.by(() => {
-		if (!khatm.isSerial) return ''
-		if (khatm.roundNumber === 1) return 'دور اوّل'
-		if (khatm.roundNumber === 2) return 'دور دوم'
-		return 'دور ' + khatm.roundNumber.toLocaleString('fa')
-	})
+	const roundTitle = $derived(khatm.getRoundTitle())
 
 	const percentByAyah = $derived(khatm.percent)
 	const percentByPage = $derived((khatm.getProgressByPage() || 0) * 100)
@@ -167,7 +163,16 @@
 
 {#if khatm.finished}
 	<div class="alert alert-success">
-		<p>این ختم قرآن کامل شده است.</p>
+		<p>
+			{#if khatm.isSerial}
+				این دور از ختم کامل شده است ({roundTitle})
+			{:else}
+				این ختم قرآن کامل شده است.
+			{/if}
+		</p>
+		{#if khatm.isSerial}
+			<button class="btn !btn-outline" onclick={invalidateAll}>شروع دور جدید</button>
+		{/if}
 	</div>
 {:else}
 	{@render children()}

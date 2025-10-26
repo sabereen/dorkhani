@@ -133,6 +133,10 @@ export class Khatm {
 		return this.plain.seriesId
 	}
 
+	get status() {
+		return this.plain.status
+	}
+
 	get sequential() {
 		return this.isAyahOriented
 	}
@@ -158,7 +162,14 @@ export class Khatm {
 	}
 
 	get finished() {
-		return this.progress >= 1
+		return this.status === 'completed'
+	}
+
+	getRoundTitle() {
+		if (!this.isSerial) return ''
+		if (this.roundNumber === 1) return 'دور اوّل'
+		if (this.roundNumber === 2) return 'دور دوم'
+		return 'دور ' + this.roundNumber.toLocaleString('fa')
 	}
 
 	getLink(layout: 'wizard' | 'grid' | 'list' = 'wizard') {

@@ -6,6 +6,8 @@
 	import { SettingsEditor, type QuranFont } from '$lib/entity/LocalSettings.svelte'
 	import { getFontManager } from './FontManager.svelte'
 	import type { AyahInfo } from '$service/quran'
+	import { useKathmContext } from '../../../routes/(khatm)/khatm-context.svelte'
+	import type { Khatm } from '$lib/entity/Khatm.svelte'
 
 	type Props = {
 		ayahInfoList: AyahInfo[]
@@ -15,6 +17,9 @@
 
 	const settingsEditor = SettingsEditor.use()
 	settingsEditor.live = true
+
+	const khatmContext = useKathmContext()
+	const khatm = $derived<Khatm | null>(khatmContext?.khatm)
 
 	function tryPlayNext() {
 		if (audioManager.playingIndex < selectedAyat[0].index + selectedAyat.length - 1) {
@@ -32,7 +37,7 @@
 	watchEager(
 		() => [font, selectedAyat],
 		() => {
-			if (!selectedAyat.length && !khatm.finished) {
+			if (khatm && !selectedAyat.length && !khatm.finished) {
 				const ayah = Ayah.get(khatm.versesRead)
 				fontManager.preloadAyah(ayah)
 			}

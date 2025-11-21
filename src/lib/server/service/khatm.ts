@@ -1,7 +1,8 @@
-import type { RangeType } from '@prisma/client'
+import type { RangeType, ReviewStatus } from '@prisma/client'
 import { v4 as uuid } from 'uuid'
 import { db } from '$lib/server/db'
 import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
+import { auth_ensureIsAdmin } from './auth'
 
 export async function khatmService_getPublicList({ limit = 20 } = {}) {
 	const khatms = await db.tKhatm.findMany({
@@ -16,7 +17,7 @@ export async function khatmService_getPublicList({ limit = 20 } = {}) {
 	return khatms
 }
 
-export async function khatmService_getList(ids: ReadonlyArray<number>) {
+export async function khatmService_getBulk(ids: ReadonlyArray<number>) {
 	const khatms = await db.tKhatm.findMany({
 		where: { id: { in: ids as number[] } },
 		orderBy: { id: 'desc' },
@@ -36,6 +37,19 @@ export async function khatmService_create(body: CreatingKhatm) {
 		data: { ...body, accessToken },
 	})
 	return khatm
+}
+
+export async function khatmService_getList(reviewStatus: ReviewStatus, pageID?: number) {
+	const khatms = await db.tKhatm.findMany({
+		where: {
+			private: false,
+			reviewStatus: { equals: reviewStatus },
+		},
+		cursor: pageID ? { id: pageID } : undefined,
+		take: 20,
+		orderBy: { id: 'desc' },
+	})
+	return khatms
 }
 
 export async function khatmService_getFull(id: number, accessToken: string | null) {

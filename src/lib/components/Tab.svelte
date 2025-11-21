@@ -5,6 +5,7 @@
 		title: string
 		slug: TabSlug
 		link?: string
+		onClick?: (event: MouseEvent) => void
 		icon?: Component
 	}
 
@@ -32,7 +33,7 @@
 		<div class="indicator bg-base-100 h-[36px] w-full rounded-[7px] shadow-md"></div>
 	</div>
 
-	{#each tabs as { slug, title, link, icon: Icon }, i}
+	{#each tabs as { slug, title, link, onClick, icon: Icon }, i}
 		{@const htmlId = `${id}-tab-${slug}`}
 		<input
 			type="radio"
@@ -48,7 +49,7 @@
 			for={htmlId}
 		>
 			{#if link}
-				<a href={link} class="flex grow items-center justify-center self-stretch">
+				<a href={link} class="flex grow items-center justify-center self-stretch" onclick={onClick}>
 					{#if Icon}<Icon class="me-1" />{/if}
 					{title}
 				</a>

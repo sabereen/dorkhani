@@ -1,5 +1,5 @@
 import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
-import type { TKhatm, RangeType, TKhatmPart } from '@prisma/client'
+import { type TKhatm, type RangeType, type TKhatmPart, ReviewStatus } from '@prisma/client'
 import type { PickAyahResult } from '$api/khatmPart/pickNext/+server'
 import { PickedKhatmPart } from './PickedKhatmPart'
 import { QuranRange } from './Range'
@@ -47,6 +47,21 @@ export class Khatm {
 
 	static fromPlainList(plainList: TKhatm[]) {
 		return plainList.map((plain) => this.fromPlain(plain))
+	}
+
+	static async getList({
+		pageID,
+		reviewStatus = 'approved',
+	}: {
+		pageID?: number
+		reviewStatus?: ReviewStatus
+	}) {
+		const { list } = await request<{ list: TKhatm[] }>('get', '/khatm/list', {
+			pageID,
+			reviewStatus,
+		})
+
+		return Khatm.fromPlainList(list)
 	}
 
 	/**
@@ -145,6 +160,10 @@ export class Khatm {
 		return this.plain.versesRead
 	}
 
+	get reviewStatus() {
+		return this.plain.reviewStatus
+	}
+
 	get accessToken() {
 		return this.plain.accessToken || null
 	}
@@ -229,6 +248,14 @@ export class Khatm {
 		})
 		this.plain = result.khatm
 		this.plainParts = result.khatm.parts || []
+	}
+
+	async update({ reviewStatus }: Pick<TKhatm, 'reviewStatus'>) {
+		const { khatm } = await request<{ khatm: TKhatm }>('post', '/khatm/update', {
+			id: this.id,
+			reviewStatus,
+		})
+		this.plain = khatm
 	}
 
 	async pickRange(range: QuranRange) {

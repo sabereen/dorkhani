@@ -5,7 +5,9 @@ export async function request<T>(method: 'get' | 'post', path: string, body?: ob
 
 	if (body != null && method === 'get') {
 		for (const key in body) {
-			url.searchParams.append(key, String(body[key as keyof typeof body]))
+			const value = body[key as keyof typeof body]
+			if (value == null) continue
+			url.searchParams.append(key, String(value))
 		}
 	}
 

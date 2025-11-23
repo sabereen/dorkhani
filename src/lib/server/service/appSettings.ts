@@ -1,6 +1,6 @@
 import type { TKhatm } from '@prisma/client'
 import { db } from '../db'
-import { khatmService_getList } from './khatm'
+import { khatmService_getBulk } from './khatm'
 
 type Config = {
 	/** لینک پشتیبانی سایت */
@@ -67,13 +67,13 @@ async function apply(newConfig?: Config | null) {
 		...store.config,
 		...newConfig,
 	}
-	const result = await khatmService_getList(newConfig.showcase)
+	const result = await khatmService_getBulk(newConfig.showcase)
 	store.showcaseKhatms = result
 }
 
 export function appSettingsService_getStaleShowcaseWhileRevalidate() {
 	const currentShowcase = store.config.showcase
-	khatmService_getList(currentShowcase).then((result) => {
+	khatmService_getBulk(currentShowcase).then((result) => {
 		if (currentShowcase === store.config.showcase) {
 			store.showcaseKhatms = result
 		}

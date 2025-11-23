@@ -9,6 +9,8 @@
 	import { Zekr } from '$lib/entity/Zekr.svelte'
 	import HistoryZekr from './history/history-zekr.svelte'
 
+	import IconMore from '~icons/ic/outline-read-more'
+
 	const { data }: PageProps = $props()
 
 	const khatms = $derived(Khatm.fromPlainList(data.khatms))
@@ -62,7 +64,13 @@
 {#if khatms.length}
 	<section class="card card-border bg-base-200 mt-4">
 		<div class="card-body">
-			<h2 class="card-title">برخی از آخرین ختم‌های قرآن</h2>
+			<h2 class="card-title flex items-center justify-between">
+				برخی از آخرین ختم‌های قرآن
+				<a href="/list" class="btn btn-ghost">
+					موارد بیشتر
+					<IconMore class="size-6 -scale-x-100" />
+				</a>
+			</h2>
 			<ul class="list">
 				{#each khatms as khatm}
 					<li class="">

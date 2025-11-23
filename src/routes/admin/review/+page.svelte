@@ -31,8 +31,12 @@
 
 	onMount(nextPage)
 
-	function approve(khatm: Khatm) {}
-	function reject(khatm: Khatm) {}
+	function approve(khatm: Khatm) {
+		khatm.update({ reviewStatus: 'approved' })
+	}
+	function reject(khatm: Khatm) {
+		khatm.update({ reviewStatus: 'rejected' })
+	}
 </script>
 
 <svelte:head>
@@ -62,7 +66,7 @@
 		<a class="btn btn-xs btn-primary btn-square !btn-ghost p-0" href={khatm.link} target="_blank">
 			<IconLink class="size-5" />
 		</a>
-		{#if reviewStatus === 'pending' || reviewStatus === 'approved'}
+		{#if khatm.reviewStatus === 'pending' || khatm.reviewStatus === 'approved'}
 			<button
 				class="btn btn-xs btn-primary btn-square !btn-ghost p-0"
 				onclick={() => approve(khatm)}
@@ -70,7 +74,7 @@
 				<IconRejected class="size-5 text-red-500" />
 			</button>
 		{/if}
-		{#if reviewStatus === 'pending' || reviewStatus === 'rejected'}
+		{#if khatm.reviewStatus === 'pending' || khatm.reviewStatus === 'rejected'}
 			<button
 				class="btn btn-xs btn-primary btn-square !btn-ghost p-0"
 				onclick={() => reject(khatm)}

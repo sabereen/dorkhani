@@ -1,8 +1,7 @@
-import type { RangeType, ReviewStatus } from '@prisma/client'
+import type { RangeType, ReviewStatus, TKhatm } from '@prisma/client'
 import { v4 as uuid } from 'uuid'
 import { db } from '$lib/server/db'
 import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
-import { auth_ensureIsAdmin } from './auth'
 
 export async function khatmService_getPublicList({ limit = 20 } = {}) {
 	const khatms = await db.tKhatm.findMany({
@@ -59,6 +58,15 @@ export async function khatmService_getFull(id: number, accessToken: string | nul
 	})
 
 	return khatm
+}
+
+export async function khatmService_update(id: number, khatm: Partial<TKhatm>) {
+	const result = await db.tKhatm.update({
+		where: { id },
+		data: khatm,
+	})
+
+	return result
 }
 
 export async function khatmService_getBySeries(seriesId: number, accessToken: string | null) {

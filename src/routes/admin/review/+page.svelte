@@ -8,6 +8,7 @@
 	import Tab from '$lib/components/Tab.svelte'
 	import type { ReviewStatus } from '@prisma/client'
 	import { onMount } from 'svelte'
+	import { watch } from '$lib/hooks/watch.svelte'
 
 	let khatms = $state<Khatm[]>([])
 	let reviewStatus: ReviewStatus = $state('pending')
@@ -16,9 +17,11 @@
 	let loading = $state(false)
 
 	async function nextPage() {
+		const currentTab = reviewStatus
 		loading = true
 		try {
 			const list = await Khatm.getList({ pageID: khatms.at(-1)?.id, reviewStatus })
+			if (currentTab !== reviewStatus) return
 			if (list.length === 0) lastPage = true
 			khatms = [...khatms, ...list]
 		} catch (err) {
@@ -37,6 +40,15 @@
 	function reject(khatm: Khatm) {
 		khatm.update({ reviewStatus: 'rejected' })
 	}
+
+	watch(
+		() => reviewStatus,
+		() => {
+			lastPage = false
+			khatms = []
+			nextPage()
+		},
+	)
 </script>
 
 <svelte:head>

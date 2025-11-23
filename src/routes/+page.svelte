@@ -66,7 +66,7 @@
 		<div class="card-body">
 			<h2 class="card-title flex items-center justify-between">
 				برخی از آخرین ختم‌های قرآن
-				<a href="/list" class="btn btn-ghost">
+				<a href={`${base}/list`} class="btn btn-ghost">
 					موارد بیشتر
 					<IconMore class="size-6 -scale-x-100" />
 				</a>

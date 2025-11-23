@@ -2,7 +2,7 @@ import type { Ayah } from '@ghoran/entity'
 import type { Reciter } from './LocalSettings.svelte'
 
 export function ayah_getKetabMobinLink(ayah: Ayah) {
-	return `https://ketabmobin.com/ayah/${ayah.index}`
+	return `https://ketabmobin.com/go/${ayah.surahNumber}/${ayah.number}`
 }
 
 export function ayah_getExternalLink(ayah: Ayah) {

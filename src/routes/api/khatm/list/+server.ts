@@ -5,14 +5,14 @@ import { json, type RequestHandler } from '@sveltejs/kit'
 
 export const GET: RequestHandler = async (event) => {
 	const { url } = event
-	const khatmId = +url.searchParams.get('pageID')!
+	const khatmId = url.searchParams.get('pageID')
 	let reviewStatus = url.searchParams.get('reviewStatus') as ReviewStatus
 
 	if (!auth_checkIsAdmin(event)) {
 		reviewStatus = 'approved'
 	}
 
-	const list = await khatmService_getList(reviewStatus, khatmId)
+	const list = await khatmService_getList(reviewStatus, khatmId == null ? undefined : +khatmId)
 
 	return json({
 		list,

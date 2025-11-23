@@ -1,5 +1,5 @@
 import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
-import type { TKhatm, RangeType, TKhatmPart } from '@prisma/client'
+import type { TKhatm, RangeType, TKhatmPart, ReviewStatus } from '@prisma/client'
 import type { PickAyahResult } from '$api/khatmPart/pickNext/+server'
 import { PickedKhatmPart } from './PickedKhatmPart'
 import { QuranRange } from './Range'
@@ -47,6 +47,21 @@ export class Khatm {
 
 	static fromPlainList(plainList: TKhatm[]) {
 		return plainList.map((plain) => this.fromPlain(plain))
+	}
+
+	static async getList({
+		pageID,
+		reviewStatus = 'approved',
+	}: {
+		pageID?: number
+		reviewStatus?: ReviewStatus
+	}) {
+		const { list } = await request<{ list: TKhatm[] }>('get', '/khatm/list', {
+			pageID,
+			reviewStatus,
+		})
+
+		return Khatm.fromPlainList(list)
 	}
 
 	/**

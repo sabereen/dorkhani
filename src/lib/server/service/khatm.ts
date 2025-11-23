@@ -44,9 +44,9 @@ export async function khatmService_getList(reviewStatus: ReviewStatus, pageID?: 
 		where: {
 			private: false,
 			reviewStatus: { equals: reviewStatus },
+			id: { lt: pageID },
 		},
-		cursor: pageID ? { id: pageID } : undefined,
-		take: 20,
+		take: 30,
 		orderBy: { id: 'desc' },
 	})
 	return khatms

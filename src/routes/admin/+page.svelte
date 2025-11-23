@@ -2,6 +2,7 @@
 	import Header from '$lib/components/Header.svelte'
 	import { base } from '$app/paths'
 	import IconShowcase from '~icons/ic/baseline-storefront'
+	import IconReview from '~icons/ic/outline-check-box'
 	import IconSettings from '~icons/ic/round-settings'
 </script>
 
@@ -24,6 +25,13 @@
 			<a class="btn !btn-soft btn-primary w-full" href={`${base}/admin/showcase`}>
 				<IconShowcase class="size-7" />
 				ختم‌های صفحه اصلی
+			</a>
+		</li>
+
+		<li>
+			<a class="btn !btn-soft btn-primary w-full" href={`${base}/admin/review`}>
+				<IconReview class="size-7" />
+				تأیید و رد ختم ها
 			</a>
 		</li>
 	</ul>

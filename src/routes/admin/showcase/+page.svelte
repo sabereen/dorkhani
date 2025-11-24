@@ -81,28 +81,28 @@
 		</div>
 		<p class="whitespace-pre-wrap text-xs opacity-85">{khatm.description}</p>
 	</div>
-	<div class="flex items-center gap-2 shrink-0">
-        <span
-            class="badge text-xs px-2 py-1 rounded"
-            class:bg-green-500={khatm.percent === 100}
-            class:opacity-75={khatm.percent !== 100}
-        >
-            {khatm.percent.toLocaleString('fa')}%
-        </span>
-        <a class="btn btn-xs btn-primary btn-square !btn-ghost p-0" href={khatm.link} target="_blank">
-            <IconLink class="size-5" />
-        </a>
-        <button
-            class="btn btn-xs btn-primary btn-square !btn-ghost p-0"
-            onclick={toggleShowcase.bind(null, khatm)}
-        >
-            {#if isInShowcase(khatm)}
-                <IconShowcaseEnabled class="size-5 text-green-500" />
-            {:else}
-                <IconShowcaseDisabled class="size-5 opacity-75" />
-            {/if}
-        </button>
-    </div>
+	<div class="flex shrink-0 items-center gap-2">
+		<span
+			class="badge rounded px-2 py-1 text-xs"
+			class:bg-green-500={khatm.percent === 100}
+			class:opacity-75={khatm.percent !== 100}
+		>
+			{khatm.percent.toLocaleString('fa')}%
+		</span>
+		<a class="btn btn-xs btn-primary btn-square !btn-ghost p-0" href={khatm.link} target="_blank">
+			<IconLink class="size-5" />
+		</a>
+		<button
+			class="btn btn-xs btn-primary btn-square !btn-ghost p-0"
+			onclick={toggleShowcase.bind(null, khatm)}
+		>
+			{#if isInShowcase(khatm)}
+				<IconShowcaseEnabled class="size-5 text-green-500" />
+			{:else}
+				<IconShowcaseDisabled class="size-5 opacity-75" />
+			{/if}
+		</button>
+	</div>
 {/snippet}
 
 <section class="card card-border bg-base-200 mt-4">
@@ -114,7 +114,7 @@
 			<span class="ms-2 flex min-w-0 grow basis-0 flex-col">
 				<span class="text-[.9rem] font-bold">ویترین خودکار</span>
 				<p class="text-xs">
-					بدون نیاز به تأیید مدیر آخرین ختم‌های عمومی در صفحه اصلی نمایش داده شوند.
+					بدون نیاز به چیدن دستی، آخرین ختم‌های عمومی تأییدشده در صفحه اصلی نمایش داده شوند.
 				</p>
 			</span>
 		</label>

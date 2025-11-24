@@ -7,6 +7,7 @@ export async function khatmService_getPublicList({ limit = 20 } = {}) {
 	const khatms = await db.tKhatm.findMany({
 		where: {
 			private: false,
+			reviewStatus: 'approved',
 			OR: [{ seriesId: { not: null }, status: 'inProgress' }, { seriesId: null }],
 		},
 		orderBy: { id: 'desc' },

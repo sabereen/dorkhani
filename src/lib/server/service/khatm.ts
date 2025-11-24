@@ -18,6 +18,7 @@ export async function khatmService_getPublicList({ limit = 20 } = {}) {
 }
 
 export async function khatmService_getBulk(ids: ReadonlyArray<number>) {
+	if (ids.length === 0) return []
 	const khatms = await db.tKhatm.findMany({
 		where: { id: { in: ids as number[] } },
 		orderBy: { id: 'desc' },

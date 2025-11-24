@@ -22,16 +22,16 @@
 		</li>
 
 		<li>
-			<a class="btn !btn-soft btn-primary w-full" href={`${base}/admin/showcase`}>
-				<IconShowcase class="size-7" />
-				ختم‌های صفحه اصلی
+			<a class="btn !btn-soft btn-primary w-full" href={`${base}/admin/review`}>
+				<IconReview class="size-7" />
+				تأیید و رد ختم ها
 			</a>
 		</li>
 
 		<li>
-			<a class="btn !btn-soft btn-primary w-full" href={`${base}/admin/review`}>
-				<IconReview class="size-7" />
-				تأیید و رد ختم ها
+			<a class="btn !btn-soft btn-primary w-full" href={`${base}/admin/showcase`}>
+				<IconShowcase class="size-7" />
+				ختم‌های برگزیده
 			</a>
 		</li>
 	</ul>

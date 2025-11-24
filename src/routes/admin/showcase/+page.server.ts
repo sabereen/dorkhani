@@ -1,7 +1,4 @@
-import {
-	appSettings_store,
-	appSettingsService_getStaleShowcaseWhileRevalidate,
-} from '$service/appSettings'
+import { appSettingsService_getStaleShowcaseWhileRevalidate } from '$service/appSettings'
 import { khatmService_getPublicList } from '$service/khatm'
 import type { PageServerLoad } from './$types'
 
@@ -12,6 +9,5 @@ export const load: PageServerLoad = async () => {
 	return {
 		lastKhatms,
 		showcaseKhatms,
-		autoShowcase: appSettings_store.config.autoShowcase,
 	}
 }

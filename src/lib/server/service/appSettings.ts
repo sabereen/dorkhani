@@ -5,8 +5,6 @@ import { khatmService_getBulk } from './khatm'
 type Config = {
 	/** لینک پشتیبانی سایت */
 	readonly supportLink?: string
-	/** آیا ختم هاص صفحه اصلی خودکار تولید شوند؟ */
-	readonly autoShowcase: boolean
 	/**
 	 * ختم‌های صفحه اصلی
 	 * اگر automaticShowcase فعال باشد این فیلد کاربردی ندارد.
@@ -31,7 +29,6 @@ const store: Store = {
 	config: {
 		showcase: [],
 		supportLink: '',
-		autoShowcase: true,
 		notification: {
 			eitaa: false,
 		},

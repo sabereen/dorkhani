@@ -14,6 +14,7 @@
 	const { data }: PageProps = $props()
 
 	const khatms = $derived(Khatm.fromPlainList(data.khatms))
+	const showcase = $derived(Khatm.fromPlainList(data.showcase))
 	const zekrList = $derived(Zekr.fromPlainList(data.zekrList))
 </script>
 
@@ -61,15 +62,17 @@
 	<HistoryPickedRange limit={3} title="آخرین مشارکت‌های شما" />
 </div>
 
-{#if khatms.length}
+{#snippet khatmList(khatms: Khatm[], title: string, moreLink?: string)}
 	<section class="card card-border bg-base-200 mt-4">
 		<div class="card-body">
 			<h2 class="card-title flex items-center justify-between">
-				برخی از آخرین ختم‌های قرآن
-				<a href={`${base}/list`} class="btn btn-ghost">
-					موارد بیشتر
-					<IconMore class="size-6 -scale-x-100" />
-				</a>
+				{title}
+				{#if moreLink}
+					<a href={moreLink} class="btn btn-ghost">
+						موارد بیشتر
+						<IconMore class="size-6 -scale-x-100" />
+					</a>
+				{/if}
 			</h2>
 			<ul class="list">
 				{#each khatms as khatm}
@@ -104,6 +107,13 @@
 			</ul>
 		</div>
 	</section>
+{/snippet}
+
+{#if showcase.length > 0}
+	{@render khatmList(showcase, 'ختم‌های برگزیده')}
+{/if}
+{#if khatms.length > 0}
+	{@render khatmList(khatms, 'ختم‌های عمومی تأیید شده', `${base}/list`)}
 {/if}
 
 {#if zekrList.length}

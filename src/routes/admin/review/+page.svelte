@@ -81,7 +81,7 @@
 		{#if khatm.reviewStatus === 'pending' || khatm.reviewStatus === 'approved'}
 			<button
 				class="btn btn-xs btn-primary btn-square !btn-ghost p-0"
-				onclick={() => approve(khatm)}
+				onclick={() => reject(khatm)}
 			>
 				<IconRejected class="size-5 text-red-500" />
 			</button>
@@ -89,7 +89,7 @@
 		{#if khatm.reviewStatus === 'pending' || khatm.reviewStatus === 'rejected'}
 			<button
 				class="btn btn-xs btn-primary btn-square !btn-ghost p-0"
-				onclick={() => reject(khatm)}
+				onclick={() => approve(khatm)}
 			>
 				<IconApproved class="size-5 text-green-500" />
 			</button>

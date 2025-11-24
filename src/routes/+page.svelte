@@ -113,7 +113,7 @@
 	{@render khatmList(showcase, 'ختم‌های برگزیده')}
 {/if}
 {#if khatms.length > 0}
-	{@render khatmList(khatms, 'ختم‌های عمومی تأیید شده', `${base}/list`)}
+	{@render khatmList(khatms, 'ختم‌های تأییدشده', `${base}/list`)}
 {/if}
 
 {#if zekrList.length}

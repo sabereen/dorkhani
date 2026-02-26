@@ -55,12 +55,13 @@
 		"onlyBuiltDependencies": [
 			"@prisma/client",
 			"@prisma/engines",
+			"core-js",
 			"esbuild",
 			"prisma"
 		]
 	},
 	"dependencies": {
-		"@ghoran/entity": "^0.2.0",
+		"@ghoran/entity": "^0.2.1",
 		"@ghoran/metadata": "^0.0.7",
 		"@ghoran/text": "^0.0.8",
 		"@ghoran/translation": "^0.0.9",

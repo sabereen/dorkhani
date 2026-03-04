@@ -69,7 +69,7 @@
 			<div class="bg-base-100 mt-2 flex select-none flex-col rounded-lg px-2 py-1">
 				{#snippet radioItem(value: 'public' | 'private', title: string, description: string)}
 					<label class="flex items-center py-1">
-						<input class="radio" type="radio" name="access" {value} checked={value === 'public'} />
+						<input class="radio" type="radio" name="access" {value} checked={value === 'private'} />
 						<span class="ms-2 flex min-w-0 grow basis-0 flex-col">
 							<span class="text-[.9rem] font-bold">{title}</span>
 							<span class="text-xs">{description}</span>
@@ -77,14 +77,14 @@
 					</label>
 				{/snippet}
 				{@render radioItem(
-					'public',
-					'عمومی',
-					'لینک ختم کوتاه‌تر است و در صورت تأیید مدیر در صفحه اصلی نمایش داده می‌شود.',
-				)}
-				{@render radioItem(
 					'private',
 					'خصوصی',
 					'لینک ختم بلندتر است و هرگز در صفحه اصلی سایت نمایش داده نمی‌شود.',
+				)}
+				{@render radioItem(
+					'public',
+					'عمومی',
+					'لینک ختم کوتاه‌تر است و در صورت تأیید مدیر در صفحه اصلی نمایش داده می‌شود.',
 				)}
 			</div>
 

@@ -15,6 +15,12 @@
 	$effect(() => {
 		if (form?.errorMessage) toast('error', form.errorMessage)
 	})
+
+	function handleKeyPress(event: KeyboardEvent) {
+		if (event.code === 'Enter') {
+			event.preventDefault()
+		}
+	}
 </script>
 
 <svelte:head>
@@ -34,7 +40,14 @@
 			</legend>
 
 			<label for="input-title" class="fieldset-label mt-2">عنوان</label>
-			<input class="input" type="text" name="title" id="input-title" maxlength="100" />
+			<input
+				class="input"
+				type="text"
+				name="title"
+				id="input-title"
+				maxlength="100"
+				onkeypress={handleKeyPress}
+			/>
 
 			<label for="input-description" class="fieldset-label mt-2">توضیحات</label>
 			<textarea class="textarea" name="description" id="input-description" maxlength="65535"

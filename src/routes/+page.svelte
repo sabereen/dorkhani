@@ -49,9 +49,9 @@
 				را رصد کنید.
 			</p>
 			<a class="btn btn-primary font-bold" href={`${base}/add`}>ایجاد ختم قرآن جدید</a>
-			<a class="btn btn-outline font-bold" href={`${base}/add?rangeType=ayah`}>
+			<!-- <a class="btn btn-outline font-bold" href={`${base}/add?rangeType=ayah`}>
 				ایجاد ختم آیه به آیه
-			</a>
+			</a> -->
 		</div>
 	</div>
 </div>

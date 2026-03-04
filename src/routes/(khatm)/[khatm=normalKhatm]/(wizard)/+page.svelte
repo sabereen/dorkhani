@@ -133,7 +133,7 @@
 				{@render button('hizbQuarter', 'یک چهارم حزب')}
 				{@render button('page', 'یک صفحه')}
 				{@render button('surah', 'یک سوره')}
-				{@render button('all', 'تمام بازه‌ها', 2)}
+				<!-- {@render button('all', 'تمام بازه‌ها', 2)} -->
 			</div>
 		</div>
 	</div>

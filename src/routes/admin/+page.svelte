@@ -34,5 +34,12 @@
 				ختم‌های برگزیده
 			</a>
 		</li>
+
+		<li>
+			<a class="btn !btn-soft btn-primary w-full" href={`${base}/admin/add-zekr`}>
+				<IconShowcase class="size-7" />
+				افزودن ذکر
+			</a>
+		</li>
 	</ul>
 </section>

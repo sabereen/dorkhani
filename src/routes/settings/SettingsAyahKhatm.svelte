@@ -46,7 +46,6 @@
 			<option value="parhizgar">پرهیزگار</option>
 			<option value="minshawi">منشاوی</option>
 			<option value="husari">خلیل الحصری</option>
-			<option value="alafasi">العفاسی</option>
 			<option value="abdulbasit">عبد الباسط</option>
 		</select>
 

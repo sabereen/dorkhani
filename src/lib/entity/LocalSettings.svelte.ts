@@ -7,7 +7,7 @@ import type { DaisyThemeSlug } from './Theme'
 
 export type QuranFont = 'hafs' | 'qpc1' | 'qpc2'
 export type Translation = 'ansarian' | 'makarem' | 'gharaati'
-export type Reciter = 'minshawi' | 'parhizgar' | 'alafasi' | 'husari' | 'abdulbasit'
+export type Reciter = 'minshawi' | 'parhizgar' | 'husari' | 'abdulbasit'
 
 export interface ILocalSettings {
 	quranFont: QuranFont

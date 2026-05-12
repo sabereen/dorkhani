@@ -13,7 +13,6 @@ const reciterMap: Record<Reciter, string> = {
 	parhizgar: 'Parhizgar',
 	minshawi: 'Minshawy_Murattal',
 	husari: 'Husary',
-	alafasi: 'Alafasy',
 	abdulbasit: 'Abdulbasit',
 }
 

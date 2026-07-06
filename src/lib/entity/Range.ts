@@ -179,7 +179,9 @@ export class QuranRange {
 	getFillPercent(parts: KhatmPart[]) {
 		const subranges = this.divideByKahtmParts(parts).filter((p) => p.khatmPart)
 		const fillCount = subranges.map(({ range }) => range.length).reduce((a, b) => a + b, 0)
-		return +(100 * (fillCount / this.length)).toFixed(0)
+		if (fillCount === this.length) return 100
+		const percent = +(100 * (fillCount / this.length)).toFixed(0)
+		return Math.min(99, percent)
 	}
 
 	getTitle() {

@@ -1,5 +1,5 @@
 // db.ts
-import type { TKhatm, TZekr } from '@prisma/client'
+import type { TKhatm, TZekr } from '@prisma-client'
 import Dexie, { type EntityTable } from 'dexie'
 
 /** بازه‌ی انتخاب شده برای ختم */

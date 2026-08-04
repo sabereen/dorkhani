@@ -1,4 +1,4 @@
-import type { RangeType, ReviewStatus, TKhatm } from '@prisma/client'
+import type { RangeType, ReviewStatus, TKhatm } from '@prisma-client'
 import { v4 as uuid } from 'uuid'
 import { db } from '$lib/server/db'
 import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'

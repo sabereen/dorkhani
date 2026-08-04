@@ -2,7 +2,7 @@
 	import type { PageProps } from './$types'
 	import { enhance } from '$app/forms'
 	import Header from '$lib/components/Header.svelte'
-	import type { RangeType } from '@prisma/client'
+	import type { RangeType } from '@prisma-client'
 	import { slide } from 'svelte/transition'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import SucessResult from './sucess-result.svelte'

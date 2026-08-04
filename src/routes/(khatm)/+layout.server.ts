@@ -3,7 +3,7 @@ import type { LayoutServerLoad } from './$types'
 import { khatmService_getBySeries, khatmService_getFull } from '$service/khatm'
 import { match as matchNormalParam } from '../../params/normalKhatm'
 import { match as matchAyahParam } from '../../params/ayahKhatm'
-import type { TKhatm } from '@prisma/client'
+import type { TKhatm } from '@prisma-client'
 
 export const load: LayoutServerLoad = async ({ params, url }) => {
 	const khatmParam = params.khatm || ''

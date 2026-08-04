@@ -1,4 +1,4 @@
-import type { TKhatm } from '@prisma/client'
+import type { TKhatm } from '@prisma-client'
 import { db } from '../db'
 import { khatmService_getBulk } from './khatm'
 

@@ -12,6 +12,7 @@ const config = {
 		alias: {
 			$api: 'src/routes/api',
 			$service: 'src/lib/server/service',
+			'@prisma-client': 'src/lib/server/generated/prisma/client',
 		},
 		paths: {
 			base: process.env.BASE_PATH || '',

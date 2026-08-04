@@ -1,11 +1,27 @@
-import { PrismaClient } from '@prisma/client'
+import { env } from '$env/dynamic/private'
+import { PrismaMariaDb } from '@prisma/adapter-mariadb'
+import { PrismaClient } from './generated/prisma/client'
 
-// @ts-expect-error تایپ اسکریپت ندارد
-import { createRequire } from 'module'
+const databaseUrl = env.DATABASE_URL
 
-const require = createRequire(import.meta.url)
+if (!databaseUrl) {
+	throw new Error('DATABASE_URL must be defined to initialize Prisma Client.')
+}
 
-const { PrismaClient: RealPrismaClient } = require('@prisma/client')
+const connectionUrl = new URL(databaseUrl)
+const adapter = new PrismaMariaDb({
+	host: connectionUrl.hostname,
+	port: connectionUrl.port ? Number(connectionUrl.port) : 3306,
+	user: decodeURIComponent(connectionUrl.username),
+	password: decodeURIComponent(connectionUrl.password),
+	database: decodeURIComponent(connectionUrl.pathname.slice(1)),
+})
 
-// expose a singleton
-export const db: PrismaClient = new RealPrismaClient()
+const globalForPrisma = globalThis as unknown as { db?: PrismaClient }
+
+// Reuse the client during development hot reloads and keep one client per Node.js process.
+export const db = globalForPrisma.db ?? new PrismaClient({ adapter })
+
+if (import.meta.env.DEV) {
+	globalForPrisma.db = db
+}

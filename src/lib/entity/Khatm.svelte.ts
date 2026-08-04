@@ -1,5 +1,5 @@
 import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
-import { type TKhatm, type RangeType, type TKhatmPart, ReviewStatus } from '@prisma/client'
+import type { TKhatm, RangeType, TKhatmPart, ReviewStatus } from '@prisma-client'
 import type { PickAyahResult } from '$api/khatmPart/pickNext/+server'
 import { PickedKhatmPart } from './PickedKhatmPart'
 import { QuranRange } from './Range'

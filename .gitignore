@@ -25,3 +25,6 @@ vite.config.ts.timestamp-*
 # Sqlite DB
 prisma/dev.db
 prisma/dev2.db
+
+# Generated Prisma Client
+src/lib/server/generated/prisma

@@ -22,6 +22,7 @@ export async function idb_pickedKhatmPart_add(item: Omit<PickedKhatmPart, 'id'>)
 			roundNumber: item.khatm.roundNumber,
 			seriesId: item.khatm.seriesId,
 			status: item.khatm.status,
+			reviewStatus: item.khatm.reviewStatus,
 		},
 	})
 }

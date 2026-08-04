@@ -23,9 +23,9 @@
 		"@eslint/js": "^9.18.0",
 		"@iconify-json/ic": "^1.2.2",
 		"@prisma/client": "^6.4.1",
-		"@sveltejs/adapter-node": "^5.2.11",
-		"@sveltejs/kit": "^2.16.0",
-		"@sveltejs/vite-plugin-svelte": "^5.0.0",
+		"@sveltejs/adapter-node": "^5.5.7",
+		"@sveltejs/kit": "^2.70.2",
+		"@sveltejs/vite-plugin-svelte": "^5.1.0",
 		"@testing-library/jest-dom": "^6.6.3",
 		"@testing-library/svelte": "^5.2.4",
 		"@unocss/preset-legacy-compat": "66.1.0-beta.10",
@@ -41,24 +41,15 @@
 		"prettier-plugin-svelte": "^3.3.3",
 		"prettier-plugin-tailwindcss": "^0.6.11",
 		"prisma": "^6.4.1",
-		"svelte": "^5.0.0",
-		"svelte-check": "^4.0.0",
+		"svelte": "^5.56.8",
+		"svelte-check": "^4.7.4",
 		"terser": "^5.39.0",
-		"typescript": "^5.0.0",
+		"typescript": "^5.9.3",
 		"typescript-eslint": "^8.20.0",
 		"unocss": "66.1.0-beta.10",
 		"unplugin-icons": "^22.1.0",
-		"vite": "^6.0.0",
+		"vite": "^6.3.6",
 		"vitest": "^3.0.0"
-	},
-	"pnpm": {
-		"onlyBuiltDependencies": [
-			"@prisma/client",
-			"@prisma/engines",
-			"core-js",
-			"esbuild",
-			"prisma"
-		]
 	},
 	"dependencies": {
 		"@ghoran/entity": "^0.2.1",

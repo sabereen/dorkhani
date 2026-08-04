@@ -18,6 +18,7 @@ export async function idb_createdKhatm_add(item: Omit<CreatedKhatm, 'id'>) {
 			roundNumber: item.khatm.roundNumber,
 			seriesId: item.khatm.seriesId,
 			status: item.khatm.status,
+			reviewStatus: item.khatm.reviewStatus,
 		},
 	})
 }

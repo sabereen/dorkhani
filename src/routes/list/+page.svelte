@@ -1,11 +1,12 @@
 <script lang="ts">
+	/* eslint-disable svelte/no-unused-svelte-ignore */
 	import Header from '$lib/components/Header.svelte'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import type { PageProps } from './$types'
 
 	const { data }: PageProps = $props()
 
-	let khatms = $state(Khatm.fromPlainList(data.list))
+	let khatms = $state(Khatm.fromPlainList(/* svelte-ignore state_referenced_locally */ data.list))
 
 	let lastPage = $state(false)
 	let loading = $state(false)
@@ -33,7 +34,7 @@
 <section class="card card-border bg-base-200 mt-4">
 	<div class="card-body">
 		<ul class="list">
-			{#each khatms as khatm}
+			{#each khatms as khatm (khatm.id)}
 				<li class="">
 					<a
 						class="list-row clear-both !block !flex w-full hover:bg-green-500/15"

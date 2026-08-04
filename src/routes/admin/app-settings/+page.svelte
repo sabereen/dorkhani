@@ -1,4 +1,5 @@
 <script lang="ts">
+	/* eslint-disable svelte/no-unused-svelte-ignore */
 	import { enhance } from '$app/forms'
 	import Header from '$lib/components/Header.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
@@ -8,11 +9,13 @@
 
 	const { data, form }: PageProps = $props()
 
+	const { notification, supportLink } = /* svelte-ignore state_referenced_locally */ data
+
 	const formData = $state({
-		supportLink: data.supportLink,
-		eitaa: data.notification.eitaa,
-		eitaaToken: data.notification.eitaaToken || '',
-		eitaaChatId: data.notification.eitaaChatId || '',
+		supportLink: supportLink,
+		eitaa: notification.eitaa,
+		eitaaToken: notification.eitaaToken || '',
+		eitaaChatId: notification.eitaaChatId || '',
 	})
 
 	watch(

@@ -1,4 +1,5 @@
 <script lang="ts">
+	/* eslint-disable svelte/no-unused-svelte-ignore */
 	import Header from '$lib/components/Header.svelte'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import type { PageProps } from './$types'
@@ -18,7 +19,9 @@
 	const lastKhatms = $derived(Khatm.fromPlainList(data.lastKhatms))
 
 	let loading = $state(false)
-	let showcase = $state(Khatm.fromPlainList(data.showcaseKhatms))
+	let showcase = $state(
+		Khatm.fromPlainList(/* svelte-ignore state_referenced_locally */ data.showcaseKhatms),
+	)
 	let showcaseSet = $derived(new SvelteSet(showcase.map((i) => i.id)))
 	let isDirty = $state(false)
 

@@ -1,6 +1,6 @@
 import { fail } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
-import type { RangeType } from '@prisma/client'
+import type { RangeType } from '@prisma-client'
 import { khatmService_create } from '$service/khatm'
 import { getNotificationProvider } from '$service/admin-notification'
 import { khatmSeries_createForKhatmId } from '$service/khatmSeries'

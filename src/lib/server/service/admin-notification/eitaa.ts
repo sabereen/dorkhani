@@ -1,4 +1,4 @@
-import type { TKhatm } from '@prisma/client'
+import type { TKhatm } from '@prisma-client'
 import { rebaseFullPath } from '$lib/utility/path'
 import { appSettings_store } from '$service/appSettings'
 import type { AdminNotification } from './adminNotification'

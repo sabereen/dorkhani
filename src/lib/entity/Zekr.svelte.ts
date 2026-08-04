@@ -1,4 +1,4 @@
-import type { TZekr } from '@prisma/client'
+import type { TZekr } from '@prisma-client'
 import { untrack } from 'svelte'
 import copy from 'clipboard-copy'
 import { rebaseFullPath } from '$lib/utility/path'

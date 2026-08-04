@@ -2,7 +2,7 @@ import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 import { db } from '../db'
 import { error } from '@sveltejs/kit'
 import { QuranRange } from '$lib/entity/Range'
-import type { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
+import { Prisma } from '@prisma-client'
 import { khatmService_setAsCompleted } from './khatm'
 
 type CreatingKhatmPart = {
@@ -61,7 +61,7 @@ export async function khatmPartService_pickRange(body: CreatingKhatmPart) {
 
 		return result
 	} catch (err) {
-		const prismaKnownError = err as PrismaClientKnownRequestError
+		const prismaKnownError = err as Prisma.PrismaClientKnownRequestError
 		if (prismaKnownError?.name === 'PrismaClientKnownRequestError') {
 			if (prismaKnownError.code === 'P2025' && prismaKnownError.meta?.modelName === 'TKhatm') {
 				throw error(409, {

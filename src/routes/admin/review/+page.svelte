@@ -6,7 +6,7 @@
 	import IconRejected from '~icons/ic/baseline-remove-circle-outline'
 	import IconLink from '~icons/ic/round-link'
 	import Tab from '$lib/components/Tab.svelte'
-	import type { ReviewStatus } from '@prisma/client'
+	import type { ReviewStatus } from '@prisma-client'
 	import { onMount } from 'svelte'
 	import { watch } from '$lib/hooks/watch.svelte'
 

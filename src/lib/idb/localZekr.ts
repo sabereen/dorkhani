@@ -1,4 +1,4 @@
-import type { TZekr } from '@prisma/client'
+import type { TZekr } from '@prisma-client'
 import type { LocalZekr } from './idb'
 
 export async function idb_localZekr_get(id: number) {

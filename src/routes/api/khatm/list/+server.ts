@@ -1,6 +1,6 @@
 import { auth_ensureIsAdmin } from '$service/auth'
 import { khatmService_getList } from '$service/khatm'
-import type { ReviewStatus } from '@prisma/client'
+import type { ReviewStatus } from '@prisma-client'
 import { json, type RequestHandler } from '@sveltejs/kit'
 
 export const GET: RequestHandler = async (event) => {

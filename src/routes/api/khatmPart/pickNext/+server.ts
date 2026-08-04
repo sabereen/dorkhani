@@ -1,6 +1,6 @@
 import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
-import type { TKhatm } from '@prisma/client'
+import type { TKhatm } from '@prisma-client'
 import { khatmPartService_pickNextAyat } from '$service/khatmPart'
 
 import { type Translation, type AyahInfo, getAyahInfoRange } from '$service/quran'

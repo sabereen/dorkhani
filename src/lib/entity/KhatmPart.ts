@@ -1,4 +1,4 @@
-import type { TKhatmPart } from '@prisma/client'
+import type { TKhatmPart } from '@prisma-client'
 
 export class KhatmPart {
 	plain: TKhatmPart

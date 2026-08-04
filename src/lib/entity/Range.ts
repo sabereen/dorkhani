@@ -6,7 +6,7 @@ import type { KhatmPart } from './KhatmPart'
 import { splitInterval } from '$lib/utility/splitIntervals'
 import { hizbQuarter_toRange } from './HizbQuarter'
 import { ayah_getExternalLink } from './Ayah'
-import type { RangeType } from '@prisma/client'
+import type { RangeType } from '@prisma-client'
 import type { Khatm } from './Khatm.svelte'
 
 export class QuranRange {

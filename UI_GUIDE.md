@@ -26,7 +26,7 @@ The design system is loaded through `src/app.css` and split by responsibility:
 - `src/lib/styles/components.css`: reusable controls and visual components.
 
 Shared behavioral components live in `src/lib/components/`. Reuse `Modal.svelte`, `Tab.svelte`,
-`Accardeon.svelte`, `TheToast.svelte`, `AppHeader.svelte`, and `ColorSchemeButton.svelte` rather
+`Accardeon.svelte`, `TheToast.svelte`, `Header.svelte`, and `ColorSchemeButton.svelte` rather
 than reproducing their behavior in a route.
 
 ## Choosing classes or components
@@ -78,8 +78,9 @@ Wrap normal application pages in `ui-container`; use `ui-container-reading` for 
 long-form content, and Quran reading views. Build page spacing with `ui-page`, and use
 `ui-page-grid` or `ui-page-grid ui-page-grid-three` for responsive card collections.
 
-Use `ui-page-header` and its child classes for a consistent page heading. Header and navigation
-internals belong to `AppHeader.svelte`; routes should not recreate the global navigation.
+Every route must use the shared `Header.svelte`. It owns the page title and actions together
+with the brand and global navigation; routes must not create another header or recreate the
+global navigation. Pass page-specific actions through its `end` snippet.
 
 Utilities may handle truly local alignment, width, and spacing. If the same combination occurs
 in several routes or represents a named design concept, move it to the appropriate stylesheet

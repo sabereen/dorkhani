@@ -4,7 +4,6 @@
 	import '../app.css'
 	import TheToast from '$lib/components/TheToast.svelte'
 	import TheFooter from '$lib/components/TheFooter.svelte'
-	import AppHeader from '$lib/components/AppHeader.svelte'
 	import type { LayoutProps } from './$types'
 	import { LocalSettings } from '$lib/entity/LocalSettings.svelte'
 
@@ -22,8 +21,6 @@
 		}
 	})
 </script>
-
-<AppHeader />
 
 <main class="ui-main ui-container ui-page">
 	{@render children()}

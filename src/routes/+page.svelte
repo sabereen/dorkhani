@@ -7,6 +7,7 @@
 	import { rebaseFullPath } from '$lib/utility/path'
 	import { Zekr } from '$lib/entity/Zekr.svelte'
 	import HistoryZekr from './history/history-zekr.svelte'
+	import Header from '$lib/components/Header.svelte'
 
 	import IconMore from '~icons/ic/outline-read-more'
 
@@ -25,6 +26,8 @@
 	/>
 	<meta property="og:image" content={rebaseFullPath('/hero.png')} />
 </svelte:head>
+
+<Header />
 
 <div class="ui-hero">
 		<img

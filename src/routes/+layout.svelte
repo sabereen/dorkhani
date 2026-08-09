@@ -4,6 +4,7 @@
 	import '../app.css'
 	import TheToast from '$lib/components/TheToast.svelte'
 	import TheFooter from '$lib/components/TheFooter.svelte'
+	import AppHeader from '$lib/components/AppHeader.svelte'
 	import type { LayoutProps } from './$types'
 	import { LocalSettings } from '$lib/entity/LocalSettings.svelte'
 
@@ -13,11 +14,20 @@
 	const localSettings = LocalSettings.use()
 
 	$effect(() => {
-		document.documentElement.dataset.theme = localSettings.config.daisyTheme || undefined
+		const colorScheme = localSettings.config.colorScheme
+		if (colorScheme === 'system') {
+			delete document.documentElement.dataset.colorScheme
+		} else {
+			document.documentElement.dataset.colorScheme = colorScheme
+		}
 	})
 </script>
 
-{@render children()}
+<AppHeader />
+
+<main class="ui-main ui-container ui-page">
+	{@render children()}
+</main>
 
 {#await import('$lib/components/TheBProgress.svelte') then { default: TheBProgress }}
 	<TheBProgress />
@@ -26,7 +36,5 @@
 <div class="z-1000 relative">
 	<TheToast />
 </div>
-
-<div class="grow"></div>
 
 <TheFooter class="mt-5" supportLink={data.supportLink} />

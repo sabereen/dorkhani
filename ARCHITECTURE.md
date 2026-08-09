@@ -50,7 +50,7 @@ flowchart LR
 | دادهٔ قرآن | بسته‌های `@ghoran/*` | metadata، entityهای آیه/سوره/جزء/صفحه/حزب، متن و ترجمه |
 | ذخیرهٔ مرورگر | Dexie/IndexedDB | تاریخچهٔ ختم ساخته‌شده، بازهٔ انتخاب‌شده و سهم شخصی ذکر |
 | تنظیمات مرورگر | LocalStorage + Cookie | تنظیمات کامل در LocalStorage؛ theme و translation موردنیاز SSR در Cookie |
-| UI | UnoCSS + Daisy preset | utility classها، themeها و RTL |
+| UI | UnoCSS + سیستم طراحی محلی | utility classها، primitiveهای `ui-*`، پوسته‌ها و RTL |
 | آیکون | `unplugin-icons` | import آیکون‌ها با alias مجازی `~icons/...` |
 | تست | Vitest + Testing Library + jsdom | workspace جدا برای تست‌های client و server |
 
@@ -106,7 +106,7 @@ flowchart LR
 1. `src/hooks.server.ts:init`، تابع `appSettingsService_init()` را اجرا می‌کند.
 2. `src/lib/server/service/appSettings.ts` رکورد ثابت `TAppSettings(id=1)` را می‌خواند یا می‌سازد، config را در singleton حافظه نگه می‌دارد و ختم‌های showcase را hydrate می‌کند.
 3. نخستین import دیتابیس، `src/lib/server/db.ts` را اجرا می‌کند؛ URL اتصال تجزیه و `PrismaMariaDb` ساخته می‌شود. در development یک Prisma client روی `globalThis` reuse می‌شود.
-4. `hooks.server.ts:handle` مقدار Cookie با نام `daisyTheme` را هنگام SSR به `data-theme` روی `<html>` تزریق می‌کند.
+4. `hooks.server.ts:handle` مقدار معتبر Cookie با نام `colorScheme` را هنگام SSR به `data-color-scheme` روی `<html>` تزریق می‌کند.
 5. `hooks.server.ts:handleError` در development خطا را log می‌کند و در صورت فعال بودن provider ایتا، خلاصهٔ خطا را به مدیر می‌فرستد.
 
 ### راه‌اندازی کلاینت
@@ -264,7 +264,7 @@ flowchart TD
 | `Ayah.ts` | entity آیه و reciter | URL صوت و لینک بیرونی |
 | `Surah.ts`, `Page.ts`, `Juz.ts`, `HizbQuarter.ts` | entity متناظر از `@ghoran/entity` | تبدیل به `QuranRange` و عنوان فارسی |
 | `Showcase.ts` | `request.ts` | facade کوچک ذخیرهٔ showcase برای صفحهٔ admin |
-| `Theme.ts` | دادهٔ ثابت | فهرست و type تم‌های Daisy |
+| `Theme.ts` | دادهٔ ثابت | فهرست و type حالت‌های رنگ سیستم، روشن و تاریک |
 
 `Khatm.fromPlain()` و `Zekr.fromPlain()` در مرورگر cache سراسری بر اساس id دارند تا componentهای مختلف به یک instance reactive برسند. دادهٔ رسیده فقط وقتی شمارندهٔ آن جدیدتر باشد جایگزین می‌شود؛ برای parts ختم، طول بیشتر نیز باعث refresh آرایه می‌شود. در SSR cache استفاده نمی‌شود.
 
@@ -329,7 +329,7 @@ erDiagram
 | storage | key/table | محتوا | نویسنده/خواننده |
 | --- | --- | --- | --- |
 | LocalStorage | `app_v1_localSettings` | تنظیمات شخصی کامل | `LocalSettings` و `localStore.ts` |
-| Cookie | `daisyTheme` | theme لازم برای SSR بدون flash | `LocalSettings` → `hooks.server.ts` |
+| Cookie | `colorScheme` | پوستهٔ دستی لازم برای SSR بدون flash | `LocalSettings` → `hooks.server.ts` |
 | Cookie | `translation` | ترجمهٔ لازم برای server load نمایش بازه | `LocalSettings` → `[range]/+page.server.ts` |
 | IndexedDB `Khatm` | `pickedKhatmParts` | snapshot ختم، بازه و زمان انتخاب | `Khatm.pickRange()` و صفحات history |
 | IndexedDB `Khatm` | `createdKhatms` | snapshot ختم ساخته‌شده | نتیجهٔ `/add` و history |
@@ -364,12 +364,12 @@ Dexie schema در نسخهٔ ۴ تعریف شده است. repositoryها فیل�
 | `package.json` | scriptها، نسخهٔ pnpm 10 و تفکیک dependencyهای runtime/dev |
 | `svelte.config.js` | adapter-node، aliasها، `BASE_PATH` و URLهای non-relative |
 | `vite.config.ts` | SvelteKit/UnoCSS/icons، target مرورگر و دو workspace تست client/server |
-| `uno.config.ts` | Wind3، Daisy RTL، themeها، legacy compatibility و transformerها |
+| `uno.config.ts` | Wind3، legacy compatibility و transformerها |
 | `postcss.config.js` | preset-env با غیرفعال‌بودن تبدیل logical properties |
 | `tsconfig.json` | strict mode، bundler resolution، JSON و type آیکون‌های Svelte 5 |
 | `prisma.config.ts` | مسیر schema/migration و ترجیح `DIRECT_DATABASE_URL` برای CLI در صورت وجود |
 | `src/app.html` | shell فارسی RTL، manifest، viewport و preload داده روی hover |
-| `src/app.css` | فونت Vazirmatn، عرض حداکثر ۶۰۰px و overrideهای مشترک Daisy/RTL |
+| `src/app.css` | ورودی فونت و سیستم طراحی محلی؛ توکن‌ها، اجزا و layout در `src/lib/styles/` |
 | `src/app.d.ts` | توسعهٔ `App.Error` با type دامنه‌ای `conflict-ranges` |
 | `static/*` | favicon، hero، iconهای PWA و robots.txt |
 

@@ -37,14 +37,14 @@
 	آیا قرائت این بازه را تقبل می‌کنید؟
 	<p class="my-2 text-sm">
 		{range.getTitle()}
-		<a href={range.getLink(khatm)} target="_blank" class="badge badge-info badge-outline h-6">
+		<a href={range.getLink(khatm)} target="_blank" class="ui-badge ui-badge-info ui-badge-outline h-6">
 			مشاهده آیات
 		</a>
 	</p>
 
 	<div>
-		<button class="btn btn-primary mt-2" disabled={loading} onclick={markAsRead}>می‌پذیرم</button>
-		<button class="btn btn-error mt-2" disabled={loading} onclick={onClose}>لغو</button>
+		<button class="ui-btn ui-btn-primary mt-2" disabled={loading} onclick={markAsRead}>می‌پذیرم</button>
+		<button class="ui-btn ui-btn-danger mt-2" disabled={loading} onclick={onClose}>لغو</button>
 	</div>
 {:else}
 	<p class="text-lg">این بازه قبلا قرائت شده است.</p>

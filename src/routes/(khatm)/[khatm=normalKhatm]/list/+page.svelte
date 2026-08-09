@@ -76,18 +76,18 @@
 
 <div class="px-4">
 	<label class="my-2 block">
-		<input type="checkbox" class="checkbox" bind:checked={hideFinishedIntervals} />
+		<input type="checkbox" class="ui-checkbox" bind:checked={hideFinishedIntervals} />
 		پنهان کردن بازه‌های قرائت شده
 	</label>
 </div>
 
-<div class="bg-base-100">
+<div class="ui-bg-surface">
 	<Accardeon items={juzRanges} bind:selectedIndex={openedAccardeon}>
 		{#snippet title(range)}
 			{@const percent = range.getFillPercent(parts)}
 			<div class="p-4 font-semibold" class:opacity-50={percent >= 100}>
 				<span
-					class="radial-progress text-primary ms-1 text-[0.6rem]"
+					class="ui-radial-progress mr-1"
 					style:--value={percent}
 					style:--size="1.4rem"
 					aria-valuenow={percent}
@@ -97,7 +97,7 @@
 				</span>
 				{range.title}
 				{#if percent >= 100}
-					<span class="badge badge-xs">قبلا قرائت شده است</span>
+					<span class="ui-badge ui-badge-xs">قبلا قرائت شده است</span>
 				{/if}
 			</div>
 		{/snippet}
@@ -105,7 +105,7 @@
 		{#snippet content(range, i)}
 			<div class="z-1 relative w-full px-4 pb-4 text-xs sm:text-sm">
 				<!-- انتخاب نوع زیربازه -->
-				<div class="bg-base-300 w-full rounded-xl p-2">
+		<div class="ui-bg-muted w-full rounded-xl p-2">
 					<div class="mx-auto max-w-[270px] text-[13px]">
 						<Tab
 							tabs={[
@@ -121,11 +121,11 @@
 						{#each accardeonDevidedRanges as { parts, range }}
 							{@const percent = range.getFillPercent(khatmContext.parts)}
 							<li
-								class="bg-base-100 flex items-center border px-1 py-1 first:rounded-t last:rounded-b"
+								class="ui-bg-surface ui-border flex items-center border px-1 py-1 first:rounded-t last:rounded-b"
 							>
 								<div class="ml-2 flex w-24 items-center">
 									<span
-										class="radial-progress text-primary me-1 ms-1 text-[0.5rem]"
+										class="ui-radial-progress ml-1 mr-1"
 										style:--value={percent}
 										style:--size="1.4rem"
 										aria-valuenow={percent}
@@ -143,19 +143,19 @@
 											</span>
 											<span class="m-3 h-0 grow border border-dashed border-gray-500/20"></span>
 											{#if khatmPart}
-												<span class="badge badge-xs opacity-75">قرائت‌شده</span>
+									<span class="ui-badge ui-badge-xs opacity-75">قرائت‌شده</span>
 											{:else}
 												<button
 													type="button"
-													class="btn btn-primary btn-xs pointer-events-auto! ms-auto"
-													class:btn-disabled={!range.matchRangeType(khatm.rangeType)}
+										class="ui-btn ui-btn-primary ui-btn-xs pointer-events-auto! mr-auto"
+										class:ui-btn-disabled={!range.matchRangeType(khatm.rangeType)}
 													onclick={() => openModal(range)}
 												>
 													انتخاب
 												</button>
 											{/if}
-											<a
-												class="btn !btn-circle btn-ghost btn-xs ms-1"
+									<a
+										class="ui-btn ui-btn-icon ui-btn-ghost ui-btn-xs mr-1"
 												target="_blank"
 												href={range.getLink(khatm)}
 											>

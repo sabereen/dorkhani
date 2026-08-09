@@ -22,15 +22,17 @@
 </script>
 
 <div
-	class="relative grid select-none rounded-[9px] p-0.5"
+	class="ui-tabs select-none"
 	style:grid-template-columns={`repeat(${tabs.length}, 1fr)`}
+	role="tablist"
 >
 	<div
 		style:width={`${100 / tabs.length}%`}
 		style:transform={`translate3d(${-100 * selectedIndex}%, 0, 0)`}
-		class="absolute inset-0 p-[2px] transition-transform"
+		class="ui-tab-indicator"
+		aria-hidden="true"
 	>
-		<div class="indicator bg-base-100 h-[36px] w-full rounded-[7px] shadow-md"></div>
+		<div class="ui-tab-indicator-inner"></div>
 	</div>
 
 	{#each tabs as { slug, title, link, onClick, icon: Icon }, i}
@@ -41,20 +43,22 @@
 			id={htmlId}
 			value={slug}
 			bind:group={value}
-			class="peer absolute size-0 opacity-0 outline-none"
+			class="ui-tab-input"
 		/>
 		<label
-			class="relative flex h-[36px] w-full cursor-pointer items-center justify-center border-0 opacity-60 [.peer:focus-visible_+_&]:ring"
-			class:text-base-content={value === slug}
+			class="ui-tab"
+			class:ui-tab-active={value === slug}
 			for={htmlId}
+			role="tab"
+			aria-selected={value === slug}
 		>
 			{#if link}
 				<a href={link} class="flex grow items-center justify-center self-stretch" onclick={onClick}>
-					{#if Icon}<Icon class="me-1" />{/if}
+					{#if Icon}<Icon class="ml-1" />{/if}
 					{title}
 				</a>
 			{:else}
-				{#if Icon}<Icon class="me-1" />{/if}
+				{#if Icon}<Icon class="ml-1" />{/if}
 				{title}
 			{/if}
 		</label>

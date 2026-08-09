@@ -93,20 +93,20 @@
 	<div class="mt-5 px-4">
 		<div class="grid grid-cols-2 gap-2">
 			{#snippet smallButton(text: string, count: number, action?: () => void)}
-				<button class="btn btn-outline btn-sm" onclick={action || (() => pick(count))}>
+				<button class="ui-btn ui-btn-outline ui-btn-sm" onclick={action || (() => pick(count))}>
 					{#if loading === count}
-						<div class="loading loading-md" transition:slide={{ axis: 'x' }}></div>
+						<div class="ui-spinner ui-spinner-md" transition:slide={{ axis: 'x' }}></div>
 					{/if}
 					{text}
 				</button>
 			{/snippet}
 
 			<button
-				class="btn btn-primary btn-xl col-span-2 h-[3.3rem] text-xl font-bold"
+				class="ui-btn ui-btn-primary ui-btn-xl col-span-2 text-xl"
 				onclick={() => pick(1)}
 			>
 				{#if loading === 1}
-					<div class="loading loading-md" transition:slide={{ axis: 'x' }}></div>
+					<div class="ui-spinner ui-spinner-md" transition:slide={{ axis: 'x' }}></div>
 				{/if}
 				یک عدد
 			</button>
@@ -123,7 +123,7 @@
 	<form action="" onsubmit={handleModalAction}>
 		<button
 			type="button"
-			class="btn !btn-circle btn-sm btn-ghost absolute left-3 top-3"
+			class="ui-btn ui-btn-icon ui-btn-sm ui-btn-ghost absolute left-3 top-3"
 			aria-label="Settings"
 			onclick={closeModal}
 		>
@@ -133,7 +133,7 @@
 		<div class="mt-1">
 			<input
 				bind:value={customCount}
-				class="input input-success"
+				class="ui-input ui-input-success"
 				dir="ltr"
 				id="input-count"
 				type="number"
@@ -142,9 +142,9 @@
 			/>
 		</div>
 		<div class="mt-3">
-			<button type="submit" class="btn btn-primary btn-block">
+			<button type="submit" class="ui-btn ui-btn-primary ui-btn-block">
 				{#if loading !== -1}
-					<div class="loading loading-md" transition:slide={{ axis: 'x' }}></div>
+					<div class="ui-spinner ui-spinner-md" transition:slide={{ axis: 'x' }}></div>
 				{/if}
 				تأیید
 			</button>

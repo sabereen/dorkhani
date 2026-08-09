@@ -69,25 +69,25 @@
 	<div class="flex min-w-0 grow basis-0 flex-col">
 		<div>
 			{khatm.title}
-			<span class="badge badge-xs" class:badge-info={khatm.isAyahOriented}>
+			<span class="ui-badge ui-badge-xs" class:ui-badge-info={khatm.isAyahOriented}>
 				{khatm.rangeTypeTitle}
 			</span>
 		</div>
 		<p class="whitespace-pre-wrap text-xs opacity-85">{khatm.description}</p>
 	</div>
-	<div class="flex shrink-0 items-center gap-2">
+	<div class="ui-flex-gap-sm flex shrink-0 items-center">
 		<span
-			class="badge rounded px-2 py-1 text-xs"
+			class="ui-badge rounded px-2 py-1 text-xs"
 			class:bg-green-500={khatm.percent === 100}
 			class:opacity-75={khatm.percent !== 100}
 		>
 			{khatm.percent.toLocaleString('fa')}%
 		</span>
-		<a class="btn btn-xs btn-primary btn-square !btn-ghost p-0" href={khatm.link} target="_blank">
+		<a class="ui-btn ui-btn-xs ui-btn-square ui-btn-ghost p-0" href={khatm.link} target="_blank">
 			<IconLink class="size-5" />
 		</a>
 		<button
-			class="btn btn-xs btn-primary btn-square !btn-ghost p-0"
+			class="ui-btn ui-btn-xs ui-btn-square ui-btn-ghost p-0"
 			onclick={toggleShowcase.bind(null, khatm)}
 		>
 			{#if isInShowcase(khatm)}
@@ -99,26 +99,27 @@
 	</div>
 {/snippet}
 
-<section class="card card-border bg-base-200 mt-4">
-	<div class="card-body">
-		<h2 class="card-title">ختم‌های برگزیده</h2>
 
-		<ul class="list" in:fly={{ y: 50 }}>
+<section class="ui-card ui-card-bordered ui-bg-muted mt-4">
+	<div class="ui-card-body">
+		<h2 class="ui-card-title">ختم‌های برگزیده</h2>
+
+		<ul class="ui-list" in:fly={{ y: 50 }}>
 			{#each showcase as khatm (khatm.id)}
 				<li
 					animate:flip={{ duration: 300 }}
 					transition:fly={{ x: 20 }}
-					class="list-row !flex w-full"
+					class="ui-list-row w-full"
 				>
 					{@render khatmItem(khatm)}
 				</li>
 			{/each}
 		</ul>
 
-		<div class="card-actions justify-end">
-			<button disabled={!isDirty} class="btn btn-primary" onclick={save}>
+		<div class="ui-card-actions justify-end">
+			<button disabled={!isDirty} class="ui-btn ui-btn-primary" onclick={save}>
 				{#if loading}
-					<span transition:slide={{ axis: 'x' }} class="loading block"></span>
+					<span transition:slide={{ axis: 'x' }} class="ui-spinner block"></span>
 				{/if}
 				ذخیره تغییرات
 			</button>
@@ -126,12 +127,12 @@
 	</div>
 </section>
 
-<section class="card card-border bg-base-200 mt-4">
-	<div class="card-body">
-		<h2 class="card-title">ختم‌های تأیید شده</h2>
-		<ul class="list">
+<section class="ui-card ui-card-bordered ui-bg-muted mt-4">
+	<div class="ui-card-body">
+		<h2 class="ui-card-title">ختم‌های تأیید شده</h2>
+		<ul class="ui-list">
 			{#each lastKhatms as khatm (khatm.id)}
-				<li class="list-row !flex w-full">
+				<li class="ui-list-row w-full">
 					{@render khatmItem(khatm)}
 				</li>
 			{/each}

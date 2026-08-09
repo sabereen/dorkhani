@@ -30,22 +30,22 @@
 </script>
 
 {#if history?.length}
-	<section transition:slide={{ axis: 'y' }} class="card card-border bg-base-200">
-		<div class="card-body">
+	<section transition:slide={{ axis: 'y' }} class="ui-card ui-card-bordered ui-bg-muted">
+		<div class="ui-card-body">
 			{#if props.title}
-				<h2 class="card-title">{props.title}</h2>
+				<h2 class="ui-card-title">{props.title}</h2>
 			{/if}
-			<ul class="list">
+			<ul class="ui-list">
 				{#each history as item}
-					<li class="list-row !flex !flex-col">
+					<li class="ui-list-row !flex !flex-col">
 						<span>
 							<strong>ختم:</strong>
-							«<a class="link link-info" href={item.khatm.link}>{item.khatm.title}</a>»
+							«<a class="ui-link" href={item.khatm.link}>{item.khatm.title}</a>»
 							{#if item.khatm.private}
-								<span class="badge badge-xs badge-info">خصوصی</span>
+								<span class="ui-badge ui-badge-xs ui-badge-info">خصوصی</span>
 							{/if}
 							{#if !item.khatm.isFree}
-								<span class="badge badge-xs">{item.khatm.rangeTypeTitle}</span>
+								<span class="ui-badge ui-badge-xs">{item.khatm.rangeTypeTitle}</span>
 							{/if}
 						</span>
 						<span>
@@ -55,8 +55,8 @@
 					</li>
 				{/each}
 				{#if hasMore}
-					<li class="list-row">
-						<a class="btn btn-primary !btn-outline" href={`${base}/history`}>
+					<li class="ui-list-row">
+						<a class="ui-btn ui-btn-outline" href={`${base}/history`}>
 							نمایش همه‌ی موارد...
 						</a>
 					</li>

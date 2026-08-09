@@ -21,22 +21,22 @@
 
 {#if !form || !form.zekr}
 	<form use:enhance class="flex justify-center p-2" action="" method="POST">
-		<fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border px-4 !pb-4">
-			<legend class="fieldset-legend"> ختم اذکار </legend>
+		<fieldset class="ui-fieldset max-w-lg">
+			<legend class="ui-fieldset-legend"> ختم اذکار </legend>
 
-			<label for="input-title" class="fieldset-label mt-2">عنوان</label>
-			<input class="input" type="text" name="title" id="input-title" maxlength="100" />
+			<label for="input-title" class="ui-field-label">عنوان</label>
+			<input class="ui-input" type="text" name="title" id="input-title" maxlength="100" />
 
-			<label for="input-description" class="fieldset-label mt-2">توضیحات</label>
-			<textarea class="textarea" name="description" id="input-description" maxlength="65535"
+			<label for="input-description" class="ui-field-label">توضیحات</label>
+			<textarea class="ui-textarea" name="description" id="input-description" maxlength="65535"
 			></textarea>
 
-			<label for="input-zekr" class="fieldset-label mt-2">متن ذکر (اختیاری)</label>
-			<textarea class="textarea" name="zekrText" id="input-zekr" maxlength="65535"></textarea>
+			<label for="input-zekr" class="ui-field-label">متن ذکر (اختیاری)</label>
+			<textarea class="ui-textarea" name="zekrText" id="input-zekr" maxlength="65535"></textarea>
 
-			<label for="input-target-count" class="fieldset-label mt-2">تعداد هدف (اختیاری)</label>
+			<label for="input-target-count" class="ui-field-label">تعداد هدف (اختیاری)</label>
 			<input
-				class="input"
+				class="ui-input"
 				dir="ltr"
 				type="number"
 				name="targetCount"
@@ -45,7 +45,7 @@
 				min="1"
 			/>
 
-			<input class="btn btn-primary mt-3" type="submit" value="ایجاد" />
+			<input class="ui-btn ui-btn-primary mt-3" type="submit" value="ایجاد" />
 		</fieldset>
 	</form>
 {:else}

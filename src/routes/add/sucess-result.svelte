@@ -43,12 +43,12 @@
 	})
 </script>
 
-<div class="alert alert-success">
+	<div class="ui-alert ui-alert-success">
 	ختم «{khatm.title}» ایجاد شد.
 </div>
-<div class="card card-xl bg-base-200 mt-4 shadow-sm">
-	<div class="card-body">
-		<h2 class="card-title">{khatm.title}</h2>
+	<div class="ui-card ui-card-bordered ui-bg-muted mt-4">
+		<div class="ui-card-body">
+			<h2 class="ui-card-title">{khatm.title}</h2>
 		{#if khatm.description}
 			<div dir="auto" class="whitespace-pre-wrap break-words">
 				<ExpandableText text={khatm.description} maxLength={250} />
@@ -58,19 +58,19 @@
 			<a href={khatm.link} class="link font-sans" target="_blank">
 				{khatm.link}
 			</a>
-			<a href={khatm.link} class="btn !btn-outline btn-xs vertical-middle" dir="auto">
+				<a href={khatm.link} class="ui-btn ui-btn-outline ui-btn-xs vertical-middle" dir="auto">
 				<IconOpen class="size-4" />
 				باز کردن
 			</a>
 		</p>
-		<div class="card-actions">
+			<div class="ui-card-actions">
 			{#if canShare}
-				<button class="btn btn-primary" onclick={share}>
+				<button class="ui-btn ui-btn-primary" onclick={share}>
 					<IconShare class="size-5" />
 					اشتراک گذاری
 				</button>
 			{/if}
-			<button class="btn btn-outline" onclick={copy}>
+				<button class="ui-btn ui-btn-outline" onclick={copy}>
 				<IconCopy class="size-5" />
 				کپی لینک
 			</button>

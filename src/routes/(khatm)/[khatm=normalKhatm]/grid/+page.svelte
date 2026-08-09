@@ -114,22 +114,22 @@
 
 <div class="px-4">
 	<label class="my-2 block">
-		<input type="checkbox" class="checkbox" bind:checked={hideFinishedIntervals} />
+		<input type="checkbox" class="ui-checkbox" bind:checked={hideFinishedIntervals} />
 		پنهان کردن بازه‌های قرائت شده
 	</label>
 
 	<label class="my-2 block">
-		<input type="checkbox" class="checkbox" bind:checked={showBadges} />
+		<input type="checkbox" class="ui-checkbox" bind:checked={showBadges} />
 		نمایش ابتدا و انتهای بازه ها
 	</label>
 </div>
 
-<div class="alert alert-info my-2">
+<div class="ui-alert ui-alert-info my-2">
 	برای قبول کردن و خواندن بخشی از ختم روی بازه مورد نظر کلیک کنید.
 </div>
 
 <div
-	class="rounded-box relative grid overflow-hidden border border-gray-500 text-xs"
+	class="ui-border relative grid overflow-hidden rounded-xl border text-xs"
 	style:grid-template-rows={gridTemplateRows}
 >
 	{#snippet renderSelectableRanges(ranges: { start: number; end: number }[], column: number)}
@@ -137,7 +137,7 @@
 			{@const start = Ayah.get(range.start)}
 			{@const end = Ayah.get(range.end - 1)}
 			<button
-				class="bg-base-100 hover:bg-base-200 dark:hover:bg-base-300 col-start-1 flex min-h-4 w-full cursor-pointer flex-col items-end justify-between"
+				class="ui-bg-surface col-start-1 flex min-h-4 w-full cursor-pointer flex-col items-end justify-between"
 				style:grid-column-start={column}
 				style:grid-row-start={range.start + 1}
 				style:grid-row-end={range.end + 1}
@@ -145,11 +145,11 @@
 				onclick={() => openModal(range.start, range.end)}
 			>
 				{#if showBadges}
-					<span class="badge badge-xs badge-neutral rounded-l-none rounded-t-none">
+					<span class="ui-badge ui-badge-xs ui-badge-neutral rounded-l-none rounded-t-none">
 						{start.number}
 						{surah_getName(start.surah)}
 					</span>
-					<span class="badge badge-xs badge-neutral rounded-b-none rounded-l-none">
+					<span class="ui-badge ui-badge-xs ui-badge-neutral rounded-b-none rounded-l-none">
 						{end.number}
 						{surah_getName(end.surah)}
 					</span>
@@ -180,7 +180,7 @@
 	{#if !hideFinishedIntervals}
 		{#each parts as part (part.plain.id)}
 			<div
-				class="hatched bg-base-300 border-bold col-span-3 col-start-1 flex min-h-4 w-full items-center justify-center border-y border-dashed opacity-75"
+				class="hatched ui-border-strong col-span-3 col-start-1 flex min-h-4 w-full items-center justify-center border-y border-dashed opacity-75"
 				style:grid-row-start={part.start + 1}
 				style:grid-row-end={part.end + 1}
 			>

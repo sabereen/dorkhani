@@ -32,20 +32,20 @@
 </script>
 
 {#if history?.length}
-	<section transition:slide={{ axis: 'y' }} class="card card-border bg-base-200">
-		<div class="card-body">
+	<section transition:slide={{ axis: 'y' }} class="ui-card ui-card-bordered ui-bg-muted">
+		<div class="ui-card-body">
 			{#if props.title}
-				<h2 class="card-title">{props.title}</h2>
+				<h2 class="ui-card-title">{props.title}</h2>
 			{/if}
-			<ul class="list">
+			<ul class="ui-list">
 				{#each history as item}
 					{@const zekr = Zekr.fromPlain(item.zekr)}
-					<li class="list-row !flex !flex-col">
+					<li class="ui-list-row !flex !flex-col">
 						<span>
 							<strong>ختم:</strong>
-							«<a class="link link-info" href={zekr.link}>{zekr.title}</a>»
+							«<a class="ui-link" href={zekr.link}>{zekr.title}</a>»
 							{#if zekr.isFinite}
-								<span class="badge badge-xs badge-info">{zekr.targetCount} تایی</span>
+								<span class="ui-badge ui-badge-xs ui-badge-info">{zekr.targetCount} تایی</span>
 							{/if}
 						</span>
 						<span>
@@ -55,8 +55,8 @@
 					</li>
 				{/each}
 				{#if hasMore}
-					<li class="list-row">
-						<a class="btn btn-primary !btn-outline" href={`${base}/history`}>
+					<li class="ui-list-row">
+						<a class="ui-btn ui-btn-outline" href={`${base}/history`}>
 							نمایش همه‌ی موارد...
 						</a>
 					</li>

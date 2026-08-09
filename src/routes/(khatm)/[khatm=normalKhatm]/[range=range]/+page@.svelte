@@ -18,14 +18,14 @@
 
 <Header title={range.getTitle()} />
 
-<p class="alert alert-info mb-1 mt-3 text-lg font-bold">شروع محدوده {range.getTitle()}</p>
+<p class="ui-alert ui-alert-info mb-1 mt-3 text-lg font-bold">شروع محدوده {range.getTitle()}</p>
 
 <MultipleAyah ayahInfoList={data.ayat} />
 
-<p class="alert alert-info mb-1 mt-3 text-lg font-bold">
+<p class="ui-alert ui-alert-info mb-1 mt-3 text-lg font-bold">
 	پایان محدوده {range.getTitle()}
 </p>
-<a href={khatmUrl} class="btn btn-primary btn-lg mt-2 flex grow">
+<a href={khatmUrl} class="ui-btn ui-btn-primary ui-btn-lg mt-2 flex grow">
 	<IconNextPlan class="size-8" />
 	بازگشت به ختم
 </a>

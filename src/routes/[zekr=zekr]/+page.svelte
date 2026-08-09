@@ -60,35 +60,35 @@
 
 <Header title="ختم اذکار گروهی" link={`${base}/`}>
 	{#snippet end()}
-		<a href={`${base}/settings`} class="btn !btn-circle btn-ghost" aria-label="Settings">
+		<a href={`${base}/settings`} class="ui-btn ui-btn-icon ui-btn-ghost" aria-label="تنظیمات">
 			<IconSettings class="size-5" />
 		</a>
 
 		{#if canShare}
-			<button type="button" class="btn !btn-circle btn-ghost" onclick={share} aria-label="Share">
+			<button type="button" class="ui-btn ui-btn-icon ui-btn-ghost" onclick={share} aria-label="اشتراک‌گذاری">
 				<IconShare class="size-5" />
 			</button>
 		{:else}
-			<button type="button" class="btn !btn-circle btn-ghost" onclick={copy} aria-label="Copy">
+			<button type="button" class="ui-btn ui-btn-icon ui-btn-ghost" onclick={copy} aria-label="کپی لینک">
 				<IconCopy class="size-5" />
 			</button>
 		{/if}
 	{/snippet}
 </Header>
 
-<div class="hero">
-	<div class="hero-content flex flex-col text-center sm:flex-row">
+<div class="ui-container-reading">
+<div class="ui-hero !min-h-0">
 		<div class="w-full max-w-md">
 			<h1 class="break-words text-2xl font-black">
 				{zekr.title}
 				{#if zekr.isFinite}
-					<span class="badge badge-info">{zekr.targetCount} مرتبه</span>
+					<span class="ui-badge ui-badge-info">{zekr.targetCount} مرتبه</span>
 				{/if}
 			</h1>
 
 			{#if zekr.finished}
 				<div class="mt-2">
-					<div class="badge badge-success m-auto">این ختم به هدف خود رسیده است.</div>
+					<div class="ui-badge ui-badge-success m-auto">این ختم به هدف خود رسیده است.</div>
 				</div>
 			{/if}
 
@@ -98,18 +98,18 @@
 				</div>
 			{/if}
 
-			<div class="stats of-visible -mb-2 shadow">
-				<div class="stat">
-					<div class="stat-title">میزان مشارکت</div>
-					<div class="stat-value h-auto px-2">
+			<div class="ui-stats -mb-2">
+				<div class="ui-stat">
+					<div class="ui-stat-title">میزان مشارکت</div>
+					<div class="ui-stat-value h-auto px-2">
 						<span class="text-6xl">{zekr.count.toLocaleString('fa')}</span>
 						{#if zekr.isFinite}
-							<span class="badge badge-info">{percent.toLocaleString('fa')}٪</span>
+							<span class="ui-badge ui-badge-info">{percent.toLocaleString('fa')}٪</span>
 						{/if}
 					</div>
 					{#if zekr.isFinite}
-						<div class="stat-desc">
-							<progress class="progress progress-success w-23" max={100} value={percent}></progress>
+						<div class="ui-stat-description">
+							<progress class="ui-progress ui-progress-success w-23" max={100} value={percent}></progress>
 						</div>
 					{/if}
 				</div>
@@ -117,11 +117,10 @@
 
 			{#if myCount}
 				<p class="text-xs" transition:slide={{ axis: 'y' }}>
-					از این تعداد <span class="badge badge-accent">{myCount} عدد</span> را شما تقبل کرده اید.
+				از این تعداد <span class="ui-badge ui-badge-accent">{myCount} عدد</span> را شما تقبل کرده اید.
 				</p>
 			{/if}
 		</div>
-	</div>
 </div>
 
 <ZekrActions {zekr} bind:myCount />
@@ -136,3 +135,4 @@
 {/if}
 
 <div class="pt-10"></div>
+</div>

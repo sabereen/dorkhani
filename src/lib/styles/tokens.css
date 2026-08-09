@@ -1,0 +1,89 @@
+:root {
+	--ui-font-sans: 'Vazirmatn UI FD', Tahoma, Arial, sans-serif;
+	--ui-color-page: #fffdfc;
+	--ui-color-surface: #ffffff;
+	--ui-color-surface-muted: #f5f8ff;
+	--ui-color-surface-strong: #eef2ff;
+	--ui-color-text: #1e293b;
+	--ui-color-text-muted: #64748b;
+	--ui-color-border: #e0e7ff;
+	--ui-color-border-strong: #a5b4fc;
+	--ui-color-primary: #4f46e5;
+	--ui-color-primary-hover: #4338ca;
+	--ui-color-primary-soft: #eef2ff;
+	--ui-color-on-primary: #ffffff;
+	--ui-color-info: #2563eb;
+	--ui-color-info-soft: #eff6ff;
+	--ui-color-success: #2a6565;
+	--ui-color-success-soft: #ecfdf5;
+	--ui-color-warning: #c36a04;
+	--ui-color-warning-soft: #fffbeb;
+	--ui-color-danger: #b91c1c;
+	--ui-color-danger-soft: #fef2f2;
+	--ui-color-overlay: rgba(15, 23, 42, 0.58);
+	--ui-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.08);
+	--ui-shadow-md: 0 8px 24px rgba(15, 23, 42, 0.1);
+	--ui-shadow-lg: 0 18px 48px rgba(15, 23, 42, 0.16);
+	--ui-radius-sm: 0.5rem;
+	--ui-radius-md: 0.75rem;
+	--ui-radius-lg: 1.5rem;
+	--ui-container: 75rem;
+	--ui-reading: 48rem;
+	--ui-header-height: 4.5rem;
+}
+
+:root[data-color-scheme='dark'] {
+	--ui-color-page: #0f172a;
+	--ui-color-surface: #1e293b;
+	--ui-color-surface-muted: #273449;
+	--ui-color-surface-strong: #312e81;
+	--ui-color-text: #f8fafc;
+	--ui-color-text-muted: #cbd5e1;
+	--ui-color-border: #475569;
+	--ui-color-border-strong: #818cf8;
+	--ui-color-primary: #818cf8;
+	--ui-color-primary-hover: #a5b4fc;
+	--ui-color-primary-soft: #312e81;
+	--ui-color-on-primary: #0f172a;
+	--ui-color-info: #7dd3fc;
+	--ui-color-info-soft: #164e63;
+	--ui-color-success: #5eead4;
+	--ui-color-success-soft: #134e4a;
+	--ui-color-warning: #fbbf24;
+	--ui-color-warning-soft: #78350f;
+	--ui-color-danger: #fca5a5;
+	--ui-color-danger-soft: #7f1d1d;
+	--ui-color-overlay: rgba(2, 6, 23, 0.78);
+	--ui-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.28);
+	--ui-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.32);
+	--ui-shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.42);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root:not([data-color-scheme]) {
+		--ui-color-page: #0f172a;
+		--ui-color-surface: #1e293b;
+		--ui-color-surface-muted: #273449;
+		--ui-color-surface-strong: #312e81;
+		--ui-color-text: #f8fafc;
+		--ui-color-text-muted: #cbd5e1;
+		--ui-color-border: #475569;
+		--ui-color-border-strong: #818cf8;
+		--ui-color-primary: #818cf8;
+		--ui-color-primary-hover: #a5b4fc;
+		--ui-color-primary-soft: #312e81;
+		--ui-color-on-primary: #0f172a;
+		--ui-color-info: #7dd3fc;
+		--ui-color-info-soft: #164e63;
+		--ui-color-success: #5eead4;
+		--ui-color-success-soft: #134e4a;
+		--ui-color-warning: #fbbf24;
+		--ui-color-warning-soft: #78350f;
+		--ui-color-danger: #fca5a5;
+		--ui-color-danger-soft: #7f1d1d;
+		--ui-color-overlay: rgba(2, 6, 23, 0.78);
+		--ui-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.28);
+		--ui-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.32);
+		--ui-shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.42);
+	}
+}

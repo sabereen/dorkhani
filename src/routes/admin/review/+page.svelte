@@ -61,26 +61,26 @@
 	<div class="flex min-w-0 grow basis-0 flex-col">
 		<div>
 			{khatm.title}
-			<span class="badge badge-xs" class:badge-info={khatm.isAyahOriented}>
+			<span class="ui-badge ui-badge-xs" class:ui-badge-info={khatm.isAyahOriented}>
 				{khatm.rangeTypeTitle}
 			</span>
 		</div>
 		<p class="whitespace-pre-wrap text-xs opacity-85">{khatm.description}</p>
 	</div>
-	<div class="flex shrink-0 items-center gap-2">
+	<div class="ui-flex-gap-sm flex shrink-0 items-center">
 		<span
-			class="badge rounded px-2 py-1 text-xs"
+			class="ui-badge rounded px-2 py-1 text-xs"
 			class:bg-green-500={khatm.percent === 100}
 			class:opacity-75={khatm.percent !== 100}
 		>
 			{khatm.percent.toLocaleString('fa')}%
 		</span>
-		<a class="btn btn-xs btn-primary btn-square !btn-ghost p-0" href={khatm.link} target="_blank">
+		<a class="ui-btn ui-btn-xs ui-btn-square ui-btn-ghost p-0" href={khatm.link} target="_blank">
 			<IconLink class="size-5" />
 		</a>
 		{#if khatm.reviewStatus === 'pending' || khatm.reviewStatus === 'approved'}
 			<button
-				class="btn btn-xs btn-primary btn-square !btn-ghost p-0"
+				class="ui-btn ui-btn-xs ui-btn-square ui-btn-ghost p-0"
 				onclick={() => reject(khatm)}
 			>
 				<IconRejected class="size-5 text-red-500" />
@@ -88,7 +88,7 @@
 		{/if}
 		{#if khatm.reviewStatus === 'pending' || khatm.reviewStatus === 'rejected'}
 			<button
-				class="btn btn-xs btn-primary btn-square !btn-ghost p-0"
+				class="ui-btn ui-btn-xs ui-btn-square ui-btn-ghost p-0"
 				onclick={() => approve(khatm)}
 			>
 				<IconApproved class="size-5 text-green-500" />
@@ -97,7 +97,7 @@
 	</div>
 {/snippet}
 
-<div class="bg-base-300 rounded-b px-2 pb-2 text-sm shadow-sm">
+<div class="ui-bg-muted rounded-b px-2 pb-2 text-sm shadow-sm">
 	<Tab
 		tabs={[
 			{
@@ -120,18 +120,18 @@
 	/>
 </div>
 
-<section class="card card-border bg-base-200 mt-4">
-	<div class="card-body">
-		<h2 class="card-title">آخرین ختم‌های عمومی</h2>
-		<ul class="list">
+<section class="ui-card ui-card-bordered ui-bg-muted mt-4">
+	<div class="ui-card-body">
+		<h2 class="ui-card-title">آخرین ختم‌های عمومی</h2>
+		<ul class="ui-list">
 			{#each khatms as khatm (khatm.id)}
-				<li class="list-row !flex w-full">
+				<li class="ui-list-row w-full">
 					{@render khatmItem(khatm)}
 				</li>
 			{/each}
 		</ul>
 		{#if !lastPage}
-			<button class="btn" onclick={nextPage} disabled={loading}> بارگیری موارد بعدی </button>
+			<button class="ui-btn" onclick={nextPage} disabled={loading}> بارگیری موارد بعدی </button>
 		{/if}
 	</div>
 </section>

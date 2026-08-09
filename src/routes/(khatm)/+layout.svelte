@@ -95,24 +95,25 @@
 
 <Header title="ختم قرآن گروهی" link={`${base}/`}>
 	{#snippet end()}
-		<a href={`${base}/settings`} class="btn !btn-circle btn-ghost" aria-label="Settings">
+		<a href={`${base}/settings`} class="ui-btn ui-btn-icon ui-btn-ghost" aria-label="تنظیمات">
 			<IconSettings class="size-5" />
 		</a>
 
 		{#if canShare}
-			<button type="button" class="btn !btn-circle btn-ghost" onclick={share} aria-label="Share">
+			<button type="button" class="ui-btn ui-btn-icon ui-btn-ghost" onclick={share} aria-label="اشتراک‌گذاری">
 				<IconShare class="size-5" />
 			</button>
 		{:else}
-			<button type="button" class="btn !btn-circle btn-ghost" onclick={copy} aria-label="Copy">
+			<button type="button" class="ui-btn ui-btn-icon ui-btn-ghost" onclick={copy} aria-label="کپی لینک">
 				<IconCopy class="size-5" />
 			</button>
 		{/if}
 	{/snippet}
 </Header>
 
+<div class="ui-container-reading">
 {#if canSelectLayout}
-	<div class="bg-base-300 rounded-b px-2 pb-2 text-sm shadow-sm">
+	<div class="ui-bg-muted rounded-b px-2 pb-2 text-sm shadow-sm">
 		<Tab
 			tabs={[
 				{ slug: 'wizard', icon: IconViewWizard, title: 'مرحله‌ای', link: khatm.getLink('wizard') },
@@ -124,16 +125,15 @@
 	</div>
 {/if}
 
-<div class="hero">
-	<div class="hero-content flex flex-col text-center sm:flex-row">
+<div class="ui-hero !min-h-0">
 		<div class="w-full max-w-md">
 			<h1 class="break-words text-2xl font-black">
 				{khatm.title}
 				{#if khatm.isSerial}
-					<span class="badge badge-accent">{roundTitle}</span>
+					<span class="ui-badge ui-badge-accent">{roundTitle}</span>
 				{/if}
 				{#if khatm.rangeType === 'ayah'}
-					<span class="badge badge-info">آیه به آیه</span>
+					<span class="ui-badge ui-badge-info">آیه به آیه</span>
 				{/if}
 			</h1>
 			{#if khatm.description}
@@ -141,28 +141,27 @@
 					<ExpandableText text={khatm.description} maxLength={250} threshold={10} />
 				</div>
 			{/if}
-			<div class="stats shadow">
-				<div class="stat">
-					<div class="stat-title">
+			<div class="ui-stats">
+				<div class="ui-stat">
+					<div class="ui-stat-title">
 						پیشرفت ختم
-						<button type="button" class="btn btn-primary btn-xs" onclick={togglePageBasedProgress}>
+						<button type="button" class="ui-btn ui-btn-primary ui-btn-xs" onclick={togglePageBasedProgress}>
 							{pageBasedProgress ? 'صفحه‌محور' : 'آیه‌محور'}
 						</button>
 					</div>
-					<div class="stat-value px-2">
+					<div class="ui-stat-value px-2">
 						{percent.toLocaleString('fa')}٪
 					</div>
-					<div class="stat-desc">
-						<progress class="progress progress-success w-23" max={100} value={percent}></progress>
+					<div class="ui-stat-description">
+						<progress class="ui-progress ui-progress-success w-23" max={100} value={percent}></progress>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 </div>
 
 {#if khatm.finished}
-	<div class="alert alert-success">
+	<div class="ui-alert ui-alert-success">
 		<p>
 			{#if khatm.isSerial}
 				این دور از ختم کامل شده است ({roundTitle})
@@ -171,7 +170,7 @@
 			{/if}
 		</p>
 		{#if khatm.isSerial}
-			<button class="btn !btn-outline" onclick={invalidateAll}>شروع دور جدید</button>
+			<button class="ui-btn ui-btn-outline" onclick={invalidateAll}>شروع دور جدید</button>
 		{/if}
 	</div>
 {:else}
@@ -179,3 +178,4 @@
 {/if}
 
 <div class="pt-10"></div>
+</div>

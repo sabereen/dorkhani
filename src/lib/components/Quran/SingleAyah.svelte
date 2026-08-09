@@ -23,8 +23,8 @@
 	const ayah = $derived(Ayah.get(ayahInfo.index))
 </script>
 
-<div class="card" id={`ayah-${ayah.index}`} transition:slide|global={{ axis: 'y' }}>
-	<div class="card-body">
+<div class="ui-card" id={`ayah-${ayah.index}`} transition:slide|global={{ axis: 'y' }}>
+	<div class="ui-card-body">
 		{#if ayah.isFirstOfSurah}
 			<div class="mb-3">
 				<p class="text-md text-center font-bold">
@@ -36,7 +36,7 @@
 			</div>
 		{/if}
 		{#if ayah.obligatorySajdah}
-			<div class="alert alert-error">
+			<div class="ui-alert ui-alert-error">
 				<p>این آیه دارای سجده واجب است.</p>
 			</div>
 		{/if}
@@ -52,15 +52,15 @@
 		</p>
 		<p class="text-md mb-4 opacity-80">{ayahInfo.translation}</p>
 	</div>
-	<div class="card-actions relative mx-6 gap-0 pb-3">
+	<div class="ui-card-actions relative mx-6 pb-3">
 		{#if !audioManager.paused && audioManager.playingIndex === ayah.index}
 			<button
 				type="button"
-				class="btn btn-sm btn-outline relative"
+			class="ui-btn ui-btn-sm ui-btn-outline relative"
 				onclick={() => audioManager.pause()}
 			>
 				{#if audioManager.audioLoading}
-					<span class="loading loading-ring block size-5"></span>
+					<span class="ui-spinner block"></span>
 				{:else}
 					<IconPause class="size-5" />
 				{/if}
@@ -69,14 +69,14 @@
 		{:else}
 			<button
 				type="button"
-				class="btn btn-sm btn-outline"
+			class="ui-btn ui-btn-sm ui-btn-outline"
 				onclick={() => audioManager.play(ayah.index)}
 			>
 				<IconPlay class="size-5" />
 				پخش صوت
 			</button>
 		{/if}
-		<a href={ayah_getExternalLink(ayah)} target="_blank" class="btn btn-sm btn-outline ms-2">
+		<a href={ayah_getExternalLink(ayah)} target="_blank" class="ui-btn ui-btn-sm ui-btn-outline mr-2">
 			<IconContext class="size-5" />
 			آیات پیرامون
 		</a>
@@ -85,7 +85,7 @@
 		{#if audioManager.audioDuration && !audioManager.paused && audioManager.playingIndex === ayah.index}
 			<progress
 				transition:fade
-				class="progress rounded-0 absolute inset-x-0 bottom-0 h-1 w-full"
+				class="ui-progress absolute bottom-0 left-0 right-0 h-1 w-full rounded-0"
 				value={audioManager.audioCurrentTime}
 				max={audioManager.audioDuration}
 			></progress>

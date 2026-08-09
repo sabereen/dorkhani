@@ -26,34 +26,36 @@
 	}
 </script>
 
-<div class="navbar bg-base-300 shadow-sm">
-	<div class="navbar-start flex items-center">
-		{#if start}
-			{@render start()}
-		{:else}
-			<button type="button" class="btn btn-circle !btn-ghost" aria-label="Back" onclick={back}>
-				<IconBack />
-			</button>
-		{/if}
-	</div>
-	<div class="navbar-center">
-		{#if title}
-			<h1 class="select-none text-xl font-black">
-				{#if link}
-					<a href={link}>{title}</a>
-				{:else}
-					{title}
-				{/if}
-			</h1>
-		{/if}
-	</div>
-	<div class="navbar-end flex items-center">
-		{#if end}
-			{@render end()}
-		{:else}
-			<a href={`${base}/settings`} class="btn btn-circle !btn-ghost" aria-label="Settings">
-				<IconSettings />
-			</a>
-		{/if}
+<div class="ui-page-header">
+	<div class="ui-page-header-inner">
+		<div class="ui-page-header-start">
+			{#if start}
+				{@render start()}
+			{:else}
+				<button type="button" class="ui-btn ui-btn-icon ui-btn-ghost" aria-label="بازگشت" onclick={back}>
+					<IconBack />
+				</button>
+			{/if}
+		</div>
+		<div>
+			{#if title}
+				<h1 class="ui-page-header-title select-none">
+					{#if link}
+						<a href={link}>{title}</a>
+					{:else}
+						{title}
+					{/if}
+				</h1>
+			{/if}
+		</div>
+		<div class="ui-page-header-end">
+			{#if end}
+				{@render end()}
+			{:else}
+				<a href={`${base}/settings`} class="ui-btn ui-btn-icon ui-btn-ghost" aria-label="تنظیمات">
+					<IconSettings />
+				</a>
+			{/if}
+		</div>
 	</div>
 </div>

@@ -7,6 +7,13 @@ and cross-file dependencies. Do not read it by default. Read it only when a task
 cross-cutting architectural context, and prefer inspecting the directly relevant files for
 small, well-scoped changes.
 
+## UI System Reference
+
+[`UI_GUIDE.md`](UI_GUIDE.md) is the source of truth for the local `ui-*` design system,
+component composition, theming, accessibility, RTL behavior, and Chrome 64 compatibility.
+Read it before adding or changing application UI. Do not introduce DaisyUI classes, aliases,
+presets, or another UI component library.
+
 ## Project Structure & Module Organization
 
 This is a SvelteKit and TypeScript application for coordinating Quran recitations. Application routes, pages, endpoints, and route-specific components live in `src/routes/`; SvelteKit conventions apply (for example, `+page.svelte`, `+page.server.ts`, and `+server.ts`). Reusable UI belongs in `src/lib/components/`, domain types in `src/lib/entity/`, and client persistence helpers in `src/lib/idb/`. Server-only database and business logic belongs under `src/lib/server/`. Prisma's MySQL schema and timestamped migrations are in `prisma/`. Put public icons and images in `static/`.

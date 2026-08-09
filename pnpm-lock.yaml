@@ -84,9 +84,6 @@ importers:
       '@unocss/preset-legacy-compat':
         specifier: 66.1.0-beta.10
         version: 66.1.0-beta.10
-      '@unscatty/unocss-preset-daisy':
-        specifier: ^1.0.0
-        version: 1.0.0(unocss@66.1.0-beta.10(postcss@8.5.3)(vite@6.4.3(@types/node@26.1.2)(jiti@2.7.0)(lightningcss@1.33.0)(terser@5.39.0))(vue@3.5.13(typescript@5.9.3)))
       core-js:
         specifier: ^3.41.0
         version: 3.41.0
@@ -1353,11 +1350,6 @@ packages:
     peerDependencies:
       vite: ^2.9.0 || ^3.0.0-0 || ^4.0.0 || ^5.0.0-0 || ^6.0.0-0
 
-  '@unscatty/unocss-preset-daisy@1.0.0':
-    resolution: {integrity: sha512-YKPuMyqvyUJ+t7sA44V8URHdwBEsRHna1SnpLUHkqZEAv4pI0ZthMvo/zn6WNf4AKVe1XqQlY3Ty3ktLbbErxw==}
-    peerDependencies:
-      unocss: ^0.56.4
-
   '@visx/curve@4.0.1-alpha.0':
     resolution: {integrity: sha512-jRu61Uz274pV1zyioXmboyrLutYbnKsgjj4njSGCnhdXj5GkZvZbg+ThDb6oOzoAnJOBRLz4rzPlWvNJOzuVMg==}
 
@@ -1840,9 +1832,6 @@ packages:
   d3-time@3.1.0:
     resolution: {integrity: sha512-VqKjzBLejbSMT4IgbmVgDjpkYrNWUYJnbCGo874u7MMKIWsILRX+OpX/gTk8MqjpT1A/c6HY2dCA77ZN0lkQ2Q==}
     engines: {node: '>=12'}
-
-  daisy-untailwind@3.9.4:
-    resolution: {integrity: sha512-SKXfLoq71d2IQ7Mb+mrre2by9vBV1k2GibHvR8LHNkRRtvDmqUVP+h1r5fjH+VgqXwAhHqHmTkCbmYdjPZs/4w==}
 
   data-urls@5.0.0:
     resolution: {integrity: sha512-ZYP5VBHshaDAiVZxjbRVcFJpc+4xGgT0bK3vzy1HLN8jTO975HEbuYzZJcHoQEY5K1a0z8YayJkyVETa08eNTg==}
@@ -5245,17 +5234,6 @@ snapshots:
     transitivePeerDependencies:
       - vue
 
-  '@unscatty/unocss-preset-daisy@1.0.0(unocss@66.1.0-beta.10(postcss@8.5.3)(vite@6.4.3(@types/node@26.1.2)(jiti@2.7.0)(lightningcss@1.33.0)(terser@5.39.0))(vue@3.5.13(typescript@5.9.3)))':
-    dependencies:
-      '@tailwindcss/nesting': 0.0.0-insiders.565cd3e(postcss@8.5.3)
-      '@unocss/rule-utils': 0.57.7
-      camelcase: 8.0.0
-      daisy-untailwind: 3.9.4
-      parsel-js: 1.2.1
-      postcss: 8.5.3
-      postcss-js: 4.0.1(postcss@8.5.3)
-      unocss: 66.1.0-beta.10(postcss@8.5.3)(vite@6.4.3(@types/node@26.1.2)(jiti@2.7.0)(lightningcss@1.33.0)(terser@5.39.0))(vue@3.5.13(typescript@5.9.3))
-
   '@visx/curve@4.0.1-alpha.0':
     dependencies:
       '@visx/vendor': 4.0.0-alpha.0
@@ -5778,10 +5756,6 @@ snapshots:
   d3-time@3.1.0:
     dependencies:
       d3-array: 3.2.4
-
-  daisy-untailwind@3.9.4:
-    dependencies:
-      colord: 2.9.3
 
   data-urls@5.0.0:
     dependencies:

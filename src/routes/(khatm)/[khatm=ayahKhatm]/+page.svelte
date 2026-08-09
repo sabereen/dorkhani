@@ -95,7 +95,7 @@
 	<div class="mt-5 px-4">
 		{#if isFinished}
 			<div>
-				<button class="btn btn-primary btn-block" onclick={() => khatm.refresh()}>
+				<button class="ui-btn ui-btn-primary ui-btn-block" onclick={() => khatm.refresh()}>
 					پایان
 					{#if khatm.isSerial}
 						{khatm.getRoundTitle()}
@@ -105,20 +105,20 @@
 		{:else}
 			<div class="grid grid-cols-2 gap-2">
 				{#snippet smallButton(text: string, count: number)}
-					<button class="btn btn-outline btn-sm" onclick={() => pick(count)}>
+					<button class="ui-btn ui-btn-outline ui-btn-sm" onclick={() => pick(count)}>
 						{#if loading === count}
-							<div class="loading loading-md" transition:slide={{ axis: 'x' }}></div>
+							<div class="ui-spinner ui-spinner-md" transition:slide={{ axis: 'x' }}></div>
 						{/if}
 						{text}
 					</button>
 				{/snippet}
 
 				<button
-					class="btn btn-primary btn-xl col-span-2 h-[3.3rem] text-xl font-bold"
+					class="ui-btn ui-btn-primary ui-btn-xl col-span-2 text-xl"
 					onclick={() => pick(1)}
 				>
 					{#if loading === 1}
-						<div class="loading loading-md" transition:slide={{ axis: 'x' }}></div>
+						<div class="ui-spinner ui-spinner-md" transition:slide={{ axis: 'x' }}></div>
 					{/if}
 					{#if selectedAyat.length}
 						پذیرفتن یک آیه بیشتر
@@ -132,7 +132,7 @@
 				{@render smallButton('پذیرفتن ۷ آیه متوالی', 7)}
 				{@render smallButton('پذیرفتن ۱۰ آیه متوالی', 10)}
 
-				<button type="button" class="btn btn-primary !btn-ghost col-span-2" onclick={openSettings}>
+				<button type="button" class="ui-btn ui-btn-ghost col-span-2" onclick={openSettings}>
 					<IconSettings class="size-6" />
 					تنظیمات
 				</button>

@@ -31,20 +31,20 @@
 
 <Header title="ختم‌های ثبت شده" />
 
-<section class="card card-border bg-base-200 mt-4">
-	<div class="card-body">
-		<ul class="list">
+<section class="ui-card ui-card-bordered ui-bg-muted mt-4">
+	<div class="ui-card-body">
+		<ul class="ui-list">
 			{#each khatms as khatm (khatm.id)}
 				<li class="">
 					<a
-						class="list-row clear-both !block !flex w-full hover:bg-green-500/15"
+					class="ui-list-row"
 						href={khatm.link}
 					>
 						<!-- Title & Badge -->
 						<span class="min-w-0 grow">
 							{khatm.title}
 							{#if !khatm.isFree}
-								<span class="badge badge-xs" class:badge-info={khatm.isAyahOriented}>
+							<span class="ui-badge ui-badge-xs" class:ui-badge-info={khatm.isAyahOriented}>
 									{khatm.rangeTypeTitle}
 								</span>
 							{/if}
@@ -54,7 +54,7 @@
 							<span class="-mt-1 px-0.5 text-[13px]">
 								{khatm.percent.toLocaleString('fa')}%
 							</span>
-							<progress class="progress progress-success h-1.5 w-10" max={100} value={khatm.percent}
+						<progress class="ui-progress ui-progress-success h-1.5 w-10" max={100} value={khatm.percent}
 							></progress>
 						</span>
 					</a>
@@ -62,7 +62,7 @@
 			{/each}
 		</ul>
 		{#if !lastPage}
-			<button class="btn" onclick={nextPage} disabled={loading}> بارگیری موارد بعدی </button>
+			<button class="ui-btn" onclick={nextPage} disabled={loading}> بارگیری موارد بعدی </button>
 		{/if}
 	</div>
 </section>

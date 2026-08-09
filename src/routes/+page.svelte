@@ -5,7 +5,6 @@
 	import HistoryPickedRange from './history/history-picked-range.svelte'
 	import { base } from '$app/paths'
 	import { rebaseFullPath } from '$lib/utility/path'
-	import Header from '$lib/components/Header.svelte'
 	import { Zekr } from '$lib/entity/Zekr.svelte'
 	import HistoryZekr from './history/history-zekr.svelte'
 
@@ -27,14 +26,7 @@
 	<meta property="og:image" content={rebaseFullPath('/hero.png')} />
 </svelte:head>
 
-<Header>
-	{#snippet start()}
-		<p class="ws-nowrap select-none ps-4 text-xl font-black">سامانه ختم جمعی قرآن</p>
-	{/snippet}
-</Header>
-
-<div class="hero mt-7">
-	<div class="hero-content flex flex-col text-center sm:flex-row">
+<div class="ui-hero">
 		<img
 			src={`${base}/hero.png`}
 			class="max-w-50 h-auto rounded-lg shadow-2xl"
@@ -48,44 +40,40 @@
 				از طریق این سامانه می‌توانید به صورت گروهی ختم قرآن انجام دهید؛ و وضعیت بازه‌های قرائت شده
 				را رصد کنید.
 			</p>
-			<a class="btn btn-primary font-bold" href={`${base}/add`}>ایجاد ختم قرآن جدید</a>
-			<!-- <a class="btn btn-outline font-bold" href={`${base}/add?rangeType=ayah`}>
-				ایجاد ختم آیه به آیه
-			</a> -->
+			<a class="ui-btn ui-btn-primary" href={`${base}/add`}>ایجاد ختم قرآن جدید</a>
 		</div>
-	</div>
 </div>
 
-<div class="grid grid-cols-1 gap-3">
+<div class="ui-page-grid ui-page-grid-three">
 	<HistoryKhatm limit={3} title="آخرین ختم‌های قرآن که ایجاد کرده اید" />
 	<HistoryZekr limit={3} title="آخرین ختم‌های ذکر که ایجاد کرده اید" />
 	<HistoryPickedRange limit={3} title="آخرین مشارکت‌های شما" />
 </div>
 
 {#snippet khatmList(khatms: Khatm[], title: string, moreLink?: string)}
-	<section class="card card-border bg-base-200 mt-4">
-		<div class="card-body">
-			<h2 class="card-title flex items-center justify-between">
+	<section class="ui-card ui-card-bordered ui-bg-muted mt-4">
+		<div class="ui-card-body">
+			<h2 class="ui-card-title flex items-center justify-between">
 				{title}
 				{#if moreLink}
-					<a href={moreLink} class="btn btn-ghost">
+					<a href={moreLink} class="ui-btn ui-btn-ghost">
 						موارد بیشتر
 						<IconMore class="size-6 -scale-x-100" />
 					</a>
 				{/if}
 			</h2>
-			<ul class="list">
+			<ul class="ui-list">
 				{#each khatms as khatm}
 					<li class="">
 						<a
-							class="list-row clear-both !block !flex w-full hover:bg-green-500/15"
+							class="ui-list-row"
 							href={khatm.link}
 						>
 							<!-- Title & Badge -->
 							<span class="min-w-0 grow">
 								{khatm.title}
 								{#if !khatm.isFree}
-									<span class="badge badge-xs" class:badge-info={khatm.isAyahOriented}>
+									<span class="ui-badge ui-badge-xs" class:ui-badge-info={khatm.isAyahOriented}>
 										{khatm.rangeTypeTitle}
 									</span>
 								{/if}
@@ -96,7 +84,7 @@
 									{khatm.percent.toLocaleString('fa')}%
 								</span>
 								<progress
-									class="progress progress-success h-1.5 w-10"
+									class="ui-progress ui-progress-success h-1.5 w-10"
 									max={100}
 									value={khatm.percent}
 								></progress>
@@ -117,21 +105,21 @@
 {/if}
 
 {#if zekrList.length}
-	<section class="card card-border bg-base-200 mt-4">
-		<div class="card-body">
-			<h2 class="card-title">آخرین ختم‌های اذکار</h2>
-			<ul class="list">
+	<section class="ui-card ui-card-bordered ui-bg-muted mt-4">
+		<div class="ui-card-body">
+			<h2 class="ui-card-title">آخرین ختم‌های اذکار</h2>
+			<ul class="ui-list">
 				{#each zekrList as zekr}
 					<li class="">
 						<a
-							class="list-row clear-both !block !flex w-full hover:bg-green-500/15"
+							class="ui-list-row"
 							href={zekr.link}
 						>
 							<!-- Title & Badge -->
 							<span class="min-w-0 grow">
 								{zekr.title}
 								{#if zekr.isFinite}
-									<span class="badge badge-info badge-xs">{zekr.targetCount} تایی</span>
+									<span class="ui-badge ui-badge-info ui-badge-xs">{zekr.targetCount} تایی</span>
 								{/if}
 							</span>
 							<!-- Stats -->
@@ -141,7 +129,7 @@
 								</span>
 								{#if zekr.isFinite}
 									<progress
-										class="progress progress-success h-1.5 w-10"
+										class="ui-progress ui-progress-success h-1.5 w-10"
 										max={100}
 										value={zekr.percent}
 									></progress>

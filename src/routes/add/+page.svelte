@@ -31,17 +31,17 @@
 
 {#if !form || !form.khatm}
 	<form use:enhance class="flex justify-center p-2" action="" method="POST">
-		<fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border px-4 !pb-4">
-			<legend class="fieldset-legend">
+		<fieldset class="ui-fieldset max-w-lg">
+			<legend class="ui-fieldset-legend">
 				ختم قرآن
 				{#if data.rangeType === 'ayah'}
-					<span class="badge badge-info badge-xs ms-1">آیه به آیه</span>
+					<span class="ui-badge ui-badge-info ui-badge-xs mr-1">آیه به آیه</span>
 				{/if}
 			</legend>
 
-			<label for="input-title" class="fieldset-label mt-2">عنوان</label>
+			<label for="input-title" class="ui-field-label">عنوان</label>
 			<input
-				class="input"
+				class="ui-input"
 				type="text"
 				name="title"
 				id="input-title"
@@ -49,15 +49,15 @@
 				onkeypress={handleKeyPress}
 			/>
 
-			<label for="input-description" class="fieldset-label mt-2">توضیحات</label>
-			<textarea class="textarea" name="description" id="input-description" maxlength="65535"
+			<label for="input-description" class="ui-field-label">توضیحات</label>
+			<textarea class="ui-textarea" name="description" id="input-description" maxlength="65535"
 			></textarea>
 
 			{#if data.rangeType === 'ayah'}
 				<input type="hidden" name="rangeType" value="ayah" />
 			{:else}
-				<label for="input-range-type" class="fieldset-label mt-2">بازه بندی</label>
-				<select id="input-range-type" class="select" name="rangeType" bind:value={rangeType}>
+				<label for="input-range-type" class="ui-field-label">بازه بندی</label>
+				<select id="input-range-type" class="ui-select" name="rangeType" bind:value={rangeType}>
 					<option value="free">آزاد</option>
 					<option value="page">صفحه به صفحه</option>
 					<option value="hizbQuarter">حزب به حزب (¼)</option>
@@ -79,11 +79,11 @@
 				{/if}
 			{/if}
 
-			<div class="bg-base-100 mt-2 flex select-none flex-col rounded-lg px-2 py-1">
+			<div class="ui-bg-surface mt-2 flex select-none flex-col rounded-lg px-2 py-1">
 				{#snippet radioItem(value: 'public' | 'private', title: string, description: string)}
 					<label class="flex items-center py-1">
-						<input class="radio" type="radio" name="access" {value} checked={value === 'private'} />
-						<span class="ms-2 flex min-w-0 grow basis-0 flex-col">
+						<input class="ui-radio" type="radio" name="access" {value} checked={value === 'private'} />
+						<span class="mr-2 flex min-w-0 grow basis-0 flex-col">
 							<span class="text-[.9rem] font-bold">{title}</span>
 							<span class="text-xs">{description}</span>
 						</span>
@@ -102,10 +102,10 @@
 			</div>
 
 			<label
-				class="bg-base-100 mt-2 flex cursor-pointer select-none items-center rounded-lg px-2 py-1 py-2"
+				class="ui-bg-surface mt-2 flex cursor-pointer select-none items-center rounded-lg px-2 py-2"
 			>
-				<input class="checkbox" type="checkbox" name="series" />
-				<span class="ms-2 flex min-w-0 grow basis-0 flex-col">
+				<input class="ui-checkbox" type="checkbox" name="series" />
+				<span class="mr-2 flex min-w-0 grow basis-0 flex-col">
 					<span class="text-[.9rem] font-bold">تمام نشدنی!</span>
 					<p class="text-xs">
 						در صورت فعال کردن این گزینه، پس از پایان ختم، یک دور ختم جدید به صورت خودکار آغاز
@@ -114,7 +114,7 @@
 				</span>
 			</label>
 
-			<input class="btn btn-primary mt-3" type="submit" value="ایجاد" />
+			<input class="ui-btn ui-btn-primary mt-3" type="submit" value="ایجاد" />
 		</fieldset>
 	</form>
 {:else}

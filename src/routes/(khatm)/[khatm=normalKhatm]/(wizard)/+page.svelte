@@ -121,7 +121,7 @@
 			<div class="grid grid-cols-2 gap-2">
 				{#snippet button(type: typeof rangeType, title: string, span = 1)}
 					<button
-						class="btn btn-primary !btn-soft btn-block"
+				class="ui-btn ui-btn-soft ui-btn-block"
 						style:grid-column-end={`span ${span}`}
 						type="button"
 						onclick={() => selectRangeType(type)}
@@ -146,7 +146,7 @@
 		<p class="mb-2 px-2">یکی از موارد باقی‌مانده را انتخاب کنید.</p>
 		<div>
 			<label class="my-2 block">
-				<input type="checkbox" class="checkbox" bind:checked={hideFinishedIntervals} />
+				<input type="checkbox" class="ui-checkbox" bind:checked={hideFinishedIntervals} />
 				پنهان کردن بازه‌های قرائت شده
 			</label>
 		</div>
@@ -159,19 +159,19 @@
 			{#each selectableRanges as { range, percent }}
 				{@const disabled = percent > 0}
 				{@const completed = percent >= 100}
-				<li class="list-row grow">
+					<li class="ui-list-row grow">
 					<button
-						class="btn btn-primary !btn-soft btn-block whitespace-nowrap"
+							class="ui-btn ui-btn-soft ui-btn-block whitespace-nowrap"
 						type="button"
 						{disabled}
-						class:!btn-disabled={disabled}
+							class:ui-btn-disabled={disabled}
 						onclick={() => select(range)}
 					>
 						{range.title || range.getTitleSurahOrinted()}
 						{#if disabled && !completed}
 							<span class="flex items-center opacity-50">
 								<span
-									class="radial-progress text-primary me-1 ms-1 text-[0.6rem]"
+									class="ui-radial-progress ml-1 mr-1"
 									style:--value={percent}
 									style:--size="1.4rem"
 									aria-valuenow={percent}
@@ -188,26 +188,26 @@
 	{:else}
 		<p class="mb-2 text-center">موردی جهت انتخاب وجود ندارد. نوع بازه‌ی دیگری را انتخاب کنید.</p>
 		<div class="flex items-center justify-center">
-			<button type="button" class="btn btn-primary" onclick={() => goToStep(1)}>بازگشت</button>
+			<button type="button" class="ui-btn ui-btn-primary" onclick={() => goToStep(1)}>بازگشت</button>
 		</div>
 	{/if}
 {/snippet}
 
 {#snippet stepShowResult(selected: QuranRange)}
 	<div class="flex flex-col items-center p-4">
-		<div class="card bg-base-200 card-md w-96 max-w-full shadow-sm">
-			<div class="card-body">
-				<h2 class="card-title">بازه انتخاب شده</h2>
+		<div class="ui-card ui-card-bordered ui-bg-muted w-96 max-w-full">
+			<div class="ui-card-body">
+				<h2 class="ui-card-title">بازه انتخاب شده</h2>
 				<p>
 					{selected.getTitle()}
 				</p>
-				<div class="card-actions justify-end">
-					<a href={selected.getLink(khatm)} class="btn btn-primary"> مشاهده آیات </a>
+				<div class="ui-card-actions justify-end">
+					<a href={selected.getLink(khatm)} class="ui-btn ui-btn-primary"> مشاهده آیات </a>
 				</div>
 			</div>
 		</div>
 		<div class="mt-3">
-			<button type="button" class="btn !btn-outline btn-primary" onclick={() => goToStep(1)}>
+			<button type="button" class="ui-btn ui-btn-outline" onclick={() => goToStep(1)}>
 				می‌خواهم بیشتر مشارکت کنم
 			</button>
 		</div>
@@ -216,14 +216,14 @@
 
 {#if khatm.rangeType === 'free'}
 	<div class="mb-7 flex justify-center">
-		<ul class="steps steps-horizontal">
+		<ul class="ui-steps">
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-			<li class="step cursor-pointer" class:step-primary={step >= 1} onclick={() => goToStep(1)}>
+			<li class="ui-step cursor-pointer" class:ui-step-active={step >= 1} onclick={() => goToStep(1)}>
 				نوع ختم
 			</li>
-			<li class="step" class:step-primary={step >= 2}>انتخاب</li>
-			<li class="step" class:step-primary={step >= 3}>اتمام</li>
+			<li class="ui-step" class:ui-step-active={step >= 2}>انتخاب</li>
+			<li class="ui-step" class:ui-step-active={step >= 3}>اتمام</li>
 		</ul>
 	</div>
 
@@ -240,9 +240,9 @@
 	{/if}
 {:else}
 	<!-- <div class="mb-7 flex justify-center">
-		<ul class="steps steps-horizontal">
-			<li class="step" class:step-primary={step >= 1}>انتخاب</li>
-			<li class="step" class:step-primary={step >= 2}>اتمام</li>
+		<ul class="ui-steps">
+			<li class="ui-step" class:ui-step-active={step >= 1}>انتخاب</li>
+			<li class="ui-step" class:ui-step-active={step >= 2}>اتمام</li>
 		</ul>
 	</div> -->
 

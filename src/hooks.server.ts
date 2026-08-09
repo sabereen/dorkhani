@@ -2,6 +2,7 @@ import { browser, dev } from '$app/environment'
 import { getNotificationProvider } from '$service/admin-notification'
 import { appSettingsService_init } from '$service/appSettings'
 import type { ServerInit, HandleServerError, Handle } from '@sveltejs/kit'
+import { isManualColorScheme } from '$lib/entity/Theme'
 
 export const init: ServerInit = async () => {
 	await appSettingsService_init()
@@ -11,9 +12,9 @@ export const handle: Handle = async ({ resolve, event }) => {
 	return resolve(event, {
 		transformPageChunk(input) {
 			let html = input.html
-			const daisyTheme = event.cookies.get('daisyTheme')
-			if (daisyTheme) {
-				html = html.replace('<html', `<html data-theme="${daisyTheme}"`)
+			const colorScheme = event.cookies.get('colorScheme')
+			if (isManualColorScheme(colorScheme)) {
+				html = html.replace('<html', `<html data-color-scheme="${colorScheme}"`)
 			}
 			return html
 		},

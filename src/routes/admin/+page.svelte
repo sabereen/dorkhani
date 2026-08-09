@@ -15,28 +15,28 @@
 <section class="mt-5">
 	<ul class="grid-gap-2 grid grid-cols-2 whitespace-nowrap">
 		<li>
-			<a class="btn !btn-soft btn-primary w-full" href={`${base}/admin/app-settings`}>
+			<a class="ui-btn ui-btn-soft w-full" href={`${base}/admin/app-settings`}>
 				<IconSettings class="size-7" />
 				تنظیمات کلی
 			</a>
 		</li>
 
 		<li>
-			<a class="btn !btn-soft btn-primary w-full" href={`${base}/admin/review`}>
+			<a class="ui-btn ui-btn-soft w-full" href={`${base}/admin/review`}>
 				<IconReview class="size-7" />
 				تأیید و رد ختم ها
 			</a>
 		</li>
 
 		<li>
-			<a class="btn !btn-soft btn-primary w-full" href={`${base}/admin/showcase`}>
+			<a class="ui-btn ui-btn-soft w-full" href={`${base}/admin/showcase`}>
 				<IconShowcase class="size-7" />
 				ختم‌های برگزیده
 			</a>
 		</li>
 
 		<li>
-			<a class="btn !btn-soft btn-primary w-full" href={`${base}/admin/add-zekr`}>
+			<a class="ui-btn ui-btn-soft w-full" href={`${base}/admin/add-zekr`}>
 				<IconShowcase class="size-7" />
 				افزودن ذکر
 			</a>

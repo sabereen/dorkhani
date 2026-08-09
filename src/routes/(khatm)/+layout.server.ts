@@ -1,26 +1,29 @@
 import { error } from '@sveltejs/kit'
 import type { LayoutServerLoad } from './$types'
-import { khatmService_getBySeries, khatmService_getFull } from '$service/khatm'
+import {
+	khatmService_getBySeriesRecord,
+	khatmService_getFullRecord,
+	khatmService_isDeleted,
+	khatmService_toPublic,
+} from '$service/khatm'
 import { match as matchNormalParam } from '../../params/normalKhatm'
 import { match as matchAyahParam } from '../../params/ayahKhatm'
-import type { TKhatm } from '@prisma-client'
 
-export const load: LayoutServerLoad = async ({ params, url }) => {
+export const load: LayoutServerLoad = async ({ params, url, locals }) => {
 	const khatmParam = params.khatm || ''
 	const accessToken = url.searchParams.get('t') || null
 
 	const isSerialUrl = khatmParam[1] === 's'
 
-	let khatm: TKhatm | null = null
-	if (isSerialUrl) {
-		const seriesId = parseInt(khatmParam.slice(2) || '-1')
-		khatm = await khatmService_getBySeries(seriesId, accessToken)
-	} else {
-		const khatmId = parseInt(khatmParam.slice(1) || '-1')
-		khatm = await khatmService_getFull(khatmId, accessToken)
-	}
+	const resourceId = parseInt(khatmParam.slice(isSerialUrl ? 2 : 1) || '-1')
+	const khatm = isSerialUrl
+		? await khatmService_getBySeriesRecord(resourceId, accessToken)
+		: await khatmService_getFullRecord(resourceId, accessToken)
 
 	if (!khatm) {
+		if (await khatmService_isDeleted(resourceId, isSerialUrl)) {
+			throw error(410, { message: 'این ختم توسط سازنده حذف شده است.', type: 'khatm-deleted' })
+		}
 		throw error(404, { message: 'ختم مورد نظر پیدا نشد.' })
 	}
 
@@ -41,6 +44,7 @@ export const load: LayoutServerLoad = async ({ params, url }) => {
 	}
 
 	return {
-		khatm,
+		khatm: khatmService_toPublic(khatm),
+		canManage: Boolean(locals.user && khatm.ownerId === locals.user.id),
 	}
 }

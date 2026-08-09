@@ -598,6 +598,14 @@
 		padding-top: 6rem;
 	}
 
+	.landing-personal {
+		margin-top: 5rem;
+		padding: 2.5rem;
+		border: 1px solid var(--ui-color-border);
+		border-radius: 2rem;
+		background: linear-gradient(135deg, var(--ui-color-surface-muted), var(--ui-color-surface));
+	}
+
 	.landing-section-heading {
 		display: flex;
 		align-items: flex-end;
@@ -639,18 +647,7 @@
 	.landing-history-grid :global(.ui-card) {
 		border-radius: 1.25rem;
 		background: var(--ui-color-surface);
-		box-shadow: var(--ui-shadow-sm);
-	}
-
-	.landing-history-grid :global(.ui-card-title) {
-		font-size: 1rem;
-	}
-
-	.landing-history-grid :global(.ui-list-row) {
-		align-items: flex-start;
-		padding-right: 0;
-		padding-left: 0;
-		line-height: 1.8;
+		box-shadow: var(--ui-shadow-md);
 	}
 
 	.landing-empty-card {
@@ -1007,6 +1004,12 @@
 
 		.landing-section {
 			padding-top: 4.5rem;
+		}
+
+		.landing-personal {
+			margin-top: 3.5rem;
+			padding: 1.25rem;
+			border-radius: 1.5rem;
 		}
 
 		.landing-section-heading {

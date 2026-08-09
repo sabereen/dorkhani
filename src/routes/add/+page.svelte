@@ -119,6 +119,6 @@
 	</form>
 {:else}
 	<div class="mt-4">
-		<SucessResult khatm={Khatm.fromPlain(form.khatm)} />
+		<SucessResult khatm={Khatm.fromPlain(form.khatm)} claimToken={form.guestClaimToken} />
 	</div>
 {/if}

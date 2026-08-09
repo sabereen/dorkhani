@@ -11,9 +11,10 @@
 
 	type Props = {
 		khatm: Khatm
+		claimToken?: string | null
 	}
 
-	const { khatm }: Props = $props()
+	const { khatm, claimToken }: Props = $props()
 
 	const canShare = !browser || navigator.share
 
@@ -39,6 +40,7 @@
 	onMount(() => {
 		new CreatedKhatm({
 			khatm: khatm.plain,
+			claimToken: claimToken || undefined,
 		}).save()
 	})
 </script>

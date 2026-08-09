@@ -1,23 +1,35 @@
-import { browser, dev } from '$app/environment'
+import { browser, building, dev } from '$app/environment'
 import { getNotificationProvider } from '$service/admin-notification'
 import { appSettingsService_init } from '$service/appSettings'
 import type { ServerInit, HandleServerError, Handle } from '@sveltejs/kit'
 import { isManualColorScheme } from '$lib/entity/Theme'
+import { auth } from '$lib/server/auth'
+import { svelteKitHandler } from 'better-auth/svelte-kit'
 
 export const init: ServerInit = async () => {
 	await appSettingsService_init()
 }
 
 export const handle: Handle = async ({ resolve, event }) => {
-	return resolve(event, {
-		transformPageChunk(input) {
-			let html = input.html
-			const colorScheme = event.cookies.get('colorScheme')
-			if (isManualColorScheme(colorScheme)) {
-				html = html.replace('<html', `<html data-color-scheme="${colorScheme}"`)
-			}
-			return html
-		},
+	const authSession = await auth.api.getSession({ headers: event.request.headers })
+	event.locals.session = authSession?.session ?? null
+	event.locals.user = authSession?.user ?? null
+
+	return svelteKitHandler({
+		auth,
+		event,
+		building,
+		resolve: (currentEvent) =>
+			resolve(currentEvent, {
+				transformPageChunk(input) {
+					let html = input.html
+					const colorScheme = currentEvent.cookies.get('colorScheme')
+					if (isManualColorScheme(colorScheme)) {
+						html = html.replace('<html', `<html data-color-scheme="${colorScheme}"`)
+					}
+					return html
+				},
+			}),
 	})
 }
 

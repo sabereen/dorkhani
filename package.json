@@ -31,6 +31,7 @@
 		"@sveltejs/vite-plugin-svelte": "^5.1.0",
 		"@testing-library/jest-dom": "^6.6.3",
 		"@testing-library/svelte": "^5.2.4",
+		"@types/nodemailer": "^8.0.1",
 		"@unocss/preset-legacy-compat": "66.1.0-beta.10",
 		"core-js": "^3.41.0",
 		"eslint": "^9.18.0",
@@ -53,6 +54,7 @@
 		"vitest": "^3.0.0"
 	},
 	"dependencies": {
+		"@better-auth/prisma-adapter": "^1.6.26",
 		"@ghoran/entity": "^0.2.1",
 		"@ghoran/metadata": "^0.0.7",
 		"@ghoran/text": "^0.0.8",
@@ -60,14 +62,17 @@
 		"@prisma/adapter-mariadb": "7.9.1",
 		"@prisma/client": "7.9.1",
 		"@unocss/reset": "66.1.0-beta.10",
+		"better-auth": "1.6.26",
 		"clipboard-copy": "^4.0.1",
 		"dexie": "^4.0.11",
 		"dotenv": "^17.4.2",
-		"module": "^1.2.5",
 		"mariadb": "^3.5.3",
+		"module": "^1.2.5",
+		"nodemailer": "^9.0.5",
 		"prisma": "7.9.1",
 		"uuid": "^11.1.0",
-		"vazirmatn": "^33.0.3"
+		"vazirmatn": "^33.0.3",
+		"zod": "^4.4.3"
 	},
 	"packageManager": "pnpm@10.8.0+sha512.0e82714d1b5b43c74610193cb20734897c1d00de89d0e18420aebc5977fa13d780a9cb05734624e81ebd81cc876cd464794850641c48b9544326b5622ca29971"
 }

@@ -1,5 +1,6 @@
 import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
-import type { TKhatm, RangeType, TKhatmPart, ReviewStatus } from '@prisma-client'
+import type { RangeType, TKhatmPart, ReviewStatus } from '@prisma-client'
+import type { KhatmData } from './KhatmData'
 import type { PickAyahResult } from '$api/khatmPart/pickNext/+server'
 import { PickedKhatmPart } from './PickedKhatmPart'
 import { QuranRange } from './Range'
@@ -14,15 +15,15 @@ import type { Translation } from './LocalSettings.svelte'
 const cache = new Map<number, Khatm>()
 
 export class Khatm {
-	plain = $state() as TKhatm
+	plain = $state() as KhatmData
 	plainParts = $state([]) as TKhatmPart[]
 
-	private constructor(plain: TKhatm & { parts?: TKhatmPart[] }) {
+	private constructor(plain: KhatmData & { parts?: TKhatmPart[] }) {
 		this.plain = plain
 		this.plainParts = plain.parts || []
 	}
 
-	static fromPlain(plain: TKhatm & { parts?: TKhatmPart[] }) {
+	static fromPlain(plain: KhatmData & { parts?: TKhatmPart[] }) {
 		if (!browser) return new this(plain)
 
 		let khatm = cache.get(plain.id)
@@ -45,7 +46,7 @@ export class Khatm {
 		return khatm!
 	}
 
-	static fromPlainList(plainList: TKhatm[]) {
+	static fromPlainList(plainList: KhatmData[]) {
 		return plainList.map((plain) => this.fromPlain(plain))
 	}
 
@@ -56,7 +57,7 @@ export class Khatm {
 		pageID?: number
 		reviewStatus?: ReviewStatus
 	}) {
-		const { list } = await request<{ list: TKhatm[] }>('get', '/khatm/list', {
+		const { list } = await request<{ list: KhatmData[] }>('get', '/khatm/list', {
 			pageID,
 			reviewStatus,
 		})
@@ -242,7 +243,7 @@ export class Khatm {
 	}
 
 	async refresh() {
-		const result = await request<{ khatm: TKhatm & { parts?: TKhatmPart[] } }>('get', '/khatm', {
+		const result = await request<{ khatm: KhatmData & { parts?: TKhatmPart[] } }>('get', '/khatm', {
 			khatmId: this.id,
 			accessToken: this.accessToken || '',
 		})
@@ -250,8 +251,8 @@ export class Khatm {
 		this.plainParts = result.khatm.parts || []
 	}
 
-	async update({ reviewStatus }: Pick<TKhatm, 'reviewStatus'>) {
-		const { khatm } = await request<{ khatm: TKhatm }>('post', '/khatm/update', {
+	async update({ reviewStatus }: Pick<KhatmData, 'reviewStatus'>) {
+		const { khatm } = await request<{ khatm: KhatmData }>('post', '/khatm/update', {
 			id: this.id,
 			reviewStatus,
 		})

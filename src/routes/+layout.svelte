@@ -6,11 +6,17 @@
 	import TheFooter from '$lib/components/TheFooter.svelte'
 	import type { LayoutProps } from './$types'
 	import { LocalSettings } from '$lib/entity/LocalSettings.svelte'
+	import { claimCreatedKhatms } from '$lib/auth/claimCreatedKhatms'
+	import { onMount } from 'svelte'
 
 	let { children, data }: LayoutProps = $props()
 
 	LocalSettings.provide()
 	const localSettings = LocalSettings.use()
+
+	onMount(() => {
+		if (data.user) void claimCreatedKhatms()
+	})
 
 	$effect(() => {
 		const colorScheme = localSettings.config.colorScheme

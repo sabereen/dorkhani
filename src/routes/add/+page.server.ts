@@ -24,12 +24,15 @@ export const actions = {
 			return fail(400, { errorMessage: 'عنوان اجباری است.' })
 		}
 
-		const khatm = await khatmService_create({
-			title: String(title).trim(),
-			description: String(description).trim(),
-			rangeType: rangeType as RangeType,
-			private: isPrivate,
-		})
+		const { khatm, guestClaimToken } = await khatmService_create(
+			{
+				title: String(title).trim(),
+				description: String(description).trim(),
+				rangeType: rangeType as RangeType,
+				private: isPrivate,
+			},
+			event.locals.user?.id,
+		)
 
 		if (hasSeries) {
 			const series = await khatmSeries_createForKhatmId(khatm.id)
@@ -41,6 +44,6 @@ export const actions = {
 			notif.sendNewKhatm(khatm, event.url.origin)
 		}
 
-		return { khatm }
+		return { khatm, guestClaimToken }
 	},
 } satisfies Actions

@@ -7,6 +7,7 @@
 	import IconShare from '~icons/ic/outline-share'
 	import IconCopy from '~icons/ic/outline-copy-all'
 	import IconSettings from '~icons/ic/round-settings'
+	import IconEdit from '~icons/ic/round-edit'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { setKhatmContext } from './khatm-context.svelte'
@@ -95,6 +96,15 @@
 
 <Header title="ختم قرآن گروهی" link={`${base}/`}>
 	{#snippet end()}
+		{#if data.canManage}
+			<a
+				href={`${base}/account/khatms/${khatm.id}/edit`}
+				class="ui-btn ui-btn-icon ui-btn-ghost"
+				aria-label="ویرایش ختم"
+			>
+				<IconEdit class="size-5" />
+			</a>
+		{/if}
 		<a href={`${base}/settings`} class="ui-btn ui-btn-icon ui-btn-ghost" aria-label="تنظیمات">
 			<IconSettings class="size-5" />
 		</a>

@@ -1,4 +1,4 @@
-import { khatmService_getFull } from '$service/khatm'
+import { khatmService_getFull, khatmService_isDeleted } from '$service/khatm'
 import { error, json, type RequestHandler } from '@sveltejs/kit'
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -7,7 +7,12 @@ export const GET: RequestHandler = async ({ url }) => {
 
 	const khatm = await khatmService_getFull(khatmId, accessToken)
 
-	if (!khatm) throw error(404, { message: 'ختم پیدا نشد' })
+	if (!khatm) {
+		if (await khatmService_isDeleted(khatmId)) {
+			throw error(410, { message: 'این ختم توسط سازنده حذف شده است.', type: 'khatm-deleted' })
+		}
+		throw error(404, { message: 'ختم پیدا نشد' })
+	}
 
 	return json({
 		khatm: khatm,

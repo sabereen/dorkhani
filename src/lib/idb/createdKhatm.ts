@@ -5,6 +5,7 @@ export async function idb_createdKhatm_add(item: Omit<CreatedKhatm, 'id'>) {
 
 	await db.createdKhatms.add({
 		id: item.khatm.id,
+		claimToken: item.claimToken,
 		khatm: {
 			id: item.khatm.id,
 			created: item.khatm.created,
@@ -30,4 +31,19 @@ export async function idb_createdKhatm_getList(limit?: number) {
 		return collection.limit(limit).toArray()
 	}
 	return collection.toArray()
+}
+
+export async function idb_createdKhatm_getClaims() {
+	const { db } = await import('./idb')
+	const list = await db.createdKhatms.toArray()
+	return list
+		.filter((item): item is CreatedKhatm & { id: number; claimToken: string } => Boolean(item.id && item.claimToken))
+		.map((item) => ({ id: item.id, token: item.claimToken }))
+}
+
+export async function idb_createdKhatm_clearClaimTokens(ids: ReadonlyArray<number>) {
+	const { db } = await import('./idb')
+	await db.transaction('rw', db.createdKhatms, async () => {
+		for (const id of ids) await db.createdKhatms.update(id, { claimToken: undefined })
+	})
 }

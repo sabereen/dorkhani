@@ -311,6 +311,28 @@ export async function khatmService_deleteOwned(ownerId: string, id: number) {
 	})
 }
 
+export async function khatmService_stopOwnedSeries(ownerId: string, id: number) {
+	return db.$transaction(async (tx) => {
+		const current = await tx.tKhatm.findUnique({ where: { id }, include: { series: true } })
+		if (!current) return null
+		if (current.ownerId !== ownerId) throw new KhatmOwnershipError()
+		if (!current.series) return false
+		if (current.series.maxRounds != null) return true
+
+		const newerRound = await tx.tKhatm.findFirst({
+			where: { seriesId: current.series.id, roundNumber: { gt: current.roundNumber } },
+			select: { id: true },
+		})
+		if (newerRound) throw new KhatmHistoricalRoundError()
+
+		await tx.tKhatmSeries.updateMany({
+			where: { id: current.series.id, maxRounds: null },
+			data: { maxRounds: current.roundNumber },
+		})
+		return true
+	})
+}
+
 export async function khatmService_isDeleted(id: number, isSeries = false) {
 	return isSeries
 		? Boolean(await db.tKhatmDeletion.findFirst({ where: { seriesId: id }, select: { khatmId: true } }))

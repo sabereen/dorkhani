@@ -14,6 +14,7 @@
 	import IconPersonAdd from '~icons/ic/round-person-add'
 	import IconManageAccounts from '~icons/ic/round-manage-accounts'
 	import IconClose from '~icons/ic/round-close'
+	import IconStop from '~icons/ic/round-stop-circle'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import Modal from '$lib/components/Modal.svelte'
@@ -87,7 +88,20 @@
 
 	const canSelectLayout = $derived(!khatm.finished && khatm.isFree)
 	let showAuthPrompt = $state(false)
+	let showStopPrompt = $state(false)
 	let canManageAsGuest = $state(false)
+	const canRequestSeriesStop = $derived(
+		data.canStopSeries && (data.canManage || canManageAsGuest),
+	)
+	const hasNextRound = $derived(
+		khatm.isSerial &&
+			(data.seriesMaxRounds == null || khatm.roundNumber < data.seriesMaxRounds),
+	)
+
+	function requestSeriesStop() {
+		if (data.canManage) showStopPrompt = true
+		else showAuthPrompt = true
+	}
 
 	$effect(() => {
 		const khatmId = khatm.id
@@ -172,7 +186,27 @@
 			</div>
 			<h1 id="khatm-title" class="ui-khatm-title">{khatm.title}</h1>
 			<div class="ui-khatm-badges">
-				{#if khatm.isSerial}<span class="ui-badge ui-badge-accent">{roundTitle}</span>{/if}
+				{#if khatm.isSerial}
+					<div class="ui-khatm-series-status">
+						<span class="ui-badge ui-badge-accent">
+							{roundTitle}
+							{#if data.seriesMaxRounds != null}
+								از {data.seriesMaxRounds.toLocaleString('fa')} دور
+							{/if}
+						</span>
+						{#if canRequestSeriesStop}
+							<button
+								type="button"
+								class="ui-btn ui-btn-xs ui-khatm-series-stop"
+								onclick={requestSeriesStop}
+								aria-label="توقف ختم پس از پایان دور جاری"
+							>
+								<IconStop />
+								<span>توقف پس از این دور</span>
+							</button>
+						{/if}
+					</div>
+				{/if}
 				{#if khatm.rangeType === 'ayah'}<span class="ui-badge ui-badge-info">آیه به آیه</span>{/if}
 				{#if khatm.private}<span class="ui-badge ui-badge-neutral">خصوصی</span>{/if}
 			</div>
@@ -229,7 +263,11 @@
 			{/if}
 		</p>
 		{#if khatm.isSerial}
-			<button class="ui-btn ui-btn-outline" onclick={invalidateAll}>شروع دور جدید</button>
+			{#if hasNextRound}
+				<button class="ui-btn ui-btn-outline" onclick={invalidateAll}>شروع دور جدید</button>
+			{:else}
+				<span class="ui-badge ui-badge-success">آخرین دور ختم</span>
+			{/if}
 		{/if}
 	</div>
 {:else}
@@ -237,6 +275,33 @@
 {/if}
 	</section>
 </main>
+
+<Modal bind:open={showStopPrompt} contentClass="ui-khatm-stop-dialog">
+	<div class="ui-khatm-stop-icon" aria-hidden="true"><IconStop /></div>
+	<p class="ui-khatm-stop-eyebrow">پایان ختم تمام‌نشدنی</p>
+	<h2>این دور، آخرین دور باشد؟</h2>
+	<p class="ui-khatm-stop-description">
+		دور جاری بدون تغییر ادامه پیدا می‌کند، اما پس از کامل‌شدن آن دور تازه‌ای ساخته نخواهد شد.
+	</p>
+	<div class="ui-khatm-stop-actions">
+		<form
+			method="POST"
+			action={`${base}/account/khatms/${khatm.id}/stop?returnTo=${encodeURIComponent(page.url.pathname + page.url.search)}`}
+		>
+			<button class="ui-btn ui-btn-danger ui-btn-block" type="submit">
+				<IconStop class="size-5" />
+				بله، ختم متوقف شود
+			</button>
+		</form>
+		<button
+			class="ui-btn ui-btn-ghost ui-btn-block"
+			type="button"
+			onclick={() => (showStopPrompt = false)}
+		>
+			ادامهٔ دورهای ختم
+		</button>
+	</div>
+</Modal>
 
 <Modal bind:open={showAuthPrompt} contentClass="ui-khatm-auth-dialog">
 	<button
@@ -253,8 +318,8 @@
 	<p class="ui-khatm-auth-eyebrow">مدیریت ختم</p>
 	<h2>برای مدیریت ختم خود وارد حساب شوید</h2>
 	<p class="ui-khatm-auth-description">
-		پس از ورود یا ثبت‌نام، این ختم به حساب شما متصل می‌شود و می‌توانید آن را ویرایش یا حذف
-		کنید.
+		پس از ورود یا ثبت‌نام، این ختم به حساب شما متصل می‌شود و می‌توانید آن را ویرایش، متوقف یا
+		حذف کنید.
 	</p>
 	<div class="ui-khatm-auth-actions">
 		<a class="ui-btn ui-btn-primary ui-btn-lg" href={`${base}/auth/login`}>

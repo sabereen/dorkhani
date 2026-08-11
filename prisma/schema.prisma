@@ -123,6 +123,23 @@ model TKhatmRecitation {
   @@map("khatm_recitation")
 }
 
+model TSystemStatistics {
+  id                   Int    @id @default(1) @db.UnsignedTinyInt()
+  totalRecitedAyahs    BigInt @default(0) @map("total_recited_ayahs") @db.UnsignedBigInt()
+  totalCompletedRounds BigInt @default(0) @map("total_completed_rounds") @db.UnsignedBigInt()
+
+  @@map("system_statistics")
+}
+
+model TDailyStatistics {
+  day             DateTime @id @db.Date
+  recitedAyahs    BigInt   @default(0) @map("recited_ayahs") @db.UnsignedBigInt()
+  createdKhatms   BigInt   @default(0) @map("created_khatms") @db.UnsignedBigInt()
+  completedRounds BigInt   @default(0) @map("completed_rounds") @db.UnsignedBigInt()
+
+  @@map("daily_statistics")
+}
+
 model User {
   id            String    @id @db.VarChar(191)
   name          String    @db.VarChar(191)

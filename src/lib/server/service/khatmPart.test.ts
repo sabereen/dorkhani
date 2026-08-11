@@ -11,11 +11,19 @@ const dbMock = vi.hoisted(() => ({
 }))
 
 const setAsCompletedMock = vi.hoisted(() => vi.fn())
+const statisticsMock = vi.hoisted(() => ({
+	increment: vi.fn(),
+	applyCommitted: vi.fn(),
+}))
 
 vi.mock('$lib/server/db', () => ({ db: dbMock }))
 vi.mock('./khatm', () => ({
 	khatmService_setAsCompleted: setAsCompletedMock,
 	khatmService_toPublic: (khatm: unknown) => khatm,
+}))
+vi.mock('./statistics', () => ({
+	statisticsService_increment: statisticsMock.increment,
+	statisticsService_applyCommitted: statisticsMock.applyCommitted,
 }))
 
 import { khatmPartService_pickNextAyat, khatmPartService_pickRange } from './khatmPart'
@@ -54,8 +62,17 @@ describe('khatm recitation tracking', () => {
 			}),
 		)
 		expect(dbMock.tKhatmRecitation.create).toHaveBeenCalledWith({
-			data: { khatmId: baseKhatm.id, verseCount: 15 },
+			data: { khatmId: baseKhatm.id, verseCount: 15, created: expect.any(Date) },
 		})
+		expect(statisticsMock.increment).toHaveBeenCalledWith(
+			dbMock,
+			{ recitedAyahs: 15 },
+			expect.any(Date),
+		)
+		expect(statisticsMock.applyCommitted).toHaveBeenCalledWith(
+			{ recitedAyahs: 15 },
+			expect.any(Date),
+		)
 		expect(setAsCompletedMock).not.toHaveBeenCalled()
 	})
 
@@ -79,8 +96,17 @@ describe('khatm recitation tracking', () => {
 			data: { versesRead: { increment: 7 } },
 		})
 		expect(dbMock.tKhatmRecitation.create).toHaveBeenCalledWith({
-			data: { khatmId: ayahKhatm.id, verseCount: 7 },
+			data: { khatmId: ayahKhatm.id, verseCount: 7, created: expect.any(Date) },
 		})
+		expect(statisticsMock.increment).toHaveBeenCalledWith(
+			dbMock,
+			{ recitedAyahs: 7 },
+			expect.any(Date),
+		)
+		expect(statisticsMock.applyCommitted).toHaveBeenCalledWith(
+			{ recitedAyahs: 7 },
+			expect.any(Date),
+		)
 		expect(setAsCompletedMock).not.toHaveBeenCalled()
 	})
 })

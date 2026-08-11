@@ -17,13 +17,23 @@ const dbMock = vi.hoisted(() => ({
 	$transaction: vi.fn(),
 }))
 
+const statisticsMock = vi.hoisted(() => ({
+	increment: vi.fn(),
+	applyCommitted: vi.fn(),
+}))
+
 vi.mock('$lib/server/db', () => ({ db: dbMock }))
+vi.mock('./statistics', () => ({
+	statisticsService_increment: statisticsMock.increment,
+	statisticsService_applyCommitted: statisticsMock.applyCommitted,
+}))
 
 import {
 	KhatmHistoricalRoundError,
 	KhatmOwnershipError,
 	KhatmRangeLockedError,
 	khatmService_claimGuestKhatms,
+	khatmService_create,
 	khatmService_deleteOwned,
 	khatmService_editOwned,
 	khatmService_getAutomaticShowcase,
@@ -365,5 +375,51 @@ describe('khatm ownership service', () => {
 		})
 		await khatmService_setAsCompleted(12)
 		expect(dbMock.tKhatm.create).not.toHaveBeenCalled()
+	})
+
+	it('records a user-created khatm but not an automatic continuation round as a creation', async () => {
+		dbMock.tKhatm.create.mockResolvedValue({ ...baseKhatm, id: 20, roundNumber: 1 })
+
+		await khatmService_create({
+			title: 'ختم تازه',
+			description: '',
+			rangeType: 'free',
+			private: false,
+		})
+
+		expect(statisticsMock.increment).toHaveBeenCalledOnce()
+		expect(statisticsMock.increment).toHaveBeenCalledWith(
+			dbMock,
+			{ createdKhatms: 1 },
+			expect.any(Date),
+		)
+		expect(statisticsMock.applyCommitted).toHaveBeenCalledWith(
+			{ createdKhatms: 1 },
+			expect.any(Date),
+		)
+	})
+
+	it('does not update the statistics cache when creation fails', async () => {
+		dbMock.$transaction.mockRejectedValueOnce(new Error('transaction failed'))
+
+		await expect(
+			khatmService_create({
+				title: 'ختم ناموفق',
+				description: '',
+				rangeType: 'free',
+				private: false,
+			}),
+		).rejects.toThrow('transaction failed')
+
+		expect(statisticsMock.applyCommitted).not.toHaveBeenCalled()
+	})
+
+	it('does not count an already-completed round again', async () => {
+		dbMock.tKhatm.findUnique.mockResolvedValue({ ...baseKhatm, status: 'completed' })
+
+		await khatmService_setAsCompleted(12)
+
+		expect(statisticsMock.increment).not.toHaveBeenCalled()
+		expect(statisticsMock.applyCommitted).not.toHaveBeenCalled()
 	})
 })

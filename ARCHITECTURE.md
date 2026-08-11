@@ -151,7 +151,7 @@ Route group با نام `(khatm)` در URL دیده نمی‌شود. matcherها
 
 | URL منطقی | فایل‌ها | مسئولیت و وابستگی مهم |
 | --- | --- | --- |
-| `/` | `routes/+page.server.ts`, `+page.svelte` | دریافت فهرست ختم عمومی، showcase و ذکرها؛ تبدیل plain data به `Khatm` و `Zekr`؛ نمایش خلاصهٔ تاریخچهٔ محلی |
+| `/` | `routes/+page.server.ts`, `+page.svelte` | دریافت موازی فهرست ختم عمومی، showcase، ذکرها و آمار تجمیعی هفت‌روزه؛ تبدیل plain data به `Khatm` و `Zekr`؛ نمایش خلاصهٔ تاریخچهٔ محلی |
 | `/list` | `routes/list/+page.server.ts`, `+page.svelte` | فهرست صفحه‌بندی‌شدهٔ ختم‌های approved؛ صفحه‌های بعدی از `Khatm.getList()` و API گرفته می‌شوند |
 | `/add` | `routes/add/+page.server.ts`, `+page.svelte`, `sucess-result.svelte` | ساخت ختم از form action؛ در صورت سریالی بودن ساخت `TKhatmSeries`؛ notification برای ختم عمومی؛ ذخیرهٔ ختم ساخته‌شده در IndexedDB |
 | `/history` | `routes/history/+page.svelte`, `history-khatm.svelte`, `history-picked-range.svelte` | خواندن تاریخچهٔ محلی ختم‌های ساخته‌شده و بازه‌های انتخاب‌شده از Dexie؛ تاریخچهٔ ذکر فعلاً با `history-zekr.svelte` در صفحهٔ اصلی نمایش داده می‌شود |
@@ -247,6 +247,7 @@ flowchart TD
 | `service/khatmSeries.ts` | ساخت سری و اتصال ختم نخست |
 | `service/zekr.ts` | CRUD محدود ذکر و افزایش شمارنده |
 | `service/quran.ts` | map متن‌های سه فونت و ترجمه‌ها به `AyahInfo`؛ بدون query دیتابیس |
+| `service/statistics.ts` | افزایش اتمیک آمار کل/روزانه، cache سراسری process و بازسازی lazy آن در شروع process یا تغییر روز تهران |
 | `service/appSettings.ts` | singleton config، persistence رکورد `id=1`، showcase و setterهای تنظیمات |
 | `service/admin-notification/*` | interface ارسال، provider ایتا و fallback بدون‌عملیات |
 
@@ -274,6 +275,7 @@ flowchart TD
 erDiagram
     TKhatmSeries ||--o{ TKhatm : contains
     TKhatm ||--o{ TKhatmPart : has
+    TKhatm ||--o{ TKhatmRecitation : records
     TKhatmSeries {
         int id PK
         int maxRounds
@@ -300,6 +302,12 @@ erDiagram
         int end
         datetime created
     }
+    TKhatmRecitation {
+        bigint id PK
+        int khatmId FK
+        int verseCount
+        datetime created
+    }
     TZekr {
         int id PK
         string title
@@ -313,6 +321,17 @@ erDiagram
         int id PK
         json config
     }
+    TSystemStatistics {
+        int id PK
+        bigint totalRecitedAyahs
+        bigint totalCompletedRounds
+    }
+    TDailyStatistics {
+        date day PK
+        bigint recitedAyahs
+        bigint createdKhatms
+        bigint completedRounds
+    }
 ```
 
 نکات مدل Prisma در `prisma/schema.prisma`:
@@ -322,6 +341,7 @@ erDiagram
 - `ReviewStatus`: `pending`, `approved`, `rejected` و index روی `TKhatm.reviewStatus`.
 - `TKhatmPart.start/end` و `TKhatm.versesRead` از عددهای unsigned مناسب دامنهٔ ۶۲۳۶ آیه استفاده می‌کنند.
 - `TAppSettings` عملاً singleton با `id=1` است و config ساختار support/showcase/notification دارد.
+- `TSystemStatistics(id=1)` و `TDailyStatistics(day)` شمارنده‌های ازپیش‌تجمیع‌شده‌اند؛ دیتابیس منبع حقیقت است و cache روی `globalThis` پس از commit به‌صورت write-through به‌روز می‌شود.
 - migrationهای timestamped در `prisma/migrations/` تاریخچهٔ افزودن بسم‌الله، app settings، ذکر، سری ختم و review status را نگه می‌دارند.
 
 ### داده‌های مرورگر
@@ -417,8 +437,8 @@ Dexie schema در نسخهٔ ۴ تعریف شده است. repositoryها فیل�
 2. access token ختم خصوصی در لینک عمومی با query key کوتاه `t` است، اما APIها فیلد `accessToken` دریافت می‌کنند.
 3. `versesRead` باید با partهای ثبت‌شده یا تخصیص ترتیبی هماهنگ بماند؛ تغییر مستقیم آن می‌تواند progress و تکمیل سری را ناسازگار کند.
 4. endpointهای مدیریتی باید علاوه بر layout مدیریتی، خودشان `auth_ensureIsAdmin()` را اجرا کنند؛ layout از فراخوانی مستقیم API محافظت نمی‌کند.
-5. config در `appSettings_store` حافظهٔ process است. در استقرار چند process، update یک process فوراً singleton process دیگر را تغییر نمی‌دهد؛ منبع پایدار همچنان DB است.
-6. cache فونت و app settings درون‌حافظه‌ای و وابسته به process هستند؛ IndexedDB و LocalStorage وابسته به مرورگر و origin هستند.
+5. config در `appSettings_store` و cache آمار صفحهٔ اصلی حافظهٔ process هستند. در استقرار چند process، update یک process فوراً singleton process دیگر را تغییر نمی‌دهد؛ منبع پایدار همچنان DB است.
+6. cache فونت، app settings و آمار تجمیعی درون‌حافظه‌ای و وابسته به process هستند؛ IndexedDB و LocalStorage وابسته به مرورگر و origin هستند.
 7. snapshotهای Dexie ممکن است از رکورد جاری سرور قدیمی‌تر باشند و برای history طراحی شده‌اند، نه جایگزینی دادهٔ live.
 8. هنگام اضافه‌کردن فیلد اجباری به مدل Prisma، کپی صریح همان مدل در repositoryهای IDB را نیز بازبینی کنید.
 9. کد server-only نباید از مسیر اجرای مرورگر import شود. import type از `$service/quran` و `@prisma-client` باید type-only باقی بماند.

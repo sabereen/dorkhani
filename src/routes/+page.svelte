@@ -13,6 +13,7 @@
 	import IconAdd from '~icons/ic/round-add'
 	import IconArrow from '~icons/ic/round-arrow-back'
 	import IconAutoAwesome from '~icons/ic/round-auto-awesome'
+	import IconCalendar from '~icons/ic/round-calendar-today'
 	import IconCheck from '~icons/ic/round-check-circle'
 	import IconGroups from '~icons/ic/round-groups'
 	import IconHistory from '~icons/ic/round-history'
@@ -26,6 +27,25 @@
 	const khatms = $derived(Khatm.fromPlainList(data.khatms))
 	const showcase = $derived(Khatm.fromPlainList(data.showcase))
 	const zekrList = $derived(Zekr.fromPlainList(data.zekrList))
+	const statistics = $derived(data.statistics)
+	const maximumDailyAyahs = $derived(
+		Math.max(1, ...statistics.daily.map((item) => item.recitedAyahs)),
+	)
+	const dailyDateFormatter = new Intl.DateTimeFormat('fa-IR', {
+		weekday: 'short',
+		month: 'short',
+		day: 'numeric',
+		timeZone: 'UTC',
+	})
+
+	function formatDailyDate(date: string) {
+		return dailyDateFormatter.format(new Date(`${date}T00:00:00.000Z`))
+	}
+
+	function dailyBarHeight(recitedAyahs: number) {
+		if (recitedAyahs === 0) return 0
+		return Math.max(8, Math.round((recitedAyahs / maximumDailyAyahs) * 100))
+	}
 </script>
 
 <svelte:head>
@@ -108,6 +128,83 @@
 				<p>لینک ختم را برای خانواده و دوستان بفرستید و جمع‌تان را به‌سادگی شکل دهید.</p>
 			</div>
 		</article>
+	</section>
+
+	<section class="landing-section landing-statistics" aria-labelledby="statistics-title">
+		<div class="landing-section-heading">
+			<div>
+				<span class="landing-section-kicker"><IconStats /> روایت همراهی‌ها</span>
+				<h2 id="statistics-title">هر تلاوت، بخشی از یک جریان زنده</h2>
+				<p>نگاهی به ثمرهٔ همراهی همهٔ کسانی که در این سامانه قرآن خوانده‌اند.</p>
+			</div>
+		</div>
+
+		<div class="landing-stat-total-grid">
+			<article class="ui-card ui-card-bordered landing-stat-total-card">
+				<div class="ui-card-body">
+					<span class="landing-stat-total-icon landing-stat-total-icon-primary" aria-hidden="true">
+						<IconMenuBook />
+					</span>
+					<div>
+						<p class="landing-stat-total-label">آیات تلاوت‌شده در سامانه</p>
+						<strong class="landing-stat-total-value">
+							{statistics.totals.recitedAyahs.toLocaleString('fa')}
+						</strong>
+						<p class="landing-stat-total-description">آیه که با همراهی جمع خوانده شده است</p>
+					</div>
+				</div>
+			</article>
+			<article class="ui-card ui-card-bordered landing-stat-total-card">
+				<div class="ui-card-body">
+					<span class="landing-stat-total-icon landing-stat-total-icon-success" aria-hidden="true">
+						<IconCheck />
+					</span>
+					<div>
+						<p class="landing-stat-total-label">دورهای کامل‌شده در سامانه</p>
+						<strong class="landing-stat-total-value">
+							{statistics.totals.completedRounds.toLocaleString('fa')}
+						</strong>
+						<p class="landing-stat-total-description">دور ختم قرآن که به پایان رسیده است</p>
+					</div>
+				</div>
+			</article>
+		</div>
+
+		<div class="landing-daily-panel">
+			<div class="landing-daily-heading">
+				<span class="landing-daily-heading-icon" aria-hidden="true"><IconCalendar /></span>
+				<div>
+					<h3>هفت روز اخیر</h3>
+					<p>آمار روزانهٔ تلاوت و ختم‌های سامانه بر اساس زمان تهران</p>
+				</div>
+			</div>
+			<div class="landing-daily-scroll">
+				<ul class="landing-daily-list" aria-label="آمار فعالیت هفت روز اخیر">
+					{#each statistics.daily as item}
+						<li class="landing-daily-card">
+							<time datetime={item.date}>{formatDailyDate(item.date)}</time>
+							<div class="landing-daily-chart" aria-hidden="true">
+								<span style={`height: ${dailyBarHeight(item.recitedAyahs)}%`}></span>
+							</div>
+							<div class="landing-daily-primary">
+								<strong>{item.recitedAyahs.toLocaleString('fa')}</strong>
+								<span>آیه تلاوت‌شده</span>
+							</div>
+							<dl class="landing-daily-details">
+								<div>
+									<dt>ختم ایجادشده</dt>
+									<dd>{item.createdKhatms.toLocaleString('fa')}</dd>
+								</div>
+								<div>
+									<dt>دور کامل‌شده</dt>
+									<dd>{item.completedRounds.toLocaleString('fa')}</dd>
+								</div>
+							</dl>
+						</li>
+					{/each}
+				</ul>
+			</div>
+		</div>
 	</section>
 
 	<section class="landing-section landing-personal" aria-labelledby="personal-title">
@@ -583,6 +680,230 @@
 		line-height: 1.75;
 	}
 
+	.landing-statistics {
+		position: relative;
+	}
+
+	.landing-stat-total-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		grid-gap: 1rem;
+	}
+
+	.landing-stat-total-card {
+		border-radius: 1.5rem;
+		background: linear-gradient(135deg, var(--ui-color-surface), var(--ui-color-surface-muted));
+		box-shadow: var(--ui-shadow-md);
+	}
+
+	.landing-stat-total-card .ui-card-body {
+		align-items: center;
+		flex-direction: row;
+		padding: 1.75rem;
+	}
+
+	.landing-stat-total-card .ui-card-body > * + * {
+		margin-top: 0;
+		margin-right: 1rem;
+	}
+
+	.landing-stat-total-icon {
+		display: flex;
+		width: 4rem;
+		height: 4rem;
+		flex: 0 0 4rem;
+		align-items: center;
+		justify-content: center;
+		border-radius: 1.25rem;
+	}
+
+	.landing-stat-total-icon svg {
+		width: 2rem;
+		height: 2rem;
+	}
+
+	.landing-stat-total-icon-primary {
+		background: var(--ui-color-primary-soft);
+		color: var(--ui-color-primary);
+	}
+
+	.landing-stat-total-icon-success {
+		background: var(--ui-color-success-soft);
+		color: var(--ui-color-success);
+	}
+
+	.landing-stat-total-label,
+	.landing-stat-total-description {
+		margin: 0;
+	}
+
+	.landing-stat-total-label {
+		color: var(--ui-color-text-muted);
+		font-size: 0.8rem;
+		font-weight: 800;
+	}
+
+	.landing-stat-total-value {
+		display: block;
+		margin-top: 0.35rem;
+		color: var(--ui-color-text);
+		font-size: 2.35rem;
+		font-weight: 950;
+		line-height: 1.2;
+	}
+
+	.landing-stat-total-description {
+		margin-top: 0.35rem;
+		color: var(--ui-color-text-muted);
+		font-size: 0.72rem;
+	}
+
+	.landing-daily-panel {
+		margin-top: 1rem;
+		padding: 1.5rem;
+		border: 1px solid var(--ui-color-border);
+		border-radius: 1.5rem;
+		background: var(--ui-color-surface);
+		box-shadow: var(--ui-shadow-sm);
+	}
+
+	.landing-daily-heading {
+		display: flex;
+		align-items: center;
+	}
+
+	.landing-daily-heading > * + * {
+		margin-right: 0.75rem;
+	}
+
+	.landing-daily-heading-icon {
+		display: flex;
+		width: 2.75rem;
+		height: 2.75rem;
+		flex: 0 0 2.75rem;
+		align-items: center;
+		justify-content: center;
+		border-radius: 0.9rem;
+		background: var(--ui-color-warning-soft);
+		color: var(--ui-color-warning);
+	}
+
+	.landing-daily-heading h3,
+	.landing-daily-heading p {
+		margin: 0;
+	}
+
+	.landing-daily-heading h3 {
+		font-size: 1rem;
+		font-weight: 900;
+	}
+
+	.landing-daily-heading p {
+		margin-top: 0.2rem;
+		color: var(--ui-color-text-muted);
+		font-size: 0.75rem;
+	}
+
+	.landing-daily-scroll {
+		margin-top: 1.25rem;
+		padding-bottom: 0.25rem;
+		overflow-x: auto;
+	}
+
+	.landing-daily-list {
+		display: grid;
+		min-width: 67rem;
+		grid-template-columns: repeat(7, minmax(8rem, 1fr));
+		grid-gap: 0.75rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.landing-daily-card {
+		padding: 1rem;
+		border: 1px solid var(--ui-color-border);
+		border-radius: 1rem;
+		background: var(--ui-color-surface-muted);
+		text-align: center;
+	}
+
+	.landing-daily-card time {
+		color: var(--ui-color-text-muted);
+		font-size: 0.72rem;
+		font-weight: 800;
+	}
+
+	.landing-daily-chart {
+		display: flex;
+		width: 2rem;
+		height: 4rem;
+		align-items: flex-end;
+		justify-content: center;
+		margin: 0.75rem auto 0;
+		border-radius: 9999px;
+		background: var(--ui-color-surface-strong);
+		overflow: hidden;
+	}
+
+	.landing-daily-chart span {
+		display: block;
+		width: 100%;
+		border-radius: 9999px;
+		background: linear-gradient(180deg, var(--ui-color-primary), var(--ui-color-success));
+	}
+
+	.landing-daily-primary {
+		margin-top: 0.75rem;
+	}
+
+	.landing-daily-primary strong,
+	.landing-daily-primary span {
+		display: block;
+	}
+
+	.landing-daily-primary strong {
+		font-size: 1.25rem;
+		font-weight: 950;
+	}
+
+	.landing-daily-primary span {
+		margin-top: 0.15rem;
+		color: var(--ui-color-text-muted);
+		font-size: 0.65rem;
+	}
+
+	.landing-daily-details {
+		margin: 0.8rem 0 0;
+		padding-top: 0.7rem;
+		border-top: 1px solid var(--ui-color-border);
+	}
+
+	.landing-daily-details div {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.landing-daily-details div + div {
+		margin-top: 0.4rem;
+	}
+
+	.landing-daily-details dt,
+	.landing-daily-details dd {
+		margin: 0;
+	}
+
+	.landing-daily-details dt {
+		color: var(--ui-color-text-muted);
+		font-size: 0.62rem;
+	}
+
+	.landing-daily-details dd {
+		font-size: 0.75rem;
+		font-weight: 900;
+	}
+
 	.landing-section {
 		padding-top: 6rem;
 	}
@@ -982,6 +1303,10 @@
 			grid-template-columns: minmax(0, 1fr);
 		}
 
+		.landing-stat-total-grid {
+			grid-template-columns: minmax(0, 1fr);
+		}
+
 		.landing-features {
 			margin: -1.5rem 0.75rem 0;
 		}
@@ -1028,6 +1353,10 @@
 			min-height: 0;
 		}
 
+		.landing-daily-panel {
+			padding: 1.25rem;
+		}
+
 		.landing-steps li {
 			padding: 1.5rem;
 		}
@@ -1063,6 +1392,21 @@
 
 		.landing-feature-card {
 			padding: 1rem;
+		}
+
+		.landing-stat-total-card .ui-card-body {
+			align-items: flex-start;
+			padding: 1.25rem;
+		}
+
+		.landing-stat-total-icon {
+			width: 3.25rem;
+			height: 3.25rem;
+			flex-basis: 3.25rem;
+		}
+
+		.landing-stat-total-value {
+			font-size: 1.9rem;
 		}
 
 		.landing-list-hint {

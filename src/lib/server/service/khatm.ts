@@ -9,6 +9,10 @@ import type {
 	KhatmDirectoryResult,
 	KhatmDirectoryView,
 } from '$lib/entity/KhatmDirectory'
+import {
+	statisticsService_applyCommitted,
+	statisticsService_increment,
+} from './statistics'
 
 type SecretKhatmFields = {
 	ownerId?: string | null
@@ -106,14 +110,21 @@ type CreatingKhatm = {
 export async function khatmService_create(body: CreatingKhatm, ownerId?: string | null) {
 	const accessToken = body.private ? uuid().split('-').pop() : null
 	const guestClaimToken = ownerId ? null : randomBytes(32).toString('base64url')
-	const khatm = await db.tKhatm.create({
-		data: {
-			...body,
-			accessToken,
-			ownerId: ownerId || null,
-			guestClaimTokenHash: guestClaimToken ? hashClaimToken(guestClaimToken) : null,
-		},
+	const createdAt = new Date()
+	const khatm = await db.$transaction(async (tx) => {
+		const created = await tx.tKhatm.create({
+			data: {
+				...body,
+				accessToken,
+				ownerId: ownerId || null,
+				guestClaimTokenHash: guestClaimToken ? hashClaimToken(guestClaimToken) : null,
+				created: createdAt,
+			},
+		})
+		await statisticsService_increment(tx, { createdKhatms: 1 }, createdAt)
+		return created
 	})
+	statisticsService_applyCommitted({ createdKhatms: 1 }, createdAt)
 
 	return { khatm: khatmService_toPublic(khatm), guestClaimToken }
 }
@@ -449,22 +460,24 @@ export async function khatmService_isDeleted(id: number, isSeries = false) {
 }
 
 export async function khatmService_setAsCompleted(id: number) {
-	await db.$transaction(async (tx) => {
+	const completedAt = new Date()
+	const completed = await db.$transaction(async (tx) => {
 		const current = await tx.tKhatm.findUnique({
 			where: { id },
 			include: { series: true },
 		})
-		if (!current || current.status === 'completed') return
+		if (!current || current.status === 'completed') return false
 
-		const completed = await tx.tKhatm.updateMany({
+		const result = await tx.tKhatm.updateMany({
 			where: { id, status: 'inProgress' },
-			data: { status: 'completed', endDate: new Date() },
+			data: { status: 'completed', endDate: completedAt },
 		})
-		if (completed.count === 0) return
+		if (result.count === 0) return false
+		await statisticsService_increment(tx, { completedRounds: 1 }, completedAt)
 
 		const { series, roundNumber } = current
-		if (!series) return
-		if (series.maxRounds && roundNumber >= series.maxRounds) return
+		if (!series) return true
+		if (series.maxRounds && roundNumber >= series.maxRounds) return true
 
 		await tx.tKhatm.create({
 			data: {
@@ -479,7 +492,9 @@ export async function khatmService_setAsCompleted(id: number) {
 				guestClaimTokenHash: current.guestClaimTokenHash,
 			},
 		})
+		return true
 	})
+	if (completed) statisticsService_applyCommitted({ completedRounds: 1 }, completedAt)
 }
 
 export async function khatmService_checkAndUpdateStatus() {

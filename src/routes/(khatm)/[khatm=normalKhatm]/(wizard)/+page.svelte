@@ -18,6 +18,10 @@
 	import IconSurah from '~icons/ic/round-menu-book'
 	import IconAll from '~icons/ic/round-done-all'
 	import IconCheck from '~icons/ic/round-check-circle'
+	import IconSearch from '~icons/ic/round-search'
+	import IconArrow from '~icons/ic/round-arrow-back'
+	import IconTune from '~icons/ic/round-tune'
+	import IconBook from '~icons/ic/round-menu-book'
 	import IncompleteRangePicker from './IncompleteRangePicker.svelte'
 
 	const khatmContext = useKathmContext()
@@ -26,12 +30,15 @@
 	const rawParts = $derived(khatmContext.rawParts)
 	const participation = $derived(khatm.participation)
 
+	type RangeType = 'juz' | 'hizbQuarter' | 'page' | 'surah' | 'all'
 	type PageState = {
 		step?: number
 		modal?: boolean
 	}
 
 	let hideFinishedIntervals = $state(true)
+	let rangeQuery = $state('')
+	let visibleRangeLimit = $state(30)
 
 	const modal = $derived(!!(page.state as PageState).modal)
 	let selected = $state<QuranRange | null>(null)
@@ -55,38 +62,47 @@
 			step,
 		})
 	}
+
 	function closeModal() {
 		if (modal) history.back()
 	}
+
 	function toggleModal(open = !modal) {
 		if (open) openModal()
 		else closeModal()
 	}
 
-	const juzList = Juz.getAll()
-	const hizbQuarterList = HizbQuarter.getAll()
-	const surahList = Surah.getAll()
-	const pageList = Page.getAll()
-
-	const juzRanges = juzList.map(juz_toRange)
-	const hizbQuarterRanges = hizbQuarterList.map(hizbQuarter_toRange)
-	const surahRanges = surahList.map(surah_toRange)
-	const pageRanges = pageList.map(page_toRange)
+	const juzRanges = Juz.getAll().map(juz_toRange)
+	const hizbQuarterRanges = HizbQuarter.getAll().map(hizbQuarter_toRange)
+	const surahRanges = Surah.getAll().map(surah_toRange)
+	const pageRanges = Page.getAll().map(page_toRange)
 	const allRanges = $derived(
 		new QuranRange(0, COUNT_OF_AYAHS).divideByKahtmParts(parts).map(({ range }) => range),
 	)
 
 	let step = $derived((page.state as PageState).step || 1)
-	let userRangeType = $state<'juz' | 'hizbQuarter' | 'page' | 'surah' | 'all'>('page')
+	let userRangeType = $state<RangeType>('page')
 
 	// مقدار rangeType منطقا اینجا هیچ وقت ayah نیست.
-	// ولی برای جلوگیری از خطای تایپ‌اسکریپتی فقط روی آن شرط گذاشته ایم
-	const rangeType = $derived(
+	// ولی برای جلوگیری از خطای تایپ‌اسکریپتی فقط روی آن شرط گذاشته‌ایم.
+	const rangeType = $derived<RangeType>(
 		khatm.rangeType === 'free' || khatm.rangeType === 'ayah' ? userRangeType : khatm.rangeType,
 	)
 
-	function selectRangeType(type: typeof rangeType) {
+	const rangeTypeTitle = $derived(
+		{
+			juz: 'جزء',
+			hizbQuarter: 'ربع حزب',
+			page: 'صفحه',
+			surah: 'سوره',
+			all: 'بخش باقی‌مانده',
+		}[rangeType],
+	)
+
+	function selectRangeType(type: RangeType) {
 		userRangeType = type
+		rangeQuery = ''
+		visibleRangeLimit = 30
 		next()
 	}
 
@@ -107,6 +123,18 @@
 	function goToStep(n: number) {
 		if (n < step) history.go(n - step)
 		selected = null
+		rangeQuery = ''
+		visibleRangeLimit = 30
+	}
+
+	function normalizeQuery(value: string) {
+		return value
+			.trim()
+			.toLocaleLowerCase('fa')
+			.replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)))
+			.replace(/[٠-٩]/g, (digit) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(digit)))
+			.replace(/ي/g, 'ی')
+			.replace(/ك/g, 'ک')
 	}
 
 	const ranges = $derived(
@@ -119,176 +147,238 @@
 		}[rangeType],
 	)
 
-	const selectableRanges = $derived.by(() => {
-		let result = ranges.map((range) => {
+	const rangeItems = $derived(
+		ranges.map((range) => {
 			const myLength = participation.getOverlapLength(range)
 			return {
 				percent: range.getFillPercent(parts),
 				myLength,
 				range,
 			}
+		}),
+	)
+
+	const availableRangeCount = $derived(rangeItems.filter(({ percent }) => percent < 100).length)
+	const filteredRanges = $derived.by(() => {
+		const query = normalizeQuery(rangeQuery)
+		return rangeItems.filter(({ range, percent }) => {
+			if (hideFinishedIntervals && percent >= 100) return false
+			if (!query) return true
+			return normalizeQuery(range.title || range.getTitleSurahOrinted()).includes(query)
 		})
-		if (hideFinishedIntervals) {
-			result = result.filter(({ percent }) => percent < 100)
-		}
-		return result
 	})
+	const visibleRanges = $derived(filteredRanges.slice(0, visibleRangeLimit))
 </script>
 
+{#snippet rangeTypeOption(type: RangeType, title: string, description: string, meta: string, Icon: Component, recommended = false)}
+	<button
+		class="ui-khatm-commitment"
+		class:ui-khatm-commitment-recommended={recommended}
+		type="button"
+		onclick={() => selectRangeType(type)}
+	>
+		<span class="ui-khatm-commitment-icon"><Icon /></span>
+		<span class="ui-khatm-commitment-copy">
+			<span class="ui-khatm-commitment-title">
+				<strong>{title}</strong>
+				{#if recommended}<span class="ui-badge ui-badge-accent ui-badge-xs">پیشنهاد ما</span>{/if}
+			</span>
+			<span>{description}</span>
+		</span>
+		<span class="ui-khatm-commitment-meta">{meta}</span>
+		<span class="ui-khatm-commitment-arrow" aria-hidden="true"><IconArrow /></span>
+	</button>
+{/snippet}
+
 {#snippet stepSelectRangeType()}
-	<div class="ui-khatm-panel-header">
-		<h2>دوست دارید چقدر همراه شوید؟</h2>
-		<p>هر انتخاب، سهمی ارزشمند از این ختم گروهی است.</p>
+	<div class="ui-khatm-wizard-heading">
+		<span class="ui-khatm-wizard-kicker">میزان همراهی شما</span>
+		<h2>از یک سهم کوچک و دل‌خواه شروع کنید</h2>
+		<p>اندازه‌ای را انتخاب کنید که با فرصت امروزتان هماهنگ است؛ در مرحله بعد بازه دقیق را برمی‌دارید.</p>
 	</div>
-	<div class="ui-khatm-options">
-		{#snippet button(type: typeof rangeType, title: string, subtitle: string, Icon: Component, wide = false)}
-			<button class="ui-khatm-option" class:ui-khatm-option-wide={wide} type="button" onclick={() => selectRangeType(type)}>
-				<div class="ui-khatm-option-heading">
-					<span class="ui-khatm-option-icon"><Icon /></span>
-					<div><strong>{title}</strong><span>{subtitle}</span></div>
-				</div>
-				<span class="ui-khatm-option-arrow" aria-hidden="true">←</span>
-			</button>
-		{/snippet}
-		{@render button('juz', 'یک جزء', 'مشارکتی پیوسته و پررنگ', IconJuz)}
-		{@render button('hizbQuarter', 'ربع حزب', 'کوتاه و منظم', IconQuarter)}
-		{@render button('page', 'یک صفحه', 'انتخابی سبک و روزانه', IconPage)}
-		{@render button('surah', 'یک سوره', 'یک سوره‌ی کامل', IconSurah)}
+	<div class="ui-khatm-commitments">
+		{@render rangeTypeOption('page', 'یک صفحه', 'سبک، سریع و مناسب شروع', 'کم‌حجم', IconPage, true)}
+		{@render rangeTypeOption('hizbQuarter', 'یک ربع حزب', 'چند صفحه پیوسته برای قرائتی منظم', 'کوتاه', IconQuarter)}
+		{@render rangeTypeOption('juz', 'یک جزء', 'سهمی کامل‌تر برای همراهی پررنگ', 'پیوسته', IconJuz)}
+		{@render rangeTypeOption('surah', 'یک سوره', 'از آغاز تا پایان یک سوره', 'معنادار', IconSurah)}
 		{#if khatm.progress > 0.9}
-			{@render button('all', 'همه‌ی بازه‌های باقی‌مانده', 'برای کامل‌کردن قدم‌های آخر ختم', IconAll, true)}
+			{@render rangeTypeOption('all', 'همه بخش‌های باقی‌مانده', 'قدم آخر را بردارید و ختم را کامل کنید', 'ویژه پایان ختم', IconAll)}
 		{/if}
 	</div>
 {/snippet}
 
 {#snippet stepSelectRange()}
-	{#if selectableRanges.length > 0}
-		<div class="ui-khatm-panel-header">
-			<h2>بازه‌ی دلخواهتان را بردارید</h2>
-			<p>بازه‌های ناقص را باز کنید و از میان بخش‌های آزادشان یک سهم بردارید.</p>
+	<div class="ui-khatm-range-heading">
+		<div>
+			<span class="ui-khatm-wizard-kicker">انتخاب {rangeTypeTitle}</span>
+			<h2>کدام بازه برای شما مناسب‌تر است؟</h2>
+			<p>{availableRangeCount.toLocaleString('fa')} بازه هنوز سهم آزاد دارد.</p>
 		</div>
-		<div class="ui-khatm-toolbar">
-			<label class="ui-khatm-check">
-				<input type="checkbox" class="ui-checkbox" bind:checked={hideFinishedIntervals} />
-				<span>فقط بازه‌های دارای بخش آزاد</span>
-			</label>
+		{#if khatm.rangeType === 'free'}
+			<button type="button" class="ui-btn ui-btn-soft ui-btn-sm" onclick={() => goToStep(1)}>
+				<IconTune />
+				تغییر اندازه سهم
+			</button>
+		{/if}
+	</div>
+
+	{#if ranges.length > 12}
+		<div class="ui-khatm-range-search">
+			<label for="khatm-range-search">جست‌وجوی {rangeTypeTitle}</label>
+			<div>
+				<IconSearch aria-hidden="true" />
+				<input
+					id="khatm-range-search"
+					class="ui-input"
+					type="search"
+					placeholder={`نام یا شماره ${rangeTypeTitle} را بنویسید`}
+					bind:value={rangeQuery}
+					oninput={() => (visibleRangeLimit = 30)}
+				/>
+			</div>
 		</div>
-		<ul
-			class={[
-				'ui-khatm-range-grid',
-				rangeType === 'all' ? 'ui-khatm-range-grid-wide' : '',
-			]}
-		>
-			{#each selectableRanges as { range, percent, myLength }}
+	{/if}
+
+	<div class="ui-khatm-range-tools">
+		<div class="ui-khatm-range-legend" aria-label="راهنمای وضعیت بازه‌ها">
+			<span><i class="ui-khatm-range-key ui-khatm-range-key-free"></i>کاملاً آزاد</span>
+			<span><i class="ui-khatm-range-key ui-khatm-range-key-partial"></i>دارای بخش آزاد</span>
+			<span><i class="ui-khatm-range-key ui-khatm-range-key-mine"></i>سهم شما</span>
+		</div>
+		<label class="ui-khatm-check">
+			<input type="checkbox" class="ui-checkbox" bind:checked={hideFinishedIntervals} />
+			<span>پنهان‌کردن تکمیل‌شده‌ها</span>
+		</label>
+	</div>
+
+	{#if visibleRanges.length > 0}
+		<ul class="ui-khatm-range-results" aria-label={`فهرست ${rangeTypeTitle}ها`}>
+			{#each visibleRanges as { range, percent, myLength }}
 				{@const completed = percent >= 100}
 				{@const partial = percent > 0 && !completed}
 				{@const mine = myLength > 0}
-				<li class="ui-list-row">
+				<li>
 					<button
-						class="ui-btn ui-btn-soft ui-btn-block ui-khatm-range-button"
-						class:ui-khatm-range-button-mine={mine}
-						class:ui-khatm-range-button-partial={partial}
+						class="ui-khatm-range-card"
+						class:ui-khatm-range-card-partial={partial}
+						class:ui-khatm-range-card-mine={mine}
 						type="button"
 						disabled={completed}
-						class:ui-btn-disabled={completed}
 						onclick={() => select(range, percent)}
 					>
-						<span>{range.title || range.getTitleSurahOrinted()}</span>
-						{#if mine}
-							<span class="ui-badge ui-badge-accent ui-badge-xs">
-								{myLength === range.length ? 'انتخاب شما' : 'شامل سهم شما'}
+						<span class="ui-khatm-range-card-main">
+							<strong>{range.title || range.getTitleSurahOrinted()}</strong>
+							<span class="ui-khatm-range-card-status">
+								{#if mine}
+									<span class="ui-badge ui-badge-accent ui-badge-xs">
+										{myLength === range.length ? 'سهم شما' : 'شامل سهم شما'}
+									</span>
+								{/if}
+								{#if partial}
+									<span class="ui-badge ui-badge-info ui-badge-xs">بخشی آزاد است</span>
+								{:else if completed}
+									<span class="ui-badge ui-badge-neutral ui-badge-xs">تکمیل‌شده</span>
+								{:else}
+									<span class="ui-badge ui-badge-success ui-badge-xs">کاملاً آزاد</span>
+								{/if}
 							</span>
-						{/if}
+						</span>
 						{#if partial}
-							<span class="ui-khatm-range-progress">
-								<span
-									class="ui-radial-progress"
-									style:--value={percent}
-									style:--size="1.4rem"
-									aria-valuemin="0"
-									aria-valuemax="100"
-									aria-valuenow={percent}
-									aria-label={`${percent.toLocaleString('fa')} درصد انتخاب شده`}
-									role="progressbar"
-								>
-									&lrm;{percent.toLocaleString('fa')}٪&lrm;
-								</span>
-								<span class="ui-badge ui-badge-info ui-badge-xs">ناقص</span>
+							<span class="ui-khatm-range-card-progress">
+								<span><b>{percent.toLocaleString('fa')}٪</b> انتخاب شده</span>
+								<progress class="ui-progress" max={100} value={percent} aria-label={`${percent.toLocaleString('fa')} درصد انتخاب شده`}></progress>
 							</span>
-						{:else if completed}
-							<span class="ui-badge ui-badge-success ui-badge-xs">تکمیل‌شده</span>
 						{/if}
+						<span class="ui-khatm-range-card-action">
+							{completed ? 'بدون سهم آزاد' : partial ? 'دیدن بخش‌های آزاد' : 'انتخاب این سهم'}
+							{#if !completed}<IconArrow aria-hidden="true" />{/if}
+						</span>
 					</button>
 				</li>
 			{/each}
 		</ul>
+
+		{#if visibleRanges.length < filteredRanges.length}
+			<div class="ui-khatm-range-more">
+				<p>در حال نمایش {visibleRanges.length.toLocaleString('fa')} مورد از {filteredRanges.length.toLocaleString('fa')} مورد</p>
+				<button type="button" class="ui-btn ui-btn-outline" onclick={() => (visibleRangeLimit += 30)}>
+					نمایش موارد بیشتر
+				</button>
+			</div>
+		{/if}
 	{:else}
-		<div class="ui-khatm-empty">
-			<p>در این دسته بازه‌ای با بخش آزاد باقی نمانده است؛ نوع دیگری را امتحان کنید.</p>
-			<button type="button" class="ui-btn ui-btn-primary" onclick={() => goToStep(1)}>بازگشت</button>
+		<div class="ui-khatm-empty ui-khatm-wizard-empty">
+			<IconSearch aria-hidden="true" />
+			<h3>{rangeQuery ? 'بازه‌ای با این جست‌وجو پیدا نشد' : 'بازه آزادی در این دسته نمانده است'}</h3>
+			<p>{rangeQuery ? 'عبارت دیگری را امتحان کنید یا فیلتر را پاک کنید.' : 'اندازه دیگری برای سهمتان انتخاب کنید.'}</p>
+			{#if rangeQuery}
+				<button type="button" class="ui-btn ui-btn-soft" onclick={() => (rangeQuery = '')}>پاک‌کردن جست‌وجو</button>
+			{:else if khatm.rangeType === 'free'}
+				<button type="button" class="ui-btn ui-btn-primary" onclick={() => goToStep(1)}>انتخاب اندازه دیگر</button>
+			{/if}
 		</div>
 	{/if}
 {/snippet}
 
-{#snippet stepShowResult(selected: QuranRange)}
-	<div class="ui-khatm-confirm">
-		<div class="ui-card ui-card-bordered">
-			<div class="ui-card-body">
-				<div class="ui-khatm-confirm-heading">
-					<span class="ui-khatm-confirm-icon"><IconCheck /></span>
-					<h2>این سهم برای شما ثبت شد</h2>
-				</div>
-				<p class="ui-khatm-confirm-range">{selected.getTitle()}</p>
-				<a href={selected.getLink(khatm)} class="ui-btn ui-btn-primary ui-btn-block">مشاهده و قرائت آیات</a>
-			</div>
+{#snippet stepShowResult(selectedRange: QuranRange)}
+	<div class="ui-khatm-wizard-success" role="status" aria-live="polite">
+		<span class="ui-khatm-wizard-success-icon"><IconCheck /></span>
+		<span class="ui-khatm-wizard-kicker">انتخاب با موفقیت انجام شد</span>
+		<h2>این سهم برای شما کنار گذاشته شد</h2>
+		<p class="ui-khatm-wizard-success-copy">حالا می‌توانید آیات سهم خود را باز کنید و قرائت را آغاز کنید.</p>
+		<div class="ui-khatm-wizard-success-range">
+			<IconBook aria-hidden="true" />
+			<div><span>سهم شما</span><strong>{selectedRange.getTitle()}</strong></div>
 		</div>
+		<a href={selectedRange.getLink(khatm)} class="ui-btn ui-btn-primary ui-btn-lg ui-btn-block">
+			<IconBook />
+			مشاهده و قرائت آیات
+		</a>
 		<button type="button" class="ui-btn ui-btn-ghost" onclick={() => goToStep(1)}>انتخاب یک سهم دیگر</button>
 	</div>
 {/snippet}
 
-<div class="ui-khatm-panel">
-{#if khatm.rangeType === 'free'}
-	<div class="mb-7 flex justify-center">
-		<ul class="ui-steps">
-			<!-- svelte-ignore a11y_click_events_have_key_events -->
-			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-			<li class="ui-step cursor-pointer" class:ui-step-active={step >= 1} onclick={() => goToStep(1)}>
-				نوع ختم
+<section class="ui-khatm-wizard" aria-labelledby="wizard-title">
+	<h2 id="wizard-title" class="ui-sr-only">انتخاب مرحله‌ای سهم ختم قرآن</h2>
+	<nav class="ui-khatm-wizard-progress" aria-label="مراحل انتخاب سهم">
+		<ol>
+			{#if khatm.rangeType === 'free'}
+				<li class:ui-khatm-wizard-step-active={step >= 1}>
+					{#if step > 1}
+						<button type="button" onclick={() => goToStep(1)}>
+							<span>۱</span><b>اندازه سهم</b>
+						</button>
+					{:else}
+						<span aria-current="step"><i>۱</i><b>اندازه سهم</b></span>
+					{/if}
+				</li>
+			{/if}
+			<li class:ui-khatm-wizard-step-active={step >= (khatm.rangeType === 'free' ? 2 : 1)}>
+				<span aria-current={step === (khatm.rangeType === 'free' ? 2 : 1) ? 'step' : undefined}>
+					<i>{khatm.rangeType === 'free' ? '۲' : '۱'}</i><b>انتخاب بازه</b>
+				</span>
 			</li>
-			<li class="ui-step" class:ui-step-active={step >= 2}>انتخاب</li>
-			<li class="ui-step" class:ui-step-active={step >= 3}>اتمام</li>
-		</ul>
+			<li class:ui-khatm-wizard-step-active={step >= (khatm.rangeType === 'free' ? 3 : 2)}>
+				<span aria-current={step === (khatm.rangeType === 'free' ? 3 : 2) ? 'step' : undefined}>
+					<i>{khatm.rangeType === 'free' ? '۳' : '۲'}</i><b>شروع قرائت</b>
+				</span>
+			</li>
+		</ol>
+	</nav>
+
+	<div class="ui-khatm-wizard-body">
+		{#if khatm.rangeType === 'free'}
+			{#if step === 1}{@render stepSelectRangeType()}{/if}
+			{#if step === 2}{@render stepSelectRange()}{/if}
+			{#if step === 3 && selected}{@render stepShowResult(selected)}{/if}
+		{:else}
+			{#if step === 1}{@render stepSelectRange()}{/if}
+			{#if step === 2 && selected}{@render stepShowResult(selected)}{/if}
+		{/if}
 	</div>
+</section>
 
-	{#if step === 1}
-		{@render stepSelectRangeType()}
-	{/if}
-
-	{#if step === 2}
-		{@render stepSelectRange()}
-	{/if}
-
-	{#if step === 3 && selected}
-		{@render stepShowResult(selected)}
-	{/if}
-{:else}
-	<!-- <div class="mb-7 flex justify-center">
-		<ul class="ui-steps">
-			<li class="ui-step" class:ui-step-active={step >= 1}>انتخاب</li>
-			<li class="ui-step" class:ui-step-active={step >= 2}>اتمام</li>
-		</ul>
-	</div> -->
-
-	{#if step === 1}
-		{@render stepSelectRange()}
-	{/if}
-
-	{#if step === 2 && selected}
-		{@render stepShowResult(selected)}
-	{/if}
-{/if}
-</div>
-
-<Modal bind:open={() => modal, toggleModal}>
+<Modal bind:open={() => modal, toggleModal} contentClass="ui-khatm-wizard-dialog">
 	{#if selectionMode === 'subrange' && selected}
 		<IncompleteRangePicker
 			{khatm}

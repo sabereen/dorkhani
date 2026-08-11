@@ -4,6 +4,7 @@
 	import { handleError } from '$lib/utility/handleError'
 	import IconVolunteer from '~icons/ic/round-volunteer-activism'
 	import IconEye from '~icons/ic/round-visibility'
+	import IconCheck from '~icons/ic/round-check-circle'
 
 	type Props = {
 		range: QuranRange | null
@@ -15,8 +16,9 @@
 	let { range, khatm, onClose, onFinished }: Props = $props()
 
 	let loading = $state(false)
-	/** قسمت انتخاب شده را به عنوان خوانده شده علامت می‌زند */
-	async function markAsRead() {
+
+	/** سهم انتخاب‌شده را برای این مشارکت ثبت می‌کند. */
+	async function pickRange() {
 		if (loading || !range) return
 		loading = true
 		try {
@@ -36,25 +38,34 @@
 </script>
 
 {#if range}
-	<div class="ui-khatm-confirm">
-		<div class="ui-khatm-confirm-heading">
-			<span class="ui-khatm-confirm-icon"><IconVolunteer /></span>
-			<h2>پذیرفتن این سهم از ختم</h2>
+	<div class="ui-khatm-confirm ui-khatm-confirm-review">
+		<span class="ui-khatm-confirm-icon"><IconVolunteer /></span>
+		<span class="ui-khatm-wizard-kicker">بررسی نهایی انتخاب</span>
+		<h2>این سهم را برای قرائت برمی‌دارید؟</h2>
+		<p class="ui-khatm-confirm-description">پس از تأیید، این بازه به‌عنوان سهم شما ثبت می‌شود تا همراه دیگری آن را انتخاب نکند.</p>
+
+		<div class="ui-khatm-confirm-range">
+			<IconCheck aria-hidden="true" />
+			<div><span>سهم انتخاب‌شده</span><strong>{range.getTitle()}</strong></div>
 		</div>
-		<p class="ui-khatm-confirm-range">{range.getTitle()}</p>
-		<a href={range.getLink(khatm)} target="_blank" class="ui-btn ui-btn-ghost ui-btn-sm">
+
+		<a href={range.getLink(khatm)} target="_blank" rel="noreferrer" class="ui-btn ui-btn-soft ui-btn-sm">
 			<IconEye />
-			پیش‌نمایش آیات
+			دیدن آیات پیش از تأیید
 		</a>
-		<p class="ui-text-muted text-sm">با تأیید، این بازه به نام شما از بخش‌های آزاد کنار گذاشته می‌شود.</p>
+
 		<div class="ui-khatm-confirm-actions">
-			<button class="ui-btn ui-btn-primary" disabled={loading} onclick={markAsRead}>
+			<button class="ui-btn ui-btn-primary" disabled={loading} onclick={pickRange}>
 				{#if loading}<span class="ui-spinner"></span>{/if}
-				می‌پذیرم
+				{loading ? 'در حال ثبت سهم…' : 'بله، این سهم را برمی‌دارم'}
 			</button>
-			<button class="ui-btn ui-btn-ghost" disabled={loading} onclick={onClose}>فعلاً نه</button>
+			<button class="ui-btn ui-btn-ghost" disabled={loading} onclick={onClose}>انتخاب بازه دیگر</button>
 		</div>
 	</div>
 {:else}
-	<div class="ui-khatm-empty"><p>این بازه پیش‌تر برای قرائت انتخاب شده است.</p></div>
+	<div class="ui-khatm-empty ui-khatm-wizard-empty">
+		<h3>این بازه دیگر آزاد نیست</h3>
+		<p>یکی از همراهان کمی زودتر آن را انتخاب کرده است. لطفاً بازه دیگری بردارید.</p>
+		<button class="ui-btn ui-btn-primary" type="button" onclick={onClose}>دیدن بازه‌های آزاد</button>
+	</div>
 {/if}

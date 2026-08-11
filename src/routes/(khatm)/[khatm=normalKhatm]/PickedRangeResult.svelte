@@ -14,12 +14,14 @@
 </script>
 
 <div class="ui-khatm-confirm ui-khatm-confirm-success" role="status" aria-live="polite">
-	<div class="ui-khatm-confirm-heading">
-		<span class="ui-khatm-confirm-icon"><IconCheck /></span>
-		<h2>این سهم برای شما ثبت شد</h2>
+	<span class="ui-khatm-wizard-success-icon"><IconCheck /></span>
+	<span class="ui-khatm-wizard-kicker">انتخاب با موفقیت انجام شد</span>
+	<h2>این سهم برای شما کنار گذاشته شد</h2>
+	<p class="ui-khatm-confirm-description">حالا می‌توانید آیات سهم خود را باز کنید و قرائت را آغاز کنید.</p>
+	<div class="ui-khatm-confirm-range">
+		<IconBook aria-hidden="true" />
+		<div><span>سهم شما</span><strong>{range.getTitle()}</strong></div>
 	</div>
-	<p class="ui-text-muted text-sm">بازه‌ای که برای قرائت پذیرفتید:</p>
-	<p class="ui-khatm-confirm-range">{range.getTitle()}</p>
 	<div class="ui-khatm-confirm-actions">
 		<a href={range.getLink(khatm)} class="ui-btn ui-btn-primary">
 			<IconBook />

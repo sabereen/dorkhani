@@ -4,6 +4,7 @@
 	import '../app.css'
 	import TheToast from '$lib/components/TheToast.svelte'
 	import TheFooter from '$lib/components/TheFooter.svelte'
+	import BaleMiniApp from '$lib/components/BaleMiniApp.svelte'
 	import type { LayoutProps } from './$types'
 	import { LocalSettings } from '$lib/entity/LocalSettings.svelte'
 	import { claimCreatedKhatms } from '$lib/auth/claimCreatedKhatms'
@@ -27,6 +28,8 @@
 		}
 	})
 </script>
+
+<BaleMiniApp enabled={data.authProviders.bale} />
 
 <main class="ui-main ui-container ui-page">
 	{@render children()}

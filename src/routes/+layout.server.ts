@@ -13,6 +13,7 @@ export const load: LayoutServerLoad = ({ locals }) => {
 		authProviders: {
 			google: Boolean(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET),
 			eitaa: Boolean(env.EITAA_APP_TOKEN),
+			bale: Boolean(env.BALE_BOT_TOKEN),
 		},
 	}
 }

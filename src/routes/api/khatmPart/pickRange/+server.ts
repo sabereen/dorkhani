@@ -1,6 +1,8 @@
 import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { khatmPartService_pickRange } from '$service/khatmPart'
+import { userNotification_notify } from '$service/user-notification'
+import { QuranRange } from '$lib/entity/Range'
 
 type BodyType = {
 	khatmId: number
@@ -28,6 +30,15 @@ export const POST: RequestHandler = async (event) => {
 		start: body.start,
 		end: body.end,
 	})
+	if (body.end > body.start) {
+		const range = new QuranRange(body.start, body.end)
+		userNotification_notify(event.locals.user?.id, {
+			type: 'participationPicked',
+			title: result.title,
+			description: `از ${range.startAyah.key} تا ${range.lastAyah.key}`,
+			targetPath: `/${range.toRangeParam()}`,
+		})
+	}
 
 	return json(result)
 }

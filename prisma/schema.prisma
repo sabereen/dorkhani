@@ -39,6 +39,12 @@ enum KhatmDeletionReason {
   expiredUnstarted
 }
 
+enum NotificationChannel {
+  bale
+  eitaa
+  email
+}
+
 model TKhatmSeries {
   id        Int      @id
   maxRounds Int?     @map("max_rounds") @db.UnsignedSmallInt()
@@ -160,6 +166,8 @@ model User {
   sessions      Session[]
   accounts      Account[]
   khatms        TKhatm[]
+  notificationPreference NotificationPreference?
+  notificationEndpoints  NotificationEndpoint[]
 
   @@map("user")
 }
@@ -210,6 +218,35 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model NotificationPreference {
+  userId           String               @id @map("user_id") @db.VarChar(191)
+  user             User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  enabled          Boolean              @default(true)
+  preferredChannel NotificationChannel? @map("preferred_channel")
+  baleEnabled      Boolean              @default(true) @map("bale_enabled")
+  eitaaEnabled     Boolean              @default(true) @map("eitaa_enabled")
+  emailEnabled     Boolean              @default(true) @map("email_enabled")
+  createdAt        DateTime             @default(now()) @map("created_at")
+  updatedAt        DateTime             @updatedAt @map("updated_at")
+
+  @@map("notification_preference")
+}
+
+model NotificationEndpoint {
+  id        Int                 @id @default(autoincrement())
+  userId    String              @map("user_id") @db.VarChar(191)
+  user      User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  channel   NotificationChannel
+  address   String              @db.VarChar(191)
+  canSend   Boolean             @default(false) @map("can_send")
+  createdAt DateTime            @default(now()) @map("created_at")
+  updatedAt DateTime            @updatedAt @map("updated_at")
+
+  @@unique([userId, channel])
+  @@index([channel, address])
+  @@map("notification_endpoint")
 }
 
 model TKhatmDeletion {

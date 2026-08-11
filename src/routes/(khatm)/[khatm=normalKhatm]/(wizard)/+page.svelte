@@ -18,10 +18,12 @@
 	import IconSurah from '~icons/ic/round-menu-book'
 	import IconAll from '~icons/ic/round-done-all'
 	import IconCheck from '~icons/ic/round-check-circle'
+	import IncompleteRangePicker from './IncompleteRangePicker.svelte'
 
 	const khatmContext = useKathmContext()
 	const khatm = $derived(khatmContext.khatm)
 	const parts = $derived(khatmContext.parts)
+	const rawParts = $derived(khatmContext.rawParts)
 	const participation = $derived(khatm.participation)
 
 	type PageState = {
@@ -33,10 +35,17 @@
 
 	const modal = $derived(!!(page.state as PageState).modal)
 	let selected = $state<QuranRange | null>(null)
+	let selectionMode = $state<'direct' | 'subrange'>('direct')
 
-	function select(range: QuranRange) {
+	function select(range: QuranRange, percent: number) {
 		selected = range
+		selectionMode = percent > 0 && percent < 100 ? 'subrange' : 'direct'
 		openModal()
+	}
+
+	function finishSubrange(range: QuranRange) {
+		selected = range
+		closeModalAndNext()
 	}
 
 	function openModal() {
@@ -120,7 +129,7 @@
 			}
 		})
 		if (hideFinishedIntervals) {
-			result = result.filter(({ percent }) => percent === 0)
+			result = result.filter(({ percent }) => percent < 100)
 		}
 		return result
 	})
@@ -155,12 +164,12 @@
 	{#if selectableRanges.length > 0}
 		<div class="ui-khatm-panel-header">
 			<h2>بازه‌ی دلخواهتان را بردارید</h2>
-			<p>فقط بخش‌های آزاد قابل انتخاب هستند.</p>
+			<p>بازه‌های ناقص را باز کنید و از میان بخش‌های آزادشان یک سهم بردارید.</p>
 		</div>
 		<div class="ui-khatm-toolbar">
 			<label class="ui-khatm-check">
 				<input type="checkbox" class="ui-checkbox" bind:checked={hideFinishedIntervals} />
-				<span>فقط بازه‌های آزاد</span>
+				<span>فقط بازه‌های دارای بخش آزاد</span>
 			</label>
 		</div>
 		<ul
@@ -170,17 +179,18 @@
 			]}
 		>
 			{#each selectableRanges as { range, percent, myLength }}
-				{@const disabled = percent > 0}
 				{@const completed = percent >= 100}
+				{@const partial = percent > 0 && !completed}
 				{@const mine = myLength > 0}
 				<li class="ui-list-row">
 					<button
 						class="ui-btn ui-btn-soft ui-btn-block ui-khatm-range-button"
 						class:ui-khatm-range-button-mine={mine}
+						class:ui-khatm-range-button-partial={partial}
 						type="button"
-						{disabled}
-						class:ui-btn-disabled={disabled}
-						onclick={() => select(range)}
+						disabled={completed}
+						class:ui-btn-disabled={completed}
+						onclick={() => select(range, percent)}
 					>
 						<span>{range.title || range.getTitleSurahOrinted()}</span>
 						{#if mine}
@@ -188,18 +198,24 @@
 								{myLength === range.length ? 'انتخاب شما' : 'شامل سهم شما'}
 							</span>
 						{/if}
-						{#if disabled && !completed}
-							<span class="flex items-center opacity-50">
+						{#if partial}
+							<span class="ui-khatm-range-progress">
 								<span
-									class="ui-radial-progress ml-1 mr-1"
+									class="ui-radial-progress"
 									style:--value={percent}
 									style:--size="1.4rem"
+									aria-valuemin="0"
+									aria-valuemax="100"
 									aria-valuenow={percent}
+									aria-label={`${percent.toLocaleString('fa')} درصد انتخاب شده`}
 									role="progressbar"
 								>
 									&lrm;{percent.toLocaleString('fa')}٪&lrm;
 								</span>
+								<span class="ui-badge ui-badge-info ui-badge-xs">ناقص</span>
 							</span>
+						{:else if completed}
+							<span class="ui-badge ui-badge-success ui-badge-xs">تکمیل‌شده</span>
 						{/if}
 					</button>
 				</li>
@@ -207,7 +223,7 @@
 		</ul>
 	{:else}
 		<div class="ui-khatm-empty">
-			<p>در این دسته بازه‌ی آزادی باقی نمانده است؛ نوع دیگری را امتحان کنید.</p>
+			<p>در این دسته بازه‌ای با بخش آزاد باقی نمانده است؛ نوع دیگری را امتحان کنید.</p>
 			<button type="button" class="ui-btn ui-btn-primary" onclick={() => goToStep(1)}>بازگشت</button>
 		</div>
 	{/if}
@@ -273,5 +289,16 @@
 </div>
 
 <Modal bind:open={() => modal, toggleModal}>
-	<ConfirmRange {khatm} onClose={closeModal} onFinished={closeModalAndNext} range={selected} />
+	{#if selectionMode === 'subrange' && selected}
+		<IncompleteRangePicker
+			{khatm}
+			{participation}
+			parts={rawParts}
+			range={selected}
+			onClose={closeModal}
+			onFinished={finishSubrange}
+		/>
+	{:else}
+		<ConfirmRange {khatm} onClose={closeModal} onFinished={closeModalAndNext} range={selected} />
+	{/if}
 </Modal>

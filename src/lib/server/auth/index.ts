@@ -6,11 +6,15 @@ import { prismaAdapter } from '@better-auth/prisma-adapter'
 import { betterAuth } from 'better-auth'
 import { sveltekitCookies } from 'better-auth/svelte-kit'
 import { authEmail_send } from './email'
+import { baleAuthPlugin } from './bale'
 import { eitaaAuthPlugin } from './eitaa'
+
+const authBaseUrl = env.BETTER_AUTH_URL || env.ORIGIN
+const isSecureOrigin = authBaseUrl?.startsWith('https://')
 
 export const auth = betterAuth({
 	appName: 'سامانه ختم جمعی قرآن',
-	baseURL: env.BETTER_AUTH_URL || env.ORIGIN,
+	baseURL: authBaseUrl,
 	secret: env.BETTER_AUTH_SECRET,
 	database: prismaAdapter(db, { provider: 'mysql' }),
 	emailAndPassword: {
@@ -35,7 +39,17 @@ export const auth = betterAuth({
 	account: {
 		accountLinking: { enabled: true },
 	},
-	plugins: [eitaaAuthPlugin(), ...(building ? [] : [sveltekitCookies(getRequestEvent)])],
+	advanced: isSecureOrigin
+		? {
+				useSecureCookies: true,
+				defaultCookieAttributes: {
+					secure: true,
+					sameSite: 'none',
+					partitioned: true,
+				},
+			}
+		: undefined,
+	plugins: [baleAuthPlugin(), eitaaAuthPlugin(), ...(building ? [] : [sveltekitCookies(getRequestEvent)])],
 })
 
 export type AuthSession = typeof auth.$Infer.Session

@@ -17,7 +17,7 @@ export const handle: Handle = async ({ resolve, event }) => {
 	event.locals.session = authSession?.session ?? null
 	event.locals.user = authSession?.user ?? null
 
-	return svelteKitHandler({
+	const response = await svelteKitHandler({
 		auth,
 		event,
 		building,
@@ -33,6 +33,14 @@ export const handle: Handle = async ({ resolve, event }) => {
 				},
 			}),
 	})
+	response.headers.delete('x-frame-options')
+	if (!response.headers.has('content-security-policy')) {
+		response.headers.set(
+			'content-security-policy',
+			"frame-ancestors 'self' https://*.bale.ai; frame-src 'self' https://*.bale.ai",
+		)
+	}
+	return response
 }
 
 export const handleError: HandleServerError = async ({ error, event, status, message }) => {

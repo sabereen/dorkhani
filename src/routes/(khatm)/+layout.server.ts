@@ -45,6 +45,7 @@ export const load: LayoutServerLoad = async ({ params, url, locals }) => {
 
 	return {
 		khatm: khatmService_toPublic(khatm),
+		isAuthenticated: Boolean(locals.user),
 		canManage: Boolean(locals.user && khatm.ownerId === locals.user.id),
 	}
 }

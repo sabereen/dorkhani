@@ -10,8 +10,13 @@
 	import IconEdit from '~icons/ic/round-edit'
 	import IconBook from '~icons/ic/round-menu-book'
 	import IconPeople from '~icons/ic/round-people-alt'
+	import IconLogin from '~icons/ic/round-login'
+	import IconPersonAdd from '~icons/ic/round-person-add'
+	import IconManageAccounts from '~icons/ic/round-manage-accounts'
+	import IconClose from '~icons/ic/round-close'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
+	import Modal from '$lib/components/Modal.svelte'
 	import { setKhatmContext } from './khatm-context.svelte'
 	import { page } from '$app/state'
 	import Tab from '$lib/components/Tab.svelte'
@@ -21,6 +26,7 @@
 	import ExpandableText from '$lib/components/ExpandableText.svelte'
 	import { SettingsEditor } from '$lib/entity/LocalSettings.svelte'
 	import { invalidateAll } from '$app/navigation'
+	import { idb_createdKhatm_hasClaim } from '$lib/idb/createdKhatm'
 
 	const { data, children }: LayoutProps = $props()
 
@@ -80,6 +86,29 @@
 	const percent = $derived(pageBasedProgress ? percentByPage : percentByAyah)
 
 	const canSelectLayout = $derived(!khatm.finished && khatm.isFree)
+	let showAuthPrompt = $state(false)
+	let canManageAsGuest = $state(false)
+
+	$effect(() => {
+		const khatmId = khatm.id
+		const seriesId = khatm.seriesId
+		let cancelled = false
+		canManageAsGuest = false
+
+		if (!data.isAuthenticated) {
+			idb_createdKhatm_hasClaim(khatmId, seriesId)
+				.then((hasClaim) => {
+					if (!cancelled) canManageAsGuest = hasClaim
+				})
+				.catch(() => {
+					if (!cancelled) canManageAsGuest = false
+				})
+		}
+
+		return () => {
+			cancelled = true
+		}
+	})
 </script>
 
 <svelte:head>
@@ -106,6 +135,15 @@
 			>
 				<IconEdit class="size-5" />
 			</a>
+		{:else if canManageAsGuest}
+			<button
+				type="button"
+				class="ui-btn ui-btn-icon ui-btn-ghost"
+				onclick={() => (showAuthPrompt = true)}
+				aria-label="ویرایش یا حذف ختم"
+			>
+				<IconEdit class="size-5" />
+			</button>
 		{/if}
 		<a href={`${base}/settings`} class="ui-btn ui-btn-icon ui-btn-ghost" aria-label="تنظیمات">
 			<IconSettings class="size-5" />
@@ -199,3 +237,33 @@
 {/if}
 	</section>
 </main>
+
+<Modal bind:open={showAuthPrompt} contentClass="ui-khatm-auth-dialog">
+	<button
+		type="button"
+		class="ui-btn ui-btn-icon ui-btn-ghost ui-khatm-auth-close"
+		onclick={() => (showAuthPrompt = false)}
+		aria-label="بستن پنجره"
+	>
+		<IconClose class="size-5" />
+	</button>
+	<div class="ui-khatm-auth-icon" aria-hidden="true">
+		<IconManageAccounts />
+	</div>
+	<p class="ui-khatm-auth-eyebrow">مدیریت ختم</p>
+	<h2>برای مدیریت ختم خود وارد حساب شوید</h2>
+	<p class="ui-khatm-auth-description">
+		پس از ورود یا ثبت‌نام، این ختم به حساب شما متصل می‌شود و می‌توانید آن را ویرایش یا حذف
+		کنید.
+	</p>
+	<div class="ui-khatm-auth-actions">
+		<a class="ui-btn ui-btn-primary ui-btn-lg" href={`${base}/auth/login`}>
+			<IconLogin class="size-5" />
+			ورود به حساب
+		</a>
+		<a class="ui-btn ui-btn-soft ui-btn-lg" href={`${base}/auth/register`}>
+			<IconPersonAdd class="size-5" />
+			ثبت‌نام
+		</a>
+	</div>
+</Modal>

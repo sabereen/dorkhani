@@ -41,6 +41,21 @@ export async function idb_createdKhatm_getClaims() {
 		.map((item) => ({ id: item.id, token: item.claimToken }))
 }
 
+export async function idb_createdKhatm_hasClaim(khatmId: number, seriesId?: number | null) {
+	const { db } = await import('./idb')
+	const item = await db.createdKhatms.get(khatmId)
+	if (item?.claimToken) return true
+	if (seriesId == null) return false
+
+	const seriesItem = await db.createdKhatms
+		.filter(
+			(createdKhatm) =>
+				createdKhatm.khatm.seriesId === seriesId && Boolean(createdKhatm.claimToken),
+		)
+		.first()
+	return Boolean(seriesItem)
+}
+
 export async function idb_createdKhatm_clearClaimTokens(ids: ReadonlyArray<number>) {
 	const { db } = await import('./idb')
 	await db.transaction('rw', db.createdKhatms, async () => {

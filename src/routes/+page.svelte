@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { base } from '$app/paths'
 	import Header from '$lib/components/Header.svelte'
+	import KhatmListCard from '$lib/components/KhatmListCard.svelte'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import { Zekr } from '$lib/entity/Zekr.svelte'
 	import { rebaseFullPath } from '$lib/utility/path'
@@ -164,28 +165,10 @@
 					</a>
 				{/if}
 			</div>
-			<ul class="landing-public-list">
+			<ul class="ui-khatm-card-list landing-khatm-card-list">
 				{#each items.slice(0, 6) as khatm}
 					<li>
-						<a href={khatm.link}>
-							<span class="landing-list-main">
-								<strong>{khatm.title}</strong>
-								<span>
-									{#if !khatm.isFree}
-										<span
-											class="ui-badge ui-badge-xs"
-											class:ui-badge-info={khatm.isAyahOriented}>{khatm.rangeTypeTitle}</span
-										>
-									{/if}
-									<span class="landing-list-hint">برای مشارکت وارد شوید</span>
-								</span>
-							</span>
-							<span class="landing-list-progress">
-								<strong>{khatm.percent.toLocaleString('fa')}٪</strong>
-								<progress class="ui-progress ui-progress-success" max={100} value={khatm.percent}
-								></progress>
-							</span>
-						</a>
+						<KhatmListCard {khatm} meta="برای مشارکت وارد شوید" />
 					</li>
 				{/each}
 			</ul>
@@ -745,6 +728,10 @@
 		margin: 0;
 		padding: 0 1rem 1rem;
 		list-style: none;
+	}
+
+	.landing-khatm-card-list {
+		padding: 0 1rem 1rem;
 	}
 
 	.landing-public-list li + li {

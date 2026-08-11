@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { base } from '$app/paths'
+	import KhatmListCard from '$lib/components/KhatmListCard.svelte'
 	import { CreatedKhatm } from '$lib/entity/CreatedKhatm'
 	import { onMount, type Snippet } from 'svelte'
 	import { slide } from 'svelte/transition'
-	import IconArrow from '~icons/ic/round-arrow-back'
 	import IconMenuBook from '~icons/ic/round-menu-book'
+	import IconArrow from '~icons/ic/round-arrow-back'
 
 	type Props = {
 		/** حداکثر چند آیتم رندر شود؟ */
@@ -43,25 +44,13 @@
 				<span class="ui-activity-count">{history.length.toLocaleString('fa')}</span>
 			</header>
 
-			<ul class="ui-activity-list">
+			<ul class="ui-activity-list ui-khatm-card-list">
 				{#each history as item}
 					<li>
-						<a class="ui-activity-item" href={item.khatm.link}>
-							<span class="ui-activity-marker" aria-hidden="true"></span>
-							<span class="ui-activity-content">
-								<strong>{item.khatm.title}</strong>
-								<span class="ui-activity-meta">
-									<span>{item.khatm.plain.created.toLocaleDateString('fa-IR')}</span>
-									{#if item.khatm.private}
-										<span class="ui-badge ui-badge-xs ui-badge-info">خصوصی</span>
-									{/if}
-									{#if !item.khatm.isFree}
-										<span class="ui-badge ui-badge-xs">{item.khatm.rangeTypeTitle}</span>
-									{/if}
-								</span>
-							</span>
-							<span class="ui-activity-arrow"><IconArrow /></span>
-						</a>
+						<KhatmListCard
+							khatm={item.khatm}
+							meta={`ایجادشده در ${item.khatm.plain.created.toLocaleDateString('fa-IR')}`}
+						/>
 					</li>
 				{/each}
 			</ul>

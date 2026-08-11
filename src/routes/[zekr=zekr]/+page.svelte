@@ -6,7 +6,6 @@
 	import { Zekr } from '$lib/entity/Zekr.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { browser } from '$app/environment'
-	import { base } from '$app/paths'
 	import { rebaseFullPath } from '$lib/utility/path'
 	import ExpandableText from '$lib/components/ExpandableText.svelte'
 	import ZekrActions from './ZekrActions.svelte'
@@ -57,15 +56,27 @@
 	{/if} -->
 </svelte:head>
 
-<Header title="ختم اذکار گروهی" link={`${base}/`}>
+<Header title={zekr.title}>
 	{#snippet end()}
 		{#if canShare}
-			<button type="button" class="ui-btn ui-btn-icon ui-btn-ghost" onclick={share} aria-label="اشتراک‌گذاری">
+			<button
+				type="button"
+				class="ui-header-page-action ui-header-page-action-primary"
+				onclick={share}
+				aria-label="اشتراک‌گذاری"
+			>
 				<IconShare class="size-5" />
+				<span>اشتراک‌گذاری</span>
 			</button>
 		{:else}
-			<button type="button" class="ui-btn ui-btn-icon ui-btn-ghost" onclick={copy} aria-label="کپی لینک">
+			<button
+				type="button"
+				class="ui-header-page-action ui-header-page-action-primary"
+				onclick={copy}
+				aria-label="کپی لینک"
+			>
 				<IconCopy class="size-5" />
+				<span>کپی لینک</span>
 			</button>
 		{/if}
 	{/snippet}

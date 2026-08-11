@@ -12,9 +12,10 @@
 	type Props = {
 		tabs: TabItem<TabSlug>[]
 		value: TabSlug
+		noScroll?: boolean
 	}
 
-	let { tabs, value = $bindable() }: Props = $props()
+	let { tabs, value = $bindable(), noScroll = false }: Props = $props()
 
 	const id = $props.id()
 
@@ -53,7 +54,12 @@
 			aria-selected={value === slug}
 		>
 			{#if link}
-				<a href={link} class="flex grow items-center justify-center self-stretch" onclick={onClick}>
+				<a
+					href={link}
+					class="flex grow items-center justify-center self-stretch"
+					onclick={onClick}
+					data-sveltekit-noscroll={noScroll}
+				>
 					{#if Icon}<Icon class="ml-1" />{/if}
 					{title}
 				</a>

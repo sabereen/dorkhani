@@ -82,7 +82,7 @@
 
 <svelte:document onkeyup={handleKeyboard} onclick={handleDocumentClick} />
 
-<header class="ui-header">
+<header class="ui-header" class:ui-header-with-context={title}>
 	<div class="ui-header-inner">
 		<a
 			class="ui-header-brand"
@@ -114,8 +114,57 @@
 			{/each}
 		</nav>
 
-		<div class="ui-header-tools">
-			{#if title}
+		<div class="ui-header-global">
+			{#if !title}
+				<a class="ui-header-create ui-desktop-only" href={`${base}/add`}>
+					<span class="ui-header-create-icon"><IconAdd /></span>
+					<span><small>یک همراهی تازه</small><strong>ایجاد ختم جدید</strong></span>
+				</a>
+			{/if}
+
+			{#if page.data.user}
+				<details class="ui-header-account ui-desktop-only" bind:this={accountMenu}>
+					<summary aria-label="باز کردن منوی حساب کاربری">
+						<IconAccount />
+						<span>
+							<small>حساب کاربری</small>
+							<strong>{page.data.user.name || 'حساب من'}</strong>
+						</span>
+					</summary>
+					<div class="ui-header-account-menu">
+						<a href={`${base}/account`}><IconAccount /><span>حساب من</span></a>
+						<a href={`${base}/settings`}><IconSettings /><span>تنظیمات</span></a>
+						<button type="button" onclick={signOut}>
+							<IconLogout /><span>خروج</span>
+						</button>
+					</div>
+				</details>
+			{:else}
+				<a
+					class="ui-header-utility ui-desktop-only"
+					href={`${base}/settings`}
+					aria-label="تنظیمات"
+				>
+					<IconSettings />
+				</a>
+				<a class="ui-header-login ui-desktop-only" href={`${base}/auth/login`}>
+					<IconLogin /><span>ورود</span>
+				</a>
+			{/if}
+
+			<button
+				type="button"
+				class="ui-header-menu-button ui-mobile-only"
+				aria-label={open ? 'بستن منو' : 'باز کردن منو'}
+				aria-expanded={open}
+				onclick={() => (open = !open)}
+			>
+				{#if open}<IconClose />{:else}<IconMenu />{/if}
+			</button>
+		</div>
+
+		{#if title}
+			<div class="ui-header-context-bar">
 				<div class="ui-header-context">
 					{#if start}
 						{@render start()}
@@ -132,59 +181,14 @@
 						</h1>
 					</div>
 				</div>
-			{:else}
-				<a class="ui-header-create ui-desktop-only" href={`${base}/add`}>
-					<span class="ui-header-create-icon"><IconAdd /></span>
-					<span><small>یک همراهی تازه</small><strong>ایجاد ختم جدید</strong></span>
-				</a>
-			{/if}
 
-			<div class="ui-header-actions">
 				{#if end}
-					{@render end()}
+					<div class="ui-header-actions">
+						{@render end()}
+					</div>
 				{/if}
-
-				{#if page.data.user}
-					<details class="ui-header-account ui-desktop-only" bind:this={accountMenu}>
-						<summary aria-label="باز کردن منوی حساب کاربری">
-							<IconAccount />
-							<span>
-								<small>حساب کاربری</small>
-								<strong>{page.data.user.name || 'حساب من'}</strong>
-							</span>
-						</summary>
-						<div class="ui-header-account-menu">
-							<a href={`${base}/account`}><IconAccount /><span>حساب من</span></a>
-							<a href={`${base}/settings`}><IconSettings /><span>تنظیمات</span></a>
-							<button type="button" onclick={signOut}>
-								<IconLogout /><span>خروج</span>
-							</button>
-						</div>
-					</details>
-				{:else}
-					<a
-						class="ui-header-utility ui-desktop-only"
-						href={`${base}/settings`}
-						aria-label="تنظیمات"
-					>
-						<IconSettings />
-					</a>
-					<a class="ui-header-login ui-desktop-only" href={`${base}/auth/login`}>
-						<IconLogin /><span>ورود</span>
-					</a>
-				{/if}
-
-				<button
-					type="button"
-					class="ui-header-menu-button ui-mobile-only"
-					aria-label={open ? 'بستن منو' : 'باز کردن منو'}
-					aria-expanded={open}
-					onclick={() => (open = !open)}
-				>
-					{#if open}<IconClose />{:else}<IconMenu />{/if}
-				</button>
 			</div>
-		</div>
+		{/if}
 
 		{#if open}
 			<nav class="ui-mobile-menu ui-mobile-only" aria-label="ناوبری موبایل">

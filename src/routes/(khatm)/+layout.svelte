@@ -143,33 +143,47 @@
 	{/if}
 </svelte:head>
 
-<Header title="ختم قرآن گروهی" link={`${base}/`}>
+<Header title={khatm.title}>
 	{#snippet end()}
 		{#if data.canEdit}
 			<a
 				href={editHref}
-				class="ui-btn ui-btn-icon ui-btn-ghost"
+				class="ui-header-page-action"
 				aria-label="ویرایش ختم"
 			>
 				<IconEdit class="size-5" />
+				<span>ویرایش</span>
 			</a>
 		{:else if canManageAsGuest}
 			<button
 				type="button"
-				class="ui-btn ui-btn-icon ui-btn-ghost"
+				class="ui-header-page-action"
 				onclick={() => (showAuthPrompt = true)}
 				aria-label="ویرایش یا حذف ختم"
 			>
 				<IconEdit class="size-5" />
+				<span>مدیریت</span>
 			</button>
 		{/if}
 		{#if canShare}
-			<button type="button" class="ui-btn ui-btn-icon ui-btn-ghost" onclick={share} aria-label="اشتراک‌گذاری">
+			<button
+				type="button"
+				class="ui-header-page-action ui-header-page-action-primary"
+				onclick={share}
+				aria-label="اشتراک‌گذاری"
+			>
 				<IconShare class="size-5" />
+				<span>اشتراک‌گذاری</span>
 			</button>
 		{:else}
-			<button type="button" class="ui-btn ui-btn-icon ui-btn-ghost" onclick={copy} aria-label="کپی لینک">
+			<button
+				type="button"
+				class="ui-header-page-action ui-header-page-action-primary"
+				onclick={copy}
+				aria-label="کپی لینک"
+			>
 				<IconCopy class="size-5" />
+				<span>کپی لینک</span>
 			</button>
 		{/if}
 	{/snippet}
@@ -244,6 +258,7 @@
 			</div>
 			<div class="ui-khatm-view-tabs">
 				<Tab
+					noScroll
 					tabs={[
 						{ slug: 'wizard', icon: IconViewWizard, title: 'مرحله‌ای', link: khatm.getLink('wizard') },
 						{ slug: 'list', icon: IconViewList, title: 'لیستی', link: khatm.getLink('list') },

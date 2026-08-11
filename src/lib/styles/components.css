@@ -1664,10 +1664,10 @@
 
 .ui-header-inner {
 	position: relative;
-	display: flex;
+	display: grid;
 	min-height: 4.65rem;
+	grid-template-columns: minmax(0, 1fr) auto;
 	align-items: center;
-	justify-content: space-between;
 	padding-right: 0.75rem;
 	padding-left: 0.75rem;
 }
@@ -1742,15 +1742,23 @@
 	white-space: nowrap;
 }
 
-.ui-header-tools {
+.ui-header-global {
 	display: flex;
-	min-width: 0;
-	flex: 1 1 auto;
 	align-items: center;
 	justify-content: flex-end;
 }
 
-.ui-header-tools > * + * {
+.ui-header-global > * + * {
+	margin-right: 0.4rem;
+}
+
+.ui-header-context-bar {
+	display: flex;
+	min-width: 0;
+	align-items: center;
+}
+
+.ui-header-context-bar > * + * {
 	margin-right: 0.4rem;
 }
 
@@ -1826,6 +1834,63 @@
 
 .ui-header-actions > * + * {
 	margin-right: 0.25rem;
+}
+
+.ui-header-page-action {
+	display: flex;
+	width: 2.7rem;
+	height: 2.7rem;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border: 1px solid var(--ui-color-border);
+	border-radius: 0.9rem;
+	background: var(--ui-color-surface);
+	color: var(--ui-color-text);
+	font: inherit;
+	font-size: 0.72rem;
+	font-weight: 850;
+	text-decoration: none;
+	cursor: pointer;
+	transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease,
+		transform 100ms ease;
+}
+
+.ui-header-page-action:hover {
+	border-color: var(--ui-color-primary);
+	background: var(--ui-color-primary-soft);
+	color: var(--ui-color-primary);
+}
+
+.ui-header-page-action:active {
+	transform: scale(0.97);
+}
+
+.ui-header-page-action:focus {
+	outline: 2px solid var(--ui-color-border-strong);
+	outline-offset: 2px;
+}
+
+.ui-header-page-action svg {
+	width: 1.15rem;
+	height: 1.15rem;
+	flex: 0 0 auto;
+}
+
+.ui-header-page-action span {
+	display: none;
+}
+
+.ui-header-page-action-primary {
+	border-color: var(--ui-color-primary);
+	background: var(--ui-color-primary);
+	color: var(--ui-color-on-primary);
+}
+
+.ui-header-page-action-primary:hover {
+	border-color: var(--ui-color-primary-hover);
+	background: var(--ui-color-primary-hover);
+	color: var(--ui-color-on-primary);
 }
 
 .ui-header-create {
@@ -2150,13 +2215,17 @@
 	}
 
 	.ui-header-inner {
-		display: grid;
-		min-height: 5.4rem;
-		grid-template-areas: 'tools nav brand';
+		min-height: 5rem;
+		grid-template-areas: 'global nav brand';
 		grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-		padding-right: 1rem;
-		padding-left: 1rem;
+		padding: 0.65rem 1rem;
 		direction: ltr;
+	}
+
+	.ui-header-with-context .ui-header-inner {
+		grid-template-areas:
+			'global nav brand'
+			'context context context';
 	}
 
 	.ui-header-brand {
@@ -2175,17 +2244,30 @@
 		direction: rtl;
 	}
 
-	.ui-header-tools {
+	.ui-header-global {
 		width: 100%;
-		grid-area: tools;
+		grid-area: global;
 		justify-self: stretch;
 		justify-content: flex-end;
 		direction: rtl;
 	}
 
+	.ui-header-context-bar {
+		width: 100%;
+		min-height: 3.25rem;
+		grid-area: context;
+		justify-content: space-between;
+		margin-top: 0.55rem;
+		padding: 0.35rem 0.45rem;
+		border: 1px solid var(--ui-color-border);
+		border-radius: 1.05rem;
+		background: var(--ui-color-surface-muted);
+		box-shadow: inset 0 1px 0 var(--ui-color-surface);
+		direction: rtl;
+	}
+
 	.ui-header-context {
-		max-width: 11rem;
-		flex: 1 1 auto;
+		max-width: 38rem;
 	}
 
 	.ui-header-page-copy {
@@ -2193,7 +2275,26 @@
 	}
 
 	.ui-header-title {
-		max-width: 7.5rem;
+		max-width: 32rem;
+		font-size: 0.9rem;
+	}
+
+	.ui-header-actions {
+		padding-right: 0.4rem;
+		border-right: 1px solid var(--ui-color-border);
+	}
+
+	.ui-header-page-action {
+		width: auto;
+		height: 2.4rem;
+		padding-right: 0.75rem;
+		padding-left: 0.75rem;
+		border-radius: 0.78rem;
+	}
+
+	.ui-header-page-action svg + span {
+		display: inline;
+		margin-right: 0.4rem;
 	}
 }
 
@@ -2202,12 +2303,8 @@
 		display: flex;
 	}
 
-	.ui-header-context {
-		max-width: 12.5rem;
-	}
-
 	.ui-header-title {
-		max-width: 9rem;
+		max-width: 38rem;
 	}
 }
 
@@ -2218,6 +2315,18 @@
 
 	.ui-header-inner {
 		min-height: 4.4rem;
+	}
+
+	.ui-header-brand,
+	.ui-header-context-bar {
+		min-width: 0;
+		grid-column: 1;
+		grid-row: 1;
+	}
+
+	.ui-header-global {
+		grid-column: 2;
+		grid-row: 1;
 	}
 
 	.ui-header-brand-copy strong {

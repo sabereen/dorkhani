@@ -3,15 +3,3 @@
 @import './lib/styles/base.css';
 @import './lib/styles/layout.css';
 @import './lib/styles/components.css';
-
-.hatched {
-	background-color: var(--ui-color-surface);
-	background-image: repeating-linear-gradient(
-		-45deg,
-		var(--ui-color-surface),
-		var(--ui-color-surface) 13px,
-		var(--ui-color-surface-muted) 13px,
-		var(--ui-color-surface-muted) 14px
-	);
-	background-size: 40px 40px;
-}

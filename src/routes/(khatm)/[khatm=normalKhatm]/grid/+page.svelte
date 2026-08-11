@@ -83,13 +83,13 @@
 	}
 </script>
 
-<section class="ui-khatm-panel">
-	<div class="ui-khatm-panel-header">
+<section class="ui-khatm-panel ui-khatm-map-panel">
+	<div class="ui-khatm-panel-header ui-khatm-map-panel-header">
 		<span class="ui-khatm-option-icon"><IconGrid /></span>
 		<h2>نقشه‌ی کامل ختم</h2>
 		<p>جای هر بخش را در ساختار قرآن ببینید و مستقیم از روی نقشه انتخاب کنید.</p>
 	</div>
-	<div class="ui-khatm-toolbar">
+	<div class="ui-khatm-toolbar ui-khatm-map-toolbar">
 		<label class="ui-khatm-check">
 			<input type="checkbox" class="ui-checkbox" bind:checked={hideFinishedIntervals} />
 			<span>فقط بازه‌های آزاد</span>
@@ -112,9 +112,14 @@
 		{#each ranges as range (range.start + ':' + range.end)}
 			{@const start = Ayah.get(range.start)}
 			{@const end = Ayah.get(range.end - 1)}
+			{@const label =
+				`${surah_getName(start.surah)} ${start.number} – ` +
+				`${surah_getName(end.surah)} ${end.number}`}
 			<button
 				type="button"
 				class="ui-khatm-map-selectable col-start-1"
+				aria-label={label}
+				title={label}
 				style:grid-column-start={column}
 				style:grid-row-start={range.start + 1}
 				style:grid-row-end={range.end + 1}
@@ -159,7 +164,6 @@
 			{@const mine = participation.isMine(part)}
 			<div
 				class="ui-khatm-map-picked col-span-3 col-start-1"
-				class:hatched={!mine}
 				class:ui-khatm-map-finished={!mine}
 				class:ui-khatm-map-mine={mine}
 				style:grid-row-start={part.start + 1}

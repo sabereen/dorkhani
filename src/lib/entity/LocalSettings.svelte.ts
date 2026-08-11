@@ -16,7 +16,6 @@ export interface ILocalSettings {
 	readedRangesVisibility: 'visible' | 'invisible' | 'auto'
 	externalQuranProvider: 'ketabmobin' | 'quran-com' | 'quran-projector'
 	colorScheme: ColorScheme
-	pageBasedProgress: boolean
 }
 
 export type SettingKey = keyof ILocalSettings
@@ -28,7 +27,6 @@ const defaultSettings = {
 	translation: 'ansarian',
 	externalQuranProvider: 'quran-com',
 	colorScheme: 'system',
-	pageBasedProgress: false,
 } as const satisfies ILocalSettings
 
 const localStoreKey = 'localSettings'
@@ -147,10 +145,6 @@ export function normalizeSettings(value: unknown): Partial<ILocalSettings> {
 	) {
 		result.colorScheme = stored.colorScheme
 	}
-	if (typeof stored.pageBasedProgress === 'boolean') {
-		result.pageBasedProgress = stored.pageBasedProgress
-	}
-
 	return result
 }
 

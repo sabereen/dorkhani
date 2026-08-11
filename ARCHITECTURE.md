@@ -155,7 +155,7 @@ Route group با نام `(khatm)` در URL دیده نمی‌شود. matcherها
 | `/list` | `routes/list/+page.server.ts`, `+page.svelte` | فهرست صفحه‌بندی‌شدهٔ ختم‌های approved؛ صفحه‌های بعدی از `Khatm.getList()` و API گرفته می‌شوند |
 | `/add` | `routes/add/+page.server.ts`, `+page.svelte`, `sucess-result.svelte` | ساخت ختم از form action؛ در صورت سریالی بودن ساخت `TKhatmSeries`؛ notification برای ختم عمومی؛ ذخیرهٔ ختم ساخته‌شده در IndexedDB |
 | `/history` | `routes/history/+page.svelte`, `history-khatm.svelte`, `history-picked-range.svelte` | خواندن تاریخچهٔ محلی ختم‌های ساخته‌شده و بازه‌های انتخاب‌شده از Dexie؛ تاریخچهٔ ذکر فعلاً با `history-zekr.svelte` در صفحهٔ اصلی نمایش داده می‌شود |
-| `/settings` | `routes/settings/+page.ts`, `+page.svelte`, `Settings*.svelte` | صفحهٔ client-only برای theme، فونت، ترجمه، قاری و شیوهٔ محاسبه/نمایش پیشرفت |
+| `/settings` | `routes/settings/+page.ts`, `+page.svelte`, `Settings*.svelte` | صفحهٔ client-only برای theme، فونت، ترجمه و قاری |
 | `/k{id}` و `/ks{seriesId}` | `(khatm)/+layout.server.ts`, `+layout.svelte`, `[normalKhatm]/(wizard)/+page.svelte` | بارگذاری ختم و access token، ایجاد context مشترک، انتخاب مرحله‌ای بازه و نمایش progress |
 | `/k{id}/list` و `/ks{seriesId}/list` | `[normalKhatm]/list/+page.svelte` | نمایش سلسله‌مراتبی جزءها و زیر‌بازه‌ها و انتخاب بخش آزاد |
 | `/k{id}/grid` و `/ks{seriesId}/grid` | `[normalKhatm]/grid/+page.svelte` | نمایش شبکه‌ای سوره/صفحه/حزب و محاسبهٔ زیر‌بازه‌های آزاد |
@@ -202,7 +202,7 @@ flowchart TD
     Endpoint[POST /api/khatmPart/pickRange]
     Service[khatmPartService_pickRange]
     Guard[اعتبار نوع بازه و نبود هم‌پوشانی]
-    Write[افزایش versesRead و ساخت TKhatmPart]
+    Write[افزایش اتمیک versesRead و pageProgress و ساخت TKhatmPart]
     History[PickedKhatmPart در IndexedDB]
     Refresh[Khatm.refresh]
 
@@ -217,7 +217,7 @@ flowchart TD
 
 ### ختم آیه‌به‌آیه
 
-`[ayahKhatm]/+page.svelte` تعداد درخواستی و تنظیمات ترجمه را به `Khatm.pickNextAyat()` می‌دهد. `khatmPartService_pickNextAyat()` ختم با `rangeType='ayah'` را پیدا می‌کند، تعداد را به آیات باقی‌مانده محدود می‌کند و `versesRead` را با guard رقابتی افزایش می‌دهد. سپس `quran.ts` بازهٔ تازه تخصیص‌یافته را از JSONهای متن Hafs/QPC و ترجمهٔ انتخابی می‌سازد. در این نوع ختم، `TKhatmPart` ساخته نمی‌شود؛ ترتیب فقط از `versesRead` استخراج می‌شود.
+`[ayahKhatm]/+page.svelte` تعداد درخواستی و تنظیمات ترجمه را به `Khatm.pickNextAyat()` می‌دهد. `khatmPartService_pickNextAyat()` ختم با `rangeType='ayah'` را پیدا می‌کند، تعداد را به آیات باقی‌مانده محدود می‌کند و `versesRead` را با guard رقابتی افزایش می‌دهد. سپس در همان تراکنش `pageProgress` را از مقدار واقعی پس از افزایش به‌روز می‌کند. `quran.ts` بازهٔ تازه تخصیص‌یافته را از JSONهای متن Hafs/QPC و ترجمهٔ انتخابی می‌سازد. در این نوع ختم، `TKhatmPart` ساخته نمی‌شود؛ ترتیب فقط از `versesRead` استخراج می‌شود.
 
 `MultipleAyah.svelte` نمایش مجموعه را هماهنگ می‌کند، `FontManager.svelte.ts` فونت Hafs یا فونت صفحه‌ای QPC را preload می‌کند، `AudioManager.svelte.ts` state صوت را نگه می‌دارد و `SingleAyah.svelte` هر آیه، ترجمه، صوت و لینک متن پیرامونی را render می‌کند.
 
@@ -255,7 +255,7 @@ flowchart TD
 
 | فایل | ورودی/وابستگی | خروجی/مصرف |
 | --- | --- | --- |
-| `Khatm.svelte.ts` | plain `TKhatm`، `request.ts`، `QuranRange`، `PickedKhatmPart` | state reactive ختم، URL، progress، share/copy، refresh، review و انتخاب بازه/آیه |
+| `Khatm.svelte.ts` | plain `TKhatm`، `request.ts` و `PickedKhatmPart` | state reactive ختم، URL، progress صفحه‌محور ذخیره‌شده، share/copy، refresh، review و انتخاب بازه/آیه |
 | `Zekr.svelte.ts` | plain `TZekr`، API و repository ذکر محلی | state reactive ذکر، progress، share/copy و pick |
 | `Range.ts` | entityهای `@ghoran` و helperهای تبدیل | parse/serialize URL، عنوان، تقسیم، درصد پوشش و تطبیق `RangeType` |
 | `KhatmPart.ts` | plain `TKhatmPart` | wrapper نمایشی و merge بخش‌های مجاور |
@@ -267,7 +267,7 @@ flowchart TD
 | `Showcase.ts` | `request.ts` | facade کوچک ذخیرهٔ showcase برای صفحهٔ admin |
 | `Theme.ts` | دادهٔ ثابت | فهرست و type حالت‌های رنگ سیستم، روشن و تاریک |
 
-`Khatm.fromPlain()` و `Zekr.fromPlain()` در مرورگر cache سراسری بر اساس id دارند تا componentهای مختلف به یک instance reactive برسند. دادهٔ رسیده فقط وقتی شمارندهٔ آن جدیدتر باشد جایگزین می‌شود؛ برای parts ختم، طول بیشتر نیز باعث refresh آرایه می‌شود. در SSR cache استفاده نمی‌شود.
+`Khatm.fromPlain()` و `Zekr.fromPlain()` در مرورگر cache سراسری بر اساس id دارند تا componentهای مختلف به یک instance reactive برسند. دادهٔ ختم وقتی `versesRead` یا `pageProgress` جدیدتر باشد، یا وضعیت کامل تازه‌ای برسد، جایگزین می‌شود؛ برای parts ختم، طول بیشتر نیز باعث refresh آرایه می‌شود. در SSR cache استفاده نمی‌شود.
 
 ## ۱۱. persistence و مدل داده
 
@@ -286,6 +286,7 @@ erDiagram
         string description
         RangeType rangeType
         int versesRead
+        float pageProgress
         boolean private
         string accessToken
         datetime created
@@ -339,7 +340,8 @@ erDiagram
 - `RangeType`: `free`, `juz`, `hizbQuarter`, `page`, `surah`, `ayah`.
 - `KhatmStatus`: `inProgress`, `completed`.
 - `ReviewStatus`: `pending`, `approved`, `rejected` و index روی `TKhatm.reviewStatus`.
-- `TKhatmPart.start/end` و `TKhatm.versesRead` از عددهای unsigned مناسب دامنهٔ ۶۲۳۶ آیه استفاده می‌کنند.
+- `TKhatmPart.start/end` و `TKhatm.versesRead` از عددهای unsigned مناسب دامنهٔ ۶۲۳۶ آیه استفاده می‌کنند. `TKhatm.pageProgress` درصد ۰ تا ۱۰۰ صفحه‌محور را برای خواندن مستقیم در فهرست‌ها نگه می‌دارد.
+- وزن هر آیه معکوس تعداد آیات صفحهٔ مصحف آن است. انتخاب بازه و انتخاب ترتیبی آیات، `pageProgress` را همراه `versesRead` در یک تراکنش به‌روز می‌کنند و migration داده‌های قدیمی را از partها یا بازهٔ ترتیبی backfill می‌کند.
 - `TAppSettings` عملاً singleton با `id=1` است و config ساختار support/showcase/notification دارد.
 - `TSystemStatistics(id=1)` و `TDailyStatistics(day)` شمارنده‌های ازپیش‌تجمیع‌شده‌اند؛ دیتابیس منبع حقیقت است و cache روی `globalThis` پس از commit به‌صورت write-through به‌روز می‌شود.
 - migrationهای timestamped در `prisma/migrations/` تاریخچهٔ افزودن بسم‌الله، app settings، ذکر، سری ختم و review status را نگه می‌دارند.
@@ -355,7 +357,7 @@ erDiagram
 | IndexedDB `Khatm` | `createdKhatms` | snapshot ختم ساخته‌شده | نتیجهٔ `/add` و history |
 | IndexedDB `Khatm` | `localZekr` | snapshot ذکر، مالکیت و `myCount` | ساخت/انتخاب ذکر و history |
 
-Dexie schema در نسخهٔ ۴ تعریف شده است. repositoryها فیلدهای snapshot را صریح کپی می‌کنند تا داده‌های سنگین یا رابطه‌های ناخواسته وارد IndexedDB نشوند.
+repositoryهای Dexie فیلدهای snapshot، از جمله `pageProgress`، را صریح کپی می‌کنند تا داده‌های سنگین یا رابطه‌های ناخواسته وارد IndexedDB نشوند. snapshotهای قدیمی فاقد این فیلد هنگام ساخت entity با مقدار صفر normalize می‌شوند و چون index جدیدی لازم نیست، نسخهٔ schema افزایش نمی‌یابد.
 
 ## ۱۲. componentها و UI مشترک
 
@@ -435,7 +437,7 @@ Dexie schema در نسخهٔ ۴ تعریف شده است. repositoryها فیل�
 
 1. بازه‌های قرآن را همیشه `[start, end)` در نظر بگیرید؛ تبدیل به آیهٔ آخر فقط در مرز نمایش/URL انجام شود.
 2. access token ختم خصوصی در لینک عمومی با query key کوتاه `t` است، اما APIها فیلد `accessToken` دریافت می‌کنند.
-3. `versesRead` باید با partهای ثبت‌شده یا تخصیص ترتیبی هماهنگ بماند؛ تغییر مستقیم آن می‌تواند progress و تکمیل سری را ناسازگار کند.
+3. `versesRead` و `pageProgress` باید با partهای ثبت‌شده یا تخصیص ترتیبی هماهنگ بمانند؛ تغییر مستقیم هرکدام می‌تواند progress، مرتب‌سازی و تکمیل سری را ناسازگار کند.
 4. endpointهای مدیریتی باید علاوه بر layout مدیریتی، خودشان `auth_ensureIsAdmin()` را اجرا کنند؛ layout از فراخوانی مستقیم API محافظت نمی‌کند.
 5. config در `appSettings_store` و cache آمار صفحهٔ اصلی حافظهٔ process هستند. در استقرار چند process، update یک process فوراً singleton process دیگر را تغییر نمی‌دهد؛ منبع پایدار همچنان DB است.
 6. cache فونت، app settings و آمار تجمیعی درون‌حافظه‌ای و وابسته به process هستند؛ IndexedDB و LocalStorage وابسته به مرورگر و origin هستند.

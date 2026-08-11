@@ -8,6 +8,7 @@ import { hizbQuarter_toRange } from './HizbQuarter'
 import { ayah_getExternalLink } from './Ayah'
 import type { RangeType } from '@prisma-client'
 import type { Khatm } from './Khatm.svelte'
+import { roundPercent } from '$lib/utility/percent'
 
 export class QuranRange {
 	start: number
@@ -116,6 +117,8 @@ export class QuranRange {
 	}
 
 	getPageCount() {
+		if (this.end <= this.start) return 0
+
 		const startPage = this.startAyah.page
 		const lastPage = this.lastAyah.page
 		const betweenPagesCount = lastPage.index - startPage.index - 1
@@ -177,11 +180,17 @@ export class QuranRange {
 	}
 
 	getFillPercent(parts: KhatmPart[]) {
+		if (this.length <= 0) return 0
+
 		const subranges = this.divideByKahtmParts(parts).filter((p) => p.khatmPart)
-		const fillCount = subranges.map(({ range }) => range.length).reduce((a, b) => a + b, 0)
+		const fillCount = subranges.reduce((sum, { range }) => sum + range.length, 0)
 		if (fillCount === this.length) return 100
-		const percent = +(100 * (fillCount / this.length)).toFixed(0)
-		return Math.min(99, percent)
+
+		const filledPageCount = subranges.reduce(
+			(sum, { range }) => sum + range.getPageCount(),
+			0,
+		)
+		return roundPercent((100 * filledPageCount) / this.getPageCount(), false)
 	}
 
 	getTitle() {

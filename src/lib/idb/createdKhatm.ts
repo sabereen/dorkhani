@@ -10,6 +10,7 @@ export async function idb_createdKhatm_add(item: Omit<CreatedKhatm, 'id'>) {
 			id: item.khatm.id,
 			created: item.khatm.created,
 			versesRead: item.khatm.versesRead,
+			pageProgress: item.khatm.pageProgress,
 			description: item.khatm.description,
 			private: item.khatm.private,
 			rangeType: item.khatm.rangeType,

@@ -25,7 +25,6 @@
 	import { base } from '$app/paths'
 	import { rebaseFullPath } from '$lib/utility/path'
 	import ExpandableText from '$lib/components/ExpandableText.svelte'
-	import { SettingsEditor } from '$lib/entity/LocalSettings.svelte'
 	import { invalidateAll } from '$app/navigation'
 	import { idb_createdKhatm_hasClaim } from '$lib/idb/createdKhatm'
 	import KhatmParticipation from './KhatmParticipation.svelte'
@@ -33,9 +32,6 @@
 	const { data, children }: LayoutProps = $props()
 
 	const canShare = !browser || navigator.share
-
-	const settingsEditor = SettingsEditor.use()
-	settingsEditor.live = true
 
 	let layout = $derived.by<'wizard' | 'list' | 'grid'>(() => {
 		if (page.url.pathname.includes('grid')) return 'grid'
@@ -89,13 +85,7 @@
 
 	const roundTitle = $derived(khatm.getRoundTitle())
 
-	const percentByAyah = $derived(khatm.percent)
-	const percentByPage = $derived((khatm.getProgressByPage() || 0) * 100)
-	const pageBasedProgress = $derived(settingsEditor.config.pageBasedProgress)
-	function togglePageBasedProgress() {
-		settingsEditor.config.pageBasedProgress = !pageBasedProgress
-	}
-	const percent = $derived(pageBasedProgress ? percentByPage : percentByAyah)
+	const percent = $derived(khatm.percent)
 
 	const canSelectLayout = $derived(!khatm.finished && khatm.isFree)
 	let showAuthPrompt = $state(false)
@@ -238,9 +228,6 @@
 			</div>
 			<div class="ui-khatm-progress-value"><strong>{percent.toLocaleString('fa')}</strong><span>٪</span></div>
 			<progress class="ui-progress ui-progress-success" max={100} value={percent} aria-label="پیشرفت ختم"></progress>
-			<button type="button" class="ui-khatm-progress-toggle" onclick={togglePageBasedProgress}>
-				نمایش بر اساس {pageBasedProgress ? 'صفحه' : 'آیه'}
-			</button>
 		</div>
 	</section>
 

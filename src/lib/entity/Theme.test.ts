@@ -23,7 +23,6 @@ describe('color scheme', () => {
 			}),
 		).toEqual({
 			translation: 'makarem',
-			pageBasedProgress: true,
 		})
 	})
 

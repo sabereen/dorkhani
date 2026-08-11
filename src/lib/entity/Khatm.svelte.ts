@@ -12,6 +12,7 @@ import { browser } from '$app/environment'
 import type { Translation } from './LocalSettings.svelte'
 import type { KhatmDirectoryQuery, KhatmDirectoryResult } from './KhatmDirectory'
 import { KhatmParticipation } from './KhatmParticipation.svelte'
+import { roundPercent } from '$lib/utility/percent'
 
 const cache = new Map<number, Khatm>()
 
@@ -21,18 +22,30 @@ export class Khatm {
 	participation: KhatmParticipation
 
 	private constructor(plain: KhatmData & { parts?: TKhatmPart[] }) {
-		this.plain = plain
+		this.plain = Khatm.normalizePlain(plain)
 		this.plainParts = plain.parts || []
 		this.participation = new KhatmParticipation(() => this.plain)
 	}
 
+	private static normalizePlain(
+		plain: KhatmData & { parts?: TKhatmPart[] },
+	): KhatmData & { parts?: TKhatmPart[] } {
+		if (Number.isFinite(plain.pageProgress)) return plain
+		return { ...plain, pageProgress: 0 }
+	}
+
 	static fromPlain(plain: KhatmData & { parts?: TKhatmPart[] }) {
+		plain = this.normalizePlain(plain)
 		if (!browser) return new this(plain)
 
 		let khatm = cache.get(plain.id)
 		if (khatm) {
 			untrack(() => {
-				const isNewer = plain.versesRead > khatm!.versesRead
+				const isNewer =
+					plain.versesRead > khatm!.versesRead ||
+					(plain.versesRead === khatm!.versesRead &&
+						(plain.pageProgress > khatm!.pageProgress ||
+							(plain.status === 'completed' && khatm!.status !== 'completed')))
 				if (isNewer) {
 					khatm!.plain = plain
 				}
@@ -119,25 +132,16 @@ export class Khatm {
 		return this.plain.description
 	}
 
-	getProgressByPage() {
-		if (this.versesRead === 0) return 0
-		if (this.rangeType === 'ayah') {
-			return new QuranRange(0, this.versesRead).getCoveragePercent()
-		}
-		if (!this.plainParts) return null
-		let progress = 0
-		for (const part of this.plainParts) {
-			progress += new QuranRange(part.start, part.end).getCoveragePercent()
-		}
-		return progress
+	get pageProgress() {
+		return Math.min(100, Math.max(0, this.plain.pageProgress))
 	}
 
 	get progress() {
-		return this.versesRead / COUNT_OF_AYAHS
+		return this.pageProgress / 100
 	}
 
 	get percent() {
-		return Math.floor(100_00 * this.progress) / 100
+		return roundPercent(this.pageProgress, this.finished || this.versesRead >= COUNT_OF_AYAHS)
 	}
 
 	get isSerial() {
@@ -233,6 +237,7 @@ export class Khatm {
 		})
 		const firstAyah = result.ayat[0]
 		const lastAyah = result.ayat[result.ayat.length - 1]
+		this.plain = result.khatm
 		if (firstAyah && lastAyah) {
 			this.participation.add(new QuranRange(firstAyah.index, lastAyah.index + 1), result.khatm)
 		}
@@ -279,13 +284,14 @@ export class Khatm {
 	}
 
 	async pickRange(range: QuranRange) {
-		await request('post', '/khatmPart/pickRange', {
+		const updated = await request<KhatmData>('post', '/khatmPart/pickRange', {
 			start: range.start,
 			end: range.end,
 			khatmId: this.id,
 			accessToken: this.accessToken,
 		})
 
-		this.participation.add(range)
+		this.plain = updated
+		this.participation.add(range, updated)
 	}
 }

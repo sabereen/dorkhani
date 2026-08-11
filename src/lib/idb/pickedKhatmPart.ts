@@ -15,6 +15,7 @@ export async function idb_pickedKhatmPart_add(item: Omit<PickedKhatmPart, 'id'>)
 			description: item.khatm.description,
 			created: item.khatm.created,
 			versesRead: item.khatm.versesRead,
+			pageProgress: item.khatm.pageProgress,
 			private: item.khatm.private,
 			rangeType: item.khatm.rangeType,
 			accessToken: item.khatm.accessToken,

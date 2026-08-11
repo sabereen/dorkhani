@@ -65,8 +65,6 @@
 			selectedAyat = result.ayat
 			ayahWrapper?.scrollIntoView({ block: 'start', behavior: 'smooth' })
 
-			khatm.plain.versesRead += result.ayat.length
-
 			// این شرط را گذاشته ایم که آیه آخر سوره ناس را نمایش بدهد
 			if (!isFinished) {
 				khatm.refresh()

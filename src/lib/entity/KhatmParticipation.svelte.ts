@@ -2,6 +2,7 @@ import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 import type { KhatmData } from './KhatmData'
 import { PickedKhatmPart } from './PickedKhatmPart'
 import type { QuranRange } from './Range'
+import { roundPercent } from '$lib/utility/percent'
 
 export type KhatmParticipationRound = {
 	khatmId: number
@@ -77,10 +78,11 @@ export class KhatmParticipation {
 	}
 
 	get currentPercent() {
-		return Math.min(
-			100,
-			Math.floor((this.currentVerseCount / COUNT_OF_AYAHS) * 10_000) / 100,
+		const pageProgress = this.currentRanges.reduce(
+			(sum, range) => sum + range.getCoveragePercent() * 100,
+			0,
 		)
+		return roundPercent(pageProgress, this.currentVerseCount >= COUNT_OF_AYAHS)
 	}
 
 	get rounds() {

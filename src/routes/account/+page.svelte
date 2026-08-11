@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Header from '$lib/components/Header.svelte'
+	import KhatmListCard from '$lib/components/KhatmListCard.svelte'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import { authClient } from '$lib/auth-client'
 	import { goto, invalidateAll } from '$app/navigation'
@@ -35,23 +36,20 @@
 	{#if khatms.length === 0}
 		<div class="ui-alert">هنوز ختمی به این حساب متصل نشده است.</div>
 	{:else}
-		<div class="grid gap-3">
-			{#each khatms as khatm}
-				<article class="ui-card ui-card-bordered">
-					<div class="ui-card-body">
-						<div class="flex items-start justify-between gap-3">
-							<div class="min-w-0">
-								<h3 class="break-words font-bold">{khatm.title}</h3>
-								<p class="text-sm opacity-70">{khatm.rangeTypeTitle} · {khatm.private ? 'خصوصی' : 'عمومی'}</p>
-							</div>
-							<div class="flex shrink-0 gap-2">
-								<a class="ui-btn ui-btn-ghost" href={khatm.link}>مشاهده</a>
-								<a class="ui-btn ui-btn-primary" href={`${base}/account/khatms/${khatm.id}/edit`}>ویرایش</a>
-							</div>
-						</div>
-					</div>
-				</article>
+		<ul class="ui-khatm-card-list ui-khatm-card-list-grid">
+			{#each khatms as khatm (khatm.id)}
+				<li>
+					<KhatmListCard {khatm} meta={khatm.private ? 'ختم خصوصی' : 'ختم عمومی'}>
+						{#snippet actions()}
+							<a class="ui-btn ui-btn-ghost ui-btn-xs" href={khatm.link}>مشاهده</a>
+							<a
+								class="ui-btn ui-btn-primary ui-btn-xs"
+								href={`${base}/account/khatms/${khatm.id}/edit`}>ویرایش</a
+							>
+						{/snippet}
+					</KhatmListCard>
+				</li>
 			{/each}
-		</div>
+		</ul>
 	{/if}
 </section>

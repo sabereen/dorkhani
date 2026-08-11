@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Header from '$lib/components/Header.svelte'
+	import KhatmListCard from '$lib/components/KhatmListCard.svelte'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import IconPending from '~icons/ic/outline-pending'
 	import IconApproved from '~icons/ic/sharp-check-circle-outline'
@@ -58,43 +59,44 @@
 <Header title="تأیید و رد ختم ها" />
 
 {#snippet khatmItem(khatm: Khatm)}
-	<div class="flex min-w-0 grow basis-0 flex-col">
-		<div>
-			{khatm.title}
-			<span class="ui-badge ui-badge-xs" class:ui-badge-info={khatm.isAyahOriented}>
-				{khatm.rangeTypeTitle}
-			</span>
-		</div>
-		<p class="whitespace-pre-wrap text-xs opacity-85">{khatm.description}</p>
-	</div>
-	<div class="ui-flex-gap-sm flex shrink-0 items-center">
-		<span
-			class="ui-badge rounded px-2 py-1 text-xs"
-			class:bg-green-500={khatm.percent === 100}
-			class:opacity-75={khatm.percent !== 100}
-		>
-			{khatm.percent.toLocaleString('fa')}%
-		</span>
-		<a class="ui-btn ui-btn-xs ui-btn-square ui-btn-ghost p-0" href={khatm.link} target="_blank">
-			<IconLink class="size-5" />
-		</a>
-		{#if khatm.reviewStatus === 'pending' || khatm.reviewStatus === 'approved'}
-			<button
-				class="ui-btn ui-btn-xs ui-btn-square ui-btn-ghost p-0"
-				onclick={() => reject(khatm)}
+	<KhatmListCard
+		{khatm}
+		meta={khatm.reviewStatus === 'approved'
+			? 'تأییدشده'
+			: khatm.reviewStatus === 'rejected'
+				? 'ردشده'
+				: 'منتظر بررسی'}
+		showDescription
+	>
+		{#snippet actions()}
+			<a
+				class="ui-btn ui-btn-xs ui-btn-icon ui-btn-ghost"
+				href={khatm.link}
+				target="_blank"
+				aria-label={`مشاهده ختم ${khatm.title}`}><IconLink /></a
 			>
-				<IconRejected class="size-5 text-red-500" />
-			</button>
-		{/if}
-		{#if khatm.reviewStatus === 'pending' || khatm.reviewStatus === 'rejected'}
-			<button
-				class="ui-btn ui-btn-xs ui-btn-square ui-btn-ghost p-0"
-				onclick={() => approve(khatm)}
-			>
-				<IconApproved class="size-5 text-green-500" />
-			</button>
-		{/if}
-	</div>
+			{#if khatm.reviewStatus === 'pending' || khatm.reviewStatus === 'approved'}
+				<button
+					class="ui-btn ui-btn-xs ui-btn-icon ui-btn-ghost"
+					type="button"
+					aria-label="رد کردن ختم"
+					onclick={() => reject(khatm)}
+				>
+					<IconRejected class="text-red-500" />
+				</button>
+			{/if}
+			{#if khatm.reviewStatus === 'pending' || khatm.reviewStatus === 'rejected'}
+				<button
+					class="ui-btn ui-btn-xs ui-btn-icon ui-btn-ghost"
+					type="button"
+					aria-label="تأیید ختم"
+					onclick={() => approve(khatm)}
+				>
+					<IconApproved class="text-green-500" />
+				</button>
+			{/if}
+		{/snippet}
+	</KhatmListCard>
 {/snippet}
 
 <div class="ui-bg-muted rounded-b px-2 pb-2 text-sm shadow-sm">
@@ -123,9 +125,9 @@
 <section class="ui-card ui-card-bordered ui-bg-muted mt-4">
 	<div class="ui-card-body">
 		<h2 class="ui-card-title">آخرین ختم‌های عمومی</h2>
-		<ul class="ui-list">
+		<ul class="ui-khatm-card-list">
 			{#each khatms as khatm (khatm.id)}
-				<li class="ui-list-row w-full">
+				<li>
 					{@render khatmItem(khatm)}
 				</li>
 			{/each}

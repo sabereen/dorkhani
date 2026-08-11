@@ -1,6 +1,7 @@
 <script lang="ts">
 	/* eslint-disable svelte/no-unused-svelte-ignore */
 	import Header from '$lib/components/Header.svelte'
+	import KhatmListCard from '$lib/components/KhatmListCard.svelte'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import type { PageProps } from './$types'
 
@@ -31,38 +32,26 @@
 
 <Header title="ختم‌های ثبت شده" />
 
-<section class="ui-card ui-card-bordered ui-bg-muted mt-4">
-	<div class="ui-card-body">
-		<ul class="ui-list">
-			{#each khatms as khatm (khatm.id)}
-				<li class="">
-					<a
-					class="ui-list-row"
-						href={khatm.link}
-					>
-						<!-- Title & Badge -->
-						<span class="min-w-0 grow">
-							{khatm.title}
-							{#if !khatm.isFree}
-							<span class="ui-badge ui-badge-xs" class:ui-badge-info={khatm.isAyahOriented}>
-									{khatm.rangeTypeTitle}
-								</span>
-							{/if}
-						</span>
-						<!-- Percent -->
-						<span class="flex shrink-0 flex-col items-end">
-							<span class="-mt-1 px-0.5 text-[13px]">
-								{khatm.percent.toLocaleString('fa')}%
-							</span>
-						<progress class="ui-progress ui-progress-success h-1.5 w-10" max={100} value={khatm.percent}
-							></progress>
-						</span>
-					</a>
-				</li>
-			{/each}
-		</ul>
-		{#if !lastPage}
-			<button class="ui-btn" onclick={nextPage} disabled={loading}> بارگیری موارد بعدی </button>
-		{/if}
-	</div>
+<section class="ui-khatm-collection mt-4">
+	<header class="ui-khatm-collection-header">
+		<div>
+			<h2>ختم‌های عمومی</h2>
+			<p>یک ختم را انتخاب کنید و سهم خود را برای قرائت بردارید.</p>
+		</div>
+	</header>
+
+	<ul class="ui-khatm-card-list ui-khatm-card-list-grid">
+		{#each khatms as khatm (khatm.id)}
+			<li>
+				<KhatmListCard {khatm} meta="آماده برای مشارکت شما" />
+			</li>
+		{/each}
+	</ul>
+	{#if !lastPage}
+		<div class="ui-khatm-collection-footer">
+			<button class="ui-btn ui-btn-soft ui-btn-sm" onclick={nextPage} disabled={loading}>
+				{loading ? 'در حال بارگیری…' : 'نمایش موارد بیشتر'}
+			</button>
+		</div>
+	{/if}
 </section>

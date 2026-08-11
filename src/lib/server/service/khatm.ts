@@ -14,6 +14,7 @@ export type PublicKhatm = KhatmData
 
 export class KhatmOwnershipError extends Error {}
 export class KhatmRangeLockedError extends Error {}
+export class KhatmHistoricalRoundError extends Error {}
 
 export function khatmService_toPublic<T extends TKhatm & SecretKhatmFields>(khatm: T) {
 	const { ownerId: _ownerId, guestClaimTokenHash: _claimHash, ...publicKhatm } = khatm
@@ -135,6 +136,15 @@ export async function khatmService_getOwnedForEdit(ownerId: string, id: number) 
 	})
 	if (!khatm) return null
 	if (khatm.ownerId !== ownerId) throw new KhatmOwnershipError()
+	if (
+		khatm.seriesId != null &&
+		(await db.tKhatm.findFirst({
+			where: { seriesId: khatm.seriesId, roundNumber: { gt: khatm.roundNumber } },
+			select: { id: true },
+		}))
+	) {
+		throw new KhatmHistoricalRoundError()
+	}
 
 	return {
 		khatm: khatmService_toPublic(khatm),
@@ -185,6 +195,15 @@ export async function khatmService_editOwned(ownerId: string, id: number, input:
 		})
 		if (!current) return null
 		if (current.ownerId !== ownerId) throw new KhatmOwnershipError()
+		if (
+			current.seriesId != null &&
+			(await tx.tKhatm.findFirst({
+				where: { seriesId: current.seriesId, roundNumber: { gt: current.roundNumber } },
+				select: { id: true },
+			}))
+		) {
+			throw new KhatmHistoricalRoundError()
+		}
 
 		const rangeChanged = current.rangeType !== input.rangeType
 		if (rangeChanged && (current.versesRead > 0 || current._count.parts > 0)) {

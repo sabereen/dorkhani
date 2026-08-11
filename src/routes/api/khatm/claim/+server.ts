@@ -11,7 +11,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 					typeof claim === 'object' &&
 					claim !== null &&
 					Number.isSafeInteger((claim as { id?: unknown }).id) &&
-					typeof (claim as { token?: unknown }).token === 'string',
+					Number((claim as { id?: unknown }).id) > 0 &&
+					typeof (claim as { token?: unknown }).token === 'string' &&
+					/^[A-Za-z0-9_-]{43}$/.test(String((claim as { token?: unknown }).token)),
 			)
 		: []
 	const claimedIds = await khatmService_claimGuestKhatms(locals.user.id, claims)

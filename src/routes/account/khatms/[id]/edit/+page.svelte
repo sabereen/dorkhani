@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { base } from '$app/paths'
 	import Header from '$lib/components/Header.svelte'
 	import type { PageProps } from './$types'
 
@@ -28,15 +29,36 @@
 				</select>
 				{#if !data.canChangeRange}
 					<input type="hidden" name="rangeType" value={data.khatm.rangeType} />
-					<span class="text-xs opacity-70">به‌دلیل ثبت مشارکت، نوع بازه قفل شده است.</span>
+					<span class="ui-text-muted text-xs">به‌دلیل ثبت مشارکت، نوع بازه قفل شده است.</span>
 				{/if}
 			</label>
 			<div class="grid gap-2">
-				<label><input type="radio" name="access" value="private" checked={data.khatm.private} /> خصوصی</label>
-				<label><input type="radio" name="access" value="public" checked={!data.khatm.private} /> عمومی</label>
+				<label>
+					<input
+						class="ui-radio"
+						type="radio"
+						name="access"
+						value="private"
+						checked={data.khatm.private}
+					/>
+					خصوصی
+				</label>
+				<label>
+					<input
+						class="ui-radio"
+						type="radio"
+						name="access"
+						value="public"
+						checked={!data.khatm.private}
+					/>
+					عمومی
+				</label>
 			</div>
 			{#if data.canDisableSeries}
-				<label class="ui-alert"><input type="checkbox" name="disableSeries" /> دور جاری آخرین دور باشد</label>
+				<label class="ui-alert ui-alert-info">
+					<input class="ui-checkbox" type="checkbox" name="disableSeries" />
+					دور جاری آخرین دور باشد
+				</label>
 			{/if}
 			<button class="ui-btn ui-btn-primary" type="submit">ذخیره تغییرات</button>
 		</div>
@@ -45,9 +67,9 @@
 
 <form
 	method="POST"
-	action="delete"
+	action={`${base}/account/khatms/${data.khatm.id}/edit/delete`}
 	class="mx-auto mt-4 max-w-md"
 	onsubmit={(event) => !confirm('این ختم و همه مشارکت‌های آن حذف شود؟') && event.preventDefault()}
 >
-	<button class="ui-btn w-full border-red-600 text-red-600" type="submit">حذف ختم</button>
+	<button class="ui-btn ui-btn-danger ui-btn-block" type="submit">حذف ختم</button>
 </form>

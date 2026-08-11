@@ -1,4 +1,4 @@
-import type { TKhatm } from '@prisma-client'
+import type { KhatmData } from '$lib/entity/KhatmData'
 import { db } from '../db'
 import { khatmService_getBulk } from './khatm'
 
@@ -22,7 +22,7 @@ type Config = {
 
 type Store = {
 	config: Config
-	showcaseKhatms: TKhatm[]
+	showcaseKhatms: KhatmData[]
 }
 
 const store: Store = {

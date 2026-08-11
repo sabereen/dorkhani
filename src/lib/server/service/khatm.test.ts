@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 const dbMock = vi.hoisted(() => ({
 	tKhatm: {
 		findUnique: vi.fn(),
+		findFirst: vi.fn(),
 		findMany: vi.fn(),
 		update: vi.fn(),
 		updateMany: vi.fn(),
@@ -18,6 +19,7 @@ const dbMock = vi.hoisted(() => ({
 vi.mock('$lib/server/db', () => ({ db: dbMock }))
 
 import {
+	KhatmHistoricalRoundError,
 	KhatmOwnershipError,
 	KhatmRangeLockedError,
 	khatmService_claimGuestKhatms,
@@ -103,6 +105,22 @@ describe('khatm ownership service', () => {
 				disableSeries: false,
 			}),
 		).rejects.toBeInstanceOf(KhatmRangeLockedError)
+	})
+
+	it('preserves completed historical rounds when a newer series round exists', async () => {
+		dbMock.tKhatm.findUnique.mockResolvedValue({ ...baseKhatm })
+		dbMock.tKhatm.findFirst.mockResolvedValue({ id: 13 })
+
+		await expect(
+			khatmService_editOwned('owner-1', 12, {
+				title: 'عنوان تازه',
+				description: '',
+				rangeType: 'page',
+				private: false,
+				disableSeries: false,
+			}),
+		).rejects.toBeInstanceOf(KhatmHistoricalRoundError)
+		expect(dbMock.tKhatm.update).not.toHaveBeenCalled()
 	})
 
 	it('renews private access across the series and resets public review', async () => {

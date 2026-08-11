@@ -1,5 +1,7 @@
 import type { RangeType } from '@prisma-client'
+import { base } from '$app/paths'
 import {
+	KhatmHistoricalRoundError,
 	KhatmOwnershipError,
 	KhatmRangeLockedError,
 	khatmService_editOwned,
@@ -11,7 +13,7 @@ import type { Actions, PageServerLoad } from './$types'
 const rangeTypes = new Set<RangeType>(['free', 'page', 'hizbQuarter', 'surah', 'juz', 'ayah'])
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-	if (!locals.user) redirect(303, '/auth/login')
+	if (!locals.user) redirect(303, `${base}/auth/login`)
 	const id = Number(params.id)
 	if (!Number.isSafeInteger(id)) throw error(404, { message: 'ختم پیدا نشد.' })
 
@@ -20,7 +22,14 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		if (!result) throw error(404, { message: 'ختم پیدا نشد.' })
 		return result
 	} catch (cause) {
-		if (cause instanceof KhatmOwnershipError) throw error(403, { message: 'اجازه ویرایش این ختم را ندارید.' })
+		if (cause instanceof KhatmOwnershipError) {
+			throw error(403, { message: 'اجازه ویرایش این ختم را ندارید.' })
+		}
+		if (cause instanceof KhatmHistoricalRoundError) {
+			throw error(409, {
+				message: 'دورهای پایان‌یافته برای حفظ سابقه قابل ویرایش نیستند.',
+			})
+		}
 		throw cause
 	}
 }
@@ -47,13 +56,20 @@ export const actions = {
 			})
 			if (!result) throw error(404, { message: 'ختم پیدا نشد.' })
 		} catch (cause) {
-			if (cause instanceof KhatmOwnershipError) throw error(403, { message: 'اجازه ویرایش این ختم را ندارید.' })
+			if (cause instanceof KhatmOwnershipError) {
+				throw error(403, { message: 'اجازه ویرایش این ختم را ندارید.' })
+			}
+			if (cause instanceof KhatmHistoricalRoundError) {
+				throw error(409, {
+					message: 'دورهای پایان‌یافته برای حفظ سابقه قابل ویرایش نیستند.',
+				})
+			}
 			if (cause instanceof KhatmRangeLockedError) {
 				return fail(409, { errorMessage: 'پس از ثبت مشارکت، نوع بازه قابل تغییر نیست.' })
 			}
 			throw cause
 		}
 
-		redirect(303, '/account')
+		redirect(303, `${base}/account`)
 	},
 } satisfies Actions

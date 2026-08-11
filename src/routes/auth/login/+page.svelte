@@ -15,7 +15,8 @@
 	let eitaaAvailable = $state(false)
 
 	onMount(() => {
-		const check = () => (eitaaAvailable = Boolean(data.authProviders.eitaa && window.Eitaa?.WebApp?.initData))
+		const check = () =>
+			(eitaaAvailable = Boolean(data.authProviders.eitaa && window.Eitaa?.WebApp?.initData))
 		check()
 		const timer = window.setInterval(check, 250)
 		window.setTimeout(() => window.clearInterval(timer), 5000)
@@ -75,15 +76,45 @@
 	{#if errorMessage}<div class="ui-alert ui-alert-error mb-3">{errorMessage}</div>{/if}
 	<form class="ui-card ui-card-bordered" onsubmit={signInEmail}>
 		<div class="ui-card-body grid gap-3">
-			<label class="grid gap-1">ایمیل<input class="ui-input" type="email" bind:value={email} autocomplete="email" required /></label>
-			<label class="grid gap-1">رمز عبور<input class="ui-input" type="password" bind:value={password} autocomplete="current-password" required /></label>
+			<label class="grid gap-1">
+				ایمیل
+				<input
+					dir="ltr"
+					class="ui-input"
+					type="email"
+					bind:value={email}
+					autocomplete="email"
+					required
+				/>
+			</label>
+			<label class="grid gap-1">
+				رمز عبور
+				<input
+					dir="ltr"
+					class="ui-input"
+					type="password"
+					bind:value={password}
+					autocomplete="current-password"
+					required
+				/>
+			</label>
 			<button class="ui-btn ui-btn-primary" type="submit" disabled={loading}>ورود</button>
-			<a class="text-center text-sm underline" href={`${base}/auth/forgot-password`}>رمز عبور را فراموش کرده‌ام</a>
+			<a class="text-center text-sm underline" href={`${base}/auth/forgot-password`}>
+				رمز عبور را فراموش کرده‌ام
+			</a>
 		</div>
 	</form>
 	<div class="mt-3 grid gap-2">
-		{#if data.authProviders.google}<button class="ui-btn ui-btn-outline" type="button" onclick={signInGoogle}>ورود با گوگل</button>{/if}
-		{#if eitaaAvailable}<button class="ui-btn ui-btn-outline" type="button" onclick={signInEitaa} disabled={loading}>ورود با ایتا</button>{/if}
+		{#if data.authProviders.google}
+			<button class="ui-btn ui-btn-outline" type="button" onclick={signInGoogle}>
+				ورود با گوگل
+			</button>
+		{/if}
+		{#if eitaaAvailable}
+			<button class="ui-btn ui-btn-outline" type="button" onclick={signInEitaa} disabled={loading}>
+				ورود با ایتا
+			</button>
+		{/if}
 		<a class="ui-btn ui-btn-ghost" href={`${base}/auth/register`}>ساخت حساب جدید</a>
 	</div>
 </div>

@@ -153,7 +153,7 @@
 					</a>
 				{/each}
 				{#if page.data.user}
-					<button class="ui-nav-link" type="button" onclick={signOut}>
+					<button class="ui-btn ui-btn-ghost ui-btn-block mt-1" type="button" onclick={signOut}>
 						<span class="ui-mobile-nav-icon"><IconLogout /></span>
 						<span>خروج</span>
 					</button>

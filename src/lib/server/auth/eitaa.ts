@@ -1,6 +1,11 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
 import { env } from '$env/dynamic/private'
-import { APIError, createAuthEndpoint, getSessionFromCtx } from 'better-auth/api'
+import {
+	APIError,
+	createAuthEndpoint,
+	formCsrfMiddleware,
+	getSessionFromCtx,
+} from 'better-auth/api'
 import { setSessionCookie } from 'better-auth/cookies'
 import type { BetterAuthPlugin } from 'better-auth'
 import { z } from 'zod'
@@ -49,7 +54,12 @@ export function eitaaAuthPlugin() {
 		endpoints: {
 			signInEitaa: createAuthEndpoint(
 				'/sign-in/eitaa',
-				{ method: 'POST', body: z.object({ initData: z.string().min(1) }) },
+				{
+					method: 'POST',
+					requireHeaders: true,
+					use: [formCsrfMiddleware],
+					body: z.object({ initData: z.string().min(1) }),
+				},
 				async (ctx) => {
 					const profile = eitaaAuth_verifyInitData(ctx.body.initData)
 					if (!profile) throw new APIError('UNAUTHORIZED', { message: 'اطلاعات ورود ایتا معتبر نیست.' })

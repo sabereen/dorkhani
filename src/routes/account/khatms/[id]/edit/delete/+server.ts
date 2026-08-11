@@ -1,4 +1,5 @@
 import { KhatmOwnershipError, khatmService_deleteOwned } from '$service/khatm'
+import { base } from '$app/paths'
 import { error, redirect, type RequestHandler } from '@sveltejs/kit'
 
 export const POST: RequestHandler = async ({ locals, params }) => {
@@ -12,5 +13,5 @@ export const POST: RequestHandler = async ({ locals, params }) => {
 		if (cause instanceof KhatmOwnershipError) throw error(403, { message: 'اجازه حذف این ختم را ندارید.' })
 		throw cause
 	}
-	redirect(303, '/account')
+	redirect(303, `${base}/account`)
 }

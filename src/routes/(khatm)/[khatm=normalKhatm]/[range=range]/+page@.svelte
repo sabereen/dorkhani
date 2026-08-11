@@ -5,6 +5,8 @@
 	import { QuranRange } from '$lib/entity/Range'
 	import { page } from '$app/state'
 	import IconNextPlan from '~icons/ic/outline-next-plan'
+	import IconBook from '~icons/ic/round-menu-book'
+	import IconDone from '~icons/ic/round-check-circle'
 
 	const { data }: PageProps = $props()
 	const range = $derived(QuranRange.fromRangeParam(data.rangeParam)!)
@@ -18,14 +20,14 @@
 
 <Header title={range.getTitle()} />
 
-<p class="ui-alert ui-alert-info mb-1 mt-3 text-lg font-bold">شروع محدوده {range.getTitle()}</p>
-
-<MultipleAyah ayahInfoList={data.ayat} />
-
-<p class="ui-alert ui-alert-info mb-1 mt-3 text-lg font-bold">
-	پایان محدوده {range.getTitle()}
-</p>
-<a href={khatmUrl} class="ui-btn ui-btn-primary ui-btn-lg mt-2 flex grow">
-	<IconNextPlan class="size-8" />
-	بازگشت به ختم
-</a>
+<main class="ui-container-reading ui-khatm-reading-shell">
+	<div class="ui-khatm-reading-marker"><IconBook /><span>آغاز {range.getTitle()}</span></div>
+	<section class="ui-khatm-panel">
+		<MultipleAyah ayahInfoList={data.ayat} />
+	</section>
+	<div class="ui-khatm-reading-marker"><IconDone /><span>پایان {range.getTitle()}</span></div>
+	<a href={khatmUrl} class="ui-btn ui-btn-primary ui-btn-lg ui-btn-block">
+		<IconNextPlan class="size-6" />
+		بازگشت به صفحه ختم
+	</a>
+</main>

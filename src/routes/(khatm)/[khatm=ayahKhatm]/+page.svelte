@@ -4,7 +4,6 @@
 	import type { AyahInfo } from '$service/quran'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
-	import IconSettings from '~icons/ic/round-settings'
 	import { useKathmContext } from '../khatm-context.svelte'
 	import { SettingsEditor } from '$lib/entity/LocalSettings.svelte'
 	import Modal from '$lib/components/Modal.svelte'
@@ -14,6 +13,9 @@
 	import { wait } from '$lib/utility/wait'
 	import { AudioManager } from '$lib/components/Quran/AudioManager.svelte'
 	import MultipleAyah from '$lib/components/Quran/MultipleAyah.svelte'
+	import IconSparkle from '~icons/ic/round-auto-awesome'
+	import IconTune from '~icons/ic/round-tune'
+	import IconDone from '~icons/ic/round-check-circle'
 
 	const khatmContext = useKathmContext()
 	const khatm = $derived(khatmContext.khatm)
@@ -82,20 +84,24 @@
 </script>
 
 {#if selectedAyat.length}
-	<div bind:this={ayahWrapper}>
+	<div class="ui-khatm-panel" bind:this={ayahWrapper}>
 		<MultipleAyah ayahInfoList={selectedAyat} {audioManager} />
 	</div>
 {/if}
-<div class="mt-5 flex flex-col text-center">
+<section class="ui-khatm-ayah-picker">
 	{#if !selectedAyat.length}
-		<p class="text-balance px-4 text-lg">
-			جهت پذیرفتن قرائت یک آیه از این ختم روی دکمه زیر کلیک کنید.
-		</p>
+		<div class="ui-khatm-panel-header">
+			<span class="ui-khatm-option-icon"><IconSparkle /></span>
+			<h2>سهم امروز شما از این ختم</h2>
+			<p>با یک انتخاب، نزدیک‌ترین آیات خوانده‌نشده به شما سپرده می‌شود.</p>
+		</div>
 	{/if}
-	<div class="mt-5 px-4">
+	<div>
 		{#if isFinished}
-			<div>
-				<button class="ui-btn ui-btn-primary ui-btn-block" onclick={() => khatm.refresh()}>
+			<div class="ui-khatm-confirm">
+				<span class="ui-khatm-confirm-icon"><IconDone /></span>
+				<h2>آخرین آیه هم به پایان رسید</h2>
+				<button class="ui-btn ui-btn-success ui-btn-block" onclick={() => khatm.refresh()}>
 					پایان
 					{#if khatm.isSerial}
 						{khatm.getRoundTitle()}
@@ -103,7 +109,7 @@
 				</button>
 			</div>
 		{:else}
-			<div class="grid grid-cols-2 gap-2">
+			<div class="ui-khatm-pick-grid">
 				{#snippet smallButton(text: string, count: number)}
 					<button class="ui-btn ui-btn-outline ui-btn-sm" onclick={() => pick(count)}>
 						{#if loading === count}
@@ -114,7 +120,7 @@
 				{/snippet}
 
 				<button
-					class="ui-btn ui-btn-primary ui-btn-xl col-span-2 text-xl"
+					class="ui-btn ui-btn-primary ui-btn-xl ui-btn-block ui-khatm-pick-primary col-span-2"
 					onclick={() => pick(1)}
 				>
 					{#if loading === 1}
@@ -133,14 +139,14 @@
 				{@render smallButton('پذیرفتن ۱۰ آیه متوالی', 10)}
 
 				<button type="button" class="ui-btn ui-btn-ghost col-span-2" onclick={openSettings}>
-					<IconSettings class="size-6" />
-					تنظیمات
+					<IconTune class="size-5" />
+					تنظیم ترجمه، صوت و نمایش
 				</button>
 			</div>
 		{/if}
 	</div>
-</div>
+</section>
 
 <Modal bind:open={() => modalSettings, () => history.back()} contentClass="bg-transparent p-0">
-	<SettingsAyahKhatm class="!w-full" />
+	<SettingsAyahKhatm class="!w-full" legend="تنظیم ترجمه، صوت و نمایش" />
 </Modal>

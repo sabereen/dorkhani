@@ -8,6 +8,8 @@
 	import IconCopy from '~icons/ic/outline-copy-all'
 	import IconSettings from '~icons/ic/round-settings'
 	import IconEdit from '~icons/ic/round-edit'
+	import IconBook from '~icons/ic/round-menu-book'
+	import IconPeople from '~icons/ic/round-people-alt'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { setKhatmContext } from './khatm-context.svelte'
@@ -121,57 +123,66 @@
 	{/snippet}
 </Header>
 
-<div class="ui-container-reading">
-{#if canSelectLayout}
-	<div class="ui-bg-muted rounded-b px-2 pb-2 text-sm shadow-sm">
-		<Tab
-			tabs={[
-				{ slug: 'wizard', icon: IconViewWizard, title: 'مرحله‌ای', link: khatm.getLink('wizard') },
-				{ slug: 'list', icon: IconViewList, title: 'لیستی', link: khatm.getLink('list') },
-				{ slug: 'grid', icon: IconViewTable, title: 'جدولی', link: khatm.getLink('grid') },
-			]}
-			bind:value={() => layout, () => {}}
-		/>
-	</div>
-{/if}
-
-<div class="ui-hero !min-h-0">
-		<div class="w-full max-w-md">
-			<h1 class="break-words text-2xl font-black">
-				{khatm.title}
-				{#if khatm.isSerial}
-					<span class="ui-badge ui-badge-accent">{roundTitle}</span>
-				{/if}
-				{#if khatm.rangeType === 'ayah'}
-					<span class="ui-badge ui-badge-info">آیه به آیه</span>
-				{/if}
-			</h1>
+<main class="ui-container-reading ui-khatm-page">
+	<section class="ui-khatm-hero" aria-labelledby="khatm-title">
+		<div class="ui-khatm-orb ui-khatm-orb-one" aria-hidden="true"></div>
+		<div class="ui-khatm-orb ui-khatm-orb-two" aria-hidden="true"></div>
+		<div class="ui-khatm-hero-copy">
+			<div class="ui-khatm-eyebrow">
+				<span class="ui-khatm-eyebrow-icon"><IconPeople /></span>
+				<span>یک همراهی نورانی برای ختم قرآن</span>
+			</div>
+			<h1 id="khatm-title" class="ui-khatm-title">{khatm.title}</h1>
+			<div class="ui-khatm-badges">
+				{#if khatm.isSerial}<span class="ui-badge ui-badge-accent">{roundTitle}</span>{/if}
+				{#if khatm.rangeType === 'ayah'}<span class="ui-badge ui-badge-info">آیه به آیه</span>{/if}
+				{#if khatm.private}<span class="ui-badge ui-badge-neutral">خصوصی</span>{/if}
+			</div>
 			{#if khatm.description}
-				<div dir="auto" class="self-center break-words pb-1 pt-5 text-start">
+				<div dir="auto" class="ui-khatm-description">
 					<ExpandableText text={khatm.description} maxLength={250} threshold={10} />
 				</div>
 			{/if}
-			<div class="ui-stats">
-				<div class="ui-stat">
-					<div class="ui-stat-title">
-						پیشرفت ختم
-						<button type="button" class="ui-btn ui-btn-primary ui-btn-xs" onclick={togglePageBasedProgress}>
-							{pageBasedProgress ? 'صفحه‌محور' : 'آیه‌محور'}
-						</button>
-					</div>
-					<div class="ui-stat-value px-2">
-						{percent.toLocaleString('fa')}٪
-					</div>
-					<div class="ui-stat-description">
-						<progress class="ui-progress ui-progress-success w-23" max={100} value={percent}></progress>
-					</div>
+		</div>
+
+		<div class="ui-khatm-progress-card">
+			<div class="ui-khatm-progress-heading">
+				<span class="ui-khatm-progress-icon"><IconBook /></span>
+				<div>
+					<strong>پیشرفت ختم</strong>
+					<span>قدم‌به‌قدم تا پایان این همراهی</span>
 				</div>
 			</div>
+			<div class="ui-khatm-progress-value"><strong>{percent.toLocaleString('fa')}</strong><span>٪</span></div>
+			<progress class="ui-progress ui-progress-success" max={100} value={percent} aria-label="پیشرفت ختم"></progress>
+			<button type="button" class="ui-khatm-progress-toggle" onclick={togglePageBasedProgress}>
+				نمایش بر اساس {pageBasedProgress ? 'صفحه' : 'آیه'}
+			</button>
 		</div>
-</div>
+	</section>
 
+	{#if canSelectLayout}
+		<section class="ui-khatm-view-switch" aria-label="شیوه نمایش بازه‌ها">
+			<div class="ui-khatm-view-copy">
+				<CurrentLayoutIcon />
+				<div><strong>شیوه انتخاب</strong><span>نمای مناسب خودتان را انتخاب کنید</span></div>
+			</div>
+			<div class="ui-khatm-view-tabs">
+				<Tab
+					tabs={[
+						{ slug: 'wizard', icon: IconViewWizard, title: 'مرحله‌ای', link: khatm.getLink('wizard') },
+						{ slug: 'list', icon: IconViewList, title: 'لیستی', link: khatm.getLink('list') },
+						{ slug: 'grid', icon: IconViewTable, title: 'جدولی', link: khatm.getLink('grid') },
+					]}
+					bind:value={() => layout, () => {}}
+				/>
+			</div>
+		</section>
+	{/if}
+
+	<section class="ui-khatm-content">
 {#if khatm.finished}
-	<div class="ui-alert ui-alert-success">
+	<div class="ui-alert ui-alert-success ui-khatm-complete">
 		<p>
 			{#if khatm.isSerial}
 				این دور از ختم کامل شده است ({roundTitle})
@@ -186,6 +197,5 @@
 {:else}
 	{@render children()}
 {/if}
-
-<div class="pt-10"></div>
-</div>
+	</section>
+</main>

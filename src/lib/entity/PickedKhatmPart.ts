@@ -1,5 +1,10 @@
 import type { PickedKhatmPart as IDB_PickedKhatmPart } from '$lib/idb/idb'
-import { idb_pickedKhatmPart_add, idb_pickedKhatmPart_getList } from '$lib/idb/pickedKhatmPart'
+import {
+	idb_pickedKhatmPart_add,
+	idb_pickedKhatmPart_getByKhatmId,
+	idb_pickedKhatmPart_getBySeriesId,
+	idb_pickedKhatmPart_getList,
+} from '$lib/idb/pickedKhatmPart'
 import { Khatm } from './Khatm.svelte'
 import { QuranRange } from './Range'
 
@@ -14,6 +19,16 @@ export class PickedKhatmPart {
 
 	static async getList(limit?: number) {
 		const list = await idb_pickedKhatmPart_getList(limit)
+		return this.fromPlainList(list)
+	}
+
+	static async getByKhatmId(khatmId: number) {
+		const list = await idb_pickedKhatmPart_getByKhatmId(khatmId)
+		return this.fromPlainList(list)
+	}
+
+	static async getBySeriesId(seriesId: number) {
+		const list = await idb_pickedKhatmPart_getBySeriesId(seriesId)
 		return this.fromPlainList(list)
 	}
 

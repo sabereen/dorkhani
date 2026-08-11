@@ -28,6 +28,7 @@
 	import { SettingsEditor } from '$lib/entity/LocalSettings.svelte'
 	import { invalidateAll } from '$app/navigation'
 	import { idb_createdKhatm_hasClaim } from '$lib/idb/createdKhatm'
+	import KhatmParticipation from './KhatmParticipation.svelte'
 
 	const { data, children }: LayoutProps = $props()
 
@@ -52,6 +53,7 @@
 	const khatm = $derived(Khatm.fromPlain(data.khatm))
 
 	const parts = $derived(khatm.getKhatmParts())
+	const rawParts = $derived(khatm.getKhatmParts(false))
 
 	setKhatmContext({
 		get khatm() {
@@ -60,6 +62,15 @@
 		get parts() {
 			return parts
 		},
+		get rawParts() {
+			return rawParts
+		},
+	})
+
+	$effect(() => {
+		if (khatm.id > 0 || khatm.seriesId != null) {
+			void khatm.participation.load()
+		}
 	})
 
 	function share() {
@@ -232,6 +243,8 @@
 			</button>
 		</div>
 	</section>
+
+	<KhatmParticipation {khatm} />
 
 	{#if canSelectLayout}
 		<section class="ui-khatm-view-switch" aria-label="شیوه نمایش بازه‌ها">

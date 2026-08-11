@@ -21,6 +21,8 @@
 	const khatmContext = useKathmContext()
 	const khatm = $derived(khatmContext.khatm)
 	const parts = $derived(khatmContext.parts)
+	const rawParts = $derived(khatmContext.rawParts)
+	const participation = $derived(khatm.participation)
 
 	let showBadges = $state(false)
 	let hideFinishedIntervals = $state(false)
@@ -98,6 +100,11 @@
 		</label>
 	</div>
 	<div class="ui-alert ui-alert-info">برای پذیرفتن قرائت، روی بخش روشن مورد نظر بزنید.</div>
+	<div class="ui-khatm-map-legend" aria-label="راهنمای وضعیت بازه‌ها">
+		<span><i class="ui-khatm-map-key ui-khatm-map-key-free" aria-hidden="true"></i>آزاد</span>
+		<span><i class="ui-khatm-map-key ui-khatm-map-key-finished" aria-hidden="true"></i>خوانده‌شده</span>
+		<span><i class="ui-khatm-map-key ui-khatm-map-key-mine" aria-hidden="true"></i>سهم شما</span>
+	</div>
 	<div class="ui-khatm-map">
 		<div class="ui-khatm-map-head" aria-hidden="true"><span>جزء</span><span>سوره</span><span>صفحه</span></div>
 		<div class="ui-khatm-map-grid" style:grid-template-rows={gridTemplateRows}>
@@ -148,13 +155,17 @@
 	{@render renderSelectableRanges(selectablePageParts, 3)}
 
 	{#if !hideFinishedIntervals}
-		{#each parts as part (part.plain.id)}
+		{#each rawParts as part (part.plain.id)}
+			{@const mine = participation.isMine(part)}
 			<div
-				class="hatched ui-khatm-map-finished col-span-3 col-start-1"
+				class="ui-khatm-map-picked col-span-3 col-start-1"
+				class:hatched={!mine}
+				class:ui-khatm-map-finished={!mine}
+				class:ui-khatm-map-mine={mine}
 				style:grid-row-start={part.start + 1}
 				style:grid-row-end={part.end + 1}
 			>
-				<span class="select-none">قرائت شده</span>
+				<span class="select-none">{mine ? 'سهم شما' : 'قرائت شده'}</span>
 			</div>
 		{/each}
 	{/if}

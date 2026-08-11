@@ -22,6 +22,7 @@
 	const khatmContext = useKathmContext()
 	const khatm = $derived(khatmContext.khatm)
 	const parts = $derived(khatmContext.parts)
+	const participation = $derived(khatm.participation)
 
 	type PageState = {
 		step?: number
@@ -110,10 +111,14 @@
 	)
 
 	const selectableRanges = $derived.by(() => {
-		let result = ranges.map((range) => ({
-			percent: range.getFillPercent(parts),
-			range,
-		}))
+		let result = ranges.map((range) => {
+			const myLength = participation.getOverlapLength(range)
+			return {
+				percent: range.getFillPercent(parts),
+				myLength,
+				range,
+			}
+		})
 		if (hideFinishedIntervals) {
 			result = result.filter(({ percent }) => percent === 0)
 		}
@@ -164,18 +169,25 @@
 				rangeType === 'all' ? 'ui-khatm-range-grid-wide' : '',
 			]}
 		>
-			{#each selectableRanges as { range, percent }}
+			{#each selectableRanges as { range, percent, myLength }}
 				{@const disabled = percent > 0}
 				{@const completed = percent >= 100}
+				{@const mine = myLength > 0}
 				<li class="ui-list-row">
 					<button
 						class="ui-btn ui-btn-soft ui-btn-block ui-khatm-range-button"
+						class:ui-khatm-range-button-mine={mine}
 						type="button"
 						{disabled}
-							class:ui-btn-disabled={disabled}
+						class:ui-btn-disabled={disabled}
 						onclick={() => select(range)}
 					>
-						{range.title || range.getTitleSurahOrinted()}
+						<span>{range.title || range.getTitleSurahOrinted()}</span>
+						{#if mine}
+							<span class="ui-badge ui-badge-accent ui-badge-xs">
+								{myLength === range.length ? 'انتخاب شما' : 'شامل سهم شما'}
+							</span>
+						{/if}
 						{#if disabled && !completed}
 							<span class="flex items-center opacity-50">
 								<span

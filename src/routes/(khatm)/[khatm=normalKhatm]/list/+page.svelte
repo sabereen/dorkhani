@@ -21,6 +21,8 @@
 	const khatmContext = useKathmContext()
 	const khatm = $derived(khatmContext.khatm)
 	const parts = $derived(khatmContext.parts)
+	const rawParts = $derived(khatmContext.rawParts)
+	const participation = $derived(khatm.participation)
 
 	let hideFinishedIntervals = $state(false)
 	/** نوع زیربازه‌ها در چیدمان آکاردئونی */
@@ -43,7 +45,7 @@
 		let list =
 			accardeonSubranges?.map((item) => ({
 				...item,
-				parts: item.range.divideByKahtmParts(parts),
+				parts: item.range.divideByKahtmParts(rawParts),
 			})) || []
 
 		if (hideFinishedIntervals) {
@@ -129,10 +131,18 @@
 									</div>
 									<div class="ui-khatm-subrange-parts">
 										{#each parts as { khatmPart, range }}
-											<div class="ui-khatm-subrange-part">
-												<span class:ui-text-muted={!!khatmPart}>{range.getTitleSurahOrinted()}</span>
+											{@const mine = !!khatmPart && participation.isMine(range)}
+											<div
+												class="ui-khatm-subrange-part"
+												class:ui-khatm-subrange-part-mine={mine}
+											>
+												<span class:ui-text-muted={!!khatmPart && !mine}>{range.getTitleSurahOrinted()}</span>
 												{#if khatmPart}
-													<span class="ui-badge ui-badge-success ui-badge-xs">خوانده‌شده</span>
+													{#if mine}
+														<span class="ui-badge ui-badge-accent ui-badge-xs">سهم شما</span>
+													{:else}
+														<span class="ui-badge ui-badge-success ui-badge-xs">خوانده‌شده</span>
+													{/if}
 												{:else}
 													<button type="button" class="ui-btn ui-btn-primary ui-btn-xs" disabled={!range.matchRangeType(khatm.rangeType)} onclick={() => openModal(range)}>انتخاب</button>
 												{/if}

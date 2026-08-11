@@ -7,6 +7,7 @@ const key = Symbol('khatm')
 type KhatmContext = {
 	readonly khatm: Khatm
 	readonly parts: KhatmPart[]
+	readonly rawParts: KhatmPart[]
 }
 
 export function useKathmContext() {

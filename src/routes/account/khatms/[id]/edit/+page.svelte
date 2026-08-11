@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { base } from '$app/paths'
+	import { validateForm } from '$lib/actions/validateForm'
 	import Header from '$lib/components/Header.svelte'
 	import type { PageProps } from './$types'
 
@@ -10,9 +11,11 @@
 
 <Header title="ویرایش ختم" />
 
-{#if form?.errorMessage}<div class="ui-alert ui-alert-error mt-4">{form.errorMessage}</div>{/if}
+<div class="ui-form-status-slot mx-auto max-w-md" aria-live="polite">
+	{#if form?.errorMessage}<div class="ui-alert ui-alert-error">{form.errorMessage}</div>{/if}
+</div>
 
-<form method="POST" class="mx-auto mt-4 max-w-md">
+<form use:validateForm novalidate method="POST" class="mx-auto max-w-md">
 	<fieldset class="ui-card ui-card-bordered">
 		<div class="ui-card-body grid gap-3">
 			<label class="grid gap-1">عنوان<input class="ui-input" name="title" maxlength="100" required value={data.khatm.title} /></label>
@@ -66,6 +69,8 @@
 </form>
 
 <form
+	use:validateForm
+	novalidate
 	method="POST"
 	action={`${base}/account/khatms/${data.khatm.id}/edit/delete`}
 	class="mx-auto mt-4 max-w-md"

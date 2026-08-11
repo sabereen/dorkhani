@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageProps } from './$types'
 	import { enhance } from '$app/forms'
+	import { validateForm } from '$lib/actions/validateForm'
 	import Header from '$lib/components/Header.svelte'
 	import type { RangeType } from '@prisma-client'
 	import { slide } from 'svelte/transition'
@@ -55,7 +56,14 @@
 			</div>
 		</section>
 
-		<form use:enhance class="ui-card ui-card-bordered add-form" action="" method="POST">
+		<form
+			use:validateForm
+			use:enhance
+			novalidate
+			class="ui-card ui-card-bordered add-form"
+			action=""
+			method="POST"
+		>
 			<div class="ui-card-body">
 				<section class="add-section" aria-labelledby="details-title">
 					<div class="add-section-heading">

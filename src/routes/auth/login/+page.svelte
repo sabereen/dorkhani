@@ -3,6 +3,7 @@
 	import { base } from '$app/paths'
 	import { authClient } from '$lib/auth-client'
 	import { claimCreatedKhatms } from '$lib/auth/claimCreatedKhatms'
+	import { validateForm } from '$lib/actions/validateForm'
 	import AuthShell from '$lib/components/AuthShell.svelte'
 	import { onMount } from 'svelte'
 	import IconChat from '~icons/ic/round-chat'
@@ -87,11 +88,13 @@
 	eyebrow="خوش آمدید"
 	description="برای ادامه، اطلاعات حساب کاربری خود را وارد کنید."
 >
-	{#if errorMessage}
-		<div class="ui-alert ui-alert-error ui-auth-alert" role="alert">{errorMessage}</div>
-	{/if}
+	<div class="ui-form-status-slot" aria-live="polite">
+		{#if errorMessage}
+			<div class="ui-alert ui-alert-error ui-auth-alert" role="alert">{errorMessage}</div>
+		{/if}
+	</div>
 
-	<form class="ui-auth-form" onsubmit={signInEmail} aria-busy={loading}>
+	<form use:validateForm novalidate class="ui-auth-form" onsubmit={signInEmail} aria-busy={loading}>
 		<div class="ui-auth-field">
 			<label class="ui-field-label" for="login-email"><IconEmail /> ایمیل</label>
 			<input
@@ -112,7 +115,7 @@
 				<label class="ui-field-label" for="login-password"><IconLock /> رمز عبور</label>
 				<a class="ui-link" href={`${base}/auth/forgot-password`}>فراموش کرده‌ام</a>
 			</div>
-			<div class="ui-auth-password-wrap">
+			<div class="ui-auth-password-wrap" data-ui-validation-host>
 				<input
 					id="login-password"
 					dir="ltr"

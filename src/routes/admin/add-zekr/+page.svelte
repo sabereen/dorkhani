@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageProps } from './$types'
 	import { enhance } from '$app/forms'
+	import { validateForm } from '$lib/actions/validateForm'
 	import Header from '$lib/components/Header.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import SucessResult from './sucess-result.svelte'
@@ -20,12 +21,12 @@
 <Header title="ایجاد ختم ذکر گروهی" />
 
 {#if !form || !form.zekr}
-	<form use:enhance class="flex justify-center p-2" action="" method="POST">
+	<form use:validateForm use:enhance novalidate class="flex justify-center p-2" action="" method="POST">
 		<fieldset class="ui-fieldset max-w-lg">
 			<legend class="ui-fieldset-legend"> ختم اذکار </legend>
 
 			<label for="input-title" class="ui-field-label">عنوان</label>
-			<input class="ui-input" type="text" name="title" id="input-title" maxlength="100" />
+			<input class="ui-input" type="text" name="title" id="input-title" maxlength="100" required />
 
 			<label for="input-description" class="ui-field-label">توضیحات</label>
 			<textarea class="ui-textarea" name="description" id="input-description" maxlength="65535"

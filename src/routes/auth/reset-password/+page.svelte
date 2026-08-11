@@ -2,6 +2,7 @@
 	import { base } from '$app/paths'
 	import { page } from '$app/state'
 	import { authClient } from '$lib/auth-client'
+	import { validateForm } from '$lib/actions/validateForm'
 	import AuthShell from '$lib/components/AuthShell.svelte'
 	import IconCheck from '~icons/ic/round-check-circle'
 	import IconLock from '~icons/ic/round-lock'
@@ -44,14 +45,16 @@
 			<a class="ui-btn ui-btn-primary ui-btn-block" href={`${base}/auth/login`}>ورود به حساب</a>
 		</div>
 	{:else}
-		{#if errorMessage}
-			<div class="ui-alert ui-alert-error ui-auth-alert" role="alert">{errorMessage}</div>
-		{/if}
+		<div class="ui-form-status-slot" aria-live="polite">
+			{#if errorMessage}
+				<div class="ui-alert ui-alert-error ui-auth-alert" role="alert">{errorMessage}</div>
+			{/if}
+		</div>
 
-		<form class="ui-auth-form" onsubmit={submit} aria-busy={loading}>
+		<form use:validateForm novalidate class="ui-auth-form" onsubmit={submit} aria-busy={loading}>
 			<div class="ui-auth-field">
 				<label class="ui-field-label" for="new-password"><IconLock /> رمز عبور تازه</label>
-				<div class="ui-auth-password-wrap">
+				<div class="ui-auth-password-wrap" data-ui-validation-host>
 					<input
 						id="new-password"
 						class="ui-input"

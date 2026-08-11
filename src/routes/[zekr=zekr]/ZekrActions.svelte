@@ -6,6 +6,7 @@
 	import type { Zekr } from '$lib/entity/Zekr.svelte'
 	import { page } from '$app/state'
 	import { pushState } from '$app/navigation'
+	import { validateForm } from '$lib/actions/validateForm'
 	import Modal from '$lib/components/Modal.svelte'
 	import type { Action } from 'svelte/action'
 	import IconClose from '~icons/ic/round-close'
@@ -120,7 +121,7 @@
 </div>
 
 <Modal bind:open={() => modalCustomCount, toggleModal}>
-	<form action="" onsubmit={handleModalAction}>
+	<form use:validateForm novalidate action="" onsubmit={handleModalAction}>
 		<button
 			type="button"
 			class="ui-btn ui-btn-icon ui-btn-sm ui-btn-ghost absolute left-3 top-3"
@@ -138,6 +139,8 @@
 				id="input-count"
 				type="number"
 				step="1"
+				min="1"
+				required
 				use:autoFocus
 			/>
 		</div>

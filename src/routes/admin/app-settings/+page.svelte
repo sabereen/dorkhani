@@ -1,6 +1,7 @@
 <script lang="ts">
 	/* eslint-disable svelte/no-unused-svelte-ignore */
 	import { enhance } from '$app/forms'
+	import { validateForm } from '$lib/actions/validateForm'
 	import Header from '$lib/components/Header.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
@@ -59,7 +60,7 @@
 	</button>
 </div>
 
-<form use:enhance class="mt-4 flex justify-center p-2" action="" method="POST">
+<form use:validateForm use:enhance novalidate class="mt-4 flex justify-center p-2" action="" method="POST">
 	<fieldset class="ui-fieldset max-w-lg">
 		<label for="input-support-link" class="ui-field-label">لینک پشتیبانی</label>
 		<input
@@ -91,6 +92,8 @@
 			name="eitaaToken"
 			dir="ltr"
 			id="input-eitaa-token"
+			data-ui-validate
+			required={formData.eitaa}
 		/>
 		<p class="text-xs">
 			در پنل <a class="link" href="https://eitaayar.ir" target="_blank">eitaayar.ir</a>
@@ -107,6 +110,8 @@
 			inputmode="numeric"
 			dir="ltr"
 			id="input-eitaa-chat-id"
+			data-ui-validate
+			required={formData.eitaa}
 		/>
 		<p class="text-xs">
 			کانال یا گروه مورد نظر را در قسمت «کانال‌ها» و «افزودن کانال جدید» در پنل ایتایار تعریف کنید

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Header from '$lib/components/Header.svelte'
+	import { validateForm } from '$lib/actions/validateForm'
 	import SettingsAyahKhatm from './SettingsAyahKhatm.svelte'
 	import SettingsTheme from './SettingsTheme.svelte'
 </script>
@@ -13,6 +14,8 @@
 </Header>
 
 <form
+	use:validateForm
+	novalidate
 	class="flex flex-col items-center p-2"
 	action=""
 	method="POST"

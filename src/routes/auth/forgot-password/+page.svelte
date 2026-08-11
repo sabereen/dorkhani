@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { base } from '$app/paths'
 	import { authClient } from '$lib/auth-client'
+	import { validateForm } from '$lib/actions/validateForm'
 	import AuthShell from '$lib/components/AuthShell.svelte'
 	import IconArrow from '~icons/ic/round-arrow-forward'
 	import IconCheck from '~icons/ic/round-check-circle'
@@ -44,11 +45,13 @@
 			<a class="ui-btn ui-btn-primary ui-btn-block" href={`${base}/auth/login`}>بازگشت به ورود</a>
 		</div>
 	{:else}
-		{#if errorMessage}
-			<div class="ui-alert ui-alert-error ui-auth-alert" role="alert">{errorMessage}</div>
-		{/if}
+		<div class="ui-form-status-slot" aria-live="polite">
+			{#if errorMessage}
+				<div class="ui-alert ui-alert-error ui-auth-alert" role="alert">{errorMessage}</div>
+			{/if}
+		</div>
 
-		<form class="ui-auth-form" onsubmit={submit} aria-busy={loading}>
+		<form use:validateForm novalidate class="ui-auth-form" onsubmit={submit} aria-busy={loading}>
 			<div class="ui-auth-field">
 				<label class="ui-field-label" for="recovery-email"><IconEmail /> ایمیل حساب</label>
 				<input

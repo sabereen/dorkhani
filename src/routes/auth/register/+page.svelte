@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { base } from '$app/paths'
 	import { authClient } from '$lib/auth-client'
+	import { validateForm } from '$lib/actions/validateForm'
 	import AuthShell from '$lib/components/AuthShell.svelte'
 	import IconCheck from '~icons/ic/round-check-circle'
 	import IconEmail from '~icons/ic/round-email'
@@ -49,11 +50,13 @@
 			<a class="ui-btn ui-btn-primary ui-btn-block" href={`${base}/auth/login`}>رفتن به صفحه ورود</a>
 		</div>
 	{:else}
-		{#if errorMessage}
-			<div class="ui-alert ui-alert-error ui-auth-alert" role="alert">{errorMessage}</div>
-		{/if}
+		<div class="ui-form-status-slot" aria-live="polite">
+			{#if errorMessage}
+				<div class="ui-alert ui-alert-error ui-auth-alert" role="alert">{errorMessage}</div>
+			{/if}
+		</div>
 
-		<form class="ui-auth-form" onsubmit={register} aria-busy={loading}>
+		<form use:validateForm novalidate class="ui-auth-form" onsubmit={register} aria-busy={loading}>
 			<div class="ui-auth-field">
 				<label class="ui-field-label" for="register-name"><IconPerson /> نام و نام خانوادگی</label>
 				<input id="register-name" class="ui-input" bind:value={name} autocomplete="name" required />
@@ -76,7 +79,7 @@
 
 			<div class="ui-auth-field">
 				<label class="ui-field-label" for="register-password"><IconLock /> رمز عبور</label>
-				<div class="ui-auth-password-wrap">
+				<div class="ui-auth-password-wrap" data-ui-validation-host>
 					<input
 						id="register-password"
 						class="ui-input"

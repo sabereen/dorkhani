@@ -10,10 +10,12 @@
 
 	const { data, form }: PageProps = $props()
 
-	const { notification, supportLink } = /* svelte-ignore state_referenced_locally */ data
+	const { notification, supportLink, staleKhatmRetentionDays } =
+		/* svelte-ignore state_referenced_locally */ data
 
 	const formData = $state({
 		supportLink: supportLink,
+		staleKhatmRetentionDays,
 		eitaa: notification.eitaa,
 		eitaaToken: notification.eitaaToken || '',
 		eitaaChatId: notification.eitaaChatId || '',
@@ -22,8 +24,15 @@
 	watch(
 		() => form,
 		() => {
+			if (form?.errorMessage) {
+				toast('error', form.errorMessage)
+				return
+			}
+
 			toast('info', 'تنظیمات ذخیره شد.')
 			formData.supportLink = form?.supportLink || ''
+			formData.staleKhatmRetentionDays =
+				form?.staleKhatmRetentionDays || data.staleKhatmRetentionDays
 			formData.eitaa = form?.eitaa
 			formData.eitaaToken = form?.eitaaToken || ''
 			formData.eitaaChatId = form?.eitaaChatId || ''
@@ -71,6 +80,26 @@
 			dir="ltr"
 			id="input-support-link"
 		/>
+
+		<label for="input-stale-khatm-retention-days" class="ui-field-label">
+			مهلت حذف ختم‌های آغازنشده
+		</label>
+		<input
+			bind:value={formData.staleKhatmRetentionDays}
+			class="ui-input"
+			type="number"
+			name="staleKhatmRetentionDays"
+			min="1"
+			max="3650"
+			step="1"
+			id="input-stale-khatm-retention-days"
+			data-ui-validate
+			required
+		/>
+		<p class="text-xs">
+			ختم‌های مستقل و دور اول ختم‌های دنباله‌دار که پس از این تعداد روز هنوز هیچ آیه‌ای از
+			آن‌ها خوانده نشده باشد، خودکار حذف می‌شوند.
+		</p>
 
 		<label class="ui-bg-surface mt-2 flex cursor-pointer items-center rounded-lg px-2 py-2">
 			<input class="ui-checkbox" type="checkbox" name="eitaa" bind:checked={formData.eitaa} />

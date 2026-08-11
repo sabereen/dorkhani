@@ -1,6 +1,7 @@
 import { browser, building, dev } from '$app/environment'
 import { getNotificationProvider } from '$service/admin-notification'
 import { appSettingsService_init } from '$service/appSettings'
+import { khatmCleanup_startScheduler } from '$service/khatmCleanup'
 import type { ServerInit, HandleServerError, Handle } from '@sveltejs/kit'
 import { isManualColorScheme } from '$lib/entity/Theme'
 import { auth } from '$lib/server/auth'
@@ -8,6 +9,7 @@ import { svelteKitHandler } from 'better-auth/svelte-kit'
 
 export const init: ServerInit = async () => {
 	await appSettingsService_init()
+	if (!building) khatmCleanup_startScheduler()
 }
 
 export const handle: Handle = async ({ resolve, event }) => {

@@ -33,6 +33,11 @@ enum ReviewStatus {
   rejected
 }
 
+enum KhatmDeletionReason {
+  owner
+  expiredUnstarted
+}
+
 model TKhatmSeries {
   id        Int      @id
   maxRounds Int?     @map("max_rounds") @db.UnsignedSmallInt()
@@ -204,9 +209,10 @@ model Verification {
 }
 
 model TKhatmDeletion {
-  khatmId   Int      @id @map("khatm_id")
-  seriesId  Int?     @map("series_id")
-  deletedAt DateTime @default(now()) @map("deleted_at")
+  khatmId   Int                 @id @map("khatm_id")
+  seriesId  Int?                @map("series_id")
+  reason    KhatmDeletionReason @default(owner)
+  deletedAt DateTime            @default(now()) @map("deleted_at")
 
   @@index([seriesId])
   @@map("khatm_deletion")

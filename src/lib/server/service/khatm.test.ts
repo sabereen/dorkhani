@@ -12,7 +12,7 @@ const dbMock = vi.hoisted(() => ({
 		deleteMany: vi.fn(),
 	},
 	tKhatmSeries: { update: vi.fn(), delete: vi.fn() },
-	tKhatmDeletion: { createMany: vi.fn(), findFirst: vi.fn(), findUnique: vi.fn() },
+	tKhatmDeletion: { create: vi.fn(), createMany: vi.fn(), findFirst: vi.fn(), findUnique: vi.fn() },
 	tKhatmRecitation: { groupBy: vi.fn() },
 	$transaction: vi.fn(),
 }))
@@ -37,6 +37,7 @@ import {
 	khatmService_deleteOwned,
 	khatmService_editOwned,
 	khatmService_getAutomaticShowcase,
+	khatmService_getDeletionReason,
 	khatmService_getDirectoryList,
 	khatmService_setAsCompleted,
 } from './khatm'
@@ -349,12 +350,28 @@ describe('khatm ownership service', () => {
 		await expect(khatmService_deleteOwned('owner-1', 12)).resolves.toBe(true)
 		expect(dbMock.tKhatmDeletion.createMany).toHaveBeenCalledWith({
 			data: [
-				{ khatmId: 11, seriesId: 9 },
-				{ khatmId: 12, seriesId: 9 },
+				{ khatmId: 11, seriesId: 9, reason: 'owner' },
+				{ khatmId: 12, seriesId: 9, reason: 'owner' },
 			],
 		})
 		expect(dbMock.tKhatm.deleteMany).toHaveBeenCalledWith({ where: { id: { in: [11, 12] } } })
 		expect(dbMock.tKhatmSeries.delete).toHaveBeenCalledWith({ where: { id: 9 } })
+	})
+
+	it('returns the recorded deletion reason for a khatm or series link', async () => {
+		dbMock.tKhatmDeletion.findUnique.mockResolvedValue({ reason: 'expiredUnstarted' })
+		dbMock.tKhatmDeletion.findFirst.mockResolvedValue({ reason: 'owner' })
+
+		await expect(khatmService_getDeletionReason(12)).resolves.toBe('expiredUnstarted')
+		await expect(khatmService_getDeletionReason(9, true)).resolves.toBe('owner')
+		expect(dbMock.tKhatmDeletion.findUnique).toHaveBeenCalledWith({
+			where: { khatmId: 12 },
+			select: { reason: true },
+		})
+		expect(dbMock.tKhatmDeletion.findFirst).toHaveBeenCalledWith({
+			where: { seriesId: 9 },
+			select: { reason: true },
+		})
 	})
 
 	it('copies ownership to a new round and respects a disabled series maximum', async () => {

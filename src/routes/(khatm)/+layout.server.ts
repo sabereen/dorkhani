@@ -2,8 +2,8 @@ import { error } from '@sveltejs/kit'
 import type { LayoutServerLoad } from './$types'
 import {
 	khatmService_getBySeriesRecord,
+	khatmService_getDeletionReason,
 	khatmService_getFullRecord,
-	khatmService_isDeleted,
 	khatmService_toPublic,
 } from '$service/khatm'
 import { match as matchNormalParam } from '../../params/normalKhatm'
@@ -21,7 +21,14 @@ export const load: LayoutServerLoad = async ({ params, url, locals }) => {
 		: await khatmService_getFullRecord(resourceId, accessToken)
 
 	if (!khatm) {
-		if (await khatmService_isDeleted(resourceId, isSerialUrl)) {
+		const deletionReason = await khatmService_getDeletionReason(resourceId, isSerialUrl)
+		if (deletionReason === 'expiredUnstarted') {
+			throw error(410, {
+				message: 'این ختم به‌دلیل آغاز نشدن در مهلت تعیین‌شده، به‌صورت خودکار حذف شده است.',
+				type: 'khatm-expired',
+			})
+		}
+		if (deletionReason === 'owner') {
 			throw error(410, { message: 'این ختم توسط سازنده حذف شده است.', type: 'khatm-deleted' })
 		}
 		throw error(404, { message: 'ختم مورد نظر پیدا نشد.' })

@@ -9,7 +9,7 @@ declare global {
 		type AuthSession = import('$lib/server/auth').AuthSession
 		type ErrorType =
 			/** به علت تداخل بازه‌ها امکان درج رکورد جدید نیست */
-			'conflict-ranges' | 'khatm-deleted'
+			'conflict-ranges' | 'khatm-deleted' | 'khatm-expired'
 
 		interface Error {
 			type?: ErrorType

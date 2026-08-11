@@ -423,7 +423,11 @@ export async function khatmService_deleteOwned(ownerId: string, id: number) {
 			? await tx.tKhatm.findMany({ where: { seriesId: current.seriesId }, select: { id: true } })
 			: [{ id: current.id }]
 		await tx.tKhatmDeletion.createMany({
-			data: khatms.map((khatm) => ({ khatmId: khatm.id, seriesId: current.seriesId })),
+			data: khatms.map((khatm) => ({
+				khatmId: khatm.id,
+				seriesId: current.seriesId,
+				reason: 'owner',
+			})),
 		})
 		await tx.tKhatm.deleteMany({ where: { id: { in: khatms.map((khatm) => khatm.id) } } })
 		if (current.seriesId) await tx.tKhatmSeries.delete({ where: { id: current.seriesId } })
@@ -453,10 +457,12 @@ export async function khatmService_stopOwnedSeries(ownerId: string, id: number) 
 	})
 }
 
-export async function khatmService_isDeleted(id: number, isSeries = false) {
-	return isSeries
-		? Boolean(await db.tKhatmDeletion.findFirst({ where: { seriesId: id }, select: { khatmId: true } }))
-		: Boolean(await db.tKhatmDeletion.findUnique({ where: { khatmId: id }, select: { khatmId: true } }))
+export async function khatmService_getDeletionReason(id: number, isSeries = false) {
+	const deletion = isSeries
+		? await db.tKhatmDeletion.findFirst({ where: { seriesId: id }, select: { reason: true } })
+		: await db.tKhatmDeletion.findUnique({ where: { khatmId: id }, select: { reason: true } })
+
+	return deletion?.reason || null
 }
 
 export async function khatmService_setAsCompleted(id: number) {

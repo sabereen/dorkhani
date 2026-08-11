@@ -1,8 +1,13 @@
 import { db } from '../db'
 
+export const DEFAULT_STALE_KHATM_RETENTION_DAYS = 30
+export const MIN_STALE_KHATM_RETENTION_DAYS = 1
+export const MAX_STALE_KHATM_RETENTION_DAYS = 3650
+
 type Config = {
 	/** لینک پشتیبانی سایت */
 	readonly supportLink?: string
+	readonly staleKhatmRetentionDays: number
 	/**
 	 * تنظیمات مربوط به نوتیفیکیشن
 	 */
@@ -18,6 +23,7 @@ type Store = { config: Config }
 const store: Store = {
 	config: {
 		supportLink: '',
+		staleKhatmRetentionDays: DEFAULT_STALE_KHATM_RETENTION_DAYS,
 		notification: {
 			eitaa: false,
 		},
@@ -48,8 +54,15 @@ export async function appSettingsService_update() {
 async function apply(newConfig?: Config | null) {
 	if (!newConfig) return
 
+	const staleKhatmRetentionDays = Number(newConfig.staleKhatmRetentionDays)
 	store.config = {
 		supportLink: newConfig.supportLink,
+		staleKhatmRetentionDays:
+			Number.isInteger(staleKhatmRetentionDays) &&
+			staleKhatmRetentionDays >= MIN_STALE_KHATM_RETENTION_DAYS &&
+			staleKhatmRetentionDays <= MAX_STALE_KHATM_RETENTION_DAYS
+				? staleKhatmRetentionDays
+				: DEFAULT_STALE_KHATM_RETENTION_DAYS,
 		notification: {
 			...store.config.notification,
 			...newConfig.notification,

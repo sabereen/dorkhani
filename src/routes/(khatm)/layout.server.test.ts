@@ -2,15 +2,15 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const serviceMock = vi.hoisted(() => ({
 	getBySeriesRecord: vi.fn(),
+	getDeletionReason: vi.fn(),
 	getFullRecord: vi.fn(),
-	isDeleted: vi.fn(),
 	toPublic: vi.fn(),
 }))
 
 vi.mock('$service/khatm', () => ({
 	khatmService_getBySeriesRecord: serviceMock.getBySeriesRecord,
+	khatmService_getDeletionReason: serviceMock.getDeletionReason,
 	khatmService_getFullRecord: serviceMock.getFullRecord,
-	khatmService_isDeleted: serviceMock.isDeleted,
 	khatmService_toPublic: serviceMock.toPublic,
 }))
 
@@ -31,7 +31,7 @@ describe('deleted khatm page', () => {
 	})
 
 	it('returns 410 with the deletion message for a tombstoned id', async () => {
-		serviceMock.isDeleted.mockResolvedValue(true)
+		serviceMock.getDeletionReason.mockResolvedValue('owner')
 
 		await expect(loadKhatm()).rejects.toMatchObject({
 			status: 410,
@@ -39,8 +39,20 @@ describe('deleted khatm page', () => {
 		})
 	})
 
+	it('returns 410 with the expiry message for an automatically removed khatm', async () => {
+		serviceMock.getDeletionReason.mockResolvedValue('expiredUnstarted')
+
+		await expect(loadKhatm()).rejects.toMatchObject({
+			status: 410,
+			body: {
+				message: 'این ختم به‌دلیل آغاز نشدن در مهلت تعیین‌شده، به‌صورت خودکار حذف شده است.',
+				type: 'khatm-expired',
+			},
+		})
+	})
+
 	it('keeps returning 404 for an id that never existed', async () => {
-		serviceMock.isDeleted.mockResolvedValue(false)
+		serviceMock.getDeletionReason.mockResolvedValue(null)
 		await expect(loadKhatm()).rejects.toMatchObject({ status: 404 })
 	})
 })

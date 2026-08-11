@@ -10,31 +10,29 @@
 	}
 	let { items, selectedIndex = $bindable(), title, content }: Props = $props()
 	const id = $props.id()
-
-	function handleKeyboard(event: KeyboardEvent, index: number) {
-		if (event.key !== 'Enter' && event.key !== ' ') return
-		event.preventDefault()
-		selectedIndex = index
-	}
 </script>
 
 <div class="ui-join">
 	{#each items as item, i (i)}
 		{@const selected = i === selectedIndex}
 		<section class="ui-join-item ui-border border">
-			<div
+			<button
+				id={`${id}_accordion_trigger_${i}`}
 				class="ui-accordion-trigger"
-				role="button"
-				tabindex="0"
+				type="button"
 				aria-expanded={selected}
 				aria-controls={`${id}_accordion_panel_${i}`}
-				onclick={() => (selectedIndex = i)}
-				onkeydown={(event) => handleKeyboard(event, i)}
+				onclick={() => (selectedIndex = selected ? -1 : i)}
 			>
 				{@render title(item, i, selected)}
-			</div>
+			</button>
 			{#if selected}
-				<div id={`${id}_accordion_panel_${i}`} in:fly={{ y: 30, duration: 200 }}>
+				<div
+					id={`${id}_accordion_panel_${i}`}
+					role="region"
+					aria-labelledby={`${id}_accordion_trigger_${i}`}
+					in:fly={{ y: 30, duration: 200 }}
+				>
 					{@render content(item, i, selected)}
 				</div>
 			{/if}

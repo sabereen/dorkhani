@@ -35,3 +35,15 @@ export async function idb_pickedKhatmPart_getList(limit?: number) {
 	}
 	return collection.toArray()
 }
+
+export async function idb_pickedKhatmPart_getByKhatmId(khatmId: number) {
+	const { db } = await import('./idb')
+	const list = await db.pickedKhatmParts.where('khatm.id').equals(khatmId).toArray()
+	return list.sort((a, b) => b.date.getTime() - a.date.getTime())
+}
+
+export async function idb_pickedKhatmPart_getBySeriesId(seriesId: number) {
+	const { db } = await import('./idb')
+	const list = await db.pickedKhatmParts.where('khatm.seriesId').equals(seriesId).toArray()
+	return list.sort((a, b) => b.date.getTime() - a.date.getTime())
+}

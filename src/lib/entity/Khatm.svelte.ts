@@ -2,7 +2,6 @@ import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 import type { RangeType, TKhatmPart, ReviewStatus } from '@prisma-client'
 import type { KhatmData } from './KhatmData'
 import type { PickAyahResult } from '$api/khatmPart/pickNext/+server'
-import { PickedKhatmPart } from './PickedKhatmPart'
 import { QuranRange } from './Range'
 import { untrack } from 'svelte'
 import { KhatmPart } from './KhatmPart'
@@ -12,16 +11,19 @@ import { rebaseFullPath } from '$lib/utility/path'
 import { browser } from '$app/environment'
 import type { Translation } from './LocalSettings.svelte'
 import type { KhatmDirectoryQuery, KhatmDirectoryResult } from './KhatmDirectory'
+import { KhatmParticipation } from './KhatmParticipation.svelte'
 
 const cache = new Map<number, Khatm>()
 
 export class Khatm {
 	plain = $state() as KhatmData
 	plainParts = $state([]) as TKhatmPart[]
+	participation: KhatmParticipation
 
 	private constructor(plain: KhatmData & { parts?: TKhatmPart[] }) {
 		this.plain = plain
 		this.plainParts = plain.parts || []
+		this.participation = new KhatmParticipation(() => this.plain)
 	}
 
 	static fromPlain(plain: KhatmData & { parts?: TKhatmPart[] }) {
@@ -215,8 +217,11 @@ export class Khatm {
 		return this.getLink()
 	}
 
-	getKhatmParts() {
-		return KhatmPart.fromList(this.plainParts)
+	getKhatmParts(merge = true) {
+		if (merge) return KhatmPart.fromList(this.plainParts)
+		return this.plainParts
+			.map((part) => new KhatmPart(part))
+			.sort((a, b) => a.start - b.start)
 	}
 
 	async pickNextAyat({ count = 1, translation }: { count: number; translation: Translation }) {
@@ -226,6 +231,11 @@ export class Khatm {
 			accessToken: this.accessToken,
 			translation,
 		})
+		const firstAyah = result.ayat[0]
+		const lastAyah = result.ayat[result.ayat.length - 1]
+		if (firstAyah && lastAyah) {
+			this.participation.add(new QuranRange(firstAyah.index, lastAyah.index + 1), result.khatm)
+		}
 
 		return result
 	}
@@ -276,13 +286,6 @@ export class Khatm {
 			accessToken: this.accessToken,
 		})
 
-		new PickedKhatmPart({
-			id: undefined as unknown as number,
-			date: new Date(),
-			start: range.start,
-			end: range.end,
-			khatm: this.plain,
-			hash: this.accessToken,
-		}).save()
+		this.participation.add(range)
 	}
 }

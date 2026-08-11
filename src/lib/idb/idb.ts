@@ -48,4 +48,10 @@ db.version(5).stores({
 	localZekr: 'id, isMine, zekr.created',
 })
 
+db.version(6).stores({
+	pickedKhatmParts: '++id, date, khatm.id, khatm.seriesId',
+	createdKhatms: 'id, khatm.created',
+	localZekr: 'id, isMine, zekr.created',
+})
+
 export { db }

@@ -7,19 +7,34 @@
 	import { toast } from '$lib/components/TheToast.svelte'
 	import SucessResult from './sucess-result.svelte'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
+	import IconBook from '~icons/ic/round-menu-book'
+	import IconTune from '~icons/ic/round-tune'
+	import IconLock from '~icons/ic/round-lock'
+	import IconPublic from '~icons/ic/round-public'
+	import IconRepeat from '~icons/ic/round-autorenew'
+	import IconArrow from '~icons/ic/round-arrow-back'
 
 	let { data, form }: PageProps = $props()
 
-	let rangeType = $state<RangeType>('free')
+	let rangeType = $state<RangeType>(data.rangeType === 'ayah' ? 'ayah' : 'free')
+	let access = $state<'public' | 'private'>('private')
+	let series = $state(false)
+
+	const rangeDescriptions: Record<RangeType, string> = {
+		free: 'هر مشارکت‌کننده می‌تواند به انتخاب خودش یک صفحه، سوره، حزب یا جزء آزاد را بردارد.',
+		page: 'قرآن به صفحه‌های جدا تقسیم می‌شود و هر مشارکت‌کننده یک صفحه را انتخاب می‌کند.',
+		hizbQuarter: 'هر سهم برابر با یک‌چهارم حزب است؛ مناسب برای تقسیم‌های کوتاه و منظم.',
+		surah: 'هر مشارکت‌کننده یک سورهٔ کامل را برای قرائت انتخاب می‌کند.',
+		juz: 'قرآن به سی جزء تقسیم می‌شود و هر مشارکت‌کننده مسئول یک جزء خواهد بود.',
+		ayah: 'سامانه به‌صورت خودکار آیه‌ها را به‌ترتیب برای قرائت در اختیار مشارکت‌کنندگان می‌گذارد.',
+	}
 
 	$effect(() => {
 		if (form?.errorMessage) toast('error', form.errorMessage)
 	})
 
 	function handleKeyPress(event: KeyboardEvent) {
-		if (event.code === 'Enter') {
-			event.preventDefault()
-		}
+		if (event.code === 'Enter') event.preventDefault()
 	}
 </script>
 
@@ -30,95 +45,433 @@
 <Header title="ایجاد ختم گروهی جدید" />
 
 {#if !form || !form.khatm}
-	<form use:enhance class="flex justify-center p-2" action="" method="POST">
-		<fieldset class="ui-fieldset max-w-lg">
-			<legend class="ui-fieldset-legend">
-				ختم قرآن
-				{#if data.rangeType === 'ayah'}
-					<span class="ui-badge ui-badge-info ui-badge-xs mr-1">آیه به آیه</span>
-				{/if}
-			</legend>
+	<div class="add-shell">
+		<section class="add-intro" aria-labelledby="add-intro-title">
+			<div class="add-intro-icon" aria-hidden="true"><IconBook /></div>
+			<div>
+				<p class="add-eyebrow">یک نیت، یک همراهی جمعی</p>
+				<h2 id="add-intro-title">ختم تازه‌تان را بسازید</h2>
+				<p>مشخصات و شیوهٔ تقسیم را انتخاب کنید؛ لینک دعوت بلافاصله آماده می‌شود.</p>
+			</div>
+		</section>
 
-			<label for="input-title" class="ui-field-label">عنوان</label>
-			<input
-				class="ui-input"
-				type="text"
-				name="title"
-				id="input-title"
-				maxlength="100"
-				onkeypress={handleKeyPress}
-			/>
+		<form use:enhance class="ui-card ui-card-bordered add-form" action="" method="POST">
+			<div class="ui-card-body">
+				<section class="add-section" aria-labelledby="details-title">
+					<div class="add-section-heading">
+						<span class="add-step">۱</span>
+						<div>
+							<h3 id="details-title">مشخصات ختم</h3>
+							<p>یک عنوان کوتاه و به‌یادماندنی انتخاب کنید.</p>
+						</div>
+					</div>
 
-			<label for="input-description" class="ui-field-label">توضیحات</label>
-			<textarea class="ui-textarea" name="description" id="input-description" maxlength="65535"
-			></textarea>
+					<div class="add-fields">
+						<label for="input-title" class="ui-field-label">عنوان ختم</label>
+						<input
+							class="ui-input"
+							type="text"
+							name="title"
+							id="input-title"
+							maxlength="100"
+							placeholder="مثلاً ختم قرآن برای سلامتی خانواده"
+							required
+							onkeypress={handleKeyPress}
+						/>
 
-			{#if data.rangeType === 'ayah'}
-				<input type="hidden" name="rangeType" value="ayah" />
-			{:else}
-				<label for="input-range-type" class="ui-field-label">بازه بندی</label>
-				<select id="input-range-type" class="ui-select" name="rangeType" bind:value={rangeType}>
-					<option value="free">آزاد</option>
-					<option value="page">صفحه به صفحه</option>
-					<option value="hizbQuarter">حزب به حزب (¼)</option>
-					<option value="surah">سوره به سوره</option>
-					<option value="juz">جزء به جزء</option>
-					<option value="ayah">آیه به آیه</option>
-				</select>
-				{#if rangeType === 'free'}
-					<p class="pt-1 text-xs" transition:slide={{ axis: 'y' }}>
-						در حالت «<strong>آزاد</strong>» مشارکت کننده به دلخواه خود می‌تواند یک صفحه، سوره، حزب
-						یا جزء خوانده نشده را بخواند.
-					</p>
-				{/if}
-				{#if rangeType === 'ayah'}
-					<p class="pt-1 text-xs" transition:slide={{ axis: 'y' }}>
-						در حالت «<strong>آیه به آیه</strong>» سیستم به صورت خودکار یک آیه از ختم را به مشارکت
-						کننده نمایش می‌دهد تا آن را قرائت کند.
-					</p>
-				{/if}
-			{/if}
+						<label for="input-description" class="ui-field-label">
+							توضیحات <span class="add-optional">اختیاری</span>
+						</label>
+						<textarea
+							class="ui-textarea"
+							name="description"
+							id="input-description"
+							maxlength="65535"
+							placeholder="نیت ختم یا توضیح کوتاهی برای همراهان بنویسید…"
+						></textarea>
+					</div>
+				</section>
 
-			<div class="ui-bg-surface mt-2 flex select-none flex-col rounded-lg px-2 py-1">
-				{#snippet radioItem(value: 'public' | 'private', title: string, description: string)}
-					<label class="flex items-center py-1">
-						<input class="ui-radio" type="radio" name="access" {value} checked={value === 'private'} />
-						<span class="mr-2 flex min-w-0 grow basis-0 flex-col">
-							<span class="text-[.9rem] font-bold">{title}</span>
-							<span class="text-xs">{description}</span>
+				<section class="add-section" aria-labelledby="range-title">
+					<div class="add-section-heading">
+						<span class="add-step">۲</span>
+						<div>
+							<h3 id="range-title">نحوهٔ تقسیم قرائت</h3>
+							<p>اندازهٔ سهم هر مشارکت‌کننده را مشخص کنید.</p>
+						</div>
+					</div>
+
+					{#if data.rangeType === 'ayah'}
+						<input type="hidden" name="rangeType" value="ayah" />
+						<div class="add-fixed-option">
+							<IconTune aria-hidden="true" />
+							<div>
+								<strong>آیه به آیه</strong>
+								<p>{rangeDescriptions.ayah}</p>
+							</div>
+							<span class="ui-badge ui-badge-info">انتخاب شده</span>
+						</div>
+					{:else}
+						<label for="input-range-type" class="ui-field-label">نوع بازه‌بندی</label>
+						<select
+							id="input-range-type"
+							class="ui-select"
+							name="rangeType"
+							bind:value={rangeType}
+							aria-describedby="range-description"
+						>
+							<option value="free">آزاد</option>
+							<option value="page">صفحه به صفحه</option>
+							<option value="hizbQuarter">حزب به حزب (¼)</option>
+							<option value="surah">سوره به سوره</option>
+							<option value="juz">جزء به جزء</option>
+							<option value="ayah">آیه به آیه</option>
+						</select>
+						<div id="range-description" class="add-hint" transition:slide={{ axis: 'y' }}>
+							<IconTune aria-hidden="true" />
+							<p>{rangeDescriptions[rangeType]}</p>
+						</div>
+					{/if}
+				</section>
+
+				<section class="add-section" aria-labelledby="access-title">
+					<div class="add-section-heading">
+						<span class="add-step">۳</span>
+						<div>
+							<h3 id="access-title">دسترسی و تکرار</h3>
+							<p>مشخص کنید چه کسانی ختم را پیدا کنند و بعد از پایان چه اتفاقی بیفتد.</p>
+						</div>
+					</div>
+
+					<div class="add-choice-grid">
+						<label class="add-choice" data-selected={access === 'private'}>
+							<input class="ui-radio" type="radio" name="access" value="private" bind:group={access} />
+							<span class="add-choice-icon" aria-hidden="true"><IconLock /></span>
+							<span class="add-choice-copy">
+								<strong>خصوصی</strong>
+								<small>فقط کسانی که لینک را دارند به ختم دسترسی خواهند داشت.</small>
+							</span>
+							<span class="ui-badge ui-badge-neutral">پیشنهادی</span>
+						</label>
+
+						<label class="add-choice" data-selected={access === 'public'}>
+							<input class="ui-radio" type="radio" name="access" value="public" bind:group={access} />
+							<span class="add-choice-icon" aria-hidden="true"><IconPublic /></span>
+							<span class="add-choice-copy">
+								<strong>عمومی</strong>
+								<small>پس از تأیید مدیر، امکان نمایش ختم در صفحهٔ اصلی وجود دارد.</small>
+							</span>
+						</label>
+					</div>
+
+					<label class="add-series" data-selected={series}>
+						<input class="ui-checkbox" type="checkbox" name="series" bind:checked={series} />
+						<span class="add-choice-icon" aria-hidden="true"><IconRepeat /></span>
+						<span class="add-choice-copy">
+							<strong>ختم پیوسته باشد</strong>
+							<small>پس از پایان هر دور، دور تازه‌ای به‌صورت خودکار آغاز می‌شود.</small>
 						</span>
 					</label>
-				{/snippet}
-				{@render radioItem(
-					'private',
-					'خصوصی',
-					'لینک ختم بلندتر است و هرگز در صفحه اصلی سایت نمایش داده نمی‌شود.',
-				)}
-				{@render radioItem(
-					'public',
-					'عمومی',
-					'لینک ختم کوتاه‌تر است و در صورت تأیید مدیر در صفحه اصلی نمایش داده می‌شود.',
-				)}
+				</section>
+
+				<div class="add-submit">
+					<p class="ui-text-muted">بعد از ایجاد، لینک دعوت را می‌توانید برای دیگران بفرستید.</p>
+					<button class="ui-btn ui-btn-primary ui-btn-lg ui-btn-block" type="submit">
+						ایجاد ختم و دریافت لینک
+						<IconArrow aria-hidden="true" />
+					</button>
+				</div>
 			</div>
-
-			<label
-				class="ui-bg-surface mt-2 flex cursor-pointer select-none items-center rounded-lg px-2 py-2"
-			>
-				<input class="ui-checkbox" type="checkbox" name="series" />
-				<span class="mr-2 flex min-w-0 grow basis-0 flex-col">
-					<span class="text-[.9rem] font-bold">تمام نشدنی!</span>
-					<p class="text-xs">
-						در صورت فعال کردن این گزینه، پس از پایان ختم، یک دور ختم جدید به صورت خودکار آغاز
-						می‌گردد.
-					</p>
-				</span>
-			</label>
-
-			<input class="ui-btn ui-btn-primary mt-3" type="submit" value="ایجاد" />
-		</fieldset>
-	</form>
-{:else}
-	<div class="mt-4">
-		<SucessResult khatm={Khatm.fromPlain(form.khatm)} claimToken={form.guestClaimToken} />
+		</form>
 	</div>
+{:else}
+	<SucessResult khatm={Khatm.fromPlain(form.khatm)} claimToken={form.guestClaimToken} />
 {/if}
+
+<style>
+	.add-shell {
+		width: 100%;
+		max-width: 44rem;
+		margin-right: auto;
+		margin-left: auto;
+	}
+
+	.add-intro {
+		display: flex;
+		align-items: center;
+		padding: 1rem 0.25rem 1.25rem;
+	}
+
+	.add-intro > * + * {
+		margin-right: 1rem;
+	}
+
+	.add-intro-icon {
+		display: flex;
+		width: 4rem;
+		height: 4rem;
+		flex: 0 0 4rem;
+		align-items: center;
+		justify-content: center;
+		border-radius: 1.25rem;
+		background: var(--ui-color-primary-soft);
+		color: var(--ui-color-primary);
+		font-size: 2rem;
+		transform: rotate(-4deg);
+	}
+
+	.add-intro h2,
+	.add-intro p,
+	.add-section-heading h3,
+	.add-section-heading p,
+	.add-hint p,
+	.add-fixed-option p,
+	.add-submit p {
+		margin: 0;
+	}
+
+	.add-intro h2 {
+		margin-top: 0.15rem;
+		font-size: 1.35rem;
+		font-weight: 900;
+	}
+
+	.add-intro > div:last-child > p:last-child {
+		margin-top: 0.35rem;
+		color: var(--ui-color-text-muted);
+		font-size: 0.88rem;
+		line-height: 1.8;
+	}
+
+	.add-eyebrow {
+		color: var(--ui-color-primary);
+		font-size: 0.72rem;
+		font-weight: 800;
+	}
+
+	.add-form {
+		box-shadow: var(--ui-shadow-md);
+	}
+
+	.add-form :global(.ui-card-body) {
+		padding: 0;
+	}
+
+	.add-section {
+		padding: 1.25rem;
+	}
+
+	.add-section + .add-section {
+		border-top: 1px solid var(--ui-color-border);
+	}
+
+	.add-section-heading {
+		display: flex;
+		align-items: flex-start;
+		margin-bottom: 1rem;
+	}
+
+	.add-section-heading > * + * {
+		margin-right: 0.75rem;
+	}
+
+	.add-step {
+		display: flex;
+		width: 2rem;
+		height: 2rem;
+		flex: 0 0 2rem;
+		align-items: center;
+		justify-content: center;
+		border-radius: 0.7rem;
+		background: var(--ui-color-primary-soft);
+		color: var(--ui-color-primary);
+		font-size: 0.8rem;
+		font-weight: 900;
+	}
+
+	.add-section-heading h3 {
+		font-size: 1rem;
+		font-weight: 900;
+	}
+
+	.add-section-heading p {
+		margin-top: 0.2rem;
+		color: var(--ui-color-text-muted);
+		font-size: 0.75rem;
+		line-height: 1.7;
+	}
+
+	.add-fields {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		grid-gap: 0.35rem;
+	}
+
+	.add-optional {
+		margin-right: 0.35rem;
+		font-size: 0.65rem;
+		font-weight: 500;
+	}
+
+	.add-hint,
+	.add-fixed-option {
+		display: flex;
+		align-items: flex-start;
+		margin-top: 0.65rem;
+		padding: 0.75rem;
+		border-radius: var(--ui-radius-md);
+		background: var(--ui-color-primary-soft);
+		color: var(--ui-color-primary);
+	}
+
+	.add-hint > * + *,
+	.add-fixed-option > * + * {
+		margin-right: 0.65rem;
+	}
+
+	.add-hint > :global(svg),
+	.add-fixed-option > :global(svg) {
+		width: 1.25rem;
+		height: 1.25rem;
+		flex: 0 0 1.25rem;
+		margin-top: 0.1rem;
+	}
+
+	.add-hint p,
+	.add-fixed-option p {
+		font-size: 0.75rem;
+		line-height: 1.8;
+	}
+
+	.add-fixed-option > div {
+		min-width: 0;
+		flex: 1 1 auto;
+	}
+
+	.add-fixed-option strong {
+		display: block;
+		font-size: 0.85rem;
+	}
+
+	.add-fixed-option .ui-badge {
+		flex: 0 0 auto;
+	}
+
+	.add-choice-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		grid-gap: 0.65rem;
+	}
+
+	.add-choice,
+	.add-series {
+		display: flex;
+		align-items: center;
+		padding: 0.85rem;
+		border: 1px solid var(--ui-color-border);
+		border-radius: var(--ui-radius-md);
+		background: var(--ui-color-surface-muted);
+		cursor: pointer;
+		transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+	}
+
+	.add-choice:hover,
+	.add-series:hover {
+		border-color: var(--ui-color-border-strong);
+	}
+
+	.add-choice[data-selected='true'],
+	.add-series[data-selected='true'] {
+		border-color: var(--ui-color-primary);
+		background: var(--ui-color-primary-soft);
+		box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+	}
+
+	.add-choice > * + *,
+	.add-series > * + * {
+		margin-right: 0.65rem;
+	}
+
+	.add-choice-icon {
+		display: flex;
+		width: 2.25rem;
+		height: 2.25rem;
+		flex: 0 0 2.25rem;
+		align-items: center;
+		justify-content: center;
+		border-radius: 0.7rem;
+		background: var(--ui-color-surface);
+		color: var(--ui-color-primary);
+		font-size: 1.2rem;
+	}
+
+	.add-choice-copy {
+		display: flex;
+		min-width: 0;
+		flex: 1 1 auto;
+		flex-direction: column;
+	}
+
+	.add-choice-copy strong {
+		font-size: 0.85rem;
+		font-weight: 900;
+	}
+
+	.add-choice-copy small {
+		margin-top: 0.15rem;
+		color: var(--ui-color-text-muted);
+		font-size: 0.7rem;
+		line-height: 1.7;
+	}
+
+	.add-choice .ui-badge {
+		flex: 0 0 auto;
+	}
+
+	.add-series {
+		margin-top: 0.65rem;
+	}
+
+	.add-submit {
+		padding: 1rem 1.25rem 1.25rem;
+		border-top: 1px solid var(--ui-color-border);
+		background: var(--ui-color-surface-muted);
+	}
+
+	.add-submit p {
+		margin-bottom: 0.65rem;
+		font-size: 0.72rem;
+		text-align: center;
+	}
+
+	@media (min-width: 640px) {
+		.add-section {
+			padding: 1.5rem;
+		}
+
+		.add-choice-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+
+		.add-submit {
+			padding: 1.25rem 1.5rem 1.5rem;
+		}
+	}
+
+	@media (max-width: 420px) {
+		.add-intro-icon {
+			width: 3.25rem;
+			height: 3.25rem;
+			flex-basis: 3.25rem;
+			font-size: 1.6rem;
+		}
+
+		.add-intro h2 {
+			font-size: 1.15rem;
+		}
+
+		.add-choice .ui-badge {
+			display: none;
+		}
+	}
+</style>

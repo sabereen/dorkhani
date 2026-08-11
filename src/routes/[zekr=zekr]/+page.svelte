@@ -3,6 +3,10 @@
 	import Header from '$lib/components/Header.svelte'
 	import IconShare from '~icons/ic/outline-share'
 	import IconCopy from '~icons/ic/outline-copy-all'
+	import IconAutoAwesome from '~icons/ic/round-auto-awesome'
+	import IconCheck from '~icons/ic/round-check-circle'
+	import IconGroups from '~icons/ic/round-groups'
+	import IconInfinite from '~icons/ic/round-all-inclusive'
 	import { Zekr } from '$lib/entity/Zekr.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { browser } from '$app/environment'
@@ -40,6 +44,7 @@
 	}
 
 	const percent = $derived(zekr.percent)
+	const remainingCount = $derived(Math.max(zekr.targetCount - zekr.count, 0))
 </script>
 
 <svelte:head>
@@ -51,9 +56,6 @@
 	<meta property="og:image" content={rebaseFullPath('/hero.png')} />
 	<meta property="og:url" content={zekr.link} />
 	<meta property="og:type" content="website" />
-	<!-- {#if khatm.private}
-		<meta name="robots" content="noindex" />
-	{/if} -->
 </svelte:head>
 
 <Header title={zekr.title}>
@@ -82,63 +84,107 @@
 	{/snippet}
 </Header>
 
-<div class="ui-container-reading">
-<div class="ui-hero !min-h-0">
-		<div class="w-full max-w-md">
-			<h1 class="break-words text-2xl font-black">
-				{zekr.title}
-				{#if zekr.isFinite}
-					<span class="ui-badge ui-badge-info">{zekr.targetCount} مرتبه</span>
-				{/if}
-			</h1>
+<main class="ui-container-reading ui-page ui-zekr-page">
+	<section class="ui-zekr-overview" aria-labelledby="zekr-title">
+		<span class="ui-zekr-orb ui-zekr-orb-one" aria-hidden="true"></span>
+		<span class="ui-zekr-orb ui-zekr-orb-two" aria-hidden="true"></span>
 
-			{#if zekr.finished}
-				<div class="mt-2">
-					<div class="ui-badge ui-badge-success m-auto">این ختم به هدف خود رسیده است.</div>
-				</div>
-			{/if}
+		<div class="ui-zekr-overview-copy">
+			<div class="ui-zekr-kicker">
+				<IconAutoAwesome />
+				<span>ختم ذکر گروهی</span>
+			</div>
+
+			<h1 id="zekr-title">{zekr.title}</h1>
+
+			<div class="ui-zekr-statuses">
+				{#if zekr.finished}
+					<span class="ui-badge ui-badge-success">
+						<IconCheck />
+						<span>هدف این ختم کامل شده است</span>
+					</span>
+				{:else if zekr.isFinite}
+					<span class="ui-badge ui-badge-info">
+						هدف: {zekr.targetCount.toLocaleString('fa')} مرتبه
+					</span>
+				{:else}
+					<span class="ui-badge ui-badge-accent">
+						<IconInfinite />
+						<span>بدون محدودیت تعداد</span>
+					</span>
+				{/if}
+			</div>
 
 			{#if zekr.description}
-				<div dir="auto" class="self-center break-words pb-1 pt-5 text-start">
+				<div dir="auto" class="ui-zekr-description">
 					<ExpandableText text={zekr.description} maxLength={250} threshold={10} />
 				</div>
 			{/if}
+		</div>
 
-			<div class="ui-stats -mb-2">
-				<div class="ui-stat">
-					<div class="ui-stat-title">میزان مشارکت</div>
-					<div class="ui-stat-value h-auto px-2">
-						<span class="text-6xl">{zekr.count.toLocaleString('fa')}</span>
-						{#if zekr.isFinite}
-							<span class="ui-badge ui-badge-info">{percent.toLocaleString('fa')}٪</span>
-						{/if}
-					</div>
-					{#if zekr.isFinite}
-						<div class="ui-stat-description">
-							<progress class="ui-progress ui-progress-success w-23" max={100} value={percent}></progress>
-						</div>
-					{/if}
+		<div class="ui-zekr-progress-card">
+			<div class="ui-zekr-progress-heading">
+				<span class="ui-zekr-progress-icon"><IconGroups /></span>
+				<div>
+					<span>مشارکت جمعی</span>
+					<strong>{zekr.count.toLocaleString('fa')}</strong>
+					<small>مرتبه ذکر گفته شده</small>
 				</div>
 			</div>
 
-			{#if myCount}
-				<p class="text-xs" transition:slide={{ axis: 'y' }}>
-				از این تعداد <span class="ui-badge ui-badge-accent">{myCount} عدد</span> را شما تقبل کرده اید.
+			{#if zekr.isFinite}
+				<div class="ui-zekr-progress-details">
+					<div class="ui-zekr-progress-labels">
+						<span>{percent.toLocaleString('fa')}٪ پیشرفت</span>
+						{#if zekr.finished}
+							<span>هدف تکمیل شده</span>
+						{:else}
+							<span>{remainingCount.toLocaleString('fa')} مرتبه تا هدف</span>
+						{/if}
+					</div>
+					<progress
+						class="ui-progress ui-progress-success"
+						max={100}
+						value={percent}
+						aria-label={`پیشرفت ختم: ${percent.toLocaleString('fa')} درصد`}
+					></progress>
+					<div class="ui-zekr-progress-scale">
+						<span>شروع</span>
+						<span>هدف {zekr.targetCount.toLocaleString('fa')}</span>
+					</div>
+				</div>
+			{:else}
+				<p class="ui-zekr-open-message">
+					این ختم سقف مشخصی ندارد؛ هر بار مشارکت شما به این همراهی جمعی اضافه می‌شود.
 				</p>
 			{/if}
+
+			<div class="ui-zekr-personal-slot" aria-live="polite">
+				{#if myCount}
+					<div class="ui-zekr-personal" transition:slide={{ axis: 'y' }}>
+						<span class="ui-zekr-personal-icon"><IconCheck /></span>
+						<div>
+							<span>سهم شما در این ختم</span>
+							<strong>{myCount.toLocaleString('fa')} مرتبه</strong>
+						</div>
+					</div>
+				{/if}
+			</div>
 		</div>
-</div>
+	</section>
 
-<ZekrActions {zekr} bind:myCount />
+	{#if zekr.zekrText}
+		<section class="ui-zekr-text-card" aria-labelledby="zekr-text-title">
+			<div class="ui-zekr-section-heading">
+				<span><IconAutoAwesome /></span>
+				<div>
+					<small>متن برای خواندن</small>
+					<h2 id="zekr-text-title">ذکر این ختم</h2>
+				</div>
+			</div>
+			<div dir="auto" class="ui-zekr-text">{zekr.zekrText}</div>
+		</section>
+	{/if}
 
-{#if zekr.zekrText}
-	<div
-		dir="auto"
-		class="ws-pre-wrap w-full break-words px-4 pb-1 pt-5 text-start text-xl leading-9"
-	>
-		{zekr.zekrText}
-	</div>
-{/if}
-
-<div class="pt-10"></div>
-</div>
+	<ZekrActions {zekr} bind:myCount />
+</main>

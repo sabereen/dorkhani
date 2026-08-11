@@ -158,10 +158,13 @@ function decodeDirectoryCursor(value: string | undefined, view: KhatmDirectoryVi
 		const [cursorView, rawValue, rawId] = Buffer.from(value, 'base64url').toString('utf8').split(':')
 		const cursorValue = Number(rawValue)
 		const id = Number(rawId)
+		const isValidCursorValue =
+			cursorView === 'progress'
+				? Number.isFinite(cursorValue) && cursorValue >= 0 && cursorValue <= 100
+				: Number.isSafeInteger(cursorValue) && cursorValue >= 0
 		if (
 			cursorView !== view ||
-			!Number.isSafeInteger(cursorValue) ||
-			cursorValue < 0 ||
+			!isValidCursorValue ||
 			!Number.isSafeInteger(id) ||
 			id <= 0
 		) {
@@ -198,8 +201,8 @@ export async function khatmService_getDirectoryList(
 			where.AND = [
 				{
 					OR: [
-						{ versesRead: { lt: cursor.value } },
-						{ versesRead: cursor.value, id: { lt: cursor.id } },
+						{ pageProgress: { lt: cursor.value } },
+						{ pageProgress: cursor.value, id: { lt: cursor.id } },
 					],
 				},
 			]
@@ -221,7 +224,7 @@ export async function khatmService_getDirectoryList(
 
 	const orderBy: Prisma.TKhatmOrderByWithRelationInput[] =
 		query.view === 'progress'
-			? [{ versesRead: 'desc' }, { id: 'desc' }]
+			? [{ pageProgress: 'desc' }, { id: 'desc' }]
 			: query.view === 'continuous'
 				? [{ roundNumber: 'desc' }, { id: 'desc' }]
 				: [{ id: 'desc' }]
@@ -231,7 +234,7 @@ export async function khatmService_getDirectoryList(
 	const last = visibleRows.at(-1)
 	const value = last
 		? query.view === 'progress'
-			? last.versesRead
+			? last.pageProgress
 			: query.view === 'continuous'
 				? last.roundNumber
 				: last.id
@@ -476,7 +479,7 @@ export async function khatmService_setAsCompleted(id: number) {
 
 		const result = await tx.tKhatm.updateMany({
 			where: { id, status: 'inProgress' },
-			data: { status: 'completed', endDate: completedAt },
+			data: { status: 'completed', endDate: completedAt, pageProgress: 100 },
 		})
 		if (result.count === 0) return false
 		await statisticsService_increment(tx, { completedRounds: 1 }, completedAt)

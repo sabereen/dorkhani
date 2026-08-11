@@ -27,11 +27,13 @@ vi.mock('./statistics', () => ({
 }))
 
 import { khatmPartService_pickNextAyat, khatmPartService_pickRange } from './khatmPart'
+import { QuranRange } from '$lib/entity/Range'
 
 const baseKhatm = {
 	id: 12,
 	rangeType: 'free' as const,
 	versesRead: 5,
+	pageProgress: 0,
 	accessToken: null,
 }
 
@@ -53,10 +55,12 @@ describe('khatm recitation tracking', () => {
 		})
 
 		expect(dbMock.$transaction).toHaveBeenCalledOnce()
+		const pageProgressIncrement = new QuranRange(5, 20).getCoveragePercent() * 100
 		expect(dbMock.tKhatm.update).toHaveBeenCalledWith(
 			expect.objectContaining({
 				data: {
 					versesRead: { increment: 15 },
+					pageProgress: { increment: pageProgressIncrement },
 					parts: { create: { start: 5, end: 20 } },
 				},
 			}),
@@ -79,7 +83,10 @@ describe('khatm recitation tracking', () => {
 	it('records an ayah-oriented recitation in the same transaction as its progress update', async () => {
 		const ayahKhatm = { ...baseKhatm, rangeType: 'ayah' as const, versesRead: 10 }
 		dbMock.tKhatm.findUnique.mockResolvedValue(ayahKhatm)
-		dbMock.tKhatm.update.mockResolvedValue({ ...ayahKhatm, versesRead: 17 })
+		const pageProgress = new QuranRange(0, 17).getCoveragePercent() * 100
+		dbMock.tKhatm.update
+			.mockResolvedValueOnce({ ...ayahKhatm, versesRead: 17 })
+			.mockResolvedValueOnce({ ...ayahKhatm, versesRead: 17, pageProgress })
 
 		await khatmPartService_pickNextAyat({
 			khatmId: ayahKhatm.id,
@@ -88,12 +95,16 @@ describe('khatm recitation tracking', () => {
 		})
 
 		expect(dbMock.$transaction).toHaveBeenCalledOnce()
-		expect(dbMock.tKhatm.update).toHaveBeenCalledWith({
+		expect(dbMock.tKhatm.update).toHaveBeenNthCalledWith(1, {
 			where: {
 				id: ayahKhatm.id,
 				versesRead: { lt: COUNT_OF_AYAHS - 7 + 1 },
 			},
 			data: { versesRead: { increment: 7 } },
+		})
+		expect(dbMock.tKhatm.update).toHaveBeenNthCalledWith(2, {
+			where: { id: ayahKhatm.id },
+			data: { pageProgress },
 		})
 		expect(dbMock.tKhatmRecitation.create).toHaveBeenCalledWith({
 			data: { khatmId: ayahKhatm.id, verseCount: 7, created: expect.any(Date) },
@@ -108,5 +119,26 @@ describe('khatm recitation tracking', () => {
 			expect.any(Date),
 		)
 		expect(setAsCompletedMock).not.toHaveBeenCalled()
+	})
+
+	it('keeps page progress unchanged for an empty range', async () => {
+		dbMock.tKhatm.findUnique.mockResolvedValue(baseKhatm)
+		dbMock.tKhatm.update.mockResolvedValue(baseKhatm)
+
+		await khatmPartService_pickRange({
+			khatmId: baseKhatm.id,
+			accessToken: null,
+			start: 5,
+			end: 5,
+		})
+
+		expect(dbMock.tKhatm.update).toHaveBeenCalledWith(
+			expect.objectContaining({
+				data: expect.objectContaining({ pageProgress: { increment: 0 } }),
+			}),
+		)
+		expect(dbMock.tKhatmRecitation.create).not.toHaveBeenCalled()
+		expect(statisticsMock.increment).not.toHaveBeenCalled()
+		expect(statisticsMock.applyCommitted).not.toHaveBeenCalled()
 	})
 })

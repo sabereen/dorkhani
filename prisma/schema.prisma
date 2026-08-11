@@ -56,6 +56,8 @@ model TKhatm {
   rangeType    RangeType     @default(free) @map("range_type")
   // تعداد کل آیات خوانده شده از ختم را نگهداری می‌کند
   versesRead   Int           @default(0) @map("verses_read") @db.UnsignedSmallInt()
+  // Page-weighted completion percentage in the 0..100 range.
+  pageProgress Float         @default(0) @map("page_progress")
   // ختم خصوصی فقط با داشتن اکسس‌توکن مربوطه نمایش داده می‌شود و در صفحه اصلی نمایش داده نمی‌شود
   private      Boolean       @default(false)
   // توکن مربوط به ختم‌های خصوصی
@@ -84,6 +86,7 @@ model TKhatm {
   @@index([created])
   @@index([status, endDate])
   @@index([private, reviewStatus, status, roundNumber])
+  @@index([private, reviewStatus, status, pageProgress, id])
   @@map("khatm")
 }
 

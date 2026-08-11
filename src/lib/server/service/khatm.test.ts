@@ -48,6 +48,7 @@ const baseKhatm = {
 	description: 'توضیحات قبلی',
 	rangeType: 'page' as const,
 	versesRead: 0,
+	pageProgress: 0,
 	private: false,
 	accessToken: null,
 	created: new Date('2026-01-01T00:00:00Z'),
@@ -138,9 +139,9 @@ describe('public khatm directory', () => {
 
 	it('combines search and range filters with progress ranking and a stable cursor', async () => {
 		dbMock.tKhatm.findMany.mockResolvedValueOnce([
-			{ ...baseKhatm, id: 50, versesRead: 100 },
-			{ ...baseKhatm, id: 49, versesRead: 100 },
-			{ ...baseKhatm, id: 48, versesRead: 90 },
+			{ ...baseKhatm, id: 50, pageProgress: 25.25 },
+			{ ...baseKhatm, id: 49, pageProgress: 12.5 },
+			{ ...baseKhatm, id: 48, pageProgress: 10.75 },
 		])
 
 		const firstPage = await khatmService_getDirectoryList(
@@ -156,7 +157,7 @@ describe('public khatm directory', () => {
 				OR: [{ title: { contains: 'شفا' } }, { description: { contains: 'شفا' } }],
 				status: 'inProgress',
 			},
-			orderBy: [{ versesRead: 'desc' }, { id: 'desc' }],
+			orderBy: [{ pageProgress: 'desc' }, { id: 'desc' }],
 			take: 3,
 		})
 		expect(firstPage.list.map((khatm) => khatm.id)).toEqual([50, 49])
@@ -183,11 +184,14 @@ describe('public khatm directory', () => {
 				status: 'inProgress',
 				AND: [
 					{
-						OR: [{ versesRead: { lt: 100 } }, { versesRead: 100, id: { lt: 49 } }],
+						OR: [
+							{ pageProgress: { lt: 12.5 } },
+							{ pageProgress: 12.5, id: { lt: 49 } },
+						],
 					},
 				],
 			},
-			orderBy: [{ versesRead: 'desc' }, { id: 'desc' }],
+			orderBy: [{ pageProgress: 'desc' }, { id: 'desc' }],
 			take: 3,
 		})
 	})
@@ -381,6 +385,10 @@ describe('khatm ownership service', () => {
 			guestClaimTokenHash: 'claim-hash',
 		})
 		await khatmService_setAsCompleted(12)
+		expect(dbMock.tKhatm.updateMany).toHaveBeenCalledWith({
+			where: { id: 12, status: 'inProgress' },
+			data: { status: 'completed', endDate: expect.any(Date), pageProgress: 100 },
+		})
 		expect(dbMock.tKhatm.create).toHaveBeenCalledWith({
 			data: expect.objectContaining({ ownerId: 'owner-1', guestClaimTokenHash: 'claim-hash', roundNumber: 3 }),
 		})

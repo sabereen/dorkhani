@@ -2496,28 +2496,6 @@
 	font-weight: 900;
 }
 
-.ui-khatm-progress-toggle {
-	margin-top: 0.7rem;
-	padding: 0;
-	border: 0;
-	background: transparent;
-	color: var(--ui-color-primary);
-	font: inherit;
-	font-size: 0.7rem;
-	font-weight: 800;
-	cursor: pointer;
-}
-
-.ui-khatm-progress-toggle:hover {
-	color: var(--ui-color-primary-hover);
-	text-decoration: underline;
-}
-
-.ui-khatm-progress-toggle:focus {
-	outline: 3px solid rgba(99, 102, 241, 0.3);
-	outline-offset: 0.25rem;
-}
-
 .ui-khatm-my-participation {
 	position: relative;
 	padding: 1rem;

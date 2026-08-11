@@ -37,6 +37,10 @@ export async function khatmPartService_pickRange(body: CreatingKhatmPart) {
 
 	try {
 		const pickedAt = new Date()
+		const pageProgressIncrement =
+			body.end > body.start
+				? new QuranRange(body.start, body.end).getCoveragePercent() * 100
+				: 0
 		const result = await db.$transaction(async (tx) => {
 			const updated = await tx.tKhatm.update({
 				where: {
@@ -51,6 +55,9 @@ export async function khatmPartService_pickRange(body: CreatingKhatmPart) {
 				data: {
 					versesRead: {
 						increment: body.end - body.start,
+					},
+					pageProgress: {
+						increment: pageProgressIncrement,
 					},
 					parts: {
 						create: {
@@ -120,13 +127,22 @@ export async function khatmPartService_pickNextAyat(body: PickNextAyatInput) {
 	const pickedAt = new Date()
 
 	const updated = await db.$transaction(async (tx) => {
-		const result = await tx.tKhatm.update({
+		const progressUpdated = await tx.tKhatm.update({
 			where: {
 				id: body.khatmId,
 				versesRead: { lt: COUNT_OF_AYAHS - count + 1 },
 			},
 			data: {
 				versesRead: { increment: count },
+			},
+		})
+		const result = await tx.tKhatm.update({
+			where: { id: progressUpdated.id },
+			data: {
+				pageProgress:
+					progressUpdated.versesRead > 0
+						? new QuranRange(0, progressUpdated.versesRead).getCoveragePercent() * 100
+						: 0,
 			},
 		})
 

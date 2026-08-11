@@ -32,31 +32,42 @@ export async function khatmPartService_pickRange(body: CreatingKhatmPart) {
 	}
 
 	try {
-		const result = await db.tKhatm.update({
-			where: {
-				id: body.khatmId,
-				accessToken: { equals: body.accessToken || null },
-				parts: {
-					every: {
-						OR: [{ end: { lte: body.start } }, { start: { gte: body.end } }],
+		const result = await db.$transaction(async (tx) => {
+			const updated = await tx.tKhatm.update({
+				where: {
+					id: body.khatmId,
+					accessToken: { equals: body.accessToken || null },
+					parts: {
+						every: {
+							OR: [{ end: { lte: body.start } }, { start: { gte: body.end } }],
+						},
 					},
 				},
-			},
-			data: {
-				versesRead: {
-					increment: body.end - body.start,
-				},
-				parts: {
-					create: {
-						start: body.start,
-						end: body.end,
+				data: {
+					versesRead: {
+						increment: body.end - body.start,
+					},
+					parts: {
+						create: {
+							start: body.start,
+							end: body.end,
+						},
 					},
 				},
-			},
+			})
+
+			const verseCount = body.end - body.start
+			if (verseCount > 0) {
+				await tx.tKhatmRecitation.create({
+					data: { khatmId: body.khatmId, verseCount },
+				})
+			}
+
+			return updated
 		})
 
 		if (result.versesRead >= COUNT_OF_AYAHS) {
-			khatmService_setAsCompleted(result.id)
+			await khatmService_setAsCompleted(result.id)
 		}
 
 		return khatmService_toPublic(result)
@@ -98,18 +109,28 @@ export async function khatmPartService_pickNextAyat(body: PickNextAyatInput) {
 
 	const count = Math.min(body.count, COUNT_OF_AYAHS - khatm.versesRead)
 
-	const updated = await db.tKhatm.update({
-		where: {
-			id: body.khatmId,
-			versesRead: { lt: COUNT_OF_AYAHS - count + 1 },
-		},
-		data: {
-			versesRead: { increment: count },
-		},
+	const updated = await db.$transaction(async (tx) => {
+		const result = await tx.tKhatm.update({
+			where: {
+				id: body.khatmId,
+				versesRead: { lt: COUNT_OF_AYAHS - count + 1 },
+			},
+			data: {
+				versesRead: { increment: count },
+			},
+		})
+
+		if (count > 0) {
+			await tx.tKhatmRecitation.create({
+				data: { khatmId: body.khatmId, verseCount: count },
+			})
+		}
+
+		return result
 	})
 
 	if (updated.versesRead >= COUNT_OF_AYAHS) {
-		khatmService_setAsCompleted(updated.id)
+		await khatmService_setAsCompleted(updated.id)
 	}
 
 	return {

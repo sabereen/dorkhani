@@ -29,13 +29,6 @@
 		</li>
 
 		<li>
-			<a class="ui-btn ui-btn-soft w-full" href={`${base}/admin/showcase`}>
-				<IconShowcase class="size-7" />
-				ختم‌های برگزیده
-			</a>
-		</li>
-
-		<li>
 			<a class="ui-btn ui-btn-soft w-full" href={`${base}/admin/add-zekr`}>
 				<IconShowcase class="size-7" />
 				افزودن ذکر

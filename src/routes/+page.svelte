@@ -187,7 +187,13 @@
 
 			<div class="landing-public-grid">
 				{#if showcase.length > 0}
-					{@render khatmList(showcase, 'ختم‌های برگزیده', 'پیشنهادهای ویژه برای همراهی شما', undefined, true)}
+					{@render khatmList(
+						showcase,
+						'ختم‌های برگزیده',
+						'این فهرست به‌صورت خودکار بر اساس بیشترین تعداد آیات خوانده‌شده در ۳ روز گذشته مرتب می‌شود.',
+						undefined,
+						true,
+					)}
 				{/if}
 				{#if khatms.length > 0}
 					{@render khatmList(khatms, 'تازه‌ترین ختم‌ها', 'جمع‌های عمومی و تأییدشده', `${base}/list`)}

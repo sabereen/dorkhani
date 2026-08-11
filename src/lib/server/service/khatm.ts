@@ -39,13 +39,56 @@ export async function khatmService_getPublicList({ limit = 20 } = {}) {
 	return khatms.map(khatmService_toPublic)
 }
 
-export async function khatmService_getBulk(ids: ReadonlyArray<number>) {
-	if (ids.length === 0) return []
-	const khatms = await db.tKhatm.findMany({
-		where: { id: { in: ids as number[] } },
-		orderBy: { id: 'desc' },
+const AUTOMATIC_SHOWCASE_WINDOW_MS = 72 * 60 * 60 * 1000
+
+export async function khatmService_getAutomaticShowcase(
+	{ limit = 6, now = new Date() }: { limit?: number; now?: Date } = {},
+) {
+	const take = Math.max(0, Math.floor(limit))
+	if (take === 0) return []
+
+	const since = new Date(now.getTime() - AUTOMATIC_SHOWCASE_WINDOW_MS)
+	const rankedRecitations = await db.tKhatmRecitation.groupBy({
+		by: ['khatmId'],
+		where: {
+			created: { gte: since },
+			khatm: {
+				is: {
+					private: false,
+					reviewStatus: 'approved',
+					status: 'inProgress',
+				},
+			},
+		},
+		_sum: { verseCount: true },
+		_max: { created: true },
+		orderBy: [
+			{ _sum: { verseCount: 'desc' } },
+			{ _max: { created: 'desc' } },
+			{ khatmId: 'desc' },
+		],
+		take,
 	})
-	return khatms.map(khatmService_toPublic)
+
+	const rankedIds = rankedRecitations
+		.filter((recitation) => (recitation._sum.verseCount || 0) > 0)
+		.map((recitation) => recitation.khatmId)
+	if (rankedIds.length === 0) return []
+
+	const khatms = await db.tKhatm.findMany({
+		where: {
+			id: { in: rankedIds },
+			private: false,
+			reviewStatus: 'approved',
+			status: 'inProgress',
+		},
+	})
+	const khatmsById = new Map(khatms.map((khatm) => [khatm.id, khatm]))
+
+	return rankedIds
+		.map((id) => khatmsById.get(id))
+		.filter((khatm): khatm is TKhatm => Boolean(khatm))
+		.map(khatmService_toPublic)
 }
 
 type CreatingKhatm = {
@@ -275,27 +318,36 @@ export async function khatmService_isDeleted(id: number, isSeries = false) {
 }
 
 export async function khatmService_setAsCompleted(id: number) {
-	const result = await db.tKhatm.update({
-		where: { id },
-		include: { series: true },
-		data: { status: 'completed', endDate: new Date() },
-	})
-	const { series, roundNumber } = result
-	if (!series) return
-	if (series.maxRounds && roundNumber >= series.maxRounds) return
+	await db.$transaction(async (tx) => {
+		const current = await tx.tKhatm.findUnique({
+			where: { id },
+			include: { series: true },
+		})
+		if (!current || current.status === 'completed') return
 
-	await db.tKhatm.create({
-		data: {
-			title: result.title,
-			description: result.description,
-			accessToken: result.accessToken,
-			private: result.private,
-			rangeType: result.rangeType,
-			seriesId: result.seriesId,
-			roundNumber: roundNumber + 1,
-			ownerId: result.ownerId,
-			guestClaimTokenHash: result.guestClaimTokenHash,
-		},
+		const completed = await tx.tKhatm.updateMany({
+			where: { id, status: 'inProgress' },
+			data: { status: 'completed', endDate: new Date() },
+		})
+		if (completed.count === 0) return
+
+		const { series, roundNumber } = current
+		if (!series) return
+		if (series.maxRounds && roundNumber >= series.maxRounds) return
+
+		await tx.tKhatm.create({
+			data: {
+				title: current.title,
+				description: current.description,
+				accessToken: current.accessToken,
+				private: current.private,
+				rangeType: current.rangeType,
+				seriesId: current.seriesId,
+				roundNumber: roundNumber + 1,
+				ownerId: current.ownerId,
+				guestClaimTokenHash: current.guestClaimTokenHash,
+			},
+		})
 	})
 }
 
@@ -304,6 +356,6 @@ export async function khatmService_checkAndUpdateStatus() {
 		select: { id: true },
 		where: { status: 'inProgress', versesRead: { gte: COUNT_OF_AYAHS } },
 	})
-	result.forEach((khatm) => khatmService_setAsCompleted(khatm.id))
+	await Promise.all(result.map((khatm) => khatmService_setAsCompleted(khatm.id)))
 	return { count: result.length }
 }

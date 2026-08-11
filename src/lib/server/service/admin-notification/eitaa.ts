@@ -53,7 +53,7 @@ export class EitaaAdminNotification implements AdminNotification {
 			`عنوان: ${khatm.title} (${khatm.rangeType})`,
 			`شرح: ${khatm.description}`,
 			'',
-			`${rebaseFullPath('/admin/showcase', origin)}`,
+			`${rebaseFullPath('/admin/review', origin)}`,
 		].join('\n')
 
 		await this.send(message)

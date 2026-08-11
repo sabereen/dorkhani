@@ -1,15 +1,8 @@
-import type { KhatmData } from '$lib/entity/KhatmData'
 import { db } from '../db'
-import { khatmService_getBulk } from './khatm'
 
 type Config = {
 	/** لینک پشتیبانی سایت */
 	readonly supportLink?: string
-	/**
-	 * ختم‌های صفحه اصلی
-	 * اگر automaticShowcase فعال باشد این فیلد کاربردی ندارد.
-	 */
-	readonly showcase: ReadonlyArray<number>
 	/**
 	 * تنظیمات مربوط به نوتیفیکیشن
 	 */
@@ -20,20 +13,15 @@ type Config = {
 	}
 }
 
-type Store = {
-	config: Config
-	showcaseKhatms: KhatmData[]
-}
+type Store = { config: Config }
 
 const store: Store = {
 	config: {
-		showcase: [],
 		supportLink: '',
 		notification: {
 			eitaa: false,
 		},
 	},
-	showcaseKhatms: [],
 }
 
 export const appSettings_store = store
@@ -61,37 +49,12 @@ async function apply(newConfig?: Config | null) {
 	if (!newConfig) return
 
 	store.config = {
-		...store.config,
-		...newConfig,
-	}
-	const result = await khatmService_getBulk(newConfig.showcase)
-	store.showcaseKhatms = result
-}
-
-export function appSettingsService_getStaleShowcaseWhileRevalidate() {
-	const currentShowcase = store.config.showcase
-	khatmService_getBulk(currentShowcase).then((result) => {
-		if (currentShowcase === store.config.showcase) {
-			store.showcaseKhatms = result
-		}
-	})
-	return store.showcaseKhatms
-}
-
-export async function appSettingsService_setShowcase(showcase: number[]) {
-	const newConfig = {
-		...store.config,
-		showcase: showcase,
-	}
-
-	const result = await db.tAppSettings.update({
-		where: { id: 1 },
-		data: {
-			config: newConfig,
+		supportLink: newConfig.supportLink,
+		notification: {
+			...store.config.notification,
+			...newConfig.notification,
 		},
-	})
-
-	await apply(result.config as unknown as Config)
+	}
 }
 
 export async function appSettingsService_setKey<T extends keyof Config>(key: T, value: Config[T]) {

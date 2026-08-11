@@ -13,6 +13,7 @@ const dbMock = vi.hoisted(() => ({
 	},
 	tKhatmSeries: { update: vi.fn(), delete: vi.fn() },
 	tKhatmDeletion: { createMany: vi.fn(), findFirst: vi.fn(), findUnique: vi.fn() },
+	tKhatmRecitation: { groupBy: vi.fn() },
 	$transaction: vi.fn(),
 }))
 
@@ -25,6 +26,7 @@ import {
 	khatmService_claimGuestKhatms,
 	khatmService_deleteOwned,
 	khatmService_editOwned,
+	khatmService_getAutomaticShowcase,
 	khatmService_setAsCompleted,
 } from './khatm'
 
@@ -47,6 +49,75 @@ const baseKhatm = {
 	_count: { parts: 0 },
 	series: { id: 9, maxRounds: null },
 }
+
+describe('automatic khatm showcase', () => {
+	beforeEach(() => {
+		vi.resetAllMocks()
+	})
+
+	it('ranks up to six eligible khatms by progress in the previous 72 hours', async () => {
+		const now = new Date('2026-08-11T12:00:00Z')
+		const latest = new Date('2026-08-11T10:00:00Z')
+		dbMock.tKhatmRecitation.groupBy.mockResolvedValue([
+			{ khatmId: 31, _sum: { verseCount: 200 }, _max: { created: latest } },
+			{ khatmId: 29, _sum: { verseCount: 200 }, _max: { created: latest } },
+			{ khatmId: 17, _sum: { verseCount: 150 }, _max: { created: latest } },
+		])
+		dbMock.tKhatm.findMany.mockResolvedValue([
+			{ ...baseKhatm, id: 17 },
+			{ ...baseKhatm, id: 31 },
+			{ ...baseKhatm, id: 29 },
+		])
+
+		const result = await khatmService_getAutomaticShowcase({ now })
+
+		expect(dbMock.tKhatmRecitation.groupBy).toHaveBeenCalledWith({
+			by: ['khatmId'],
+			where: {
+				created: { gte: new Date('2026-08-08T12:00:00Z') },
+				khatm: {
+					is: {
+						private: false,
+						reviewStatus: 'approved',
+						status: 'inProgress',
+					},
+				},
+			},
+			_sum: { verseCount: true },
+			_max: { created: true },
+			orderBy: [
+				{ _sum: { verseCount: 'desc' } },
+				{ _max: { created: 'desc' } },
+				{ khatmId: 'desc' },
+			],
+			take: 6,
+		})
+		expect(dbMock.tKhatm.findMany).toHaveBeenCalledWith({
+			where: {
+				id: { in: [31, 29, 17] },
+				private: false,
+				reviewStatus: 'approved',
+				status: 'inProgress',
+			},
+		})
+		expect(result.map((khatm) => khatm.id)).toEqual([31, 29, 17])
+		expect(result[0]).not.toHaveProperty('ownerId')
+		expect(result[0]).not.toHaveProperty('guestClaimTokenHash')
+	})
+
+	it('returns a shorter list when progress is zero or a ranked khatm is no longer eligible', async () => {
+		dbMock.tKhatmRecitation.groupBy.mockResolvedValue([
+			{ khatmId: 31, _sum: { verseCount: 10 }, _max: { created: new Date() } },
+			{ khatmId: 29, _sum: { verseCount: 0 }, _max: { created: new Date() } },
+		])
+		dbMock.tKhatm.findMany.mockResolvedValue([])
+
+		await expect(khatmService_getAutomaticShowcase()).resolves.toEqual([])
+		expect(dbMock.tKhatm.findMany).toHaveBeenCalledWith(
+			expect.objectContaining({ where: expect.objectContaining({ id: { in: [31] } }) }),
+		)
+	})
+})
 
 describe('khatm ownership service', () => {
 	beforeEach(() => {
@@ -185,9 +256,8 @@ describe('khatm ownership service', () => {
 	})
 
 	it('copies ownership to a new round and respects a disabled series maximum', async () => {
-		dbMock.tKhatm.update.mockResolvedValue({
+		dbMock.tKhatm.findUnique.mockResolvedValue({
 			...baseKhatm,
-			status: 'completed',
 			ownerId: 'owner-1',
 			guestClaimTokenHash: 'claim-hash',
 		})
@@ -197,9 +267,8 @@ describe('khatm ownership service', () => {
 		})
 
 		dbMock.tKhatm.create.mockClear()
-		dbMock.tKhatm.update.mockResolvedValue({
+		dbMock.tKhatm.findUnique.mockResolvedValue({
 			...baseKhatm,
-			status: 'completed',
 			series: { id: 9, maxRounds: 2 },
 		})
 		await khatmService_setAsCompleted(12)

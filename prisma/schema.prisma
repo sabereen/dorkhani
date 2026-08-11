@@ -72,9 +72,13 @@ model TKhatm {
   owner        User?         @relation(fields: [ownerId], references: [id], onDelete: SetNull)
   guestClaimTokenHash String? @map("guest_claim_token_hash") @db.Char(64)
   parts        TKhatmPart[]
+  recitations  TKhatmRecitation[]
 
   @@index([reviewStatus])
   @@index([ownerId])
+  @@index([created])
+  @@index([status, endDate])
+  @@index([private, reviewStatus, status, roundNumber])
   @@map("khatm")
 }
 
@@ -105,6 +109,18 @@ model TKhatmPart {
   created DateTime @default(now())
 
   @@map("khatm_part")
+}
+
+model TKhatmRecitation {
+  id         BigInt   @id @default(autoincrement()) @db.UnsignedBigInt()
+  khatm      TKhatm   @relation(fields: [khatmId], references: [id], onDelete: Cascade)
+  khatmId    Int      @map("khatm_id")
+  verseCount Int      @map("verse_count") @db.UnsignedSmallInt()
+  created    DateTime @default(now())
+
+  @@index([created])
+  @@index([khatmId, created])
+  @@map("khatm_recitation")
 }
 
 model User {

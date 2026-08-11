@@ -2076,6 +2076,39 @@
 	margin-left: 0.35rem;
 }
 
+.ui-khatm-series-status {
+	display: flex;
+	align-items: center;
+	padding: 0.2rem;
+	border: 1px solid var(--ui-color-border);
+	border-radius: 9999px;
+	background: var(--ui-color-surface);
+}
+
+.ui-khatm-series-status > * + * {
+	margin-right: 0.2rem;
+}
+
+.ui-khatm-series-status .ui-badge {
+	border: 0;
+}
+
+.ui-khatm-series-stop {
+	border-color: transparent;
+	background: var(--ui-color-danger-soft);
+	color: var(--ui-color-danger);
+}
+
+.ui-khatm-series-stop:hover {
+	border-color: var(--ui-color-danger);
+	background: var(--ui-color-danger-soft);
+}
+
+.ui-khatm-series-stop svg {
+	width: 1rem;
+	height: 1rem;
+}
+
 .ui-khatm-description {
 	max-width: 38rem;
 	margin-top: 1rem;
@@ -2177,6 +2210,69 @@
 	);
 	text-align: center;
 	overflow: hidden;
+}
+
+.ui-khatm-stop-dialog {
+	max-width: 29rem;
+	padding: 1.75rem;
+	border-color: var(--ui-color-border-strong);
+	border-radius: 1.5rem;
+	background: var(--ui-color-surface);
+	text-align: center;
+}
+
+.ui-khatm-stop-icon {
+	display: flex;
+	width: 4.25rem;
+	height: 4.25rem;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto 0.9rem;
+	border-radius: 1.35rem;
+	background: var(--ui-color-danger-soft);
+	color: var(--ui-color-danger);
+}
+
+.ui-khatm-stop-icon svg {
+	width: 2.35rem;
+	height: 2.35rem;
+}
+
+.ui-khatm-stop-eyebrow {
+	margin: 0 0 0.3rem;
+	color: var(--ui-color-danger);
+	font-size: 0.75rem;
+	font-weight: 900;
+}
+
+.ui-khatm-stop-dialog h2 {
+	margin: 0;
+	font-size: 1.3rem;
+	font-weight: 950;
+}
+
+.ui-khatm-stop-description {
+	margin: 0.65rem 0 0;
+	color: var(--ui-color-text-muted);
+	font-size: 0.85rem;
+	line-height: 1.9;
+}
+
+.ui-khatm-stop-actions {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	grid-gap: 0.5rem;
+	margin-top: 1.25rem;
+}
+
+@media (max-width: 479px) {
+	.ui-khatm-series-stop span {
+		display: none;
+	}
+
+	.ui-khatm-stop-dialog {
+		padding: 1.35rem 1rem 1rem;
+	}
 }
 
 .ui-khatm-auth-close {
@@ -2453,6 +2549,33 @@
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 	grid-gap: 0.5rem;
+}
+
+.ui-khatm-confirm-success {
+	padding: 0.5rem 0;
+}
+
+.ui-khatm-confirm-success .ui-khatm-confirm-icon {
+	background: var(--ui-color-success-soft);
+	color: var(--ui-color-success);
+	box-shadow: 0 0 0 0.35rem var(--ui-color-surface-muted);
+}
+
+.ui-khatm-confirm-success .ui-khatm-confirm-range {
+	border-color: var(--ui-color-success);
+	background: linear-gradient(145deg, var(--ui-color-success-soft), var(--ui-color-surface));
+	color: var(--ui-color-text);
+	font-size: 1rem;
+}
+
+.ui-khatm-confirm-success .ui-khatm-confirm-actions {
+	margin-top: 1rem;
+}
+
+.ui-khatm-confirm-success .ui-khatm-confirm-actions .ui-btn {
+	height: auto;
+	min-height: 2.75rem;
+	white-space: normal;
 }
 
 .ui-khatm-ayah-picker {

@@ -12,6 +12,7 @@
 	import Tab from '$lib/components/Tab.svelte'
 	import Accardeon from '$lib/components/Accardeon.svelte'
 	import IconList from '~icons/ic/round-format-list-bulleted'
+	import PickedRangeResult from '../PickedRangeResult.svelte'
 
 	type PageState = {
 		modal?: boolean
@@ -58,6 +59,7 @@
 	const modal = $derived(!!(page.state as PageState).modal)
 
 	let selected = $state(new QuranRange(0, 0))
+	let picked = $state(false)
 
 	function openModal(range: QuranRange) {
 		if (modal) return
@@ -67,6 +69,7 @@
 			return
 		}
 		selected = range
+		picked = false
 		pushState('', { modal: true } satisfies PageState)
 	}
 
@@ -148,5 +151,9 @@
 </section>
 
 <Modal bind:open={() => modal, closeModal}>
-	<ConfirmRange {khatm} onClose={closeModal} onFinished={closeModal} range={selected} />
+	{#if picked}
+		<PickedRangeResult {khatm} onClose={closeModal} range={selected} />
+	{:else}
+		<ConfirmRange {khatm} onClose={closeModal} onFinished={() => (picked = true)} range={selected} />
+	{/if}
 </Modal>

@@ -12,6 +12,7 @@
 	import { page } from '$app/state'
 	import { pushState } from '$app/navigation'
 	import IconGrid from '~icons/ic/round-grid-view'
+	import PickedRangeResult from '../PickedRangeResult.svelte'
 
 	type PageState = {
 		modal?: boolean
@@ -60,6 +61,7 @@
 	const modal = $derived(!!(page.state as PageState).modal)
 
 	let selected = $state(new QuranRange(0, 0))
+	let picked = $state(false)
 
 	function openModal(start: number, end: number) {
 		const range = new QuranRange(start, end)
@@ -69,8 +71,9 @@
 		// 	return
 		// }
 
-		pushState('', { modal: true } satisfies PageState)
 		selected = range
+		picked = false
+		pushState('', { modal: true } satisfies PageState)
 	}
 
 	function closeModal() {
@@ -164,5 +167,9 @@
 </section>
 
 <Modal bind:open={() => modal, closeModal}>
-	<ConfirmRange {khatm} onClose={closeModal} onFinished={closeModal} range={selected} />
+	{#if picked}
+		<PickedRangeResult {khatm} onClose={closeModal} range={selected} />
+	{:else}
+		<ConfirmRange {khatm} onClose={closeModal} onFinished={() => (picked = true)} range={selected} />
+	{/if}
 </Modal>

@@ -47,5 +47,7 @@ export const load: LayoutServerLoad = async ({ params, url, locals }) => {
 		khatm: khatmService_toPublic(khatm),
 		isAuthenticated: Boolean(locals.user),
 		canManage: Boolean(locals.user && khatm.ownerId === locals.user.id),
+		canStopSeries: Boolean(khatm.series && khatm.series.maxRounds == null),
+		seriesMaxRounds: khatm.series?.maxRounds ?? null,
 	}
 }

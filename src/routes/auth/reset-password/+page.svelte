@@ -1,37 +1,84 @@
 <script lang="ts">
-	import Header from '$lib/components/Header.svelte'
-	import { authClient } from '$lib/auth-client'
-	import { page } from '$app/state'
 	import { base } from '$app/paths'
+	import { page } from '$app/state'
+	import { authClient } from '$lib/auth-client'
+	import AuthShell from '$lib/components/AuthShell.svelte'
+	import IconCheck from '~icons/ic/round-check-circle'
+	import IconLock from '~icons/ic/round-lock'
+	import IconSave from '~icons/ic/round-save'
+	import IconVisibility from '~icons/ic/round-visibility'
+	import IconVisibilityOff from '~icons/ic/round-visibility-off'
 
 	let password = $state('')
 	let completed = $state(false)
+	let loading = $state(false)
 	let errorMessage = $state('')
+	let showPassword = $state(false)
 
 	async function submit(event: SubmitEvent) {
 		event.preventDefault()
+		loading = true
+		errorMessage = ''
 		const result = await authClient.resetPassword({
 			newPassword: password,
 			token: page.url.searchParams.get('token') || '',
 		})
+		loading = false
 		if (result.error) errorMessage = result.error.message || 'تغییر رمز ناموفق بود.'
 		else completed = true
 	}
 </script>
 
 <svelte:head><title>رمز تازه | ختم قرآن</title></svelte:head>
-<Header title="انتخاب رمز تازه" />
-<div class="mx-auto mt-4 max-w-sm">
+
+<AuthShell
+	title="انتخاب رمز تازه"
+	eyebrow="یک قدم تا ورود"
+	description="یک رمز امن و به‌یادماندنی برای حساب خود انتخاب کنید."
+>
 	{#if completed}
-		<div class="ui-alert ui-alert-success">رمز عبور تغییر کرد.</div>
-		<a class="ui-btn ui-btn-primary mt-3 w-full" href={`${base}/auth/login`}>ورود</a>
+		<div class="ui-auth-success" role="status">
+			<span class="ui-auth-success-icon"><IconCheck /></span>
+			<h3>رمز عبور تغییر کرد</h3>
+			<p>همه‌چیز آماده است؛ اکنون می‌توانید با رمز تازه وارد حساب خود شوید.</p>
+			<a class="ui-btn ui-btn-primary ui-btn-block" href={`${base}/auth/login`}>ورود به حساب</a>
+		</div>
 	{:else}
-		{#if errorMessage}<div class="ui-alert ui-alert-error mb-3">{errorMessage}</div>{/if}
-		<form class="ui-card ui-card-bordered" onsubmit={submit}>
-			<div class="ui-card-body grid gap-3">
-				<label class="grid gap-1">رمز تازه<input class="ui-input" type="password" bind:value={password} minlength="8" required /></label>
-				<button class="ui-btn ui-btn-primary" type="submit">ذخیره رمز</button>
+		{#if errorMessage}
+			<div class="ui-alert ui-alert-error ui-auth-alert" role="alert">{errorMessage}</div>
+		{/if}
+
+		<form class="ui-auth-form" onsubmit={submit} aria-busy={loading}>
+			<div class="ui-auth-field">
+				<label class="ui-field-label" for="new-password"><IconLock /> رمز عبور تازه</label>
+				<div class="ui-auth-password-wrap">
+					<input
+						id="new-password"
+						class="ui-input"
+						dir="ltr"
+						type={showPassword ? 'text' : 'password'}
+						bind:value={password}
+						minlength="8"
+						autocomplete="new-password"
+						placeholder="حداقل ۸ نویسه"
+						required
+					/>
+					<button
+						class="ui-auth-password-toggle"
+						type="button"
+						aria-label={showPassword ? 'پنهان کردن رمز عبور' : 'نمایش رمز عبور'}
+						aria-pressed={showPassword}
+						onclick={() => (showPassword = !showPassword)}
+					>
+						{#if showPassword}<IconVisibilityOff />{:else}<IconVisibility />{/if}
+					</button>
+				</div>
+				<small class="ui-auth-hint">رمز عبور باید دست‌کم ۸ نویسه باشد.</small>
 			</div>
+			<button class="ui-btn ui-btn-primary ui-btn-lg ui-btn-block" type="submit" disabled={loading}>
+				{#if loading}<span class="ui-spinner"></span>{:else}<IconSave />{/if}
+				<span>{loading ? 'در حال ذخیره…' : 'ذخیره رمز تازه'}</span>
+			</button>
 		</form>
 	{/if}
-</div>
+</AuthShell>

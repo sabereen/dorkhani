@@ -1,10 +1,17 @@
 <script lang="ts">
-	import Header from '$lib/components/Header.svelte'
+	import { goto, invalidateAll } from '$app/navigation'
+	import { base } from '$app/paths'
 	import { authClient } from '$lib/auth-client'
 	import { claimCreatedKhatms } from '$lib/auth/claimCreatedKhatms'
-	import { base } from '$app/paths'
-	import { goto, invalidateAll } from '$app/navigation'
+	import AuthShell from '$lib/components/AuthShell.svelte'
 	import { onMount } from 'svelte'
+	import IconChat from '~icons/ic/round-chat'
+	import IconEmail from '~icons/ic/round-email'
+	import IconLanguage from '~icons/ic/round-language'
+	import IconLock from '~icons/ic/round-lock'
+	import IconLogin from '~icons/ic/round-login'
+	import IconVisibility from '~icons/ic/round-visibility'
+	import IconVisibilityOff from '~icons/ic/round-visibility-off'
 	import type { PageProps } from './$types'
 
 	const { data }: PageProps = $props()
@@ -13,6 +20,7 @@
 	let loading = $state(false)
 	let errorMessage = $state('')
 	let eitaaAvailable = $state(false)
+	let showPassword = $state(false)
 
 	onMount(() => {
 		const check = () =>
@@ -43,7 +51,10 @@
 	}
 
 	async function signInGoogle() {
+		loading = true
+		errorMessage = ''
 		await authClient.signIn.social({ provider: 'google', callbackURL: `${base}/account` })
+		loading = false
 	}
 
 	async function signInEitaa() {
@@ -71,50 +82,82 @@
 	<script src="https://developer.eitaa.com/eitaa-web-app.js"></script>
 </svelte:head>
 
-<Header title="ورود" />
-<div class="mx-auto mt-4 max-w-sm">
-	{#if errorMessage}<div class="ui-alert ui-alert-error mb-3">{errorMessage}</div>{/if}
-	<form class="ui-card ui-card-bordered" onsubmit={signInEmail}>
-		<div class="ui-card-body grid gap-3">
-			<label class="grid gap-1">
-				ایمیل
+<AuthShell
+	title="ورود به حساب"
+	eyebrow="خوش آمدید"
+	description="برای ادامه، اطلاعات حساب کاربری خود را وارد کنید."
+>
+	{#if errorMessage}
+		<div class="ui-alert ui-alert-error ui-auth-alert" role="alert">{errorMessage}</div>
+	{/if}
+
+	<form class="ui-auth-form" onsubmit={signInEmail} aria-busy={loading}>
+		<div class="ui-auth-field">
+			<label class="ui-field-label" for="login-email"><IconEmail /> ایمیل</label>
+			<input
+				id="login-email"
+				dir="ltr"
+				class="ui-input"
+				type="email"
+				bind:value={email}
+				autocomplete="email"
+				placeholder="name@example.com"
+				spellcheck="false"
+				required
+			/>
+		</div>
+
+		<div class="ui-auth-field">
+			<div class="ui-auth-label-row">
+				<label class="ui-field-label" for="login-password"><IconLock /> رمز عبور</label>
+				<a class="ui-link" href={`${base}/auth/forgot-password`}>فراموش کرده‌ام</a>
+			</div>
+			<div class="ui-auth-password-wrap">
 				<input
+					id="login-password"
 					dir="ltr"
 					class="ui-input"
-					type="email"
-					bind:value={email}
-					autocomplete="email"
-					required
-				/>
-			</label>
-			<label class="grid gap-1">
-				رمز عبور
-				<input
-					dir="ltr"
-					class="ui-input"
-					type="password"
+					type={showPassword ? 'text' : 'password'}
 					bind:value={password}
 					autocomplete="current-password"
+					placeholder="رمز عبور"
 					required
 				/>
-			</label>
-			<button class="ui-btn ui-btn-primary" type="submit" disabled={loading}>ورود</button>
-			<a class="text-center text-sm underline" href={`${base}/auth/forgot-password`}>
-				رمز عبور را فراموش کرده‌ام
-			</a>
+				<button
+					class="ui-auth-password-toggle"
+					type="button"
+					aria-label={showPassword ? 'پنهان کردن رمز عبور' : 'نمایش رمز عبور'}
+					aria-pressed={showPassword}
+					onclick={() => (showPassword = !showPassword)}
+				>
+					{#if showPassword}<IconVisibilityOff />{:else}<IconVisibility />{/if}
+				</button>
+			</div>
 		</div>
+
+		<button class="ui-btn ui-btn-primary ui-btn-lg ui-btn-block" type="submit" disabled={loading}>
+			{#if loading}<span class="ui-spinner"></span>{:else}<IconLogin />{/if}
+			<span>{loading ? 'در حال ورود…' : 'ورود به حساب'}</span>
+		</button>
 	</form>
-	<div class="mt-3 grid gap-2">
-		{#if data.authProviders.google}
-			<button class="ui-btn ui-btn-outline" type="button" onclick={signInGoogle}>
-				ورود با گوگل
-			</button>
-		{/if}
-		{#if eitaaAvailable}
-			<button class="ui-btn ui-btn-outline" type="button" onclick={signInEitaa} disabled={loading}>
-				ورود با ایتا
-			</button>
-		{/if}
-		<a class="ui-btn ui-btn-ghost" href={`${base}/auth/register`}>ساخت حساب جدید</a>
-	</div>
-</div>
+
+	{#if data.authProviders.google || eitaaAvailable}
+		<div class="ui-auth-divider"><span>یا ادامه با</span></div>
+		<div class="ui-auth-socials">
+			{#if data.authProviders.google}
+				<button class="ui-btn ui-btn-outline" type="button" onclick={signInGoogle} disabled={loading}>
+					<IconLanguage />
+					<span>گوگل</span>
+				</button>
+			{/if}
+			{#if eitaaAvailable}
+				<button class="ui-btn ui-btn-outline" type="button" onclick={signInEitaa} disabled={loading}>
+					<IconChat />
+					<span>ایتا</span>
+				</button>
+			{/if}
+		</div>
+	{/if}
+
+	<p class="ui-auth-switch">حساب کاربری ندارید؟ <a href={`${base}/auth/register`}>ساخت حساب جدید</a></p>
+</AuthShell>

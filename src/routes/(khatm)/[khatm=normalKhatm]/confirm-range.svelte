@@ -2,6 +2,8 @@
 	import type { Khatm } from '$lib/entity/Khatm.svelte'
 	import type { QuranRange } from '$lib/entity/Range'
 	import { handleError } from '$lib/utility/handleError'
+	import IconVolunteer from '~icons/ic/round-volunteer-activism'
+	import IconEye from '~icons/ic/round-visibility'
 
 	type Props = {
 		range: QuranRange | null
@@ -34,18 +36,25 @@
 </script>
 
 {#if range}
-	آیا قرائت این بازه را تقبل می‌کنید؟
-	<p class="my-2 text-sm">
-		{range.getTitle()}
-		<a href={range.getLink(khatm)} target="_blank" class="ui-badge ui-badge-info ui-badge-outline h-6">
-			مشاهده آیات
+	<div class="ui-khatm-confirm">
+		<div class="ui-khatm-confirm-heading">
+			<span class="ui-khatm-confirm-icon"><IconVolunteer /></span>
+			<h2>پذیرفتن این سهم از ختم</h2>
+		</div>
+		<p class="ui-khatm-confirm-range">{range.getTitle()}</p>
+		<a href={range.getLink(khatm)} target="_blank" class="ui-btn ui-btn-ghost ui-btn-sm">
+			<IconEye />
+			پیش‌نمایش آیات
 		</a>
-	</p>
-
-	<div>
-		<button class="ui-btn ui-btn-primary mt-2" disabled={loading} onclick={markAsRead}>می‌پذیرم</button>
-		<button class="ui-btn ui-btn-danger mt-2" disabled={loading} onclick={onClose}>لغو</button>
+		<p class="ui-text-muted text-sm">با تأیید، این بازه به نام شما از بخش‌های آزاد کنار گذاشته می‌شود.</p>
+		<div class="ui-khatm-confirm-actions">
+			<button class="ui-btn ui-btn-primary" disabled={loading} onclick={markAsRead}>
+				{#if loading}<span class="ui-spinner"></span>{/if}
+				می‌پذیرم
+			</button>
+			<button class="ui-btn ui-btn-ghost" disabled={loading} onclick={onClose}>فعلاً نه</button>
+		</div>
 	</div>
 {:else}
-	<p class="text-lg">این بازه قبلا قرائت شده است.</p>
+	<div class="ui-khatm-empty"><p>این بازه پیش‌تر برای قرائت انتخاب شده است.</p></div>
 {/if}

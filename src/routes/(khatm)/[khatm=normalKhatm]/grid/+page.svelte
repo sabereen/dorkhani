@@ -1,18 +1,17 @@
 <script lang="ts">
 	import Modal from '$lib/components/Modal.svelte'
-	import { Ayah, HizbQuarter, Juz, Page, Surah } from '@ghoran/entity'
+	import { Ayah, Juz, Page, Surah } from '@ghoran/entity'
 	import { findNonOverlappingSubranges } from '$lib/utility/findNonOverlappingSubranges'
 	import { juz_toRange } from '$lib/entity/Juz'
 	import { surah_getName, surah_toRange } from '$lib/entity/Surah'
 	import { page_toRange } from '$lib/entity/Page'
 	import { QuranRange } from '$lib/entity/Range'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
-	import { hizbQuarter_toRange } from '$lib/entity/HizbQuarter'
 	import ConfirmRange from '../confirm-range.svelte'
 	import { useKathmContext } from '../../khatm-context.svelte'
-	import { toast } from '$lib/components/TheToast.svelte'
 	import { page } from '$app/state'
 	import { pushState } from '$app/navigation'
+	import IconGrid from '~icons/ic/round-grid-view'
 
 	type PageState = {
 		modal?: boolean
@@ -24,50 +23,17 @@
 
 	let showBadges = $state(false)
 	let hideFinishedIntervals = $state(false)
-	/** نوع زیربازه‌ها در چیدمان آکاردئونی */
-	let subrangeType = $state<'hizbQuarter' | 'surah' | 'page'>('surah')
-
 	const juzList = Juz.getAll()
-	const hizbQuarterList = HizbQuarter.getAll()
 	const surahList = Surah.getAll()
 	const pageList = Page.getAll()
 
 	const juzRanges = juzList.map(juz_toRange)
-	const hizbQuarterRanges = hizbQuarterList.map(hizbQuarter_toRange)
 	const surahRanges = surahList.map(surah_toRange)
 	const pageRanges = pageList.map(page_toRange)
 
 	const selectableJuzParts = $derived(findNonOverlappingSubranges(parts, juzRanges))
-	const selectableHizbQuarterParts = $derived(findNonOverlappingSubranges(parts, hizbQuarterRanges))
 	const selectableSurahParts = $derived(findNonOverlappingSubranges(parts, surahRanges))
 	const selectablePageParts = $derived(findNonOverlappingSubranges(parts, pageRanges))
-
-	let openedAccardeon = $state(-1)
-	let accardeonJuz = $derived(juzList[openedAccardeon] as Juz | undefined)
-	let accardeonRange = $derived(accardeonJuz && juz_toRange(accardeonJuz))
-	const accardeonSubranges = $derived(
-		{
-			surah: accardeonRange?.getSurahs.bind(accardeonRange),
-			page: accardeonRange?.getPages.bind(accardeonRange),
-			hizbQuarter: accardeonRange?.getHizbQuarters.bind(accardeonRange),
-		}[subrangeType]?.(),
-	)
-	const accardeonDevidedRanges = $derived.by(() => {
-		let list =
-			accardeonSubranges?.map((item) => ({
-				...item,
-				parts: item.range.divideByKahtmParts(parts),
-			})) || []
-
-		if (hideFinishedIntervals) {
-			list.forEach((item) => {
-				item.parts = item.parts.filter((p) => !p.khatmPart)
-			})
-
-			list = list.filter(({ parts }) => parts.length > 0)
-		}
-		return list
-	})
 
 	const gridTemplateRows = $derived.by(() => {
 		if (!hideFinishedIntervals || parts.length === 0) return null
@@ -112,32 +78,33 @@
 	}
 </script>
 
-<div class="px-4">
-	<label class="my-2 block">
-		<input type="checkbox" class="ui-checkbox" bind:checked={hideFinishedIntervals} />
-		پنهان کردن بازه‌های قرائت شده
-	</label>
-
-	<label class="my-2 block">
-		<input type="checkbox" class="ui-checkbox" bind:checked={showBadges} />
-		نمایش ابتدا و انتهای بازه ها
-	</label>
-</div>
-
-<div class="ui-alert ui-alert-info my-2">
-	برای قبول کردن و خواندن بخشی از ختم روی بازه مورد نظر کلیک کنید.
-</div>
-
-<div
-	class="ui-border relative grid overflow-hidden rounded-xl border text-xs"
-	style:grid-template-rows={gridTemplateRows}
->
+<section class="ui-khatm-panel">
+	<div class="ui-khatm-panel-header">
+		<span class="ui-khatm-option-icon"><IconGrid /></span>
+		<h2>نقشه‌ی کامل ختم</h2>
+		<p>جای هر بخش را در ساختار قرآن ببینید و مستقیم از روی نقشه انتخاب کنید.</p>
+	</div>
+	<div class="ui-khatm-toolbar">
+		<label class="ui-khatm-check">
+			<input type="checkbox" class="ui-checkbox" bind:checked={hideFinishedIntervals} />
+			<span>فقط بازه‌های آزاد</span>
+		</label>
+		<label class="ui-khatm-check">
+			<input type="checkbox" class="ui-checkbox" bind:checked={showBadges} />
+			<span>نمایش ابتدا و انتهای بازه</span>
+		</label>
+	</div>
+	<div class="ui-alert ui-alert-info">برای پذیرفتن قرائت، روی بخش روشن مورد نظر بزنید.</div>
+	<div class="ui-khatm-map">
+		<div class="ui-khatm-map-head" aria-hidden="true"><span>جزء</span><span>سوره</span><span>صفحه</span></div>
+		<div class="ui-khatm-map-grid" style:grid-template-rows={gridTemplateRows}>
 	{#snippet renderSelectableRanges(ranges: { start: number; end: number }[], column: number)}
 		{#each ranges as range (range.start + ':' + range.end)}
 			{@const start = Ayah.get(range.start)}
 			{@const end = Ayah.get(range.end - 1)}
 			<button
-				class="ui-bg-surface col-start-1 flex min-h-4 w-full cursor-pointer flex-col items-end justify-between"
+				type="button"
+				class="ui-khatm-map-selectable col-start-1"
 				style:grid-column-start={column}
 				style:grid-row-start={range.start + 1}
 				style:grid-row-end={range.end + 1}
@@ -161,7 +128,7 @@
 	{#snippet renderRanges(list: QuranRange[], column: number)}
 		{#each list as range (range.title)}
 			<div
-				class="pointer-events-none min-h-4 overflow-hidden border p-1"
+				class="ui-khatm-map-range"
 				title={range.title}
 				style:grid-column-start={column}
 				style:grid-row-start={range.start + 1}
@@ -180,7 +147,7 @@
 	{#if !hideFinishedIntervals}
 		{#each parts as part (part.plain.id)}
 			<div
-				class="hatched ui-border-strong col-span-3 col-start-1 flex min-h-4 w-full items-center justify-center border-y border-dashed opacity-75"
+				class="hatched ui-khatm-map-finished col-span-3 col-start-1"
 				style:grid-row-start={part.start + 1}
 				style:grid-row-end={part.end + 1}
 			>
@@ -192,7 +159,9 @@
 	{@render renderRanges(juzRanges, 1)}
 	{@render renderRanges(surahRanges, 2)}
 	{@render renderRanges(pageRanges, 3)}
-</div>
+		</div>
+	</div>
+</section>
 
 <Modal bind:open={() => modal, closeModal}>
 	<ConfirmRange {khatm} onClose={closeModal} onFinished={closeModal} range={selected} />

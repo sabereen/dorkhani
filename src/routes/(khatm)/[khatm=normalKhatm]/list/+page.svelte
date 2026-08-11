@@ -11,6 +11,7 @@
 	import { pushState } from '$app/navigation'
 	import Tab from '$lib/components/Tab.svelte'
 	import Accardeon from '$lib/components/Accardeon.svelte'
+	import IconList from '~icons/ic/round-format-list-bulleted'
 
 	type PageState = {
 		modal?: boolean
@@ -74,104 +75,77 @@
 	}
 </script>
 
-<div class="px-4">
-	<label class="my-2 block">
-		<input type="checkbox" class="ui-checkbox" bind:checked={hideFinishedIntervals} />
-		پنهان کردن بازه‌های قرائت شده
-	</label>
-</div>
-
-<div class="ui-bg-surface">
-	<Accardeon items={juzRanges} bind:selectedIndex={openedAccardeon}>
-		{#snippet title(range)}
-			{@const percent = range.getFillPercent(parts)}
-			<div class="p-4 font-semibold" class:opacity-50={percent >= 100}>
-				<span
-					class="ui-radial-progress mr-1"
-					style:--value={percent}
-					style:--size="1.4rem"
-					aria-valuenow={percent}
-					role="progressbar"
-				>
-					&lrm;{percent.toLocaleString('fa')}٪&lrm;
-				</span>
-				{range.title}
-				{#if percent >= 100}
-					<span class="ui-badge ui-badge-xs">قبلا قرائت شده است</span>
-				{/if}
-			</div>
-		{/snippet}
-
-		{#snippet content(range, i)}
-			<div class="z-1 relative w-full px-4 pb-4 text-xs sm:text-sm">
-				<!-- انتخاب نوع زیربازه -->
-		<div class="ui-bg-muted w-full rounded-xl p-2">
-					<div class="mx-auto max-w-[270px] text-[13px]">
-						<Tab
-							tabs={[
-								{ title: 'ربع حزب', slug: 'hizbQuarter' },
-								{ title: 'صفحه', slug: 'page' },
-								{ title: 'سوره', slug: 'surah' },
-							]}
-							bind:value={subrangeType}
-						/>
-					</div>
-
-					<ul class="rounded-box py-2">
-						{#each accardeonDevidedRanges as { parts, range }}
-							{@const percent = range.getFillPercent(khatmContext.parts)}
-							<li
-								class="ui-bg-surface ui-border flex items-center border px-1 py-1 first:rounded-t last:rounded-b"
-							>
-								<div class="ml-2 flex w-24 items-center">
-									<span
-										class="ui-radial-progress ml-1 mr-1"
-										style:--value={percent}
-										style:--size="1.4rem"
-										aria-valuenow={percent}
-										role="progressbar"
-									>
-										&lrm;{percent.toLocaleString('fa')}٪&lrm;
-									</span>
-									{range.title}
-								</div>
-								<div class="flex grow flex-col">
-									{#each parts as { khatmPart, range }}
-										<div class="flex items-center px-1 py-1">
-											<span class:text-gray-500={!!khatmPart}>
-												{range.getTitleSurahOrinted()}
-											</span>
-											<span class="m-3 h-0 grow border border-dashed border-gray-500/20"></span>
-											{#if khatmPart}
-									<span class="ui-badge ui-badge-xs opacity-75">قرائت‌شده</span>
-											{:else}
-												<button
-													type="button"
-										class="ui-btn ui-btn-primary ui-btn-xs pointer-events-auto! mr-auto"
-										class:ui-btn-disabled={!range.matchRangeType(khatm.rangeType)}
-													onclick={() => openModal(range)}
-												>
-													انتخاب
-												</button>
-											{/if}
-									<a
-										class="ui-btn ui-btn-icon ui-btn-ghost ui-btn-xs mr-1"
-												target="_blank"
-												href={range.getLink(khatm)}
-											>
-												<IconEye />
-											</a>
-										</div>
-									{/each}
-								</div>
-							</li>
-						{/each}
-					</ul>
+<section class="ui-khatm-panel">
+	<div class="ui-khatm-panel-header">
+		<span class="ui-khatm-option-icon"><IconList /></span>
+		<h2>انتخاب دقیق از فهرست قرآن</h2>
+		<p>یک جزء را باز کنید و سهم مناسب را بر اساس سوره، صفحه یا ربع حزب بردارید.</p>
+	</div>
+	<div class="ui-khatm-toolbar">
+		<label class="ui-khatm-check">
+			<input type="checkbox" class="ui-checkbox" bind:checked={hideFinishedIntervals} />
+			<span>فقط بازه‌های آزاد</span>
+		</label>
+	</div>
+	<div class="ui-khatm-accordion">
+		<Accardeon items={juzRanges} bind:selectedIndex={openedAccardeon}>
+			{#snippet title(range)}
+				{@const percent = range.getFillPercent(parts)}
+				<div class="ui-khatm-accordion-title" class:opacity-50={percent >= 100}>
+					<span class="ui-radial-progress" style:--value={percent} style:--size="1.4rem" aria-valuenow={percent} role="progressbar">
+						&lrm;{percent.toLocaleString('fa')}٪&lrm;
+					</span>
+					<strong>{range.title}</strong>
+					{#if percent >= 100}<span class="ui-badge ui-badge-success ui-badge-xs">تکمیل شده</span>{/if}
+					<span class="ui-khatm-option-arrow" aria-hidden="true">⌄</span>
 				</div>
-			</div>
-		{/snippet}
-	</Accardeon>
-</div>
+			{/snippet}
+
+			{#snippet content(range, i)}
+				<div class="ui-khatm-accordion-content">
+					<div class="ui-khatm-subranges">
+						<div class="ui-khatm-subrange-tabs">
+							<Tab
+								tabs={[
+									{ title: 'ربع حزب', slug: 'hizbQuarter' },
+									{ title: 'صفحه', slug: 'page' },
+									{ title: 'سوره', slug: 'surah' },
+								]}
+								bind:value={subrangeType}
+							/>
+						</div>
+						<ul class="ui-khatm-subrange-list">
+							{#each accardeonDevidedRanges as { parts, range }}
+								{@const percent = range.getFillPercent(khatmContext.parts)}
+								<li class="ui-khatm-subrange-row">
+									<div class="ui-khatm-subrange-label">
+										<span class="ui-radial-progress" style:--value={percent} style:--size="1.4rem" aria-valuenow={percent} role="progressbar">
+											&lrm;{percent.toLocaleString('fa')}٪&lrm;
+										</span>
+										<strong>{range.title}</strong>
+									</div>
+									<div class="ui-khatm-subrange-parts">
+										{#each parts as { khatmPart, range }}
+											<div class="ui-khatm-subrange-part">
+												<span class:ui-text-muted={!!khatmPart}>{range.getTitleSurahOrinted()}</span>
+												{#if khatmPart}
+													<span class="ui-badge ui-badge-success ui-badge-xs">خوانده‌شده</span>
+												{:else}
+													<button type="button" class="ui-btn ui-btn-primary ui-btn-xs" disabled={!range.matchRangeType(khatm.rangeType)} onclick={() => openModal(range)}>انتخاب</button>
+												{/if}
+												<a class="ui-btn ui-btn-icon ui-btn-ghost ui-btn-xs" aria-label={`مشاهده ${range.getTitleSurahOrinted()}`} target="_blank" href={range.getLink(khatm)}><IconEye /></a>
+											</div>
+										{/each}
+									</div>
+								</li>
+							{/each}
+						</ul>
+					</div>
+				</div>
+			{/snippet}
+		</Accardeon>
+	</div>
+</section>
 
 <Modal bind:open={() => modal, closeModal}>
 	<ConfirmRange {khatm} onClose={closeModal} onFinished={closeModal} range={selected} />

@@ -11,6 +11,13 @@
 	import { page } from '$app/state'
 	import { pushState, replaceState } from '$app/navigation'
 	import { useKathmContext } from '../../khatm-context.svelte'
+	import type { Component } from 'svelte'
+	import IconJuz from '~icons/ic/round-auto-stories'
+	import IconQuarter from '~icons/ic/round-timelapse'
+	import IconPage from '~icons/ic/round-insert-drive-file'
+	import IconSurah from '~icons/ic/round-menu-book'
+	import IconAll from '~icons/ic/round-done-all'
+	import IconCheck from '~icons/ic/round-check-circle'
 
 	const khatmContext = useKathmContext()
 	const khatm = $derived(khatmContext.khatm)
@@ -115,53 +122,54 @@
 </script>
 
 {#snippet stepSelectRangeType()}
-	<div class="p-4">
-		<p>تا چه میزان در ختم قرآن مشارکت می‌کنید؟</p>
-		<div class="mt-3">
-			<div class="grid grid-cols-2 gap-2">
-				{#snippet button(type: typeof rangeType, title: string, span = 1)}
-					<button
-				class="ui-btn ui-btn-soft ui-btn-block"
-						style:grid-column-end={`span ${span}`}
-						type="button"
-						onclick={() => selectRangeType(type)}
-					>
-						{title}
-					</button>
-				{/snippet}
-				{@render button('juz', 'یک جزء')}
-				{@render button('hizbQuarter', 'یک چهارم حزب')}
-				{@render button('page', 'یک صفحه')}
-				{@render button('surah', 'یک سوره')}
-				{#if khatm.progress > 0.9}
-					{@render button('all', 'تمام بازه‌ها', 2)}
-				{/if}
-			</div>
-		</div>
+	<div class="ui-khatm-panel-header">
+		<h2>دوست دارید چقدر همراه شوید؟</h2>
+		<p>هر انتخاب، سهمی ارزشمند از این ختم گروهی است.</p>
+	</div>
+	<div class="ui-khatm-options">
+		{#snippet button(type: typeof rangeType, title: string, subtitle: string, Icon: Component, wide = false)}
+			<button class="ui-khatm-option" class:ui-khatm-option-wide={wide} type="button" onclick={() => selectRangeType(type)}>
+				<div class="ui-khatm-option-heading">
+					<span class="ui-khatm-option-icon"><Icon /></span>
+					<div><strong>{title}</strong><span>{subtitle}</span></div>
+				</div>
+				<span class="ui-khatm-option-arrow" aria-hidden="true">←</span>
+			</button>
+		{/snippet}
+		{@render button('juz', 'یک جزء', 'مشارکتی پیوسته و پررنگ', IconJuz)}
+		{@render button('hizbQuarter', 'ربع حزب', 'کوتاه و منظم', IconQuarter)}
+		{@render button('page', 'یک صفحه', 'انتخابی سبک و روزانه', IconPage)}
+		{@render button('surah', 'یک سوره', 'یک سوره‌ی کامل', IconSurah)}
+		{#if khatm.progress > 0.9}
+			{@render button('all', 'همه‌ی بازه‌های باقی‌مانده', 'برای کامل‌کردن قدم‌های آخر ختم', IconAll, true)}
+		{/if}
 	</div>
 {/snippet}
 
 {#snippet stepSelectRange()}
 	{#if selectableRanges.length > 0}
-		<p class="mb-2 px-2">یکی از موارد باقی‌مانده را انتخاب کنید.</p>
-		<div>
-			<label class="my-2 block">
+		<div class="ui-khatm-panel-header">
+			<h2>بازه‌ی دلخواهتان را بردارید</h2>
+			<p>فقط بخش‌های آزاد قابل انتخاب هستند.</p>
+		</div>
+		<div class="ui-khatm-toolbar">
+			<label class="ui-khatm-check">
 				<input type="checkbox" class="ui-checkbox" bind:checked={hideFinishedIntervals} />
-				پنهان کردن بازه‌های قرائت شده
+				<span>فقط بازه‌های آزاد</span>
 			</label>
 		</div>
 		<ul
 			class={[
-				'grid gap-2 px-2',
-				rangeType === 'all' ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-3 sm:grid-cols-4',
+				'ui-khatm-range-grid',
+				rangeType === 'all' ? 'ui-khatm-range-grid-wide' : '',
 			]}
 		>
 			{#each selectableRanges as { range, percent }}
 				{@const disabled = percent > 0}
 				{@const completed = percent >= 100}
-					<li class="ui-list-row grow">
+				<li class="ui-list-row">
 					<button
-							class="ui-btn ui-btn-soft ui-btn-block whitespace-nowrap"
+						class="ui-btn ui-btn-soft ui-btn-block ui-khatm-range-button"
 						type="button"
 						{disabled}
 							class:ui-btn-disabled={disabled}
@@ -186,34 +194,30 @@
 			{/each}
 		</ul>
 	{:else}
-		<p class="mb-2 text-center">موردی جهت انتخاب وجود ندارد. نوع بازه‌ی دیگری را انتخاب کنید.</p>
-		<div class="flex items-center justify-center">
+		<div class="ui-khatm-empty">
+			<p>در این دسته بازه‌ی آزادی باقی نمانده است؛ نوع دیگری را امتحان کنید.</p>
 			<button type="button" class="ui-btn ui-btn-primary" onclick={() => goToStep(1)}>بازگشت</button>
 		</div>
 	{/if}
 {/snippet}
 
 {#snippet stepShowResult(selected: QuranRange)}
-	<div class="flex flex-col items-center p-4">
-		<div class="ui-card ui-card-bordered ui-bg-muted w-96 max-w-full">
+	<div class="ui-khatm-confirm">
+		<div class="ui-card ui-card-bordered">
 			<div class="ui-card-body">
-				<h2 class="ui-card-title">بازه انتخاب شده</h2>
-				<p>
-					{selected.getTitle()}
-				</p>
-				<div class="ui-card-actions justify-end">
-					<a href={selected.getLink(khatm)} class="ui-btn ui-btn-primary"> مشاهده آیات </a>
+				<div class="ui-khatm-confirm-heading">
+					<span class="ui-khatm-confirm-icon"><IconCheck /></span>
+					<h2>این سهم برای شما ثبت شد</h2>
 				</div>
+				<p class="ui-khatm-confirm-range">{selected.getTitle()}</p>
+				<a href={selected.getLink(khatm)} class="ui-btn ui-btn-primary ui-btn-block">مشاهده و قرائت آیات</a>
 			</div>
 		</div>
-		<div class="mt-3">
-			<button type="button" class="ui-btn ui-btn-outline" onclick={() => goToStep(1)}>
-				می‌خواهم بیشتر مشارکت کنم
-			</button>
-		</div>
+		<button type="button" class="ui-btn ui-btn-ghost" onclick={() => goToStep(1)}>انتخاب یک سهم دیگر</button>
 	</div>
 {/snippet}
 
+<div class="ui-khatm-panel">
 {#if khatm.rangeType === 'free'}
 	<div class="mb-7 flex justify-center">
 		<ul class="ui-steps">
@@ -254,6 +258,7 @@
 		{@render stepShowResult(selected)}
 	{/if}
 {/if}
+</div>
 
 <Modal bind:open={() => modal, toggleModal}>
 	<ConfirmRange {khatm} onClose={closeModal} onFinished={closeModalAndNext} range={selected} />

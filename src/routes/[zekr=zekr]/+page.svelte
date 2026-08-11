@@ -3,7 +3,6 @@
 	import Header from '$lib/components/Header.svelte'
 	import IconShare from '~icons/ic/outline-share'
 	import IconCopy from '~icons/ic/outline-copy-all'
-	import IconSettings from '~icons/ic/round-settings'
 	import { Zekr } from '$lib/entity/Zekr.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { browser } from '$app/environment'
@@ -60,10 +59,6 @@
 
 <Header title="ختم اذکار گروهی" link={`${base}/`}>
 	{#snippet end()}
-		<a href={`${base}/settings`} class="ui-btn ui-btn-icon ui-btn-ghost" aria-label="تنظیمات">
-			<IconSettings class="size-5" />
-		</a>
-
 		{#if canShare}
 			<button type="button" class="ui-btn ui-btn-icon ui-btn-ghost" onclick={share} aria-label="اشتراک‌گذاری">
 				<IconShare class="size-5" />

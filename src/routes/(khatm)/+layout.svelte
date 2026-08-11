@@ -6,7 +6,6 @@
 	import IconViewTable from '~icons/ic/round-calendar-view-month'
 	import IconShare from '~icons/ic/outline-share'
 	import IconCopy from '~icons/ic/outline-copy-all'
-	import IconSettings from '~icons/ic/round-settings'
 	import IconEdit from '~icons/ic/round-edit'
 	import IconBook from '~icons/ic/round-menu-book'
 	import IconPeople from '~icons/ic/round-people-alt'
@@ -170,10 +169,6 @@
 				<IconEdit class="size-5" />
 			</button>
 		{/if}
-		<a href={`${base}/settings`} class="ui-btn ui-btn-icon ui-btn-ghost" aria-label="تنظیمات">
-			<IconSettings class="size-5" />
-		</a>
-
 		{#if canShare}
 			<button type="button" class="ui-btn ui-btn-icon ui-btn-ghost" onclick={share} aria-label="اشتراک‌گذاری">
 				<IconShare class="size-5" />

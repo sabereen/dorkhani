@@ -32,6 +32,7 @@
 	const { title, link, end, start }: Props = $props()
 	const from = navigating.from
 	let open = $state(false)
+	let accountMenu: HTMLDetailsElement | undefined = $state()
 
 	const links = $derived<NavLink[]>([
 		{ href: `${base}/`, label: 'خانه', icon: IconHome },
@@ -52,6 +53,7 @@
 	async function signOut() {
 		await authClient.signOut()
 		open = false
+		accountMenu?.removeAttribute('open')
 		await invalidateAll()
 		await goto(`${base}/`)
 	}
@@ -65,45 +67,40 @@
 	}
 
 	function handleKeyboard(event: KeyboardEvent) {
-		if (event.key === 'Escape') open = false
+		if (event.key === 'Escape') {
+			open = false
+			accountMenu?.removeAttribute('open')
+		}
+	}
+
+	function handleDocumentClick(event: MouseEvent) {
+		if (accountMenu && !accountMenu.contains(event.target as Node)) {
+			accountMenu.removeAttribute('open')
+		}
 	}
 </script>
 
-<svelte:document onkeyup={handleKeyboard} />
+<svelte:document onkeyup={handleKeyboard} onclick={handleDocumentClick} />
 
 <header class="ui-header">
 	<div class="ui-header-inner">
-		<div class="ui-header-context">
-			{#if start}
-				{@render start()}
-			{:else if title}
-				<button type="button" class="ui-header-back" aria-label="بازگشت" onclick={back}>
-					<IconBack />
-				</button>
-			{/if}
-
-			{#if title}
-				<div class="ui-header-page-copy">
-					<span>سامانه ختم جمعی قرآن</span>
-					<h1 class="ui-header-title select-none">
-						{#if link}<a href={link}>{title}</a>{:else}{title}{/if}
-					</h1>
-				</div>
-			{:else}
-				<a class="ui-header-brand" href={`${base}/`} aria-label="سامانه ختم جمعی قرآن">
-					<span class="ui-header-brand-mark">
-						<img src={`${base}/hero.png`} width="48" height="48" alt="" />
-					</span>
-					<span class="ui-header-brand-copy">
-						<strong>ختم جمعی قرآن</strong>
-						<small>هر آیه، یک قدم روشن</small>
-					</span>
-				</a>
-			{/if}
-		</div>
+		<a
+			class="ui-header-brand"
+			class:ui-header-brand-desktop={title}
+			href={`${base}/`}
+			aria-label="سامانه ختم جمعی قرآن"
+		>
+			<span class="ui-header-brand-mark">
+				<img src={`${base}/hero.png`} width="48" height="48" alt="" />
+			</span>
+			<span class="ui-header-brand-copy">
+				<small>سامانه همراهی قرآنی</small>
+				<strong>ختم جمعی قرآن</strong>
+			</span>
+		</a>
 
 		<nav class="ui-nav ui-desktop-only" aria-label="ناوبری اصلی">
-			{#each links as navLink}
+			{#each links.slice(0, 4) as navLink}
 				{@const NavIcon = navLink.icon}
 				<a
 					class="ui-nav-link"
@@ -117,23 +114,76 @@
 			{/each}
 		</nav>
 
-		<div class="ui-header-actions">
-			{#if end}
-				{@render end()}
-			{/if}
-			{#if page.data.user}
-				<button class="ui-btn ui-btn-ghost ui-desktop-only" type="button" onclick={signOut}>خروج</button>
+		<div class="ui-header-tools">
+			{#if title}
+				<div class="ui-header-context">
+					{#if start}
+						{@render start()}
+					{:else}
+						<button type="button" class="ui-header-back" aria-label="بازگشت" onclick={back}>
+							<IconBack />
+						</button>
+					{/if}
+
+					<div class="ui-header-page-copy">
+						<span>صفحه جاری</span>
+						<h1 class="ui-header-title select-none">
+							{#if link}<a href={link}>{title}</a>{:else}{title}{/if}
+						</h1>
+					</div>
+				</div>
+			{:else}
+				<a class="ui-header-create ui-desktop-only" href={`${base}/add`}>
+					<span class="ui-header-create-icon"><IconAdd /></span>
+					<span><small>یک همراهی تازه</small><strong>ایجاد ختم جدید</strong></span>
+				</a>
 			{/if}
 
-			<button
-				type="button"
-				class="ui-header-menu-button ui-mobile-only"
-				aria-label={open ? 'بستن منو' : 'باز کردن منو'}
-				aria-expanded={open}
-				onclick={() => (open = !open)}
-			>
-				{#if open}<IconClose />{:else}<IconMenu />{/if}
-			</button>
+			<div class="ui-header-actions">
+				{#if end}
+					{@render end()}
+				{/if}
+
+				{#if page.data.user}
+					<details class="ui-header-account ui-desktop-only" bind:this={accountMenu}>
+						<summary aria-label="باز کردن منوی حساب کاربری">
+							<IconAccount />
+							<span>
+								<small>حساب کاربری</small>
+								<strong>{page.data.user.name || 'حساب من'}</strong>
+							</span>
+						</summary>
+						<div class="ui-header-account-menu">
+							<a href={`${base}/account`}><IconAccount /><span>حساب من</span></a>
+							<a href={`${base}/settings`}><IconSettings /><span>تنظیمات</span></a>
+							<button type="button" onclick={signOut}>
+								<IconLogout /><span>خروج</span>
+							</button>
+						</div>
+					</details>
+				{:else}
+					<a
+						class="ui-header-utility ui-desktop-only"
+						href={`${base}/settings`}
+						aria-label="تنظیمات"
+					>
+						<IconSettings />
+					</a>
+					<a class="ui-header-login ui-desktop-only" href={`${base}/auth/login`}>
+						<IconLogin /><span>ورود</span>
+					</a>
+				{/if}
+
+				<button
+					type="button"
+					class="ui-header-menu-button ui-mobile-only"
+					aria-label={open ? 'بستن منو' : 'باز کردن منو'}
+					aria-expanded={open}
+					onclick={() => (open = !open)}
+				>
+					{#if open}<IconClose />{:else}<IconMenu />{/if}
+				</button>
+			</div>
 		</div>
 
 		{#if open}

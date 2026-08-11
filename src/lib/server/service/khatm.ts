@@ -1,9 +1,14 @@
-import type { RangeType, ReviewStatus, TKhatm } from '@prisma-client'
+import type { Prisma, RangeType, ReviewStatus, TKhatm } from '@prisma-client'
 import { createHash, randomBytes } from 'node:crypto'
 import { v4 as uuid } from 'uuid'
 import { db } from '$lib/server/db'
 import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 import type { KhatmData } from '$lib/entity/KhatmData'
+import type {
+	KhatmDirectoryQuery,
+	KhatmDirectoryResult,
+	KhatmDirectoryView,
+} from '$lib/entity/KhatmDirectory'
 
 type SecretKhatmFields = {
 	ownerId?: string | null
@@ -124,6 +129,110 @@ export async function khatmService_getList(reviewStatus: ReviewStatus, pageID?: 
 		orderBy: { id: 'desc' },
 	})
 	return khatms.map(khatmService_toPublic)
+}
+
+type KhatmDirectoryCursor = {
+	view: KhatmDirectoryView
+	value: number
+	id: number
+}
+
+function encodeDirectoryCursor(cursor: KhatmDirectoryCursor) {
+	return Buffer.from(`${cursor.view}:${cursor.value}:${cursor.id}`, 'utf8').toString('base64url')
+}
+
+function decodeDirectoryCursor(value: string | undefined, view: KhatmDirectoryView) {
+	if (!value) return null
+	try {
+		const [cursorView, rawValue, rawId] = Buffer.from(value, 'base64url').toString('utf8').split(':')
+		const cursorValue = Number(rawValue)
+		const id = Number(rawId)
+		if (
+			cursorView !== view ||
+			!Number.isSafeInteger(cursorValue) ||
+			cursorValue < 0 ||
+			!Number.isSafeInteger(id) ||
+			id <= 0
+		) {
+			return null
+		}
+		return { value: cursorValue, id }
+	} catch {
+		return null
+	}
+}
+
+export async function khatmService_getDirectoryList(
+	query: KhatmDirectoryQuery,
+	{ limit = 40 }: { limit?: number } = {},
+): Promise<KhatmDirectoryResult> {
+	const take = Math.min(40, Math.max(1, Math.floor(limit)))
+	const cursor = decodeDirectoryCursor(query.cursor, query.view)
+	const where: Prisma.TKhatmWhereInput = {
+		private: false,
+		reviewStatus: 'approved',
+		...(query.rangeType ? { rangeType: query.rangeType } : {}),
+		...(query.q
+			? {
+					OR: [{ title: { contains: query.q } }, { description: { contains: query.q } }],
+				}
+			: {}),
+	}
+
+	if (query.view === 'recent') {
+		if (cursor) where.id = { lt: cursor.id }
+	} else if (query.view === 'progress') {
+		where.status = 'inProgress'
+		if (cursor) {
+			where.AND = [
+				{
+					OR: [
+						{ versesRead: { lt: cursor.value } },
+						{ versesRead: cursor.value, id: { lt: cursor.id } },
+					],
+				},
+			]
+		}
+	} else {
+		where.status = 'inProgress'
+		where.series = { is: { maxRounds: null } }
+		if (cursor) {
+			where.AND = [
+				{
+					OR: [
+						{ roundNumber: { lt: cursor.value } },
+						{ roundNumber: cursor.value, id: { lt: cursor.id } },
+					],
+				},
+			]
+		}
+	}
+
+	const orderBy: Prisma.TKhatmOrderByWithRelationInput[] =
+		query.view === 'progress'
+			? [{ versesRead: 'desc' }, { id: 'desc' }]
+			: query.view === 'continuous'
+				? [{ roundNumber: 'desc' }, { id: 'desc' }]
+				: [{ id: 'desc' }]
+	const rows = await db.tKhatm.findMany({ where, orderBy, take: take + 1 })
+	const hasMore = rows.length > take
+	const visibleRows = hasMore ? rows.slice(0, take) : rows
+	const last = visibleRows.at(-1)
+	const value = last
+		? query.view === 'progress'
+			? last.versesRead
+			: query.view === 'continuous'
+				? last.roundNumber
+				: last.id
+		: null
+
+	return {
+		list: visibleRows.map(khatmService_toPublic),
+		nextCursor:
+			hasMore && last && value != null
+				? encodeDirectoryCursor({ view: query.view, value, id: last.id })
+				: null,
+	}
 }
 
 export async function khatmService_getFullRecord(id: number, accessToken: string | null) {

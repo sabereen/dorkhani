@@ -27,6 +27,7 @@ import {
 	khatmService_deleteOwned,
 	khatmService_editOwned,
 	khatmService_getAutomaticShowcase,
+	khatmService_getDirectoryList,
 	khatmService_setAsCompleted,
 } from './khatm'
 
@@ -116,6 +117,97 @@ describe('automatic khatm showcase', () => {
 		expect(dbMock.tKhatm.findMany).toHaveBeenCalledWith(
 			expect.objectContaining({ where: expect.objectContaining({ id: { in: [31] } }) }),
 		)
+	})
+})
+
+describe('public khatm directory', () => {
+	beforeEach(() => {
+		vi.resetAllMocks()
+	})
+
+	it('combines search and range filters with progress ranking and a stable cursor', async () => {
+		dbMock.tKhatm.findMany.mockResolvedValueOnce([
+			{ ...baseKhatm, id: 50, versesRead: 100 },
+			{ ...baseKhatm, id: 49, versesRead: 100 },
+			{ ...baseKhatm, id: 48, versesRead: 90 },
+		])
+
+		const firstPage = await khatmService_getDirectoryList(
+			{ view: 'progress', q: 'شفا', rangeType: 'page' },
+			{ limit: 2 },
+		)
+
+		expect(dbMock.tKhatm.findMany).toHaveBeenCalledWith({
+			where: {
+				private: false,
+				reviewStatus: 'approved',
+				rangeType: 'page',
+				OR: [{ title: { contains: 'شفا' } }, { description: { contains: 'شفا' } }],
+				status: 'inProgress',
+			},
+			orderBy: [{ versesRead: 'desc' }, { id: 'desc' }],
+			take: 3,
+		})
+		expect(firstPage.list.map((khatm) => khatm.id)).toEqual([50, 49])
+		expect(firstPage.nextCursor).toEqual(expect.any(String))
+		expect(firstPage.list[0]).not.toHaveProperty('ownerId')
+
+		dbMock.tKhatm.findMany.mockResolvedValueOnce([])
+		await khatmService_getDirectoryList(
+			{
+				view: 'progress',
+				q: 'شفا',
+				rangeType: 'page',
+				cursor: firstPage.nextCursor || undefined,
+			},
+			{ limit: 2 },
+		)
+
+		expect(dbMock.tKhatm.findMany).toHaveBeenLastCalledWith({
+			where: {
+				private: false,
+				reviewStatus: 'approved',
+				rangeType: 'page',
+				OR: [{ title: { contains: 'شفا' } }, { description: { contains: 'شفا' } }],
+				status: 'inProgress',
+				AND: [
+					{
+						OR: [{ versesRead: { lt: 100 } }, { versesRead: 100, id: { lt: 49 } }],
+					},
+				],
+			},
+			orderBy: [{ versesRead: 'desc' }, { id: 'desc' }],
+			take: 3,
+		})
+	})
+
+	it('shows only the current round of unlimited series ordered by completed rounds', async () => {
+		dbMock.tKhatm.findMany.mockResolvedValue([])
+
+		await khatmService_getDirectoryList({ view: 'continuous', q: '' })
+
+		expect(dbMock.tKhatm.findMany).toHaveBeenCalledWith({
+			where: {
+				private: false,
+				reviewStatus: 'approved',
+				status: 'inProgress',
+				series: { is: { maxRounds: null } },
+			},
+			orderBy: [{ roundNumber: 'desc' }, { id: 'desc' }],
+			take: 41,
+		})
+	})
+
+	it('keeps the default directory ordered by newest id', async () => {
+		dbMock.tKhatm.findMany.mockResolvedValue([])
+
+		await khatmService_getDirectoryList({ view: 'recent', q: '' })
+
+		expect(dbMock.tKhatm.findMany).toHaveBeenCalledWith({
+			where: { private: false, reviewStatus: 'approved' },
+			orderBy: [{ id: 'desc' }],
+			take: 41,
+		})
 	})
 })
 

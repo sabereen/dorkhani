@@ -11,6 +11,7 @@ import copy from 'clipboard-copy'
 import { rebaseFullPath } from '$lib/utility/path'
 import { browser } from '$app/environment'
 import type { Translation } from './LocalSettings.svelte'
+import type { KhatmDirectoryQuery, KhatmDirectoryResult } from './KhatmDirectory'
 
 const cache = new Map<number, Khatm>()
 
@@ -63,6 +64,14 @@ export class Khatm {
 		})
 
 		return Khatm.fromPlainList(list)
+	}
+
+	static async getDirectoryList(query: KhatmDirectoryQuery) {
+		const result = await request<KhatmDirectoryResult>('get', '/khatm/directory', query)
+		return {
+			list: Khatm.fromPlainList(result.list),
+			nextCursor: result.nextCursor,
+		}
 	}
 
 	/**

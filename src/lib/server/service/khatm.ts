@@ -21,9 +21,17 @@ type SecretKhatmFields = {
 
 export type PublicKhatm = KhatmData
 
+export type KhatmManagementActor =
+	| { kind: 'owner'; ownerId: string }
+	| { kind: 'admin' }
+
 export class KhatmOwnershipError extends Error {}
 export class KhatmRangeLockedError extends Error {}
 export class KhatmHistoricalRoundError extends Error {}
+
+function ensureCanManageKhatm(actor: KhatmManagementActor, ownerId: string | null) {
+	if (actor.kind === 'owner' && actor.ownerId !== ownerId) throw new KhatmOwnershipError()
+}
 
 export function khatmService_toPublic<T extends TKhatm & SecretKhatmFields>(khatm: T) {
 	const { ownerId: _ownerId, guestClaimTokenHash: _claimHash, ...publicKhatm } = khatm
@@ -249,10 +257,14 @@ export async function khatmService_getDirectoryList(
 	}
 }
 
-export async function khatmService_getFullRecord(id: number, accessToken: string | null) {
+export async function khatmService_getFullRecord(
+	id: number,
+	accessToken: string | null,
+	{ bypassAccessToken = false }: { bypassAccessToken?: boolean } = {},
+) {
 	return db.tKhatm.findUnique({
 		include: { parts: true, series: true },
-		where: { id, accessToken: { equals: accessToken } },
+		where: bypassAccessToken ? { id } : { id, accessToken: { equals: accessToken } },
 	})
 }
 
@@ -266,10 +278,18 @@ export async function khatmService_update(id: number, khatm: Partial<TKhatm>) {
 	return khatmService_toPublic(result)
 }
 
-export async function khatmService_getBySeriesRecord(seriesId: number, accessToken: string | null) {
+export async function khatmService_getBySeriesRecord(
+	seriesId: number,
+	accessToken: string | null,
+	{ bypassAccessToken = false }: { bypassAccessToken?: boolean } = {},
+) {
 	return db.tKhatm.findFirst({
 		include: { parts: true, series: true },
-		where: { seriesId, accessToken: { equals: accessToken }, status: 'inProgress' },
+		where: {
+			seriesId,
+			...(bypassAccessToken ? {} : { accessToken: { equals: accessToken } }),
+			status: 'inProgress',
+		},
 	})
 }
 
@@ -295,13 +315,13 @@ export async function khatmService_getOwnedList(ownerId: string) {
 		.map(khatmService_toPublic)
 }
 
-export async function khatmService_getOwnedForEdit(ownerId: string, id: number) {
+export async function khatmService_getForEdit(actor: KhatmManagementActor, id: number) {
 	const khatm = await db.tKhatm.findUnique({
 		where: { id },
 		include: { _count: { select: { parts: true } }, series: true },
 	})
 	if (!khatm) return null
-	if (khatm.ownerId !== ownerId) throw new KhatmOwnershipError()
+	ensureCanManageKhatm(actor, khatm.ownerId)
 	if (
 		khatm.seriesId != null &&
 		(await db.tKhatm.findFirst({
@@ -353,14 +373,18 @@ type EditingKhatm = {
 	disableSeries: boolean
 }
 
-export async function khatmService_editOwned(ownerId: string, id: number, input: EditingKhatm) {
+export async function khatmService_edit(
+	actor: KhatmManagementActor,
+	id: number,
+	input: EditingKhatm,
+) {
 	return db.$transaction(async (tx) => {
 		const current = await tx.tKhatm.findUnique({
 			where: { id },
 			include: { _count: { select: { parts: true } }, series: true },
 		})
 		if (!current) return null
-		if (current.ownerId !== ownerId) throw new KhatmOwnershipError()
+		ensureCanManageKhatm(actor, current.ownerId)
 		if (
 			current.seriesId != null &&
 			(await tx.tKhatm.findFirst({
@@ -399,7 +423,9 @@ export async function khatmService_editOwned(ownerId: string, id: number, input:
 			current.description !== input.description ||
 			current.rangeType !== input.rangeType
 		const reviewStatus =
-			!input.private && (contentChanged || current.private) ? ('pending' as const) : current.reviewStatus
+			actor.kind === 'owner' && !input.private && (contentChanged || current.private)
+				? ('pending' as const)
+				: current.reviewStatus
 		const updated = await tx.tKhatm.update({
 			where: { id },
 			data: {
@@ -416,11 +442,11 @@ export async function khatmService_editOwned(ownerId: string, id: number, input:
 	})
 }
 
-export async function khatmService_deleteOwned(ownerId: string, id: number) {
+export async function khatmService_delete(actor: KhatmManagementActor, id: number) {
 	return db.$transaction(async (tx) => {
 		const current = await tx.tKhatm.findUnique({ where: { id } })
 		if (!current) return false
-		if (current.ownerId !== ownerId) throw new KhatmOwnershipError()
+		ensureCanManageKhatm(actor, current.ownerId)
 
 		const khatms = current.seriesId
 			? await tx.tKhatm.findMany({ where: { seriesId: current.seriesId }, select: { id: true } })
@@ -429,7 +455,7 @@ export async function khatmService_deleteOwned(ownerId: string, id: number) {
 			data: khatms.map((khatm) => ({
 				khatmId: khatm.id,
 				seriesId: current.seriesId,
-				reason: 'owner',
+				reason: actor.kind,
 			})),
 		})
 		await tx.tKhatm.deleteMany({ where: { id: { in: khatms.map((khatm) => khatm.id) } } })

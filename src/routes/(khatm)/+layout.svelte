@@ -27,6 +27,7 @@
 	import { invalidateAll } from '$app/navigation'
 	import { idb_createdKhatm_hasClaim } from '$lib/idb/createdKhatm'
 	import KhatmParticipation from './KhatmParticipation.svelte'
+	import KhatmReviewBar from './KhatmReviewBar.svelte'
 
 	const { data, children }: LayoutProps = $props()
 
@@ -87,11 +88,14 @@
 	const percent = $derived(khatm.percent)
 
 	const canSelectLayout = $derived(!khatm.finished && khatm.isFree)
+	const editHref = $derived(
+		`${base}/account/khatms/${khatm.id}/edit${data.isAdmin ? '?admin=1' : ''}`,
+	)
 	let showAuthPrompt = $state(false)
 	let showStopPrompt = $state(false)
 	let canManageAsGuest = $state(false)
 	const canRequestSeriesStop = $derived(
-		data.canStopSeries && (data.canManage || canManageAsGuest),
+		data.canStopSeries && (data.isOwner || canManageAsGuest),
 	)
 	const hasNextRound = $derived(
 		khatm.isSerial &&
@@ -99,7 +103,7 @@
 	)
 
 	function requestSeriesStop() {
-		if (data.canManage) showStopPrompt = true
+		if (data.isOwner) showStopPrompt = true
 		else showAuthPrompt = true
 	}
 
@@ -109,7 +113,7 @@
 		let cancelled = false
 		canManageAsGuest = false
 
-		if (!data.isAuthenticated) {
+		if (!data.isAuthenticated && !data.isAdmin) {
 			idb_createdKhatm_hasClaim(khatmId, seriesId)
 				.then((hasClaim) => {
 					if (!cancelled) canManageAsGuest = hasClaim
@@ -141,9 +145,9 @@
 
 <Header title="ختم قرآن گروهی" link={`${base}/`}>
 	{#snippet end()}
-		{#if data.canManage}
+		{#if data.canEdit}
 			<a
-				href={`${base}/account/khatms/${khatm.id}/edit`}
+				href={editHref}
 				class="ui-btn ui-btn-icon ui-btn-ghost"
 				aria-label="ویرایش ختم"
 			>
@@ -225,6 +229,10 @@
 			<progress class="ui-progress ui-progress-success" max={100} value={percent} aria-label="پیشرفت ختم"></progress>
 		</div>
 	</section>
+
+	{#if data.isAdmin && !khatm.private}
+		<KhatmReviewBar {khatm} />
+	{/if}
 
 	<KhatmParticipation {khatm} />
 

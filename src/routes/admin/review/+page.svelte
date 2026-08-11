@@ -42,6 +42,12 @@
 		khatm.update({ reviewStatus: 'rejected' })
 	}
 
+	function getAdminDetailLink(khatm: Khatm) {
+		const url = new URL(khatm.link)
+		url.searchParams.set('admin', '1')
+		return url.toString()
+	}
+
 	watch(
 		() => reviewStatus,
 		() => {
@@ -71,7 +77,7 @@
 		{#snippet actions()}
 			<a
 				class="ui-btn ui-btn-xs ui-btn-icon ui-btn-ghost"
-				href={khatm.link}
+				href={getAdminDetailLink(khatm)}
 				target="_blank"
 				aria-label={`مشاهده ختم ${khatm.title}`}><IconLink /></a
 			>

@@ -34,13 +34,17 @@ import {
 	KhatmRangeLockedError,
 	khatmService_claimGuestKhatms,
 	khatmService_create,
-	khatmService_deleteOwned,
-	khatmService_editOwned,
+	khatmService_delete,
+	khatmService_edit,
 	khatmService_getAutomaticShowcase,
 	khatmService_getDeletionReason,
 	khatmService_getDirectoryList,
+	khatmService_getForEdit,
 	khatmService_setAsCompleted,
 } from './khatm'
+
+const ownerActor = { kind: 'owner', ownerId: 'owner-1' } as const
+const adminActor = { kind: 'admin' } as const
 
 const baseKhatm = {
 	id: 12,
@@ -264,7 +268,7 @@ describe('khatm ownership service', () => {
 	it('rejects editing by another owner and locks range type after participation', async () => {
 		dbMock.tKhatm.findUnique.mockResolvedValueOnce({ ...baseKhatm, ownerId: 'someone-else' })
 		await expect(
-			khatmService_editOwned('owner-1', 12, {
+			khatmService_edit(ownerActor, 12, {
 				title: 'عنوان',
 				description: '',
 				rangeType: 'page',
@@ -275,7 +279,7 @@ describe('khatm ownership service', () => {
 
 		dbMock.tKhatm.findUnique.mockResolvedValueOnce({ ...baseKhatm, versesRead: 10 })
 		await expect(
-			khatmService_editOwned('owner-1', 12, {
+			khatmService_edit(adminActor, 12, {
 				title: 'عنوان',
 				description: '',
 				rangeType: 'surah',
@@ -290,7 +294,7 @@ describe('khatm ownership service', () => {
 		dbMock.tKhatm.findFirst.mockResolvedValue({ id: 13 })
 
 		await expect(
-			khatmService_editOwned('owner-1', 12, {
+			khatmService_edit(adminActor, 12, {
 				title: 'عنوان تازه',
 				description: '',
 				rangeType: 'page',
@@ -304,7 +308,7 @@ describe('khatm ownership service', () => {
 	it('renews private access across the series and resets public review', async () => {
 		dbMock.tKhatm.findUnique.mockResolvedValue({ ...baseKhatm })
 
-		await khatmService_editOwned('owner-1', 12, {
+		await khatmService_edit(ownerActor, 12, {
 			title: 'عنوان تازه',
 			description: 'توضیحات تازه',
 			rangeType: 'page',
@@ -318,7 +322,7 @@ describe('khatm ownership service', () => {
 		expect(seriesUpdate.data.accessToken).toEqual(expect.any(String))
 
 		dbMock.tKhatm.findUnique.mockResolvedValue({ ...baseKhatm, private: true, accessToken: 'old' })
-		await khatmService_editOwned('owner-1', 12, {
+		await khatmService_edit(ownerActor, 12, {
 			title: 'عنوان تازه',
 			description: 'توضیحات تازه',
 			rangeType: 'page',
@@ -334,7 +338,7 @@ describe('khatm ownership service', () => {
 
 	it('makes the current round the irreversible maximum when a series is disabled', async () => {
 		dbMock.tKhatm.findUnique.mockResolvedValue({ ...baseKhatm })
-		await khatmService_editOwned('owner-1', 12, {
+		await khatmService_edit(ownerActor, 12, {
 			title: baseKhatm.title,
 			description: baseKhatm.description,
 			rangeType: baseKhatm.rangeType,
@@ -351,7 +355,7 @@ describe('khatm ownership service', () => {
 		dbMock.tKhatm.findUnique.mockResolvedValue({ ...baseKhatm })
 		dbMock.tKhatm.findMany.mockResolvedValue([{ id: 11 }, { id: 12 }])
 
-		await expect(khatmService_deleteOwned('owner-1', 12)).resolves.toBe(true)
+		await expect(khatmService_delete(ownerActor, 12)).resolves.toBe(true)
 		expect(dbMock.tKhatmDeletion.createMany).toHaveBeenCalledWith({
 			data: [
 				{ khatmId: 11, seriesId: 9, reason: 'owner' },
@@ -360,6 +364,48 @@ describe('khatm ownership service', () => {
 		})
 		expect(dbMock.tKhatm.deleteMany).toHaveBeenCalledWith({ where: { id: { in: [11, 12] } } })
 		expect(dbMock.tKhatmSeries.delete).toHaveBeenCalledWith({ where: { id: 9 } })
+	})
+
+	it('lets an admin manage private and unowned khatms while preserving review status', async () => {
+		const privateKhatm = {
+			...baseKhatm,
+			ownerId: null,
+			private: true,
+			reviewStatus: 'rejected' as const,
+			seriesId: null,
+			series: null,
+		}
+		dbMock.tKhatm.findUnique.mockResolvedValue(privateKhatm)
+
+		await expect(khatmService_getForEdit(adminActor, 12)).resolves.toMatchObject({
+			khatm: { id: 12, private: true, reviewStatus: 'rejected' },
+		})
+		await khatmService_edit(adminActor, 12, {
+			title: 'عنوان ویرایش‌شده',
+			description: privateKhatm.description,
+			rangeType: privateKhatm.rangeType,
+			private: false,
+			disableSeries: false,
+		})
+
+		expect(dbMock.tKhatm.update).toHaveBeenLastCalledWith(
+			expect.objectContaining({
+				data: expect.objectContaining({ private: false, reviewStatus: 'rejected' }),
+			}),
+		)
+	})
+
+	it('records an admin tombstone when an admin deletes a khatm', async () => {
+		dbMock.tKhatm.findUnique.mockResolvedValue({
+			...baseKhatm,
+			ownerId: 'someone-else',
+			seriesId: null,
+		})
+
+		await expect(khatmService_delete(adminActor, 12)).resolves.toBe(true)
+		expect(dbMock.tKhatmDeletion.createMany).toHaveBeenCalledWith({
+			data: [{ khatmId: 12, seriesId: null, reason: 'admin' }],
+		})
 	})
 
 	it('returns the recorded deletion reason for a khatm or series link', async () => {

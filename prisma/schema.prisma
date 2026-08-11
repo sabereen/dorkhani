@@ -35,6 +35,7 @@ enum ReviewStatus {
 
 enum KhatmDeletionReason {
   owner
+  admin
   expiredUnstarted
 }
 

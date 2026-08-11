@@ -5,6 +5,9 @@
 	import type { PageProps } from './$types'
 
 	const { data, form }: PageProps = $props()
+	const deleteAction = $derived(
+		`${base}/account/khatms/${data.khatm.id}/edit/delete${data.isAdmin ? '?admin=1' : ''}`,
+	)
 </script>
 
 <svelte:head><title>ویرایش ختم | ختم قرآن</title></svelte:head>
@@ -72,7 +75,7 @@
 	use:validateForm
 	novalidate
 	method="POST"
-	action={`${base}/account/khatms/${data.khatm.id}/edit/delete`}
+	action={deleteAction}
 	class="mx-auto mt-4 max-w-md"
 	onsubmit={(event) => !confirm('این ختم و همه مشارکت‌های آن حذف شود؟') && event.preventDefault()}
 >

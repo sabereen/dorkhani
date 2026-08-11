@@ -3,11 +3,15 @@ import nodemailer from 'nodemailer'
 
 let transporter: ReturnType<typeof nodemailer.createTransport> | undefined
 
+export function authEmail_isConfigured() {
+	return Boolean(env.SMTP_HOST && env.SMTP_USER && env.SMTP_PASS && env.SMTP_FROM)
+}
+
 function getTransporter() {
 	if (transporter) return transporter
 
 	const port = Number(env.SMTP_PORT || 587)
-	if (!env.SMTP_HOST || !env.SMTP_USER || !env.SMTP_PASS || !env.SMTP_FROM) {
+	if (!authEmail_isConfigured()) {
 		throw new Error('SMTP_HOST, SMTP_USER, SMTP_PASS and SMTP_FROM must be configured.')
 	}
 

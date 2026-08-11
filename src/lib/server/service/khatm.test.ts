@@ -22,11 +22,14 @@ const statisticsMock = vi.hoisted(() => ({
 	applyCommitted: vi.fn(),
 }))
 
+const notificationMock = vi.hoisted(() => ({ notify: vi.fn() }))
+
 vi.mock('$lib/server/db', () => ({ db: dbMock }))
 vi.mock('./statistics', () => ({
 	statisticsService_increment: statisticsMock.increment,
 	statisticsService_applyCommitted: statisticsMock.applyCommitted,
 }))
+vi.mock('./user-notification', () => ({ userNotification_notify: notificationMock.notify }))
 
 import {
 	KhatmHistoricalRoundError,
@@ -438,14 +441,23 @@ describe('khatm ownership service', () => {
 		expect(dbMock.tKhatm.create).toHaveBeenCalledWith({
 			data: expect.objectContaining({ ownerId: 'owner-1', guestClaimTokenHash: 'claim-hash', roundNumber: 3 }),
 		})
+		expect(notificationMock.notify).toHaveBeenCalledWith(
+			'owner-1',
+			expect.objectContaining({ type: 'roundCompleted', khatmId: 12, roundNumber: 2 }),
+		)
 
 		dbMock.tKhatm.create.mockClear()
+		notificationMock.notify.mockClear()
 		dbMock.tKhatm.findUnique.mockResolvedValue({
 			...baseKhatm,
 			series: { id: 9, maxRounds: 2 },
 		})
 		await khatmService_setAsCompleted(12)
 		expect(dbMock.tKhatm.create).not.toHaveBeenCalled()
+		expect(notificationMock.notify).toHaveBeenCalledWith(
+			'owner-1',
+			expect.objectContaining({ type: 'seriesCompleted', khatmId: 12, roundNumber: 2 }),
+		)
 	})
 
 	it('records a user-created khatm but not an automatic continuation round as a creation', async () => {

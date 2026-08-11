@@ -13,6 +13,7 @@ import {
 	statisticsService_applyCommitted,
 	statisticsService_increment,
 } from './statistics'
+import { userNotification_notify } from './user-notification'
 
 type SecretKhatmFields = {
 	ownerId?: string | null
@@ -133,6 +134,12 @@ export async function khatmService_create(body: CreatingKhatm, ownerId?: string 
 		return created
 	})
 	statisticsService_applyCommitted({ createdKhatms: 1 }, createdAt)
+	userNotification_notify(ownerId, {
+		type: 'khatmCreated',
+		khatmId: khatm.id,
+		title: khatm.title,
+		private: khatm.private,
+	})
 
 	return { khatm: khatmService_toPublic(khatm), guestClaimToken }
 }
@@ -501,18 +508,20 @@ export async function khatmService_setAsCompleted(id: number) {
 			where: { id },
 			include: { series: true },
 		})
-		if (!current || current.status === 'completed') return false
+		if (!current || current.status === 'completed') return null
 
 		const result = await tx.tKhatm.updateMany({
 			where: { id, status: 'inProgress' },
 			data: { status: 'completed', endDate: completedAt, pageProgress: 100 },
 		})
-		if (result.count === 0) return false
+		if (result.count === 0) return null
 		await statisticsService_increment(tx, { completedRounds: 1 }, completedAt)
 
 		const { series, roundNumber } = current
-		if (!series) return true
-		if (series.maxRounds && roundNumber >= series.maxRounds) return true
+		if (!series) return { current, seriesCompleted: false }
+		if (series.maxRounds && roundNumber >= series.maxRounds) {
+			return { current, seriesCompleted: true }
+		}
 
 		await tx.tKhatm.create({
 			data: {
@@ -527,9 +536,26 @@ export async function khatmService_setAsCompleted(id: number) {
 				guestClaimTokenHash: current.guestClaimTokenHash,
 			},
 		})
-		return true
+		return { current, seriesCompleted: false }
 	})
-	if (completed) statisticsService_applyCommitted({ completedRounds: 1 }, completedAt)
+	if (!completed) return false
+	statisticsService_applyCommitted({ completedRounds: 1 }, completedAt)
+	userNotification_notify(completed.current.ownerId, {
+		type: 'roundCompleted',
+		khatmId: completed.current.id,
+		title: completed.current.title,
+		roundNumber: completed.current.roundNumber,
+		seriesId: completed.current.seriesId,
+	})
+	if (completed.seriesCompleted) {
+		userNotification_notify(completed.current.ownerId, {
+			type: 'seriesCompleted',
+			khatmId: completed.current.id,
+			title: completed.current.title,
+			roundNumber: completed.current.roundNumber,
+		})
+	}
+	return true
 }
 
 export async function khatmService_checkAndUpdateStatus() {

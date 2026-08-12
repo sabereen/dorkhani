@@ -11,7 +11,7 @@
 	}
 
 	let { open = $bindable(false), children, contentClass, class: className }: Props = $props()
-	let modalBox: HTMLElement
+	let modalBox = $state<HTMLElement>()
 	let returnFocus: HTMLElement | null = null
 
 	function close() {
@@ -38,7 +38,7 @@
 		const focusable = getFocusableElements()
 		if (!focusable.length) {
 			event.preventDefault()
-			modalBox.focus()
+			modalBox?.focus()
 			return
 		}
 		const first = focusable[0]

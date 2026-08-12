@@ -469,7 +469,7 @@
 		font-weight: 900;
 	}
 
-	.admin-featured-kicker svg {
+	.admin-featured-kicker :global(svg) {
 		width: 1rem;
 		height: 1rem;
 		margin-left: 0.35rem;
@@ -500,7 +500,7 @@
 		color: var(--ui-color-text-muted);
 	}
 
-	.admin-featured-loading > * + * {
+	.admin-featured-loading > :global(*) + :global(*) {
 		margin-right: 0.5rem;
 	}
 

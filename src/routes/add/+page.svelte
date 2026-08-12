@@ -1,4 +1,5 @@
 <script lang="ts">
+	/* eslint-disable svelte/no-unused-svelte-ignore */
 	import type { PageProps } from './$types'
 	import { enhance } from '$app/forms'
 	import { validateForm } from '$lib/actions/validateForm'
@@ -17,7 +18,9 @@
 
 	let { data, form }: PageProps = $props()
 
-	let rangeType = $state<RangeType>(data.rangeType === 'ayah' ? 'ayah' : 'free')
+	const initialRangeType: RangeType =
+		/* svelte-ignore state_referenced_locally */ data.rangeType === 'ayah' ? 'ayah' : 'free'
+	let rangeType = $state<RangeType>(initialRangeType)
 	let access = $state<'public' | 'private'>('private')
 	let series = $state(false)
 
@@ -344,8 +347,8 @@
 		color: var(--ui-color-primary);
 	}
 
-	.add-hint > * + *,
-	.add-fixed-option > * + * {
+	.add-hint > :global(*) + :global(*),
+	.add-fixed-option > :global(*) + :global(*) {
 		margin-right: 0.65rem;
 	}
 

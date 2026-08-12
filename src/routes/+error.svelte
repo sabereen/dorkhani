@@ -211,8 +211,8 @@
 		margin-right: 0.65rem;
 	}
 
-	.error-actions svg,
-	.error-help-link svg {
+	.error-actions :global(svg),
+	.error-help-link :global(svg) {
 		width: 1.2rem;
 		height: 1.2rem;
 	}
@@ -227,7 +227,7 @@
 		text-decoration: none;
 	}
 
-	.error-help-link > * + * {
+	.error-help-link > :global(*) + :global(*) {
 		margin-right: 0.4rem;
 	}
 
@@ -347,7 +347,7 @@
 		color: var(--ui-color-on-primary);
 	}
 
-	.error-book-spine svg {
+	.error-book-spine :global(svg) {
 		width: 1.15rem;
 		height: 1.15rem;
 	}

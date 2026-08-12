@@ -1,4 +1,5 @@
 <script lang="ts">
+	/* eslint-disable svelte/no-unused-svelte-ignore */
 	import type { ReviewStatus } from '@prisma-client'
 	import type { Khatm } from '$lib/entity/Khatm.svelte'
 	import { featuredKhatm_set } from '$lib/entity/KhatmFeatured'
@@ -12,9 +13,10 @@
 	type Props = { khatm: Khatm; featuredOrder?: number | null; canFeature?: boolean }
 
 	const { khatm, featuredOrder: initialFeaturedOrder = null, canFeature = false }: Props = $props()
+	const initialFeaturedOrderValue = /* svelte-ignore state_referenced_locally */ initialFeaturedOrder
 	let reviewLoading = $state<ReviewAction | null>(null)
 	let featureLoading = $state(false)
-	let currentFeaturedOrder = $state(initialFeaturedOrder)
+	let currentFeaturedOrder = $state(initialFeaturedOrderValue)
 	let message = $state('')
 	const featureAllowed = $derived(canFeature && khatm.reviewStatus === 'approved')
 

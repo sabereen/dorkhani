@@ -61,12 +61,22 @@
 		return `${filters.view}|${filters.rangeType || ''}|${filters.q}`
 	}
 
-	let khatms = $state(Khatm.fromPlainList(/* svelte-ignore state_referenced_locally */ data.list))
-	let nextCursor = $state<string | null>(data.nextCursor)
-	let loadedFilterKey = $state(getFilterKey(data.filters))
-	let loadedSearch = $state(data.filters.q)
-	let requestedSearch = $state(data.filters.q)
-	let search = $state(data.filters.q)
+	const { list: initialList, nextCursor: initialNextCursor, filters: initialFilters } =
+		/* svelte-ignore state_referenced_locally */ data
+	const initialDirectoryState = {
+		khatms: Khatm.fromPlainList(initialList),
+		nextCursor: initialNextCursor,
+		loadedFilterKey: getFilterKey(initialFilters),
+		loadedSearch: initialFilters.q,
+		requestedSearch: initialFilters.q,
+		search: initialFilters.q,
+	}
+	let khatms = $state(initialDirectoryState.khatms)
+	let nextCursor = $state<string | null>(initialDirectoryState.nextCursor)
+	let loadedFilterKey = $state(initialDirectoryState.loadedFilterKey)
+	let loadedSearch = $state(initialDirectoryState.loadedSearch)
+	let requestedSearch = $state(initialDirectoryState.requestedSearch)
+	let search = $state(initialDirectoryState.search)
 	let loadingMore = $state(false)
 	let loadError = $state('')
 
@@ -367,13 +377,13 @@
 		font-weight: 900;
 	}
 
-	.directory-kicker > * + *,
-	.directory-control-label > * + * {
+	.directory-kicker > :global(*) + :global(*),
+	.directory-control-label > :global(*) + :global(*) {
 		margin-right: 0.35rem;
 	}
 
-	.directory-kicker svg,
-	.directory-control-label svg {
+	.directory-kicker :global(svg),
+	.directory-control-label :global(svg) {
 		width: 1.05rem;
 		height: 1.05rem;
 	}
@@ -429,7 +439,7 @@
 		outline-offset: 1px;
 	}
 
-	.directory-search-input button svg {
+	.directory-search-input button :global(svg) {
 		width: 1.1rem;
 		height: 1.1rem;
 	}
@@ -492,7 +502,7 @@
 		color: var(--ui-color-on-primary);
 	}
 
-	.directory-view-icon svg {
+	.directory-view-icon :global(svg) {
 		width: 1.25rem;
 		height: 1.25rem;
 	}
@@ -549,7 +559,7 @@
 		color: var(--ui-color-primary);
 	}
 
-	.directory-empty > span svg {
+	.directory-empty > span :global(svg) {
 		width: 1.7rem;
 		height: 1.7rem;
 	}

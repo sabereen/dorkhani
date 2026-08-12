@@ -484,8 +484,8 @@
 		color: var(--ui-color-landing-hero-muted);
 	}
 
-	.landing-eyebrow > * + *,
-	.landing-section-kicker > * + * {
+	.landing-eyebrow > :global(*) + :global(*),
+	.landing-section-kicker > :global(*) + :global(*) {
 		margin-right: 0.4rem;
 	}
 
@@ -560,7 +560,7 @@
 		margin-left: 1rem;
 	}
 
-	.landing-hero-points svg {
+	.landing-hero-points :global(svg) {
 		width: 1rem;
 		height: 1rem;
 		margin-left: 0.3rem;
@@ -682,7 +682,7 @@
 		border-radius: 1rem;
 	}
 
-	.landing-feature-icon svg {
+	.landing-feature-icon :global(svg) {
 		width: 1.5rem;
 		height: 1.5rem;
 	}
@@ -756,7 +756,7 @@
 		border-radius: 1.25rem;
 	}
 
-	.landing-stat-total-icon svg {
+	.landing-stat-total-icon :global(svg) {
 		width: 2rem;
 		height: 2rem;
 	}
@@ -1020,7 +1020,7 @@
 		color: var(--ui-color-primary);
 	}
 
-	.landing-empty-icon svg {
+	.landing-empty-icon :global(svg) {
 		width: 1.65rem;
 		height: 1.65rem;
 	}
@@ -1093,7 +1093,7 @@
 		box-shadow: var(--ui-shadow-sm);
 	}
 
-	.landing-featured-icon svg {
+	.landing-featured-icon :global(svg) {
 		width: 1.65rem;
 		height: 1.65rem;
 	}

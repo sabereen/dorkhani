@@ -252,7 +252,7 @@
 		font-weight: 800;
 	}
 
-	.success-link-label > * + * {
+	.success-link-label > :global(*) + :global(*) {
 		margin-right: 0.35rem;
 	}
 

@@ -45,13 +45,13 @@
 			value={slug}
 			bind:group={value}
 			class="ui-tab-input"
+			role="tab"
+			aria-selected={value === slug}
 		/>
 		<label
 			class="ui-tab"
 			class:ui-tab-active={value === slug}
 			for={htmlId}
-			role="tab"
-			aria-selected={value === slug}
 		>
 			{#if link}
 				<a

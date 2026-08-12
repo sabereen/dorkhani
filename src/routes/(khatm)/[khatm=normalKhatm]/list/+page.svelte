@@ -1,4 +1,5 @@
 <script lang="ts">
+	/* eslint-disable svelte/no-unused-svelte-ignore */
 	import Modal from '$lib/components/Modal.svelte'
 	import { Juz } from '@ghoran/entity'
 	import { juz_toRange } from '$lib/entity/Juz'
@@ -34,10 +35,13 @@
 
 	let hideFinishedIntervals = $state(true)
 	let juzQuery = $state('')
+	const { rangeType: initialRangeType } = /* svelte-ignore state_referenced_locally */ khatm
+	const initialSubrangeType =
+		initialRangeType === 'hizbQuarter' || initialRangeType === 'page' || initialRangeType === 'surah'
+			? initialRangeType
+			: 'surah'
 	let subrangeType = $state<SubrangeType>(
-		khatm.rangeType === 'hizbQuarter' || khatm.rangeType === 'page' || khatm.rangeType === 'surah'
-			? khatm.rangeType
-			: 'surah',
+		initialSubrangeType,
 	)
 
 	const juzRanges = Juz.getAll().map(juz_toRange)

@@ -15,6 +15,41 @@
 		message?: string
 	}
 
+	const baleSdkUrl = 'https://tapi.bale.ai/miniapp.js?3'
+
+	function loadBaleSdk() {
+		if (window.Bale?.WebApp) return Promise.resolve()
+
+		const existingScript = document.querySelector<HTMLScriptElement>(
+			'script[data-bale-miniapp-sdk]',
+		)
+		if (existingScript) {
+			return new Promise<void>((resolve, reject) => {
+				existingScript.addEventListener('load', () => resolve(), { once: true })
+				existingScript.addEventListener(
+					'error',
+					() => reject(new Error('Bale SDK failed to load')),
+					{
+						once: true,
+					},
+				)
+			})
+		}
+
+		const script = document.createElement('script')
+		script.src = baleSdkUrl
+		script.async = true
+		script.dataset.baleMiniappSdk = ''
+
+		return new Promise<void>((resolve, reject) => {
+			script.addEventListener('load', () => resolve(), { once: true })
+			script.addEventListener('error', () => reject(new Error('Bale SDK failed to load')), {
+				once: true,
+			})
+			document.head.appendChild(script)
+		})
+	}
+
 	const { enabled }: Props = $props()
 	let initData = ''
 	let open = $state(false)
@@ -64,29 +99,47 @@
 
 	onMount(() => {
 		if (!enabled) return
-		const webApp = window.Bale?.WebApp
-		if (!webApp?.initData) return
-		initData = webApp.initData
-		if (!document.documentElement.dataset.colorScheme && webApp.colorScheme) {
-			document.documentElement.dataset.colorScheme = webApp.colorScheme
-		}
-		webApp.ready?.()
-		webApp.expand?.()
+		let cancelled = false
+		let cleanup = () => {}
 
-		const handleBack = () => {
-			if (location.pathname === `${base}/`) return
-			history.back()
+		async function initialize() {
+			try {
+				await loadBaleSdk()
+			} catch {
+				return
+			}
+			if (cancelled) return
+
+			const webApp = window.Bale?.WebApp
+			if (!webApp?.initData) return
+			initData = webApp.initData
+			if (!document.documentElement.dataset.colorScheme && webApp.colorScheme) {
+				document.documentElement.dataset.colorScheme = webApp.colorScheme
+			}
+			webApp.ready?.()
+			webApp.expand?.()
+
+			const handleBack = () => {
+				if (location.pathname === `${base}/`) return
+				history.back()
+			}
+			const handleSettings = () => void goto(`${base}/settings`)
+			webApp.BackButton?.onClick?.(handleBack)
+			webApp.SettingsButton?.onClick?.(handleSettings)
+			webApp.SettingsButton?.show?.()
+			cleanup = () => {
+				webApp.BackButton?.offClick?.(handleBack)
+				webApp.SettingsButton?.offClick?.(handleSettings)
+				webApp.BackButton?.hide?.()
+				webApp.SettingsButton?.hide?.()
+			}
+			void authenticate('auto')
 		}
-		const handleSettings = () => void goto(`${base}/settings`)
-		webApp.BackButton?.onClick?.(handleBack)
-		webApp.SettingsButton?.onClick?.(handleSettings)
-		webApp.SettingsButton?.show?.()
-		void authenticate('auto')
+
+		void initialize()
 		return () => {
-			webApp.BackButton?.offClick?.(handleBack)
-			webApp.SettingsButton?.offClick?.(handleSettings)
-			webApp.BackButton?.hide?.()
-			webApp.SettingsButton?.hide?.()
+			cancelled = true
+			cleanup()
 		}
 	})
 </script>

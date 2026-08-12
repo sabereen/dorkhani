@@ -11,26 +11,26 @@ export type UserNotificationEvent =
 			khatmId: number
 			title: string
 			private: boolean
-		}
+	  }
 	| {
 			type: 'participationPicked'
 			title: string
 			description: string
 			targetPath: string
-		}
+	  }
 	| {
 			type: 'roundCompleted'
 			khatmId: number
 			title: string
 			roundNumber: number
 			seriesId: number | null
-		}
+	  }
 	| {
 			type: 'seriesCompleted'
 			khatmId: number
 			title: string
 			roundNumber: number
-		}
+	  }
 
 type NotificationMessage = {
 	subject: string
@@ -95,7 +95,8 @@ async function requestJson(url: string, body: object) {
 			signal: controller.signal,
 		})
 		const result = await response.json().catch(() => null)
-		if (!response.ok || result?.ok === false) throw new Error(result?.description || `HTTP ${response.status}`)
+		if (!response.ok || result?.ok === false)
+			throw new Error(result?.description || `HTTP ${response.status}`)
 	} finally {
 		clearTimeout(timer)
 	}
@@ -133,8 +134,11 @@ export async function userNotification_getSettings(userId: string) {
 	if (!user) return null
 
 	const preference = user.notificationPreference
-	const endpoints = new Map(user.notificationEndpoints.map((endpoint) => [endpoint.channel, endpoint]))
-	const emailAvailable = user.emailVerified && !user.email.endsWith('@users.invalid') && authEmail_isConfigured()
+	const endpoints = new Map(
+		user.notificationEndpoints.map((endpoint) => [endpoint.channel, endpoint]),
+	)
+	const emailAvailable =
+		user.emailVerified && !user.email.endsWith('@users.invalid') && authEmail_isConfigured()
 
 	return {
 		enabled: preference?.enabled ?? true,
@@ -159,7 +163,10 @@ export async function userNotification_getSettings(userId: string) {
 	}
 }
 
-export async function userNotification_saveSettings(userId: string, input: NotificationSettingsInput) {
+export async function userNotification_saveSettings(
+	userId: string,
+	input: NotificationSettingsInput,
+) {
 	return db.notificationPreference.upsert({
 		where: { userId },
 		create: { userId, ...input },
@@ -200,7 +207,9 @@ export async function userNotification_send(userId: string, event: UserNotificat
 	if (!user || user.notificationPreference?.enabled === false) return
 
 	const preference = user.notificationPreference
-	const endpoints = new Map(user.notificationEndpoints.map((endpoint) => [endpoint.channel, endpoint]))
+	const endpoints = new Map(
+		user.notificationEndpoints.map((endpoint) => [endpoint.channel, endpoint]),
+	)
 	const message = toMessage(event)
 	const enabled = {
 		bale: preference?.baleEnabled ?? true,
@@ -208,7 +217,9 @@ export async function userNotification_send(userId: string, event: UserNotificat
 		email: preference?.emailEnabled ?? true,
 	}
 
-	for (const channel of getChannelPriority(preference?.preferredChannel as UserNotificationChannel | null)) {
+	for (const channel of getChannelPriority(
+		preference?.preferredChannel as UserNotificationChannel | null,
+	)) {
 		if (!enabled[channel]) continue
 		try {
 			if (channel === 'bale') {
@@ -220,7 +231,12 @@ export async function userNotification_send(userId: string, event: UserNotificat
 				if (!endpoint?.canSend) continue
 				await sendEitaa(endpoint.address, message)
 			} else {
-				if (!user.emailVerified || user.email.endsWith('@users.invalid') || !authEmail_isConfigured()) continue
+				if (
+					!user.emailVerified ||
+					user.email.endsWith('@users.invalid') ||
+					!authEmail_isConfigured()
+				)
+					continue
 				await authEmail_send(user.email, message.subject, `${message.text}\n\n${message.url}`)
 			}
 			return
@@ -230,7 +246,10 @@ export async function userNotification_send(userId: string, event: UserNotificat
 	}
 }
 
-export function userNotification_notify(userId: string | null | undefined, event: UserNotificationEvent) {
+export function userNotification_notify(
+	userId: string | null | undefined,
+	event: UserNotificationEvent,
+) {
 	if (!userId) return
 	void userNotification_send(userId, event).catch((error) => {
 		console.error('Failed to dispatch user notification.', error)

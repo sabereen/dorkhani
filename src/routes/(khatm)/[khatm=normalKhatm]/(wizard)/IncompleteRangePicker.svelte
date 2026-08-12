@@ -45,7 +45,7 @@
 		<IconArrowForward />
 		بازگشت به بخش‌های آزاد
 	</button>
-	<ConfirmRange {khatm} onClose={onClose} onFinished={finish} range={selectedRange} />
+	<ConfirmRange {khatm} {onClose} onFinished={finish} range={selectedRange} />
 {:else}
 	<div class="ui-khatm-partial-picker">
 		<header class="ui-khatm-partial-heading">
@@ -64,7 +64,12 @@
 			</div>
 			<div>
 				<span><b>{percent.toLocaleString('fa')}٪</b> از این بازه پیش‌تر انتخاب شده است</span>
-				<progress class="ui-progress" max={100} value={percent} aria-label={`${percent.toLocaleString('fa')} درصد انتخاب شده`}></progress>
+				<progress
+					class="ui-progress"
+					max={100}
+					value={percent}
+					aria-label={`${percent.toLocaleString('fa')} درصد انتخاب شده`}
+				></progress>
 			</div>
 		</div>
 
@@ -74,8 +79,7 @@
 
 		<ul class="ui-khatm-partial-list" aria-label="بخش‌های این بازه">
 			{#each subranges as { range: subrange, khatmPart } (subrange.start + ':' + subrange.end)}
-				{@const mine =
-					!!khatmPart && participation.getOverlapLength(subrange) === subrange.length}
+				{@const mine = !!khatmPart && participation.getOverlapLength(subrange) === subrange.length}
 				<li>
 					{#if khatmPart}
 						<div
@@ -115,7 +119,11 @@
 		<div class="ui-khatm-partial-selection" aria-live="polite">
 			<div>
 				<span>انتخاب شما</span>
-				<strong>{selectedRange ? selectedRange.getTitleSurahOrinted() : 'هنوز بخشی انتخاب نشده است'}</strong>
+				<strong
+					>{selectedRange
+						? selectedRange.getTitleSurahOrinted()
+						: 'هنوز بخشی انتخاب نشده است'}</strong
+				>
 			</div>
 			<button
 				type="button"
@@ -126,6 +134,8 @@
 				ادامه و بررسی نهایی
 			</button>
 		</div>
-		<button type="button" class="ui-btn ui-btn-ghost ui-btn-block" onclick={onClose}>انصراف از انتخاب</button>
+		<button type="button" class="ui-btn ui-btn-ghost ui-btn-block" onclick={onClose}
+			>انصراف از انتخاب</button
+		>
 	</div>
 {/if}

@@ -186,10 +186,7 @@ export async function statisticsService_getLandingStatistics(now = new Date()) {
 	}
 }
 
-export function statisticsService_applyCommitted(
-	delta: StatisticsDelta,
-	occurredAt = new Date(),
-) {
+export function statisticsService_applyCommitted(delta: StatisticsDelta, occurredAt = new Date()) {
 	const normalized = normalizeDelta(delta)
 	const day = statisticsService_getTehranDay(occurredAt)
 	statisticsCache.revision += 1
@@ -216,10 +213,8 @@ export function statisticsService_applyCommitted(
 
 	statisticsCache.value = {
 		totals: {
-			recitedAyahs:
-				statisticsCache.value.totals.recitedAyahs + normalized.recitedAyahs,
-			completedRounds:
-				statisticsCache.value.totals.completedRounds + normalized.completedRounds,
+			recitedAyahs: statisticsCache.value.totals.recitedAyahs + normalized.recitedAyahs,
+			completedRounds: statisticsCache.value.totals.completedRounds + normalized.completedRounds,
 		},
 		daily,
 	}

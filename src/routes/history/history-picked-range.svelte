@@ -33,7 +33,10 @@
 </script>
 
 {#if history?.length}
-	<section transition:slide={{ axis: 'y' }} class="ui-card ui-card-bordered ui-activity-card ui-activity-card-picked">
+	<section
+		transition:slide={{ axis: 'y' }}
+		class="ui-card ui-card-bordered ui-activity-card ui-activity-card-picked"
+	>
 		<div class="ui-card-body">
 			<header class="ui-activity-header">
 				<span class="ui-activity-header-icon"><IconCheck /></span>
@@ -51,7 +54,9 @@
 							<span class="ui-activity-marker" aria-hidden="true"></span>
 							<span class="ui-activity-content">
 								<strong>{item.range.getTitle()}</strong>
-								<a class="ui-activity-subtitle" href={item.khatm.link}>از ختم «{item.khatm.title}»</a>
+								<a class="ui-activity-subtitle" href={item.khatm.link}
+									>از ختم «{item.khatm.title}»</a
+								>
 								<span class="ui-activity-meta">
 									<span>{item.date.toLocaleDateString('fa-IR')}</span>
 									{#if item.khatm.private}

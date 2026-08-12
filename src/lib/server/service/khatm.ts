@@ -1,10 +1,4 @@
-import type {
-	Prisma,
-	RangeType,
-	ReviewStatus,
-	TKhatm,
-	TKhatmSeries,
-} from '@prisma-client'
+import type { Prisma, RangeType, ReviewStatus, TKhatm, TKhatmSeries } from '@prisma-client'
 import { createHash, randomBytes } from 'node:crypto'
 import { v4 as uuid } from 'uuid'
 import { db } from '$lib/server/db'
@@ -16,10 +10,7 @@ import type {
 	KhatmDirectoryResult,
 	KhatmDirectoryView,
 } from '$lib/entity/KhatmDirectory'
-import {
-	statisticsService_applyCommitted,
-	statisticsService_increment,
-} from './statistics'
+import { statisticsService_applyCommitted, statisticsService_increment } from './statistics'
 import { userNotification_notify } from './user-notification'
 
 type SecretKhatmFields = {
@@ -30,9 +21,7 @@ type SecretKhatmFields = {
 
 export type PublicKhatm = KhatmData
 
-export type KhatmManagementActor =
-	| { kind: 'owner'; ownerId: string }
-	| { kind: 'admin' }
+export type KhatmManagementActor = { kind: 'owner'; ownerId: string } | { kind: 'admin' }
 
 export class KhatmOwnershipError extends Error {}
 export class KhatmRangeLockedError extends Error {}
@@ -50,12 +39,7 @@ function ensureCanManageKhatm(actor: KhatmManagementActor, ownerId: string | nul
 }
 
 export function khatmService_toPublic<T extends TKhatm & SecretKhatmFields>(khatm: T) {
-	const {
-		ownerId,
-		guestClaimTokenHash,
-		series,
-		...publicKhatm
-	} = khatm
+	const { ownerId, guestClaimTokenHash, series, ...publicKhatm } = khatm
 	void ownerId
 	void guestClaimTokenHash
 	void series
@@ -76,10 +60,7 @@ function khatmService_canFeature(khatm: KhatmWithSeries) {
 	)
 }
 
-async function khatmService_unfeatureSeries(
-	tx: Prisma.TransactionClient,
-	seriesId: number,
-) {
+async function khatmService_unfeatureSeries(tx: Prisma.TransactionClient, seriesId: number) {
 	const series = await tx.tKhatmSeries.findUnique({
 		where: { id: seriesId },
 		select: { featuredOrder: true },
@@ -172,10 +153,7 @@ export async function khatmService_reorderFeatured(seriesIds: number[]) {
 				select: { id: true },
 			})
 			const selectedIds = new Set(selected.map((series) => series.id))
-			if (
-				selectedIds.size !== seriesIds.length ||
-				seriesIds.some((id) => !selectedIds.has(id))
-			) {
+			if (selectedIds.size !== seriesIds.length || seriesIds.some((id) => !selectedIds.has(id))) {
 				throw new KhatmFeaturedOrderError()
 			}
 
@@ -200,10 +178,7 @@ export async function khatmService_getPublicList({ limit = 20 } = {}) {
 			AND: [
 				{ OR: [{ seriesId: { not: null }, status: 'inProgress' }, { seriesId: null }] },
 				{
-					OR: [
-						{ seriesId: null },
-						{ series: { is: { featuredOrder: null } } },
-					],
+					OR: [{ seriesId: null }, { series: { is: { featuredOrder: null } } }],
 				},
 			],
 		},
@@ -216,9 +191,10 @@ export async function khatmService_getPublicList({ limit = 20 } = {}) {
 
 const AUTOMATIC_SHOWCASE_WINDOW_MS = 72 * 60 * 60 * 1000
 
-export async function khatmService_getAutomaticShowcase(
-	{ limit = 6, now = new Date() }: { limit?: number; now?: Date } = {},
-) {
+export async function khatmService_getAutomaticShowcase({
+	limit = 6,
+	now = new Date(),
+}: { limit?: number; now?: Date } = {}) {
 	const take = Math.max(0, Math.floor(limit))
 	if (take === 0) return []
 
@@ -238,11 +214,7 @@ export async function khatmService_getAutomaticShowcase(
 		},
 		_sum: { verseCount: true },
 		_max: { created: true },
-		orderBy: [
-			{ _sum: { verseCount: 'desc' } },
-			{ _max: { created: 'desc' } },
-			{ khatmId: 'desc' },
-		],
+		orderBy: [{ _sum: { verseCount: 'desc' } }, { _max: { created: 'desc' } }, { khatmId: 'desc' }],
 		take,
 	})
 
@@ -329,19 +301,16 @@ function encodeDirectoryCursor(cursor: KhatmDirectoryCursor) {
 function decodeDirectoryCursor(value: string | undefined, view: KhatmDirectoryView) {
 	if (!value) return null
 	try {
-		const [cursorView, rawValue, rawId] = Buffer.from(value, 'base64url').toString('utf8').split(':')
+		const [cursorView, rawValue, rawId] = Buffer.from(value, 'base64url')
+			.toString('utf8')
+			.split(':')
 		const cursorValue = Number(rawValue)
 		const id = Number(rawId)
 		const isValidCursorValue =
 			cursorView === 'progress'
 				? Number.isFinite(cursorValue) && cursorValue >= 0 && cursorValue <= 100
 				: Number.isSafeInteger(cursorValue) && cursorValue >= 0
-		if (
-			cursorView !== view ||
-			!isValidCursorValue ||
-			!Number.isSafeInteger(id) ||
-			id <= 0
-		) {
+		if (cursorView !== view || !isValidCursorValue || !Number.isSafeInteger(id) || id <= 0) {
 			return null
 		}
 		return { value: cursorValue, id }
@@ -451,8 +420,7 @@ export async function khatmService_getAdminList(
 
 	return khatms.map((khatm) => ({
 		khatm: khatmService_toPublic(khatm),
-		featuredOrder:
-			khatm.status === 'inProgress' ? (khatm.series?.featuredOrder ?? null) : null,
+		featuredOrder: khatm.status === 'inProgress' ? (khatm.series?.featuredOrder ?? null) : null,
 		canFeature: Boolean(
 			!khatm.private &&
 				khatm.status === 'inProgress' &&

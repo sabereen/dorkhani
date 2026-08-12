@@ -35,9 +35,7 @@
 	let hideFinishedIntervals = $state(true)
 	let juzQuery = $state('')
 	let subrangeType = $state<SubrangeType>(
-		khatm.rangeType === 'hizbQuarter' ||
-			khatm.rangeType === 'page' ||
-			khatm.rangeType === 'surah'
+		khatm.rangeType === 'hizbQuarter' || khatm.rangeType === 'page' || khatm.rangeType === 'surah'
 			? khatm.rangeType
 			: 'surah',
 	)
@@ -111,7 +109,10 @@
 		if (modal) return
 
 		if (!range.matchRangeType(khatm.rangeType)) {
-			toast('error', `این ختم بر اساس ${khatm.rangeTypeTitle} تقسیم شده و این بازه قابل انتخاب نیست.`)
+			toast(
+				'error',
+				`این ختم بر اساس ${khatm.rangeTypeTitle} تقسیم شده و این بازه قابل انتخاب نیست.`,
+			)
 			return
 		}
 		selected = range
@@ -131,13 +132,17 @@
 			<div>
 				<span class="ui-khatm-wizard-kicker">مرور جزء‌به‌جزء قرآن</span>
 				<h2 id="khatm-list-title">سهمتان را با جزئیات پیدا کنید</h2>
-				<p>هر جزء را باز کنید، شیوه تقسیم‌بندی را تغییر دهید و وضعیت تمام بخش‌ها را یک‌جا ببینید.</p>
+				<p>
+					هر جزء را باز کنید، شیوه تقسیم‌بندی را تغییر دهید و وضعیت تمام بخش‌ها را یک‌جا ببینید.
+				</p>
 			</div>
 		</div>
 
 		<div class="ui-khatm-browser-stats" aria-label="خلاصه وضعیت فهرست">
 			<div><strong>{khatm.percent.toLocaleString('fa')}٪</strong><span>پیشرفت ختم</span></div>
-			<div><strong>{availableJuzCount.toLocaleString('fa')}</strong><span>جزء دارای بخش آزاد</span></div>
+			<div>
+				<strong>{availableJuzCount.toLocaleString('fa')}</strong><span>جزء دارای بخش آزاد</span>
+			</div>
 			<div><strong>{myJuzCount.toLocaleString('fa')}</strong><span>جزء شامل سهم شما</span></div>
 		</div>
 	</header>
@@ -156,7 +161,9 @@
 					oninput={resetOpenedJuz}
 				/>
 				{#if juzQuery}
-					<button type="button" class="ui-btn ui-btn-ghost ui-btn-xs" onclick={clearSearch}>پاک‌کردن</button>
+					<button type="button" class="ui-btn ui-btn-ghost ui-btn-xs" onclick={clearSearch}
+						>پاک‌کردن</button
+					>
 				{/if}
 			</div>
 		</div>
@@ -181,13 +188,13 @@
 	{#if visibleJuzRanges.length > 0}
 		<div class="ui-khatm-browser-accordion">
 			<Accardeon items={visibleJuzRanges} bind:selectedIndex={openedAccardeon}>
-			{#snippet title(range, index, expanded)}
-				{@const percent = range.getFillPercent(parts)}
-				{@const juzNumber = juzRanges.indexOf(range) + 1}
-				{@const mine = participation.getOverlapLength(range) > 0}
-				<div
-					class="ui-khatm-browser-juz"
-					data-range-index={index}
+				{#snippet title(range, index, expanded)}
+					{@const percent = range.getFillPercent(parts)}
+					{@const juzNumber = juzRanges.indexOf(range) + 1}
+					{@const mine = participation.getOverlapLength(range) > 0}
+					<div
+						class="ui-khatm-browser-juz"
+						data-range-index={index}
 						class:ui-khatm-browser-juz-open={expanded}
 						class:ui-khatm-browser-juz-finished={percent >= 100}
 					>
@@ -195,8 +202,11 @@
 						<span class="ui-khatm-browser-juz-main">
 							<span class="ui-khatm-browser-juz-title">
 								<strong>{range.title}</strong>
-								{#if mine}<span class="ui-badge ui-badge-accent ui-badge-xs">شامل سهم شما</span>{/if}
-								{#if percent >= 100}<span class="ui-badge ui-badge-neutral ui-badge-xs">تکمیل‌شده</span>{/if}
+								{#if mine}<span class="ui-badge ui-badge-accent ui-badge-xs">شامل سهم شما</span
+									>{/if}
+								{#if percent >= 100}<span class="ui-badge ui-badge-neutral ui-badge-xs"
+										>تکمیل‌شده</span
+									>{/if}
 							</span>
 							<span class="ui-khatm-browser-juz-progress">
 								<progress
@@ -209,13 +219,9 @@
 							</span>
 						</span>
 						<span class="ui-khatm-browser-juz-action">
-								<span>
-									{expanded
-										? 'بستن جزئیات'
-										: percent >= 100
-											? 'مشاهده جزئیات'
-											: 'دیدن بخش‌ها'}
-								</span>
+							<span>
+								{expanded ? 'بستن جزئیات' : percent >= 100 ? 'مشاهده جزئیات' : 'دیدن بخش‌ها'}
+							</span>
 							<IconExpand aria-hidden="true" />
 						</span>
 					</div>
@@ -234,7 +240,11 @@
 								</strong>
 							</div>
 							{#if juzPercent === 0 && range.matchRangeType(khatm.rangeType)}
-								<button type="button" class="ui-btn ui-btn-primary ui-btn-sm" onclick={() => openModal(range)}>
+								<button
+									type="button"
+									class="ui-btn ui-btn-primary ui-btn-sm"
+									onclick={() => openModal(range)}
+								>
 									انتخاب کامل {range.title}
 								</button>
 							{/if}
@@ -288,7 +298,8 @@
 													class:ui-khatm-browser-part-mine={mine}
 												>
 													<span class="ui-khatm-browser-part-state">
-														{#if mine}<IconPerson />{:else if khatmPart}<IconCheck />{:else}<IconRadio />{/if}
+														{#if mine}<IconPerson />{:else if khatmPart}<IconCheck
+															/>{:else}<IconRadio />{/if}
 													</span>
 													<div class="ui-khatm-browser-part-copy">
 														<strong>{part.getTitleSurahOrinted()}</strong>
@@ -317,8 +328,8 @@
 															aria-label={`مشاهده ${part.getTitleSurahOrinted()}`}
 															target="_blank"
 															rel="noreferrer"
-															href={part.getLink(khatm)}
-														><IconEye /></a>
+															href={part.getLink(khatm)}><IconEye /></a
+														>
 													</div>
 												</li>
 											{/each}
@@ -341,8 +352,14 @@
 		<div class="ui-khatm-browser-empty ui-khatm-browser-empty-page">
 			<IconSearch />
 			<strong>{juzQuery ? 'جزئی با این شماره پیدا نشد' : 'همه جزءها تکمیل شده‌اند'}</strong>
-			<span>{juzQuery ? 'شماره دیگری را جست‌وجو کنید.' : 'برای مرور نتیجه، فیلتر جزءهای دارای ظرفیت را خاموش کنید.'}</span>
-			{#if juzQuery}<button type="button" class="ui-btn ui-btn-soft" onclick={clearSearch}>پاک‌کردن جست‌وجو</button>{/if}
+			<span
+				>{juzQuery
+					? 'شماره دیگری را جست‌وجو کنید.'
+					: 'برای مرور نتیجه، فیلتر جزءهای دارای ظرفیت را خاموش کنید.'}</span
+			>
+			{#if juzQuery}<button type="button" class="ui-btn ui-btn-soft" onclick={clearSearch}
+					>پاک‌کردن جست‌وجو</button
+				>{/if}
 		</div>
 	{/if}
 </section>
@@ -351,6 +368,11 @@
 	{#if picked}
 		<PickedRangeResult {khatm} onClose={closeModal} range={selected} />
 	{:else}
-		<ConfirmRange {khatm} onClose={closeModal} onFinished={() => (picked = true)} range={selected} />
+		<ConfirmRange
+			{khatm}
+			onClose={closeModal}
+			onFinished={() => (picked = true)}
+			range={selected}
+		/>
 	{/if}
 </Modal>

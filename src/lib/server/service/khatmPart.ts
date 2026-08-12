@@ -4,10 +4,7 @@ import { error } from '@sveltejs/kit'
 import { QuranRange } from '$lib/entity/Range'
 import { Prisma } from '@prisma-client'
 import { khatmService_setAsCompleted, khatmService_toPublic } from './khatm'
-import {
-	statisticsService_applyCommitted,
-	statisticsService_increment,
-} from './statistics'
+import { statisticsService_applyCommitted, statisticsService_increment } from './statistics'
 
 type CreatingKhatmPart = {
 	khatmId: number
@@ -38,9 +35,7 @@ export async function khatmPartService_pickRange(body: CreatingKhatmPart) {
 	try {
 		const pickedAt = new Date()
 		const pageProgressIncrement =
-			body.end > body.start
-				? new QuranRange(body.start, body.end).getCoveragePercent() * 100
-				: 0
+			body.end > body.start ? new QuranRange(body.start, body.end).getCoveragePercent() * 100 : 0
 		const result = await db.$transaction(async (tx) => {
 			const updated = await tx.tKhatm.update({
 				where: {

@@ -6,7 +6,7 @@
 </script>
 
 <footer class={[className, 'ui-border ui-bg-surface border-t']}>
-	<div class="ui-container flex min-h-18 items-center justify-between">
+	<div class="ui-container min-h-18 flex items-center justify-between">
 		<div class="flex items-center">
 			<a
 				href={supportLink}

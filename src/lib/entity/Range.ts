@@ -186,10 +186,7 @@ export class QuranRange {
 		const fillCount = subranges.reduce((sum, { range }) => sum + range.length, 0)
 		if (fillCount === this.length) return 100
 
-		const filledPageCount = subranges.reduce(
-			(sum, { range }) => sum + range.getPageCount(),
-			0,
-		)
+		const filledPageCount = subranges.reduce((sum, { range }) => sum + range.getPageCount(), 0)
 		return roundPercent((100 * filledPageCount) / this.getPageCount(), false)
 	}
 

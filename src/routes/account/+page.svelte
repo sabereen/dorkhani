@@ -34,7 +34,9 @@
 <section class="ui-card ui-card-bordered mt-4">
 	<div class="ui-card-body">
 		<h2 class="ui-card-title">اعلان‌ها</h2>
-		<p class="ui-text-muted">پیام‌های ساخت، انتخاب سهم و پایان ختم از نخستین کانال در دسترس فرستاده می‌شوند.</p>
+		<p class="ui-text-muted">
+			پیام‌های ساخت، انتخاب سهم و پایان ختم از نخستین کانال در دسترس فرستاده می‌شوند.
+		</p>
 
 		{#if form?.notificationSaved}
 			<div class="ui-alert ui-alert-success mt-3" role="status">تنظیمات اعلان ذخیره شد.</div>
@@ -98,7 +100,9 @@
 					/>
 					<span>ایمیل</span>
 					<span class="ui-text-muted">
-						{data.notificationSettings?.channels.email.available ? 'آماده' : 'ایمیل تأییدشده یا SMTP موجود نیست'}
+						{data.notificationSettings?.channels.email.available
+							? 'آماده'
+							: 'ایمیل تأییدشده یا SMTP موجود نیست'}
 					</span>
 				</label>
 			</fieldset>

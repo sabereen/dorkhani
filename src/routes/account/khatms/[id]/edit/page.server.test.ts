@@ -44,10 +44,10 @@ describe('edit owned khatm action', () => {
 
 	it('returns 401 when a guest submits an edit', async () => {
 		await expect(
-				actions.default({
-					request: editRequest(),
-					url: new URL('http://localhost/account/khatms/12/edit'),
-					locals: { user: null },
+			actions.default({
+				request: editRequest(),
+				url: new URL('http://localhost/account/khatms/12/edit'),
+				locals: { user: null },
 				params: { id: '12' },
 			} as never),
 		).rejects.toMatchObject({ status: 401 })
@@ -57,10 +57,10 @@ describe('edit owned khatm action', () => {
 		serviceMock.edit.mockRejectedValue(new KhatmOwnershipError())
 
 		await expect(
-				actions.default({
-					request: editRequest(),
-					url: new URL('http://localhost/account/khatms/12/edit'),
-					locals: { user: { id: 'owner-2' } },
+			actions.default({
+				request: editRequest(),
+				url: new URL('http://localhost/account/khatms/12/edit'),
+				locals: { user: { id: 'owner-2' } },
 				params: { id: '12' },
 			} as never),
 		).rejects.toMatchObject({ status: 403 })

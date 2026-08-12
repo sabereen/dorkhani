@@ -28,7 +28,9 @@ export type KhatmDirectoryResult = {
 	nextCursor: string | null
 }
 
-export function khatmDirectory_parseSearchParams(searchParams: URLSearchParams): KhatmDirectoryQuery {
+export function khatmDirectory_parseSearchParams(
+	searchParams: URLSearchParams,
+): KhatmDirectoryQuery {
 	const requestedView = searchParams.get('view')
 	const view = KHATM_DIRECTORY_VIEWS.includes(requestedView as KhatmDirectoryView)
 		? (requestedView as KhatmDirectoryView)

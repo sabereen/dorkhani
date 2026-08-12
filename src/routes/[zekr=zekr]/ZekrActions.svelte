@@ -86,7 +86,11 @@
 	}
 </script>
 
-<section class="ui-zekr-participation" aria-labelledby="participation-title" aria-busy={loading !== -1}>
+<section
+	class="ui-zekr-participation"
+	aria-labelledby="participation-title"
+	aria-busy={loading !== -1}
+>
 	<div class="ui-zekr-participation-heading">
 		<span class="ui-zekr-participation-icon"><IconVolunteer /></span>
 		<div>
@@ -197,7 +201,11 @@
 		/>
 		<p id="custom-count-hint" class="ui-zekr-modal-hint">یک عدد بزرگ‌تر از صفر وارد کنید.</p>
 
-		<button type="submit" class="ui-btn ui-btn-primary ui-btn-block ui-btn-lg" disabled={loading !== -1}>
+		<button
+			type="submit"
+			class="ui-btn ui-btn-primary ui-btn-block ui-btn-lg"
+			disabled={loading !== -1}
+		>
 			{#if loading !== -1}
 				<span class="ui-spinner ui-spinner-md" transition:slide={{ axis: 'x' }}></span>
 			{/if}

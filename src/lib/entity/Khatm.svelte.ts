@@ -240,9 +240,7 @@ export class Khatm {
 
 	getKhatmParts(merge = true) {
 		if (merge) return KhatmPart.fromList(this.plainParts)
-		return this.plainParts
-			.map((part) => new KhatmPart(part))
-			.sort((a, b) => a.start - b.start)
+		return this.plainParts.map((part) => new KhatmPart(part)).sort((a, b) => a.start - b.start)
 	}
 
 	async pickNextAyat({ count = 1, translation }: { count: number; translation: Translation }) {

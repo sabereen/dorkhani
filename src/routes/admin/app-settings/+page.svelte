@@ -166,12 +166,7 @@
 				</div>
 
 				<label class="ui-admin-toggle-card">
-					<input
-						class="ui-checkbox"
-						type="checkbox"
-						name="eitaa"
-						bind:checked={formData.eitaa}
-					/>
+					<input class="ui-checkbox" type="checkbox" name="eitaa" bind:checked={formData.eitaa} />
 					<span class="ui-admin-toggle-copy">
 						<strong>ارسال اعلان فعال باشد</strong>
 						<small>برای ختم تازه یا خطای غیرمنتظره، پیام مدیریتی ارسال شود.</small>
@@ -179,7 +174,10 @@
 					<span class="ui-admin-toggle-status">{formData.eitaa ? 'فعال' : 'غیرفعال'}</span>
 				</label>
 
-				<div class="ui-admin-field-grid ui-admin-notification-fields" class:ui-admin-fields-muted={!formData.eitaa}>
+				<div
+					class="ui-admin-field-grid ui-admin-notification-fields"
+					class:ui-admin-fields-muted={!formData.eitaa}
+				>
 					<div class="ui-admin-field">
 						<label for="input-eitaa-token" class="ui-field-label">توکن ایتا (API Key)</label>
 						<input
@@ -195,7 +193,9 @@
 						/>
 						<small class="ui-admin-field-hint">
 							توکن را از منوی API در
-							<a class="ui-link" href="https://eitaayar.ir" target="_blank" rel="noreferrer">ایتایار</a>
+							<a class="ui-link" href="https://eitaayar.ir" target="_blank" rel="noreferrer"
+								>ایتایار</a
+							>
 							دریافت کنید.
 						</small>
 					</div>
@@ -238,8 +238,7 @@
 			<span class="ui-admin-eyebrow">ابزار نگهداری</span>
 			<h2>تازه‌سازی وضعیت ختم‌ها</h2>
 			<p>
-				وضعیت همه ختم‌ها دوباره محاسبه می‌شود و موارد کامل‌شده‌ای که ثبت نشده‌اند، اصلاح
-				خواهند شد.
+				وضعیت همه ختم‌ها دوباره محاسبه می‌شود و موارد کامل‌شده‌ای که ثبت نشده‌اند، اصلاح خواهند شد.
 			</p>
 			<div class="ui-admin-maintenance-warning">
 				این عملیات ممکن است کمی زمان ببرد. تا پایان پردازش، صفحه را نبندید.

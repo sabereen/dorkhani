@@ -26,11 +26,7 @@ function getManagementActor(event: ManagementEvent): KhatmManagementActor | null
 	return null
 }
 
-function getAdminDetailPath(khatm: {
-	id: number
-	rangeType: RangeType
-	seriesId: number | null
-}) {
+function getAdminDetailPath(khatm: { id: number; rangeType: RangeType; seriesId: number | null }) {
 	let prefix = khatm.rangeType === 'ayah' ? 'a' : 'k'
 	if (khatm.seriesId != null) prefix += 's'
 	return `${base}/${prefix}${khatm.seriesId ?? khatm.id}?admin=1`

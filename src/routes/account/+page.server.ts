@@ -23,7 +23,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 		khatms,
 		notificationSettings,
 		messengerLinks: {
-			bale: env.BALE_BOT_USERNAME ? `https://ble.ir/${env.BALE_BOT_USERNAME.replace(/^@/, '')}` : null,
+			bale: env.BALE_BOT_USERNAME
+				? `https://ble.ir/${env.BALE_BOT_USERNAME.replace(/^@/, '')}`
+				: null,
 			eitaa: env.EITAA_BOT_USERNAME
 				? `https://eitaa.com/${env.EITAA_BOT_USERNAME.replace(/^@/, '')}`
 				: null,

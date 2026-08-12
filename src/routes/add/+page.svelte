@@ -153,7 +153,13 @@
 
 					<div class="add-choice-grid">
 						<label class="add-choice" data-selected={access === 'private'}>
-							<input class="ui-radio" type="radio" name="access" value="private" bind:group={access} />
+							<input
+								class="ui-radio"
+								type="radio"
+								name="access"
+								value="private"
+								bind:group={access}
+							/>
 							<span class="add-choice-icon" aria-hidden="true"><IconLock /></span>
 							<span class="add-choice-copy">
 								<strong>خصوصی</strong>
@@ -163,7 +169,13 @@
 						</label>
 
 						<label class="add-choice" data-selected={access === 'public'}>
-							<input class="ui-radio" type="radio" name="access" value="public" bind:group={access} />
+							<input
+								class="ui-radio"
+								type="radio"
+								name="access"
+								value="public"
+								bind:group={access}
+							/>
 							<span class="add-choice-icon" aria-hidden="true"><IconPublic /></span>
 							<span class="add-choice-copy">
 								<strong>عمومی</strong>
@@ -380,7 +392,10 @@
 		border-radius: var(--ui-radius-md);
 		background: var(--ui-color-surface-muted);
 		cursor: pointer;
-		transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+		transition:
+			border-color 160ms ease,
+			background-color 160ms ease,
+			box-shadow 160ms ease;
 	}
 
 	.add-choice:hover,

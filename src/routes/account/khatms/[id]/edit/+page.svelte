@@ -21,14 +21,28 @@
 <form use:validateForm novalidate method="POST" class="mx-auto max-w-md">
 	<fieldset class="ui-card ui-card-bordered">
 		<div class="ui-card-body grid gap-3">
-			<label class="grid gap-1">عنوان<input class="ui-input" name="title" maxlength="100" required value={data.khatm.title} /></label>
-			<label class="grid gap-1">توضیحات<textarea class="ui-textarea" name="description" maxlength="65535">{data.khatm.description}</textarea></label>
+			<label class="grid gap-1"
+				>عنوان<input
+					class="ui-input"
+					name="title"
+					maxlength="100"
+					required
+					value={data.khatm.title}
+				/></label
+			>
+			<label class="grid gap-1"
+				>توضیحات<textarea class="ui-textarea" name="description" maxlength="65535"
+					>{data.khatm.description}</textarea
+				></label
+			>
 			<label class="grid gap-1">
 				نوع بازه
 				<select class="ui-select" name="rangeType" disabled={!data.canChangeRange}>
 					<option value="free" selected={data.khatm.rangeType === 'free'}>آزاد</option>
 					<option value="page" selected={data.khatm.rangeType === 'page'}>صفحه به صفحه</option>
-					<option value="hizbQuarter" selected={data.khatm.rangeType === 'hizbQuarter'}>حزب به حزب</option>
+					<option value="hizbQuarter" selected={data.khatm.rangeType === 'hizbQuarter'}
+						>حزب به حزب</option
+					>
 					<option value="surah" selected={data.khatm.rangeType === 'surah'}>سوره به سوره</option>
 					<option value="juz" selected={data.khatm.rangeType === 'juz'}>جزء به جزء</option>
 					<option value="ayah" selected={data.khatm.rangeType === 'ayah'}>آیه به آیه</option>

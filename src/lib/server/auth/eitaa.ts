@@ -40,7 +40,8 @@ export function eitaaAuth_verifyInitData(
 	const expectedHash = createHmac('sha256', secret).update(dataCheckString).digest()
 	const actualHash = Buffer.from(receivedHash, 'hex')
 
-	if (actualHash.length !== expectedHash.length || !timingSafeEqual(actualHash, expectedHash)) return null
+	if (actualHash.length !== expectedHash.length || !timingSafeEqual(actualHash, expectedHash))
+		return null
 
 	try {
 		return eitaaUserSchema.parse(JSON.parse(params.get('user') || ''))
@@ -63,7 +64,8 @@ export function eitaaAuthPlugin() {
 				},
 				async (ctx) => {
 					const profile = eitaaAuth_verifyInitData(ctx.body.initData)
-					if (!profile) throw new APIError('UNAUTHORIZED', { message: 'اطلاعات ورود ایتا معتبر نیست.' })
+					if (!profile)
+						throw new APIError('UNAUTHORIZED', { message: 'اطلاعات ورود ایتا معتبر نیست.' })
 
 					const accountId = String(profile.id)
 					const currentSession = await getSessionFromCtx(ctx, { disableRefresh: true })
@@ -75,7 +77,11 @@ export function eitaaAuthPlugin() {
 						? await ctx.context.internalAdapter.findUserById(existingAccount.userId)
 						: currentSession?.user
 
-					if (existingAccount && currentSession && existingAccount.userId !== currentSession.user.id) {
+					if (
+						existingAccount &&
+						currentSession &&
+						existingAccount.userId !== currentSession.user.id
+					) {
 						throw new APIError('CONFLICT', { message: 'این حساب ایتا قبلاً متصل شده است.' })
 					}
 
@@ -90,10 +96,15 @@ export function eitaaAuthPlugin() {
 						})
 					}
 
-					if (!user) throw new APIError('INTERNAL_SERVER_ERROR', { message: 'ساخت حساب ناموفق بود.' })
+					if (!user)
+						throw new APIError('INTERNAL_SERVER_ERROR', { message: 'ساخت حساب ناموفق بود.' })
 
 					if (!existingAccount) {
-						await ctx.context.internalAdapter.createAccount({ accountId, providerId: 'eitaa', userId: user.id })
+						await ctx.context.internalAdapter.createAccount({
+							accountId,
+							providerId: 'eitaa',
+							userId: user.id,
+						})
 					}
 					const { userNotification_upsertEndpoint } = await import('$service/user-notification')
 					await userNotification_upsertEndpoint(
@@ -104,7 +115,8 @@ export function eitaaAuthPlugin() {
 					)
 
 					const session = await ctx.context.internalAdapter.createSession(user.id)
-					if (!session) throw new APIError('INTERNAL_SERVER_ERROR', { message: 'ساخت نشست ناموفق بود.' })
+					if (!session)
+						throw new APIError('INTERNAL_SERVER_ERROR', { message: 'ساخت نشست ناموفق بود.' })
 					await setSessionCookie(ctx, { session, user })
 					return ctx.json({ user })
 				},

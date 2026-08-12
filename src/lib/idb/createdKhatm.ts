@@ -38,7 +38,9 @@ export async function idb_createdKhatm_getClaims() {
 	const { db } = await import('./idb')
 	const list = await db.createdKhatms.toArray()
 	return list
-		.filter((item): item is CreatedKhatm & { id: number; claimToken: string } => Boolean(item.id && item.claimToken))
+		.filter((item): item is CreatedKhatm & { id: number; claimToken: string } =>
+			Boolean(item.id && item.claimToken),
+		)
 		.map((item) => ({ id: item.id, token: item.claimToken }))
 }
 

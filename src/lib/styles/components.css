@@ -17,8 +17,12 @@
 	cursor: pointer;
 	-webkit-user-select: none;
 	user-select: none;
-	transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease,
-		box-shadow 160ms ease, transform 100ms ease;
+	transition:
+		background-color 160ms ease,
+		border-color 160ms ease,
+		color 160ms ease,
+		box-shadow 160ms ease,
+		transform 100ms ease;
 }
 
 .ui-btn > * + * {
@@ -479,7 +483,10 @@
 	background: var(--ui-color-surface);
 	font-size: 0.82rem;
 	font-weight: 800;
-	transition: border-color 160ms ease, box-shadow 160ms ease, transform 100ms ease;
+	transition:
+		border-color 160ms ease,
+		box-shadow 160ms ease,
+		transform 100ms ease;
 }
 
 .ui-settings-scheme-options .ui-scheme-option:hover {
@@ -660,7 +667,9 @@
 	color: var(--ui-color-text);
 	-webkit-appearance: none;
 	appearance: none;
-	transition: border-color 160ms ease, box-shadow 160ms ease;
+	transition:
+		border-color 160ms ease,
+		box-shadow 160ms ease;
 }
 
 .ui-input,
@@ -708,7 +717,9 @@
 	opacity: 0;
 	overflow: hidden;
 	transform: translateY(-0.25rem);
-	transition: opacity 180ms ease, transform 180ms ease;
+	transition:
+		opacity 180ms ease,
+		transform 180ms ease;
 }
 
 .ui-field-error:before {
@@ -865,7 +876,10 @@
 	border-radius: 1rem;
 	background: linear-gradient(135deg, var(--ui-color-surface), var(--ui-color-primary-soft));
 	box-shadow: var(--ui-shadow-sm);
-	transition: border-color 160ms ease, box-shadow 160ms ease, transform 100ms ease;
+	transition:
+		border-color 160ms ease,
+		box-shadow 160ms ease,
+		transform 100ms ease;
 }
 
 .ui-khatm-list-card:before {
@@ -1248,7 +1262,9 @@
 	background: transparent;
 	color: var(--ui-color-text);
 	text-decoration: none;
-	transition: background-color 160ms ease, padding 160ms ease;
+	transition:
+		background-color 160ms ease,
+		padding 160ms ease;
 }
 
 .ui-activity-item:hover {
@@ -2338,7 +2354,9 @@
 	border: 2px solid var(--ui-color-surface);
 	border-radius: 1rem;
 	background: var(--ui-color-primary-soft);
-	box-shadow: 0 0 0 1px var(--ui-color-border-strong), var(--ui-shadow-sm);
+	box-shadow:
+		0 0 0 1px var(--ui-color-border-strong),
+		var(--ui-shadow-sm);
 	overflow: hidden;
 }
 
@@ -2429,7 +2447,10 @@
 	color: var(--ui-color-primary);
 	cursor: pointer;
 	text-decoration: none;
-	transition: background-color 160ms ease, border-color 160ms ease, transform 100ms ease;
+	transition:
+		background-color 160ms ease,
+		border-color 160ms ease,
+		transform 100ms ease;
 }
 
 .ui-header-back:hover,
@@ -2493,7 +2514,10 @@
 	font-weight: 850;
 	text-decoration: none;
 	cursor: pointer;
-	transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease,
+	transition:
+		background-color 160ms ease,
+		border-color 160ms ease,
+		color 160ms ease,
 		transform 100ms ease;
 }
 
@@ -2544,7 +2568,10 @@
 	background: var(--ui-color-primary-soft);
 	color: var(--ui-color-text);
 	text-decoration: none;
-	transition: border-color 160ms ease, background-color 160ms ease, transform 100ms ease;
+	transition:
+		border-color 160ms ease,
+		background-color 160ms ease,
+		transform 100ms ease;
 }
 
 .ui-header-create:hover {
@@ -2614,7 +2641,10 @@
 	font-size: 0.75rem;
 	font-weight: 800;
 	text-decoration: none;
-	transition: background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+	transition:
+		background-color 160ms ease,
+		color 160ms ease,
+		box-shadow 160ms ease;
 }
 
 .ui-nav-link + .ui-nav-link {
@@ -2655,7 +2685,10 @@
 	font-size: 0.75rem;
 	font-weight: 800;
 	text-decoration: none;
-	transition: background-color 160ms ease, border-color 160ms ease, transform 100ms ease;
+	transition:
+		background-color 160ms ease,
+		border-color 160ms ease,
+		transform 100ms ease;
 }
 
 .ui-header-login:hover {
@@ -2692,7 +2725,9 @@
 	color: var(--ui-color-text);
 	cursor: pointer;
 	list-style: none;
-	transition: background-color 160ms ease, border-color 160ms ease;
+	transition:
+		background-color 160ms ease,
+		border-color 160ms ease;
 }
 
 .ui-header-account summary::-webkit-details-marker {
@@ -3097,7 +3132,12 @@
 	padding: 1.5rem;
 	border: 1px solid var(--ui-color-border-strong);
 	border-radius: 2rem;
-	background: linear-gradient(135deg, var(--ui-color-primary-soft), var(--ui-color-surface) 58%, var(--ui-color-success-soft));
+	background: linear-gradient(
+		135deg,
+		var(--ui-color-primary-soft),
+		var(--ui-color-surface) 58%,
+		var(--ui-color-success-soft)
+	);
 	box-shadow: var(--ui-shadow-lg);
 	overflow: hidden;
 }
@@ -3751,7 +3791,10 @@
 	font: inherit;
 	text-align: right;
 	cursor: pointer;
-	transition: border-color 160ms ease, box-shadow 160ms ease, transform 100ms ease;
+	transition:
+		border-color 160ms ease,
+		box-shadow 160ms ease,
+		transform 100ms ease;
 }
 
 .ui-khatm-option:hover {
@@ -4472,7 +4515,10 @@
 		transparent 100%
 	);
 	cursor: pointer;
-	transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+	transition:
+		background-color 140ms ease,
+		border-color 140ms ease,
+		box-shadow 140ms ease;
 }
 
 .ui-khatm-map-selectable:hover {
@@ -5420,7 +5466,10 @@
 	font-size: 0.75rem;
 	font-weight: 800;
 	text-decoration: none;
-	transition: background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+	transition:
+		background-color 160ms ease,
+		color 160ms ease,
+		box-shadow 160ms ease;
 }
 
 .ui-admin-nav-link + .ui-admin-nav-link {
@@ -5631,7 +5680,10 @@
 	box-shadow: var(--ui-shadow-sm);
 	text-decoration: none;
 	overflow: hidden;
-	transition: border-color 160ms ease, box-shadow 160ms ease, transform 120ms ease;
+	transition:
+		border-color 160ms ease,
+		box-shadow 160ms ease,
+		transform 120ms ease;
 }
 
 .ui-admin-action-card:before {
@@ -7821,7 +7873,11 @@
 	font: inherit;
 	text-align: right;
 	cursor: pointer;
-	transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease, transform 100ms ease;
+	transition:
+		border-color 150ms ease,
+		background-color 150ms ease,
+		box-shadow 150ms ease,
+		transform 100ms ease;
 }
 
 .ui-khatm-commitment:hover {
@@ -8075,7 +8131,10 @@
 	font: inherit;
 	text-align: right;
 	cursor: pointer;
-	transition: border-color 150ms ease, box-shadow 150ms ease, transform 100ms ease;
+	transition:
+		border-color 150ms ease,
+		box-shadow 150ms ease,
+		transform 100ms ease;
 }
 
 .ui-khatm-range-card:hover {

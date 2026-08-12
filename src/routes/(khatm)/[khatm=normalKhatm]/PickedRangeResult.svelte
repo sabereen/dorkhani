@@ -17,7 +17,9 @@
 	<span class="ui-khatm-wizard-success-icon"><IconCheck /></span>
 	<span class="ui-khatm-wizard-kicker">انتخاب با موفقیت انجام شد</span>
 	<h2>این سهم برای شما کنار گذاشته شد</h2>
-	<p class="ui-khatm-confirm-description">حالا می‌توانید آیات سهم خود را باز کنید و قرائت را آغاز کنید.</p>
+	<p class="ui-khatm-confirm-description">
+		حالا می‌توانید آیات سهم خود را باز کنید و قرائت را آغاز کنید.
+	</p>
 	<div class="ui-khatm-confirm-range">
 		<IconBook aria-hidden="true" />
 		<div><span>سهم شما</span><strong>{range.getTitle()}</strong></div>

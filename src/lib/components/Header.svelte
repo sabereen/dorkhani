@@ -140,11 +140,7 @@
 					</div>
 				</details>
 			{:else}
-				<a
-					class="ui-header-utility ui-desktop-only"
-					href={`${base}/settings`}
-					aria-label="تنظیمات"
-				>
+				<a class="ui-header-utility ui-desktop-only" href={`${base}/settings`} aria-label="تنظیمات">
 					<IconSettings />
 				</a>
 				<a class="ui-header-login ui-desktop-only" href={`${base}/auth/login`}>

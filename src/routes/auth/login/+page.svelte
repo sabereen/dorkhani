@@ -148,13 +148,23 @@
 		<div class="ui-auth-divider"><span>یا ادامه با</span></div>
 		<div class="ui-auth-socials">
 			{#if data.authProviders.google}
-				<button class="ui-btn ui-btn-outline" type="button" onclick={signInGoogle} disabled={loading}>
+				<button
+					class="ui-btn ui-btn-outline"
+					type="button"
+					onclick={signInGoogle}
+					disabled={loading}
+				>
 					<IconLanguage />
 					<span>گوگل</span>
 				</button>
 			{/if}
 			{#if eitaaAvailable}
-				<button class="ui-btn ui-btn-outline" type="button" onclick={signInEitaa} disabled={loading}>
+				<button
+					class="ui-btn ui-btn-outline"
+					type="button"
+					onclick={signInEitaa}
+					disabled={loading}
+				>
 					<IconChat />
 					<span>ایتا</span>
 				</button>
@@ -162,5 +172,7 @@
 		</div>
 	{/if}
 
-	<p class="ui-auth-switch">حساب کاربری ندارید؟ <a href={`${base}/auth/register`}>ساخت حساب جدید</a></p>
+	<p class="ui-auth-switch">
+		حساب کاربری ندارید؟ <a href={`${base}/auth/register`}>ساخت حساب جدید</a>
+	</p>
 </AuthShell>

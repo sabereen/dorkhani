@@ -102,81 +102,85 @@
 	<div class="ui-alert ui-alert-info">برای پذیرفتن قرائت، روی بخش روشن مورد نظر بزنید.</div>
 	<div class="ui-khatm-map-legend" aria-label="راهنمای وضعیت بازه‌ها">
 		<span><i class="ui-khatm-map-key ui-khatm-map-key-free" aria-hidden="true"></i>آزاد</span>
-		<span><i class="ui-khatm-map-key ui-khatm-map-key-finished" aria-hidden="true"></i>خوانده‌شده</span>
+		<span
+			><i class="ui-khatm-map-key ui-khatm-map-key-finished" aria-hidden="true"></i>خوانده‌شده</span
+		>
 		<span><i class="ui-khatm-map-key ui-khatm-map-key-mine" aria-hidden="true"></i>سهم شما</span>
 	</div>
 	<div class="ui-khatm-map">
-		<div class="ui-khatm-map-head" aria-hidden="true"><span>جزء</span><span>سوره</span><span>صفحه</span></div>
+		<div class="ui-khatm-map-head" aria-hidden="true">
+			<span>جزء</span><span>سوره</span><span>صفحه</span>
+		</div>
 		<div class="ui-khatm-map-grid" style:grid-template-rows={gridTemplateRows}>
-	{#snippet renderSelectableRanges(ranges: { start: number; end: number }[], column: number)}
-		{#each ranges as range (range.start + ':' + range.end)}
-			{@const start = Ayah.get(range.start)}
-			{@const end = Ayah.get(range.end - 1)}
-			{@const label =
-				`${surah_getName(start.surah)} ${start.number} – ` +
-				`${surah_getName(end.surah)} ${end.number}`}
-			<button
-				type="button"
-				class="ui-khatm-map-selectable col-start-1"
-				aria-label={label}
-				title={label}
-				style:grid-column-start={column}
-				style:grid-row-start={range.start + 1}
-				style:grid-row-end={range.end + 1}
-				style:min-height={hideFinishedIntervals ? '0' : null}
-				onclick={() => openModal(range.start, range.end)}
-			>
-				{#if showBadges}
-					<span class="ui-badge ui-badge-xs ui-badge-neutral rounded-l-none rounded-t-none">
-						{start.number}
-						{surah_getName(start.surah)}
-					</span>
-					<span class="ui-badge ui-badge-xs ui-badge-neutral rounded-b-none rounded-l-none">
-						{end.number}
-						{surah_getName(end.surah)}
-					</span>
-				{/if}
-			</button>
-		{/each}
-	{/snippet}
+			{#snippet renderSelectableRanges(ranges: { start: number; end: number }[], column: number)}
+				{#each ranges as range (range.start + ':' + range.end)}
+					{@const start = Ayah.get(range.start)}
+					{@const end = Ayah.get(range.end - 1)}
+					{@const label =
+						`${surah_getName(start.surah)} ${start.number} – ` +
+						`${surah_getName(end.surah)} ${end.number}`}
+					<button
+						type="button"
+						class="ui-khatm-map-selectable col-start-1"
+						aria-label={label}
+						title={label}
+						style:grid-column-start={column}
+						style:grid-row-start={range.start + 1}
+						style:grid-row-end={range.end + 1}
+						style:min-height={hideFinishedIntervals ? '0' : null}
+						onclick={() => openModal(range.start, range.end)}
+					>
+						{#if showBadges}
+							<span class="ui-badge ui-badge-xs ui-badge-neutral rounded-l-none rounded-t-none">
+								{start.number}
+								{surah_getName(start.surah)}
+							</span>
+							<span class="ui-badge ui-badge-xs ui-badge-neutral rounded-b-none rounded-l-none">
+								{end.number}
+								{surah_getName(end.surah)}
+							</span>
+						{/if}
+					</button>
+				{/each}
+			{/snippet}
 
-	{#snippet renderRanges(list: QuranRange[], column: number)}
-		{#each list as range (range.title)}
-			<div
-				class="ui-khatm-map-range"
-				title={range.title}
-				style:grid-column-start={column}
-				style:grid-row-start={range.start + 1}
-				style:grid-row-end={range.end + 1}
-				style:min-height={hideFinishedIntervals ? '0' : null}
-			>
-				{range.title}
-			</div>
-		{/each}
-	{/snippet}
+			{#snippet renderRanges(list: QuranRange[], column: number)}
+				{#each list as range (range.title)}
+					<div
+						class="ui-khatm-map-range"
+						title={range.title}
+						style:grid-column-start={column}
+						style:grid-row-start={range.start + 1}
+						style:grid-row-end={range.end + 1}
+						style:min-height={hideFinishedIntervals ? '0' : null}
+					>
+						{range.title}
+					</div>
+				{/each}
+			{/snippet}
 
-	{@render renderSelectableRanges(selectableJuzParts, 1)}
-	{@render renderSelectableRanges(selectableSurahParts, 2)}
-	{@render renderSelectableRanges(selectablePageParts, 3)}
+			{@render renderSelectableRanges(selectableJuzParts, 1)}
+			{@render renderSelectableRanges(selectableSurahParts, 2)}
+			{@render renderSelectableRanges(selectablePageParts, 3)}
 
-	{#if !hideFinishedIntervals}
-		{#each rawParts as part (part.plain.id)}
-			{@const mine = participation.isMine(part)}
-			<div
-				class="ui-khatm-map-picked col-span-3 col-start-1"
-				class:ui-khatm-map-finished={!mine}
-				class:ui-khatm-map-mine={mine}
-				style:grid-row-start={part.start + 1}
-				style:grid-row-end={part.end + 1}
-			>
-				<span class="select-none">{mine ? 'سهم شما' : 'قرائت شده'}</span>
-			</div>
-		{/each}
-	{/if}
+			{#if !hideFinishedIntervals}
+				{#each rawParts as part (part.plain.id)}
+					{@const mine = participation.isMine(part)}
+					<div
+						class="ui-khatm-map-picked col-span-3 col-start-1"
+						class:ui-khatm-map-finished={!mine}
+						class:ui-khatm-map-mine={mine}
+						style:grid-row-start={part.start + 1}
+						style:grid-row-end={part.end + 1}
+					>
+						<span class="select-none">{mine ? 'سهم شما' : 'قرائت شده'}</span>
+					</div>
+				{/each}
+			{/if}
 
-	{@render renderRanges(juzRanges, 1)}
-	{@render renderRanges(surahRanges, 2)}
-	{@render renderRanges(pageRanges, 3)}
+			{@render renderRanges(juzRanges, 1)}
+			{@render renderRanges(surahRanges, 2)}
+			{@render renderRanges(pageRanges, 3)}
 		</div>
 	</div>
 </section>
@@ -185,6 +189,11 @@
 	{#if picked}
 		<PickedRangeResult {khatm} onClose={closeModal} range={selected} />
 	{:else}
-		<ConfirmRange {khatm} onClose={closeModal} onFinished={() => (picked = true)} range={selected} />
+		<ConfirmRange
+			{khatm}
+			onClose={closeModal}
+			onFinished={() => (picked = true)}
+			range={selected}
+		/>
 	{/if}
 </Modal>

@@ -23,7 +23,11 @@
 	const ayah = $derived(Ayah.get(ayahInfo.index))
 </script>
 
-<article class="ui-card ui-quran-ayah" id={`ayah-${ayah.index}`} transition:slide|global={{ axis: 'y' }}>
+<article
+	class="ui-card ui-quran-ayah"
+	id={`ayah-${ayah.index}`}
+	transition:slide|global={{ axis: 'y' }}
+>
 	<div class="ui-card-body">
 		{#if ayah.isFirstOfSurah}
 			<header class="ui-quran-surah-heading">
@@ -79,11 +83,13 @@
 			<IconContext class="size-5" />
 			آیات پیرامون
 		</a>
-		<p class="ui-quran-ayah-meta">آیه {ayah.number.toLocaleString('fa')} · {surah_getName(ayah.surah)}</p>
+		<p class="ui-quran-ayah-meta">
+			آیه {ayah.number.toLocaleString('fa')} · {surah_getName(ayah.surah)}
+		</p>
 		{#if audioManager.audioDuration && !audioManager.paused && audioManager.playingIndex === ayah.index}
 			<progress
 				transition:fade
-				class="ui-progress absolute bottom-0 left-0 right-0 h-1 w-full rounded-0"
+				class="ui-progress rounded-0 absolute bottom-0 left-0 right-0 h-1 w-full"
 				value={audioManager.audioCurrentTime}
 				max={audioManager.audioDuration}
 			></progress>

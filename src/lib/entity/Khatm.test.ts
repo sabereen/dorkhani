@@ -29,9 +29,9 @@ describe('Khatm page progress', () => {
 		expect(khatm.progress).toBe(0.12345)
 		expect(khatm.percent).toBe(12.35)
 		expect(Khatm.fromPlain(khatmData({ pageProgress: 99.999 })).percent).toBe(99.99)
-		expect(
-			Khatm.fromPlain(khatmData({ pageProgress: 99.999, status: 'completed' })).percent,
-		).toBe(100)
+		expect(Khatm.fromPlain(khatmData({ pageProgress: 99.999, status: 'completed' })).percent).toBe(
+			100,
+		)
 	})
 
 	it('normalizes legacy IndexedDB snapshots without page progress to zero', () => {

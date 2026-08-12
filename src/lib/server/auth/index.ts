@@ -22,14 +22,22 @@ export const auth = betterAuth({
 		requireEmailVerification: true,
 		minPasswordLength: 8,
 		sendResetPassword: async ({ user, url }) => {
-			await authEmail_send(user.email, 'بازیابی رمز عبور', `برای انتخاب رمز تازه این پیوند را باز کنید:\n${url}`)
+			await authEmail_send(
+				user.email,
+				'بازیابی رمز عبور',
+				`برای انتخاب رمز تازه این پیوند را باز کنید:\n${url}`,
+			)
 		},
 	},
 	emailVerification: {
 		sendOnSignUp: true,
 		autoSignInAfterVerification: true,
 		sendVerificationEmail: async ({ user, url }) => {
-			await authEmail_send(user.email, 'تأیید نشانی ایمیل', `برای تأیید ایمیل این پیوند را باز کنید:\n${url}`)
+			await authEmail_send(
+				user.email,
+				'تأیید نشانی ایمیل',
+				`برای تأیید ایمیل این پیوند را باز کنید:\n${url}`,
+			)
 		},
 	},
 	socialProviders:
@@ -49,7 +57,11 @@ export const auth = betterAuth({
 				},
 			}
 		: undefined,
-	plugins: [baleAuthPlugin(), eitaaAuthPlugin(), ...(building ? [] : [sveltekitCookies(getRequestEvent)])],
+	plugins: [
+		baleAuthPlugin(),
+		eitaaAuthPlugin(),
+		...(building ? [] : [sveltekitCookies(getRequestEvent)]),
+	],
 })
 
 export type AuthSession = typeof auth.$Infer.Session

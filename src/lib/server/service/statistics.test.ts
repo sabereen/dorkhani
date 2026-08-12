@@ -79,22 +79,18 @@ describe('landing statistics cache', () => {
 		const firstRead = new Promise((resolve) => {
 			resolveFirstRead = resolve
 		})
-		dbMock.tSystemStatistics.findUnique
-			.mockReturnValueOnce(firstRead)
-			.mockResolvedValueOnce({
-				totalRecitedAyahs: BigInt(1212),
-				totalCompletedRounds: BigInt(8),
-			})
-		dbMock.tDailyStatistics.findMany
-			.mockResolvedValueOnce([])
-			.mockResolvedValueOnce([
-				{
-					day: new Date('2026-08-11T00:00:00.000Z'),
-					recitedAyahs: BigInt(12),
-					createdKhatms: BigInt(0),
-					completedRounds: BigInt(0),
-				},
-			])
+		dbMock.tSystemStatistics.findUnique.mockReturnValueOnce(firstRead).mockResolvedValueOnce({
+			totalRecitedAyahs: BigInt(1212),
+			totalCompletedRounds: BigInt(8),
+		})
+		dbMock.tDailyStatistics.findMany.mockResolvedValueOnce([]).mockResolvedValueOnce([
+			{
+				day: new Date('2026-08-11T00:00:00.000Z'),
+				recitedAyahs: BigInt(12),
+				createdKhatms: BigInt(0),
+				completedRounds: BigInt(0),
+			},
+		])
 
 		const loading = statisticsService_getLandingStatistics(now)
 		statisticsService_applyCommitted({ recitedAyahs: 12 }, now)
@@ -121,14 +117,8 @@ describe('landing statistics cache', () => {
 	it('uses Tehran calendar dates and writes both aggregate rows atomically', async () => {
 		const tx = { $executeRaw: vi.fn().mockResolvedValue(1) }
 
-		expect(statisticsService_getTehranDay(new Date('2026-08-11T21:00:00.000Z'))).toBe(
-			'2026-08-12',
-		)
-		await statisticsService_increment(
-			tx as never,
-			{ recitedAyahs: 10, completedRounds: 1 },
-			now,
-		)
+		expect(statisticsService_getTehranDay(new Date('2026-08-11T21:00:00.000Z'))).toBe('2026-08-12')
+		await statisticsService_increment(tx as never, { recitedAyahs: 10, completedRounds: 1 }, now)
 
 		expect(tx.$executeRaw).toHaveBeenCalledTimes(2)
 	})

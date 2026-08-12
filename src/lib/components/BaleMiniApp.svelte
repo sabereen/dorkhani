@@ -97,10 +97,17 @@
 	{#if errorMessage}
 		<div class="ui-alert ui-alert-error mt-3" role="alert">{errorMessage}</div>
 		<div class="ui-khatm-auth-actions mt-4">
-			<button class="ui-btn ui-btn-primary" type="button" onclick={() => authenticate('auto')} disabled={loading}>
+			<button
+				class="ui-btn ui-btn-primary"
+				type="button"
+				onclick={() => authenticate('auto')}
+				disabled={loading}
+			>
 				{loading ? 'در حال تلاش…' : 'تلاش دوباره'}
 			</button>
-			<button class="ui-btn ui-btn-soft" type="button" onclick={() => (open = false)}>ادامه بدون ورود بله</button>
+			<button class="ui-btn ui-btn-soft" type="button" onclick={() => (open = false)}
+				>ادامه بدون ورود بله</button
+			>
 		</div>
 	{:else}
 		<p class="ui-khatm-auth-description">
@@ -110,14 +117,29 @@
 		</p>
 		<div class="ui-khatm-auth-actions">
 			{#if reason === 'unlinked'}
-				<button class="ui-btn ui-btn-primary" type="button" onclick={() => authenticate('link-current')} disabled={loading}>
+				<button
+					class="ui-btn ui-btn-primary"
+					type="button"
+					onclick={() => authenticate('link-current')}
+					disabled={loading}
+				>
 					اتصال به حساب فعلی
 				</button>
 			{/if}
-			<button class="ui-btn ui-btn-outline" type="button" onclick={() => authenticate('use-bale')} disabled={loading}>
+			<button
+				class="ui-btn ui-btn-outline"
+				type="button"
+				onclick={() => authenticate('use-bale')}
+				disabled={loading}
+			>
 				{reason === 'unlinked' ? 'ساخت حساب جدا برای بله' : 'ورود به حساب بله'}
 			</button>
-			<button class="ui-btn ui-btn-ghost" type="button" onclick={() => (open = false)} disabled={loading}>
+			<button
+				class="ui-btn ui-btn-ghost"
+				type="button"
+				onclick={() => (open = false)}
+				disabled={loading}
+			>
 				ادامه با حساب فعلی
 			</button>
 		</div>

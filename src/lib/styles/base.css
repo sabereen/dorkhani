@@ -10,7 +10,9 @@ body {
 	background: var(--ui-color-page);
 	color: var(--ui-color-text);
 	font-family: var(--ui-font-sans);
-	transition: background-color 160ms ease, color 160ms ease;
+	transition:
+		background-color 160ms ease,
+		color 160ms ease;
 }
 
 button,

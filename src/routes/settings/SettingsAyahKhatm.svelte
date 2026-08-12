@@ -62,12 +62,7 @@
 						<span>شیوهٔ نمایش متن عربی</span>
 					</div>
 				</div>
-				<select
-					id="input-font"
-					class="ui-select"
-					name="font"
-					bind:value={editor.config.quranFont}
-				>
+				<select id="input-font" class="ui-select" name="font" bind:value={editor.config.quranFont}>
 					<option value="hafs">پیش‌فرض</option>
 					<option value="qpc1">مصحف مدینه ۱</option>
 					<option value="qpc2">مصحف مدینه ۲</option>

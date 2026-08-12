@@ -40,7 +40,8 @@ export function baleAuth_verifyInitData(
 	const expectedHash = createHmac('sha256', secret).update(dataCheckString).digest()
 	const actualHash = Buffer.from(receivedHash, 'hex')
 
-	if (actualHash.length !== expectedHash.length || !timingSafeEqual(actualHash, expectedHash)) return null
+	if (actualHash.length !== expectedHash.length || !timingSafeEqual(actualHash, expectedHash))
+		return null
 
 	try {
 		return baleUserSchema.parse(JSON.parse(params.get('user') || ''))
@@ -66,7 +67,8 @@ export function baleAuthPlugin() {
 				},
 				async (ctx) => {
 					const profile = baleAuth_verifyInitData(ctx.body.initData)
-					if (!profile) throw new APIError('UNAUTHORIZED', { message: 'اطلاعات ورود بله معتبر نیست.' })
+					if (!profile)
+						throw new APIError('UNAUTHORIZED', { message: 'اطلاعات ورود بله معتبر نیست.' })
 
 					const accountId = String(profile.id)
 					const currentSession = await getSessionFromCtx(ctx, { disableRefresh: true })
@@ -89,7 +91,9 @@ export function baleAuthPlugin() {
 							throw new APIError('UNAUTHORIZED', { message: 'نشست فعلی برای اتصال حساب پیدا نشد.' })
 						}
 						if (existingAccount && existingAccount.userId !== currentSession.user.id) {
-							throw new APIError('CONFLICT', { message: 'این حساب بله قبلاً به حساب دیگری متصل است.' })
+							throw new APIError('CONFLICT', {
+								message: 'این حساب بله قبلاً به حساب دیگری متصل است.',
+							})
 						}
 					}
 
@@ -113,7 +117,8 @@ export function baleAuthPlugin() {
 						})
 					}
 
-					if (!user) throw new APIError('INTERNAL_SERVER_ERROR', { message: 'ساخت حساب ناموفق بود.' })
+					if (!user)
+						throw new APIError('INTERNAL_SERVER_ERROR', { message: 'ساخت حساب ناموفق بود.' })
 
 					if (!existingAccount) {
 						await ctx.context.internalAdapter.createAccount({
@@ -135,7 +140,8 @@ export function baleAuthPlugin() {
 					}
 
 					const session = await ctx.context.internalAdapter.createSession(user.id)
-					if (!session) throw new APIError('INTERNAL_SERVER_ERROR', { message: 'ساخت نشست ناموفق بود.' })
+					if (!session)
+						throw new APIError('INTERNAL_SERVER_ERROR', { message: 'ساخت نشست ناموفق بود.' })
 					await setSessionCookie(ctx, { session, user })
 					return ctx.json({ status: 'authenticated', user })
 				},

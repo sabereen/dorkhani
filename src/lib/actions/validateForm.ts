@@ -12,7 +12,8 @@ function isValidatableControl(element: Element): element is ValidatableControl {
 function hasValidationRule(control: ValidatableControl) {
 	if (control.dataset.uiValidate !== undefined) return true
 	if (control.required) return true
-	if (control instanceof HTMLTextAreaElement) return control.minLength >= 0 || control.maxLength >= 0
+	if (control instanceof HTMLTextAreaElement)
+		return control.minLength >= 0 || control.maxLength >= 0
 	if (control instanceof HTMLSelectElement) return false
 	return (
 		control.type === 'email' ||
@@ -30,7 +31,8 @@ function hasValidationRule(control: ValidatableControl) {
 function isBlankRequired(control: ValidatableControl) {
 	if (!control.required || control instanceof HTMLSelectElement) return false
 	if (control instanceof HTMLTextAreaElement) return control.value.trim().length === 0
-	if (control.type === 'password' || control.type === 'checkbox' || control.type === 'radio') return false
+	if (control.type === 'password' || control.type === 'checkbox' || control.type === 'radio')
+		return false
 	return control.value.trim().length === 0
 }
 
@@ -51,8 +53,10 @@ function validationMessage(control: ValidatableControl) {
 	if (validity.typeMismatch && control instanceof HTMLInputElement && control.type === 'url') {
 		return 'یک نشانی اینترنتی معتبر وارد کنید.'
 	}
-	if (validity.tooShort) return `حداقل ${(control as HTMLInputElement).minLength?.toLocaleString('fa-IR') || ''} نویسه وارد کنید.`
-	if (validity.tooLong) return `حداکثر ${(control as HTMLInputElement).maxLength?.toLocaleString('fa-IR') || ''} نویسه مجاز است.`
+	if (validity.tooShort)
+		return `حداقل ${(control as HTMLInputElement).minLength?.toLocaleString('fa-IR') || ''} نویسه وارد کنید.`
+	if (validity.tooLong)
+		return `حداکثر ${(control as HTMLInputElement).maxLength?.toLocaleString('fa-IR') || ''} نویسه مجاز است.`
 	if (validity.rangeUnderflow && control instanceof HTMLInputElement) {
 		return `مقدار باید دست‌کم ${Number(control.min).toLocaleString('fa-IR')} باشد.`
 	}
@@ -166,6 +170,6 @@ export const validateForm: Action<HTMLFormElement> = (form) => {
 				control.removeAttribute('aria-invalid')
 				error.remove()
 			}
-		}
+		},
 	}
 }

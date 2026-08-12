@@ -73,8 +73,8 @@
 			</span>
 			<h1 id="landing-title">هر آیه، یک قدم؛<br /><span>هر همراه، یک نور</span></h1>
 			<p>
-				یک ختم گروهی بسازید، آن را با عزیزانتان به اشتراک بگذارید و قدم‌به‌قدم تا پایان
-				قرآن کنار هم بمانید.
+				یک ختم گروهی بسازید، آن را با عزیزانتان به اشتراک بگذارید و قدم‌به‌قدم تا پایان قرآن کنار هم
+				بمانید.
 			</p>
 			<div class="landing-hero-actions">
 				<a class="ui-btn ui-btn-xl landing-primary-action" href={`${base}/add`}>
@@ -247,7 +247,13 @@
 		</div>
 	</section>
 
-	{#snippet khatmList(items: Khatm[], title: string, description: string, moreLink?: string, featured = false)}
+	{#snippet khatmList(
+		items: Khatm[],
+		title: string,
+		description: string,
+		moreLink?: string,
+		featured = false,
+	)}
 		<section class:landing-public-card-featured={featured} class="landing-public-card">
 			<div class="landing-public-header">
 				<div>
@@ -315,7 +321,12 @@
 					)}
 				{/if}
 				{#if khatms.length > 0}
-					{@render khatmList(khatms, 'تازه‌ترین ختم‌ها', 'جمع‌های عمومی و تأییدشده', `${base}/list`)}
+					{@render khatmList(
+						khatms,
+						'تازه‌ترین ختم‌ها',
+						'جمع‌های عمومی و تأییدشده',
+						`${base}/list`,
+					)}
 				{/if}
 
 				{#if zekrList.length > 0}
@@ -391,7 +402,9 @@
 
 	<section class="landing-cta" aria-labelledby="cta-title">
 		<div>
-			<span class="landing-section-kicker landing-section-kicker-light"><IconAutoAwesome /> یک قدم روشن</span>
+			<span class="landing-section-kicker landing-section-kicker-light"
+				><IconAutoAwesome /> یک قدم روشن</span
+			>
 			<h2 id="cta-title">جمع قرآنی شما می‌تواند همین امروز شکل بگیرد</h2>
 			<p>نیت کنید، ختم را بسازید و اولین دعوت را برای یک همراه بفرستید.</p>
 		</div>
@@ -416,7 +429,11 @@
 		align-items: center;
 		padding: 4.5rem;
 		border-radius: 2rem;
-		background: linear-gradient(135deg, var(--ui-color-landing-hero), var(--ui-color-landing-hero-end));
+		background: linear-gradient(
+			135deg,
+			var(--ui-color-landing-hero),
+			var(--ui-color-landing-hero-end)
+		);
 		color: var(--ui-color-landing-hero-text);
 		box-shadow: var(--ui-shadow-lg);
 		overflow: hidden;
@@ -1030,7 +1047,11 @@
 
 	.landing-public-card-featured {
 		border-color: var(--ui-color-border-strong);
-		background: linear-gradient(180deg, var(--ui-color-primary-soft), var(--ui-color-surface) 12rem);
+		background: linear-gradient(
+			180deg,
+			var(--ui-color-primary-soft),
+			var(--ui-color-surface) 12rem
+		);
 	}
 
 	.landing-featured-showcase {
@@ -1039,7 +1060,11 @@
 		padding: 1.5rem;
 		border: 1px solid var(--ui-color-border-strong);
 		border-radius: 2rem;
-		background: linear-gradient(145deg, var(--ui-color-warning-soft), var(--ui-color-surface) 22rem);
+		background: linear-gradient(
+			145deg,
+			var(--ui-color-warning-soft),
+			var(--ui-color-surface) 22rem
+		);
 		box-shadow: var(--ui-shadow-md);
 		overflow: hidden;
 	}
@@ -1277,7 +1302,11 @@
 		margin-top: 6rem;
 		padding: 3rem;
 		border-radius: 2rem;
-		background: linear-gradient(135deg, var(--ui-color-landing-hero-end), var(--ui-color-landing-hero));
+		background: linear-gradient(
+			135deg,
+			var(--ui-color-landing-hero-end),
+			var(--ui-color-landing-hero)
+		);
 		color: var(--ui-color-landing-hero-text);
 		box-shadow: var(--ui-shadow-lg);
 	}

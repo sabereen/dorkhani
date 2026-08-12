@@ -1,8 +1,4 @@
-import {
-	KhatmOwnershipError,
-	type KhatmManagementActor,
-	khatmService_delete,
-} from '$service/khatm'
+import { KhatmOwnershipError, type KhatmManagementActor, khatmService_delete } from '$service/khatm'
 import { auth_checkIsAdmin, auth_ensureIsAdmin } from '$service/auth'
 import { base } from '$app/paths'
 import { error, redirect, type RequestEvent, type RequestHandler } from '@sveltejs/kit'

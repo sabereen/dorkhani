@@ -78,8 +78,7 @@
 	$effect(() => {
 		const nextKey = getFilterKey(data.filters)
 		if (nextKey === loadedFilterKey) return
-		const shouldSyncSearch =
-			data.filters.q === requestedSearch || search.trim() === loadedSearch
+		const shouldSyncSearch = data.filters.q === requestedSearch || search.trim() === loadedSearch
 		loadedFilterKey = nextKey
 		loadedSearch = data.filters.q
 		khatms = Khatm.fromPlainList(data.list)
@@ -298,7 +297,9 @@
 	{#if loadError}
 		<div class="ui-alert ui-alert-error directory-load-error" role="alert">
 			<span>{loadError}</span>
-			<button class="ui-btn ui-btn-outline ui-btn-sm" type="button" onclick={nextPage}>تلاش دوباره</button>
+			<button class="ui-btn ui-btn-outline ui-btn-sm" type="button" onclick={nextPage}
+				>تلاش دوباره</button
+			>
 		</div>
 	{/if}
 
@@ -452,7 +453,10 @@
 		text-align: right;
 		box-shadow: var(--ui-shadow-sm);
 		cursor: pointer;
-		transition: border-color 160ms ease, background-color 160ms ease, transform 100ms ease;
+		transition:
+			border-color 160ms ease,
+			background-color 160ms ease,
+			transform 100ms ease;
 	}
 
 	.directory-views > button:hover {

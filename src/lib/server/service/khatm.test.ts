@@ -166,10 +166,7 @@ describe('automatic khatm showcase', () => {
 				AND: [
 					{ OR: [{ seriesId: { not: null }, status: 'inProgress' }, { seriesId: null }] },
 					{
-						OR: [
-							{ seriesId: null },
-							{ series: { is: { featuredOrder: null } } },
-						],
+						OR: [{ seriesId: null }, { series: { is: { featuredOrder: null } } }],
 					},
 				],
 			},
@@ -234,9 +231,7 @@ describe('curated featured khatms', () => {
 		dbMock.tKhatmSeries.findMany.mockResolvedValue(
 			Array.from({ length: 6 }, (_, index) => ({ id: index + 1 })),
 		)
-		await expect(khatmService_setFeatured(12, true)).rejects.toBeInstanceOf(
-			KhatmFeaturedLimitError,
-		)
+		await expect(khatmService_setFeatured(12, true)).rejects.toBeInstanceOf(KhatmFeaturedLimitError)
 
 		dbMock.tKhatm.findUnique.mockResolvedValue({
 			...baseKhatm,
@@ -359,10 +354,7 @@ describe('public khatm directory', () => {
 				status: 'inProgress',
 				AND: [
 					{
-						OR: [
-							{ pageProgress: { lt: 12.5 } },
-							{ pageProgress: 12.5, id: { lt: 49 } },
-						],
+						OR: [{ pageProgress: { lt: 12.5 } }, { pageProgress: 12.5, id: { lt: 49 } }],
 					},
 				],
 			},
@@ -418,7 +410,9 @@ describe('khatm ownership service', () => {
 			guestClaimTokenHash: hash,
 		})
 
-		await expect(khatmService_claimGuestKhatms('owner-2', [{ id: 12, token }])).resolves.toEqual([12])
+		await expect(khatmService_claimGuestKhatms('owner-2', [{ id: 12, token }])).resolves.toEqual([
+			12,
+		])
 		expect(dbMock.tKhatm.updateMany).toHaveBeenCalledWith({
 			where: { seriesId: 9, ownerId: null, guestClaimTokenHash: hash },
 			data: { ownerId: 'owner-2', guestClaimTokenHash: null },
@@ -431,8 +425,12 @@ describe('khatm ownership service', () => {
 			.mockResolvedValueOnce({ ...baseKhatm, ownerId: null, guestClaimTokenHash: hash })
 			.mockResolvedValueOnce({ ...baseKhatm, ownerId: 'someone-else', guestClaimTokenHash: hash })
 
-		await expect(khatmService_claimGuestKhatms('owner-2', [{ id: 12, token: 'wrong' }])).resolves.toEqual([])
-		await expect(khatmService_claimGuestKhatms('owner-2', [{ id: 12, token: 'correct' }])).resolves.toEqual([])
+		await expect(
+			khatmService_claimGuestKhatms('owner-2', [{ id: 12, token: 'wrong' }]),
+		).resolves.toEqual([])
+		await expect(
+			khatmService_claimGuestKhatms('owner-2', [{ id: 12, token: 'correct' }]),
+		).resolves.toEqual([])
 		expect(dbMock.tKhatm.updateMany).not.toHaveBeenCalled()
 	})
 
@@ -502,7 +500,11 @@ describe('khatm ownership service', () => {
 		})
 		expect(dbMock.tKhatm.update).toHaveBeenLastCalledWith(
 			expect.objectContaining({
-				data: expect.objectContaining({ accessToken: null, private: false, reviewStatus: 'pending' }),
+				data: expect.objectContaining({
+					accessToken: null,
+					private: false,
+					reviewStatus: 'pending',
+				}),
 			}),
 		)
 	})
@@ -607,7 +609,11 @@ describe('khatm ownership service', () => {
 			data: { status: 'completed', endDate: expect.any(Date), pageProgress: 100 },
 		})
 		expect(dbMock.tKhatm.create).toHaveBeenCalledWith({
-			data: expect.objectContaining({ ownerId: 'owner-1', guestClaimTokenHash: 'claim-hash', roundNumber: 3 }),
+			data: expect.objectContaining({
+				ownerId: 'owner-1',
+				guestClaimTokenHash: 'claim-hash',
+				roundNumber: 3,
+			}),
 		})
 		expect(notificationMock.notify).toHaveBeenCalledWith(
 			'owner-1',

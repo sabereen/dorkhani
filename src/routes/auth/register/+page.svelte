@@ -47,7 +47,8 @@
 			<span class="ui-auth-success-icon"><IconCheck /></span>
 			<h3>ایمیل شما در راه است</h3>
 			<p>پیوند تأیید به ایمیل شما ارسال شد. برای تکمیل ساخت حساب، صندوق ورودی خود را بررسی کنید.</p>
-			<a class="ui-btn ui-btn-primary ui-btn-block" href={`${base}/auth/login`}>رفتن به صفحه ورود</a>
+			<a class="ui-btn ui-btn-primary ui-btn-block" href={`${base}/auth/login`}>رفتن به صفحه ورود</a
+			>
 		</div>
 	{:else}
 		<div class="ui-form-status-slot" aria-live="polite">

@@ -21,9 +21,10 @@ vi.mock('$service/auth', () => ({
 
 import { load } from './+layout.server'
 
-function loadKhatm(
-	{ user = null, url = 'http://localhost/k12' }: { user?: { id: string } | null; url?: string } = {},
-) {
+function loadKhatm({
+	user = null,
+	url = 'http://localhost/k12',
+}: { user?: { id: string } | null; url?: string } = {}) {
 	return load({
 		params: { khatm: 'k12' },
 		url: new URL(url),

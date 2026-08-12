@@ -94,12 +94,9 @@
 	let showAuthPrompt = $state(false)
 	let showStopPrompt = $state(false)
 	let canManageAsGuest = $state(false)
-	const canRequestSeriesStop = $derived(
-		data.canStopSeries && (data.isOwner || canManageAsGuest),
-	)
+	const canRequestSeriesStop = $derived(data.canStopSeries && (data.isOwner || canManageAsGuest))
 	const hasNextRound = $derived(
-		khatm.isSerial &&
-			(data.seriesMaxRounds == null || khatm.roundNumber < data.seriesMaxRounds),
+		khatm.isSerial && (data.seriesMaxRounds == null || khatm.roundNumber < data.seriesMaxRounds),
 	)
 
 	function requestSeriesStop() {
@@ -146,11 +143,7 @@
 <Header title={khatm.title}>
 	{#snippet end()}
 		{#if data.canEdit}
-			<a
-				href={editHref}
-				class="ui-header-page-action"
-				aria-label="ویرایش ختم"
-			>
+			<a href={editHref} class="ui-header-page-action" aria-label="ویرایش ختم">
 				<IconEdit class="size-5" />
 				<span>ویرایش</span>
 			</a>
@@ -239,17 +232,20 @@
 					<span>قدم‌به‌قدم تا پایان این همراهی</span>
 				</div>
 			</div>
-			<div class="ui-khatm-progress-value"><strong>{percent.toLocaleString('fa')}</strong><span>٪</span></div>
-			<progress class="ui-progress ui-progress-success" max={100} value={percent} aria-label="پیشرفت ختم"></progress>
+			<div class="ui-khatm-progress-value">
+				<strong>{percent.toLocaleString('fa')}</strong><span>٪</span>
+			</div>
+			<progress
+				class="ui-progress ui-progress-success"
+				max={100}
+				value={percent}
+				aria-label="پیشرفت ختم"
+			></progress>
 		</div>
 	</section>
 
 	{#if data.isAdmin && !khatm.private}
-		<KhatmReviewBar
-			{khatm}
-			featuredOrder={data.featuredOrder}
-			canFeature={data.canFeature}
-		/>
+		<KhatmReviewBar {khatm} featuredOrder={data.featuredOrder} canFeature={data.canFeature} />
 	{/if}
 
 	<KhatmParticipation {khatm} />
@@ -264,7 +260,12 @@
 				<Tab
 					noScroll
 					tabs={[
-						{ slug: 'wizard', icon: IconViewWizard, title: 'مرحله‌ای', link: khatm.getLink('wizard') },
+						{
+							slug: 'wizard',
+							icon: IconViewWizard,
+							title: 'مرحله‌ای',
+							link: khatm.getLink('wizard'),
+						},
 						{ slug: 'list', icon: IconViewList, title: 'لیستی', link: khatm.getLink('list') },
 						{ slug: 'grid', icon: IconViewTable, title: 'جدولی', link: khatm.getLink('grid') },
 					]}
@@ -275,26 +276,26 @@
 	{/if}
 
 	<section class="ui-khatm-content">
-{#if khatm.finished}
-	<div class="ui-alert ui-alert-success ui-khatm-complete">
-		<p>
-			{#if khatm.isSerial}
-				این دور از ختم کامل شده است ({roundTitle})
-			{:else}
-				این ختم قرآن کامل شده است.
-			{/if}
-		</p>
-		{#if khatm.isSerial}
-			{#if hasNextRound}
-				<button class="ui-btn ui-btn-outline" onclick={invalidateAll}>شروع دور جدید</button>
-			{:else}
-				<span class="ui-badge ui-badge-success">آخرین دور ختم</span>
-			{/if}
+		{#if khatm.finished}
+			<div class="ui-alert ui-alert-success ui-khatm-complete">
+				<p>
+					{#if khatm.isSerial}
+						این دور از ختم کامل شده است ({roundTitle})
+					{:else}
+						این ختم قرآن کامل شده است.
+					{/if}
+				</p>
+				{#if khatm.isSerial}
+					{#if hasNextRound}
+						<button class="ui-btn ui-btn-outline" onclick={invalidateAll}>شروع دور جدید</button>
+					{:else}
+						<span class="ui-badge ui-badge-success">آخرین دور ختم</span>
+					{/if}
+				{/if}
+			</div>
+		{:else}
+			{@render children()}
 		{/if}
-	</div>
-{:else}
-	{@render children()}
-{/if}
 	</section>
 </main>
 
@@ -340,8 +341,8 @@
 	<p class="ui-khatm-auth-eyebrow">مدیریت ختم</p>
 	<h2>برای مدیریت ختم خود وارد حساب شوید</h2>
 	<p class="ui-khatm-auth-description">
-		پس از ورود یا ثبت‌نام، این ختم به حساب شما متصل می‌شود و می‌توانید آن را ویرایش، متوقف یا
-		حذف کنید.
+		پس از ورود یا ثبت‌نام، این ختم به حساب شما متصل می‌شود و می‌توانید آن را ویرایش، متوقف یا حذف
+		کنید.
 	</p>
 	<div class="ui-khatm-auth-actions">
 		<a class="ui-btn ui-btn-primary ui-btn-lg" href={`${base}/auth/login`}>

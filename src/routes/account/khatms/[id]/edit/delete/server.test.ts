@@ -63,9 +63,6 @@ describe('delete khatm endpoint', () => {
 				params: { id: '12' },
 			} as never),
 		).rejects.toMatchObject({ status: 303, location: '/account' })
-		expect(serviceMock.delete).toHaveBeenCalledWith(
-			{ kind: 'owner', ownerId: 'owner-1' },
-			12,
-		)
+		expect(serviceMock.delete).toHaveBeenCalledWith({ kind: 'owner', ownerId: 'owner-1' }, 12)
 	})
 })

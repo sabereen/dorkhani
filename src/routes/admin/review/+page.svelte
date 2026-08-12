@@ -82,9 +82,7 @@
 			khatm: Khatm.fromPlain(item.khatm),
 			featuredOrder: item.featuredOrder,
 		}))
-		const orderBySeriesId = new Map(
-			items.map((item) => [item.khatm.seriesId, item.featuredOrder]),
-		)
+		const orderBySeriesId = new Map(items.map((item) => [item.khatm.seriesId, item.featuredOrder]))
 		for (const item of khatms) {
 			item.featuredOrder =
 				item.khatm.status === 'inProgress'
@@ -181,9 +179,7 @@
 		featuredAction = 'reorder'
 		featuredMessage = ''
 		try {
-			const { items } = await featuredKhatm_reorder(
-				reordered.map((item) => item.khatm.seriesId!),
-			)
+			const { items } = await featuredKhatm_reorder(reordered.map((item) => item.khatm.seriesId!))
 			applyFeaturedItems(items)
 			featuredMessage = 'ترتیب ختم‌های شاخص ذخیره شد.'
 		} catch (cause) {
@@ -229,7 +225,10 @@
 		</div>
 	</section>
 
-	<section class="ui-card ui-card-bordered admin-featured-panel" aria-labelledby="admin-featured-title">
+	<section
+		class="ui-card ui-card-bordered admin-featured-panel"
+		aria-labelledby="admin-featured-title"
+	>
 		<div class="ui-card-body">
 			<div class="admin-featured-heading">
 				<div>
@@ -357,8 +356,8 @@
 										href={getAdminDetailLink(item.khatm)}
 										target="_blank"
 										rel="noreferrer"
-										aria-label={`مشاهده ختم ${item.khatm.title}`}
-									><IconLink /></a>
+										aria-label={`مشاهده ختم ${item.khatm.title}`}><IconLink /></a
+									>
 									{#if item.canFeature && item.khatm.reviewStatus === 'approved'}
 										<button
 											class={[
@@ -366,7 +365,8 @@
 												item.featuredOrder != null ? 'ui-btn-secondary' : 'ui-btn-ghost',
 											]}
 											type="button"
-											disabled={Boolean(featuredAction) || (featuredFull && item.featuredOrder == null)}
+											disabled={Boolean(featuredAction) ||
+												(featuredFull && item.featuredOrder == null)}
 											aria-label={item.featuredOrder == null
 												? 'افزودن به ختم‌های شاخص'
 												: 'حذف از ختم‌های شاخص'}
@@ -444,7 +444,11 @@
 	.admin-featured-panel {
 		margin-top: 1rem;
 		border-color: var(--ui-color-border-strong);
-		background: linear-gradient(145deg, var(--ui-color-warning-soft), var(--ui-color-surface) 18rem);
+		background: linear-gradient(
+			145deg,
+			var(--ui-color-warning-soft),
+			var(--ui-color-surface) 18rem
+		);
 	}
 
 	.admin-featured-heading {

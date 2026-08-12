@@ -11,11 +11,7 @@
 	type ReviewAction = Extract<ReviewStatus, 'approved' | 'rejected'>
 	type Props = { khatm: Khatm; featuredOrder?: number | null; canFeature?: boolean }
 
-	const {
-		khatm,
-		featuredOrder: initialFeaturedOrder = null,
-		canFeature = false,
-	}: Props = $props()
+	const { khatm, featuredOrder: initialFeaturedOrder = null, canFeature = false }: Props = $props()
 	let reviewLoading = $state<ReviewAction | null>(null)
 	let featureLoading = $state(false)
 	let currentFeaturedOrder = $state(initialFeaturedOrder)

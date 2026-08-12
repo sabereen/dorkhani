@@ -23,7 +23,9 @@ describe('/+page.svelte', () => {
 	test('renders the landing page and its aggregated statistics', () => {
 		render(Page, { props: { data } } as never)
 		expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()
-		expect(screen.getByRole('heading', { name: 'هر تلاوت، بخشی از یک جریان زنده' })).toBeInTheDocument()
+		expect(
+			screen.getByRole('heading', { name: 'هر تلاوت، بخشی از یک جریان زنده' }),
+		).toBeInTheDocument()
 		expect(screen.getByText('۱۲٬۳۴۵')).toBeInTheDocument()
 		expect(screen.getByText('۱۷')).toBeInTheDocument()
 		const dailyList = screen.getByRole('list', { name: 'آمار فعالیت هفت روز اخیر' })

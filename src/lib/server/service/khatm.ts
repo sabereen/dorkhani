@@ -51,11 +51,14 @@ function ensureCanManageKhatm(actor: KhatmManagementActor, ownerId: string | nul
 
 export function khatmService_toPublic<T extends TKhatm & SecretKhatmFields>(khatm: T) {
 	const {
-		ownerId: _ownerId,
-		guestClaimTokenHash: _claimHash,
-		series: _series,
+		ownerId,
+		guestClaimTokenHash,
+		series,
 		...publicKhatm
 	} = khatm
+	void ownerId
+	void guestClaimTokenHash
+	void series
 	return publicKhatm
 }
 

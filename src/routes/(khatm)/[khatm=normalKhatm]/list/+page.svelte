@@ -181,12 +181,13 @@
 	{#if visibleJuzRanges.length > 0}
 		<div class="ui-khatm-browser-accordion">
 			<Accardeon items={visibleJuzRanges} bind:selectedIndex={openedAccardeon}>
-				{#snippet title(range, _index, expanded)}
-					{@const percent = range.getFillPercent(parts)}
-					{@const juzNumber = juzRanges.indexOf(range) + 1}
-					{@const mine = participation.getOverlapLength(range) > 0}
-					<div
-						class="ui-khatm-browser-juz"
+			{#snippet title(range, index, expanded)}
+				{@const percent = range.getFillPercent(parts)}
+				{@const juzNumber = juzRanges.indexOf(range) + 1}
+				{@const mine = participation.getOverlapLength(range) > 0}
+				<div
+					class="ui-khatm-browser-juz"
+					data-range-index={index}
 						class:ui-khatm-browser-juz-open={expanded}
 						class:ui-khatm-browser-juz-finished={percent >= 100}
 					>

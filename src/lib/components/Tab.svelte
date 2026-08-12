@@ -36,7 +36,7 @@
 		<div class="ui-tab-indicator-inner"></div>
 	</div>
 
-	{#each tabs as { slug, title, link, onClick, icon: Icon }, i}
+	{#each tabs as { slug, title, link, onClick, icon: Icon }}
 		{@const htmlId = `${id}-tab-${slug}`}
 		<input
 			type="radio"

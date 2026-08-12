@@ -15,7 +15,8 @@ const updateSchema = z.object({
 		.optional(),
 })
 
-function validSecret(received: string) {
+function validSecret(received: string | undefined) {
+	if (!received) return false
 	const expected = env.BALE_WEBHOOK_SECRET || ''
 	const receivedBuffer = Buffer.from(received)
 	const expectedBuffer = Buffer.from(expected)

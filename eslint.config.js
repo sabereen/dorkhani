@@ -22,6 +22,9 @@ export default ts.config(
 				...globals.node,
 			},
 		},
+		rules: {
+			'svelte/require-each-key': 'off',
+		},
 	},
 	{
 		files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js'],

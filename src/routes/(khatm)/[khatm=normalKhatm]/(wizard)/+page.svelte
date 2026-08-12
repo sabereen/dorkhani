@@ -170,7 +170,14 @@
 	const visibleRanges = $derived(filteredRanges.slice(0, visibleRangeLimit))
 </script>
 
-{#snippet rangeTypeOption(type: RangeType, title: string, description: string, meta: string, Icon: Component, recommended = false)}
+{#snippet rangeTypeOption(
+	type: RangeType,
+	title: string,
+	description: string,
+	meta: string,
+	Icon: Component,
+	recommended = false,
+)}
 	<button
 		class="ui-khatm-commitment"
 		class:ui-khatm-commitment-recommended={recommended}
@@ -194,15 +201,29 @@
 	<div class="ui-khatm-wizard-heading">
 		<span class="ui-khatm-wizard-kicker">میزان همراهی شما</span>
 		<h2>از یک سهم کوچک و دل‌خواه شروع کنید</h2>
-		<p>اندازه‌ای را انتخاب کنید که با فرصت امروزتان هماهنگ است؛ در مرحله بعد بازه دقیق را برمی‌دارید.</p>
+		<p>
+			اندازه‌ای را انتخاب کنید که با فرصت امروزتان هماهنگ است؛ در مرحله بعد بازه دقیق را برمی‌دارید.
+		</p>
 	</div>
 	<div class="ui-khatm-commitments">
 		{@render rangeTypeOption('page', 'یک صفحه', 'سبک، سریع و مناسب شروع', 'کم‌حجم', IconPage, true)}
-		{@render rangeTypeOption('hizbQuarter', 'یک ربع حزب', 'چند صفحه پیوسته برای قرائتی منظم', 'کوتاه', IconQuarter)}
+		{@render rangeTypeOption(
+			'hizbQuarter',
+			'یک ربع حزب',
+			'چند صفحه پیوسته برای قرائتی منظم',
+			'کوتاه',
+			IconQuarter,
+		)}
 		{@render rangeTypeOption('juz', 'یک جزء', 'سهمی کامل‌تر برای همراهی پررنگ', 'پیوسته', IconJuz)}
 		{@render rangeTypeOption('surah', 'یک سوره', 'از آغاز تا پایان یک سوره', 'معنادار', IconSurah)}
 		{#if khatm.progress > 0.9}
-			{@render rangeTypeOption('all', 'همه بخش‌های باقی‌مانده', 'قدم آخر را بردارید و ختم را کامل کنید', 'ویژه پایان ختم', IconAll)}
+			{@render rangeTypeOption(
+				'all',
+				'همه بخش‌های باقی‌مانده',
+				'قدم آخر را بردارید و ختم را کامل کنید',
+				'ویژه پایان ختم',
+				IconAll,
+			)}
 		{/if}
 	</div>
 {/snippet}
@@ -286,7 +307,12 @@
 						{#if partial}
 							<span class="ui-khatm-range-card-progress">
 								<span><b>{percent.toLocaleString('fa')}٪</b> انتخاب شده</span>
-								<progress class="ui-progress" max={100} value={percent} aria-label={`${percent.toLocaleString('fa')} درصد انتخاب شده`}></progress>
+								<progress
+									class="ui-progress"
+									max={100}
+									value={percent}
+									aria-label={`${percent.toLocaleString('fa')} درصد انتخاب شده`}
+								></progress>
 							</span>
 						{/if}
 						<span class="ui-khatm-range-card-action">
@@ -300,8 +326,16 @@
 
 		{#if visibleRanges.length < filteredRanges.length}
 			<div class="ui-khatm-range-more">
-				<p>در حال نمایش {visibleRanges.length.toLocaleString('fa')} مورد از {filteredRanges.length.toLocaleString('fa')} مورد</p>
-				<button type="button" class="ui-btn ui-btn-outline" onclick={() => (visibleRangeLimit += 30)}>
+				<p>
+					در حال نمایش {visibleRanges.length.toLocaleString('fa')} مورد از {filteredRanges.length.toLocaleString(
+						'fa',
+					)} مورد
+				</p>
+				<button
+					type="button"
+					class="ui-btn ui-btn-outline"
+					onclick={() => (visibleRangeLimit += 30)}
+				>
 					نمایش موارد بیشتر
 				</button>
 			</div>
@@ -309,12 +343,22 @@
 	{:else}
 		<div class="ui-khatm-empty ui-khatm-wizard-empty">
 			<IconSearch aria-hidden="true" />
-			<h3>{rangeQuery ? 'بازه‌ای با این جست‌وجو پیدا نشد' : 'بازه آزادی در این دسته نمانده است'}</h3>
-			<p>{rangeQuery ? 'عبارت دیگری را امتحان کنید یا فیلتر را پاک کنید.' : 'اندازه دیگری برای سهمتان انتخاب کنید.'}</p>
+			<h3>
+				{rangeQuery ? 'بازه‌ای با این جست‌وجو پیدا نشد' : 'بازه آزادی در این دسته نمانده است'}
+			</h3>
+			<p>
+				{rangeQuery
+					? 'عبارت دیگری را امتحان کنید یا فیلتر را پاک کنید.'
+					: 'اندازه دیگری برای سهمتان انتخاب کنید.'}
+			</p>
 			{#if rangeQuery}
-				<button type="button" class="ui-btn ui-btn-soft" onclick={() => (rangeQuery = '')}>پاک‌کردن جست‌وجو</button>
+				<button type="button" class="ui-btn ui-btn-soft" onclick={() => (rangeQuery = '')}
+					>پاک‌کردن جست‌وجو</button
+				>
 			{:else if khatm.rangeType === 'free'}
-				<button type="button" class="ui-btn ui-btn-primary" onclick={() => goToStep(1)}>انتخاب اندازه دیگر</button>
+				<button type="button" class="ui-btn ui-btn-primary" onclick={() => goToStep(1)}
+					>انتخاب اندازه دیگر</button
+				>
 			{/if}
 		</div>
 	{/if}
@@ -325,7 +369,9 @@
 		<span class="ui-khatm-wizard-success-icon"><IconCheck /></span>
 		<span class="ui-khatm-wizard-kicker">انتخاب با موفقیت انجام شد</span>
 		<h2>این سهم برای شما کنار گذاشته شد</h2>
-		<p class="ui-khatm-wizard-success-copy">حالا می‌توانید آیات سهم خود را باز کنید و قرائت را آغاز کنید.</p>
+		<p class="ui-khatm-wizard-success-copy">
+			حالا می‌توانید آیات سهم خود را باز کنید و قرائت را آغاز کنید.
+		</p>
 		<div class="ui-khatm-wizard-success-range">
 			<IconBook aria-hidden="true" />
 			<div><span>سهم شما</span><strong>{selectedRange.getTitle()}</strong></div>
@@ -334,7 +380,9 @@
 			<IconBook />
 			مشاهده و قرائت آیات
 		</a>
-		<button type="button" class="ui-btn ui-btn-ghost" onclick={() => goToStep(1)}>انتخاب یک سهم دیگر</button>
+		<button type="button" class="ui-btn ui-btn-ghost" onclick={() => goToStep(1)}
+			>انتخاب یک سهم دیگر</button
+		>
 	</div>
 {/snippet}
 

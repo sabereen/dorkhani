@@ -35,7 +35,9 @@ describe('Khatm page progress', () => {
 	})
 
 	it('normalizes legacy IndexedDB snapshots without page progress to zero', () => {
-		const legacy = { ...khatmData() } as KhatmData & { pageProgress?: number }
+		const legacy = { ...khatmData() } as Omit<KhatmData, 'pageProgress'> & {
+			pageProgress?: number
+		}
 		delete legacy.pageProgress
 
 		expect(Khatm.fromPlain(legacy as KhatmData).percent).toBe(0)

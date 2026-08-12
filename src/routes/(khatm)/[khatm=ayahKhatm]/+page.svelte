@@ -71,7 +71,7 @@
 			}
 		} catch (err) {
 			console.error(err)
-			toast('error', (err as any)?.message || String(err))
+			toast('error', (err as { message?: string })?.message || String(err))
 		} finally {
 			// برای اینکه بین دو کلیک متوالی مدتی فاصله باشد
 			// که کاربر اشتباهی چند مرتبه روی دکمه کلیک نکند

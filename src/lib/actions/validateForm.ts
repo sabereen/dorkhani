@@ -51,8 +51,8 @@ function validationMessage(control: ValidatableControl) {
 	if (validity.typeMismatch && control instanceof HTMLInputElement && control.type === 'url') {
 		return 'یک نشانی اینترنتی معتبر وارد کنید.'
 	}
-	if (validity.tooShort) return `حداقل ${control.minLength.toLocaleString('fa-IR')} نویسه وارد کنید.`
-	if (validity.tooLong) return `حداکثر ${control.maxLength.toLocaleString('fa-IR')} نویسه مجاز است.`
+	if (validity.tooShort) return `حداقل ${(control as HTMLInputElement).minLength?.toLocaleString('fa-IR') || ''} نویسه وارد کنید.`
+	if (validity.tooLong) return `حداکثر ${(control as HTMLInputElement).maxLength?.toLocaleString('fa-IR') || ''} نویسه مجاز است.`
 	if (validity.rangeUnderflow && control instanceof HTMLInputElement) {
 		return `مقدار باید دست‌کم ${Number(control.min).toLocaleString('fa-IR')} باشد.`
 	}

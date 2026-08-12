@@ -40,10 +40,12 @@ enum KhatmDeletionReason {
 }
 
 model TKhatmSeries {
-  id        Int      @id
-  maxRounds Int?     @map("max_rounds") @db.UnsignedSmallInt()
-  khatms    TKhatm[]
+  id            Int      @id
+  maxRounds     Int?     @map("max_rounds") @db.UnsignedSmallInt()
+  featuredOrder Int?     @map("featured_order") @db.UnsignedTinyInt()
+  khatms        TKhatm[]
 
+  @@index([featuredOrder])
   @@map("khatm_series")
 }
 

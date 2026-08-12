@@ -231,7 +231,11 @@
 	</section>
 
 	{#if data.isAdmin && !khatm.private}
-		<KhatmReviewBar {khatm} />
+		<KhatmReviewBar
+			{khatm}
+			featuredOrder={data.featuredOrder}
+			canFeature={data.canFeature}
+		/>
 	{/if}
 
 	<KhatmParticipation {khatm} />

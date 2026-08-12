@@ -1,9 +1,16 @@
-import type { Prisma, RangeType, ReviewStatus, TKhatm } from '@prisma-client'
+import type {
+	Prisma,
+	RangeType,
+	ReviewStatus,
+	TKhatm,
+	TKhatmSeries,
+} from '@prisma-client'
 import { createHash, randomBytes } from 'node:crypto'
 import { v4 as uuid } from 'uuid'
 import { db } from '$lib/server/db'
 import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 import type { KhatmData } from '$lib/entity/KhatmData'
+import type { AdminKhatmListItem, FeaturedKhatmItem } from '$lib/entity/KhatmFeatured'
 import type {
 	KhatmDirectoryQuery,
 	KhatmDirectoryResult,
@@ -17,6 +24,7 @@ import {
 type SecretKhatmFields = {
 	ownerId?: string | null
 	guestClaimTokenHash?: string | null
+	series?: unknown
 }
 
 export type PublicKhatm = KhatmData
@@ -28,13 +36,25 @@ export type KhatmManagementActor =
 export class KhatmOwnershipError extends Error {}
 export class KhatmRangeLockedError extends Error {}
 export class KhatmHistoricalRoundError extends Error {}
+export class KhatmFeaturedEligibilityError extends Error {}
+export class KhatmFeaturedLimitError extends Error {}
+export class KhatmFeaturedOrderError extends Error {}
+
+type KhatmWithSeries = TKhatm & { series: TKhatmSeries | null }
+
+const FEATURED_KHATM_LIMIT = 6
 
 function ensureCanManageKhatm(actor: KhatmManagementActor, ownerId: string | null) {
 	if (actor.kind === 'owner' && actor.ownerId !== ownerId) throw new KhatmOwnershipError()
 }
 
 export function khatmService_toPublic<T extends TKhatm & SecretKhatmFields>(khatm: T) {
-	const { ownerId: _ownerId, guestClaimTokenHash: _claimHash, ...publicKhatm } = khatm
+	const {
+		ownerId: _ownerId,
+		guestClaimTokenHash: _claimHash,
+		series: _series,
+		...publicKhatm
+	} = khatm
 	return publicKhatm
 }
 
@@ -42,12 +62,146 @@ function hashClaimToken(token: string) {
 	return createHash('sha256').update(token).digest('hex')
 }
 
+function khatmService_canFeature(khatm: KhatmWithSeries) {
+	return Boolean(
+		!khatm.private &&
+			khatm.reviewStatus === 'approved' &&
+			khatm.status === 'inProgress' &&
+			khatm.series &&
+			khatm.series.maxRounds == null,
+	)
+}
+
+async function khatmService_unfeatureSeries(
+	tx: Prisma.TransactionClient,
+	seriesId: number,
+) {
+	const series = await tx.tKhatmSeries.findUnique({
+		where: { id: seriesId },
+		select: { featuredOrder: true },
+	})
+	if (series?.featuredOrder == null) return false
+
+	await tx.tKhatmSeries.update({
+		where: { id: seriesId },
+		data: { featuredOrder: null },
+	})
+	await tx.tKhatmSeries.updateMany({
+		where: { featuredOrder: { gt: series.featuredOrder } },
+		data: { featuredOrder: { decrement: 1 } },
+	})
+	return true
+}
+
+async function khatmService_getFeaturedRows() {
+	return db.tKhatm.findMany({
+		include: { series: true },
+		where: {
+			private: false,
+			reviewStatus: 'approved',
+			status: 'inProgress',
+			series: { is: { maxRounds: null, featuredOrder: { not: null } } },
+		},
+		orderBy: [{ series: { featuredOrder: 'asc' } }, { id: 'desc' }],
+		take: FEATURED_KHATM_LIMIT,
+	})
+}
+
+export async function khatmService_getFeaturedShowcase() {
+	const khatms = await khatmService_getFeaturedRows()
+	return khatms.map(khatmService_toPublic)
+}
+
+export async function khatmService_getFeaturedAdminList(): Promise<FeaturedKhatmItem[]> {
+	const khatms = await khatmService_getFeaturedRows()
+	return khatms.map((khatm) => ({
+		khatm: khatmService_toPublic(khatm),
+		featuredOrder: khatm.series!.featuredOrder!,
+	}))
+}
+
+export async function khatmService_setFeatured(id: number, featured: boolean) {
+	await db.$transaction(
+		async (tx) => {
+			const khatm = await tx.tKhatm.findUnique({ where: { id }, include: { series: true } })
+			if (!khatm?.series) throw new KhatmFeaturedEligibilityError()
+
+			if (!featured) {
+				await khatmService_unfeatureSeries(tx, khatm.series.id)
+				return
+			}
+
+			if (!khatmService_canFeature(khatm)) throw new KhatmFeaturedEligibilityError()
+			if (khatm.series.featuredOrder != null) return
+
+			const selected = await tx.tKhatmSeries.findMany({
+				where: { featuredOrder: { not: null } },
+				select: { id: true },
+				orderBy: { featuredOrder: 'asc' },
+			})
+			if (selected.length >= FEATURED_KHATM_LIMIT) throw new KhatmFeaturedLimitError()
+
+			await tx.tKhatmSeries.update({
+				where: { id: khatm.series.id },
+				data: { featuredOrder: selected.length + 1 },
+			})
+		},
+		{ isolationLevel: 'Serializable' },
+	)
+
+	return khatmService_getFeaturedAdminList()
+}
+
+export async function khatmService_reorderFeatured(seriesIds: number[]) {
+	if (
+		seriesIds.length > FEATURED_KHATM_LIMIT ||
+		new Set(seriesIds).size !== seriesIds.length ||
+		seriesIds.some((id) => !Number.isSafeInteger(id) || id <= 0)
+	) {
+		throw new KhatmFeaturedOrderError()
+	}
+
+	await db.$transaction(
+		async (tx) => {
+			const selected = await tx.tKhatmSeries.findMany({
+				where: { featuredOrder: { not: null } },
+				select: { id: true },
+			})
+			const selectedIds = new Set(selected.map((series) => series.id))
+			if (
+				selectedIds.size !== seriesIds.length ||
+				seriesIds.some((id) => !selectedIds.has(id))
+			) {
+				throw new KhatmFeaturedOrderError()
+			}
+
+			for (const [index, seriesId] of seriesIds.entries()) {
+				await tx.tKhatmSeries.update({
+					where: { id: seriesId },
+					data: { featuredOrder: index + 1 },
+				})
+			}
+		},
+		{ isolationLevel: 'Serializable' },
+	)
+
+	return khatmService_getFeaturedAdminList()
+}
+
 export async function khatmService_getPublicList({ limit = 20 } = {}) {
 	const khatms = await db.tKhatm.findMany({
 		where: {
 			private: false,
 			reviewStatus: 'approved',
-			OR: [{ seriesId: { not: null }, status: 'inProgress' }, { seriesId: null }],
+			AND: [
+				{ OR: [{ seriesId: { not: null }, status: 'inProgress' }, { seriesId: null }] },
+				{
+					OR: [
+						{ seriesId: null },
+						{ series: { is: { featuredOrder: null } } },
+					],
+				},
+			],
 		},
 		orderBy: { id: 'desc' },
 		take: limit,
@@ -74,6 +228,7 @@ export async function khatmService_getAutomaticShowcase(
 					private: false,
 					reviewStatus: 'approved',
 					status: 'inProgress',
+					OR: [{ seriesId: null }, { series: { is: { featuredOrder: null } } }],
 				},
 			},
 		},
@@ -98,6 +253,7 @@ export async function khatmService_getAutomaticShowcase(
 			private: false,
 			reviewStatus: 'approved',
 			status: 'inProgress',
+			OR: [{ seriesId: null }, { series: { is: { featuredOrder: null } } }],
 		},
 	})
 	const khatmsById = new Map(khatms.map((khatm) => [khatm.id, khatm]))
@@ -268,14 +424,49 @@ export async function khatmService_getFullRecord(
 	})
 }
 
+export async function khatmService_getAdminList(
+	reviewStatus: ReviewStatus,
+	pageID?: number,
+): Promise<AdminKhatmListItem[]> {
+	const khatms = await db.tKhatm.findMany({
+		include: { series: true },
+		where: {
+			private: false,
+			reviewStatus: { equals: reviewStatus },
+			id: { lt: pageID },
+		},
+		take: 40,
+		orderBy: { id: 'desc' },
+	})
+
+	return khatms.map((khatm) => ({
+		khatm: khatmService_toPublic(khatm),
+		featuredOrder:
+			khatm.status === 'inProgress' ? (khatm.series?.featuredOrder ?? null) : null,
+		canFeature: Boolean(
+			!khatm.private &&
+				khatm.status === 'inProgress' &&
+				khatm.series &&
+				khatm.series.maxRounds == null,
+		),
+	}))
+}
+
 export async function khatmService_getFull(id: number, accessToken: string | null) {
 	const khatm = await khatmService_getFullRecord(id, accessToken)
 	return khatm ? khatmService_toPublic(khatm) : null
 }
 
 export async function khatmService_update(id: number, khatm: Partial<TKhatm>) {
-	const result = await db.tKhatm.update({ where: { id }, data: khatm })
-	return khatmService_toPublic(result)
+	return db.$transaction(async (tx) => {
+		const current = await tx.tKhatm.findUnique({ where: { id } })
+		if (!current) return null
+		const result = await tx.tKhatm.update({ where: { id }, data: khatm })
+		if (current.seriesId != null && khatm.reviewStatus && khatm.reviewStatus !== 'approved') {
+			await khatmService_unfeatureSeries(tx, current.seriesId)
+		}
+		return khatmService_toPublic(result)
+	})
 }
 
 export async function khatmService_getBySeriesRecord(
@@ -426,6 +617,12 @@ export async function khatmService_edit(
 			actor.kind === 'owner' && !input.private && (contentChanged || current.private)
 				? ('pending' as const)
 				: current.reviewStatus
+		if (
+			current.seriesId != null &&
+			(input.private || input.disableSeries || reviewStatus !== 'approved')
+		) {
+			await khatmService_unfeatureSeries(tx, current.seriesId)
+		}
 		const updated = await tx.tKhatm.update({
 			where: { id },
 			data: {
@@ -458,6 +655,7 @@ export async function khatmService_delete(actor: KhatmManagementActor, id: numbe
 				reason: actor.kind,
 			})),
 		})
+		if (current.seriesId) await khatmService_unfeatureSeries(tx, current.seriesId)
 		await tx.tKhatm.deleteMany({ where: { id: { in: khatms.map((khatm) => khatm.id) } } })
 		if (current.seriesId) await tx.tKhatmSeries.delete({ where: { id: current.seriesId } })
 		return true
@@ -482,6 +680,7 @@ export async function khatmService_stopOwnedSeries(ownerId: string, id: number) 
 			where: { id: current.series.id, maxRounds: null },
 			data: { maxRounds: current.roundNumber },
 		})
+		await khatmService_unfeatureSeries(tx, current.series.id)
 		return true
 	})
 }
@@ -525,6 +724,7 @@ export async function khatmService_setAsCompleted(id: number) {
 				roundNumber: roundNumber + 1,
 				ownerId: current.ownerId,
 				guestClaimTokenHash: current.guestClaimTokenHash,
+				...(series.featuredOrder != null ? { reviewStatus: 'approved' as const } : {}),
 			},
 		})
 		return true

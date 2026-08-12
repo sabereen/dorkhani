@@ -42,7 +42,10 @@ describe('expired unstarted khatm cleanup', () => {
 			status: 'inProgress',
 			versesRead: 0,
 			created: { lte: new Date('2026-07-12T12:00:00Z') },
-			OR: [{ seriesId: null }, { roundNumber: 1 }],
+			AND: [
+				{ OR: [{ seriesId: null }, { roundNumber: 1 }] },
+				{ OR: [{ seriesId: null }, { series: { is: { featuredOrder: null } } }] },
+			],
 		}
 		expect(dbMock.tKhatm.findMany).toHaveBeenCalledWith({
 			where: { ...eligibility, id: { gt: 0 } },

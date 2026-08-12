@@ -72,5 +72,12 @@ export const load: LayoutServerLoad = async (event) => {
 		canEdit: isAdmin || isOwner,
 		canStopSeries: Boolean(khatm.series && khatm.series.maxRounds == null),
 		seriesMaxRounds: khatm.series?.maxRounds ?? null,
+		featuredOrder: khatm.series?.featuredOrder ?? null,
+		canFeature: Boolean(
+			!khatm.private &&
+				khatm.status === 'inProgress' &&
+				khatm.series &&
+				khatm.series.maxRounds == null,
+		),
 	}
 }

@@ -151,7 +151,7 @@ Route group با نام `(khatm)` در URL دیده نمی‌شود. matcherها
 
 | URL منطقی | فایل‌ها | مسئولیت و وابستگی مهم |
 | --- | --- | --- |
-| `/` | `routes/+page.server.ts`, `+page.svelte` | دریافت موازی فهرست ختم عمومی، showcase، ذکرها و آمار تجمیعی هفت‌روزه؛ تبدیل plain data به `Khatm` و `Zekr`؛ نمایش خلاصهٔ تاریخچهٔ محلی |
+| `/` | `routes/+page.server.ts`, `+page.svelte` | دریافت موازی ختم‌های شاخص دائمی، showcase خودکارِ پرمشارکت، فهرست عمومی، ذکرها و آمار تجمیعی هفت‌روزه؛ تبدیل plain data به `Khatm` و `Zekr`؛ نمایش خلاصهٔ تاریخچهٔ محلی |
 | `/list` | `routes/list/+page.server.ts`, `+page.svelte` | فهرست صفحه‌بندی‌شدهٔ ختم‌های approved؛ صفحه‌های بعدی از `Khatm.getList()` و API گرفته می‌شوند |
 | `/add` | `routes/add/+page.server.ts`, `+page.svelte`, `sucess-result.svelte` | ساخت ختم از form action؛ در صورت سریالی بودن ساخت `TKhatmSeries`؛ notification برای ختم عمومی؛ ذخیرهٔ ختم ساخته‌شده در IndexedDB |
 | `/history` | `routes/history/+page.svelte`, `history-khatm.svelte`, `history-picked-range.svelte` | خواندن تاریخچهٔ محلی ختم‌های ساخته‌شده و بازه‌های انتخاب‌شده از Dexie؛ تاریخچهٔ ذکر فعلاً با `history-zekr.svelte` در صفحهٔ اصلی نمایش داده می‌شود |
@@ -163,8 +163,7 @@ Route group با نام `(khatm)` در URL دیده نمی‌شود. matcherها
 | `/a{id}` و `/as{seriesId}` | `(khatm)/+layout.*`, `[ayahKhatm]/+page.svelte` | دریافت ترتیبی آیات بعدی، تنظیم تعداد، نمایش متن/ترجمه و کنترل صوت |
 | `/z{id}` | `[zekr=zekr]/+page.server.ts`, `+page.svelte`, `ZekrActions.svelte` | دریافت ذکر، ثبت تعداد تقبل‌شده و نمایش سهم شخصی از IndexedDB |
 | `/admin` | `admin/+layout.server.ts`, `+page.svelte` | حفاظت تمام زیرمسیرها با Basic Auth و نمایش ورودی ابزارهای مدیریت |
-| `/admin/review` | `admin/review/+page.svelte` | دریافت فهرست pending/approved/rejected و تغییر `reviewStatus` از API |
-| `/admin/showcase` | `admin/showcase/+page.server.ts`, `+page.svelte` | انتخاب حداکثر ۲۰ ختم برای showcase و ذخیره در تنظیمات برنامه |
+| `/admin/review` | `admin/review/+page.svelte` | دریافت فهرست pending/approved/rejected، تغییر `reviewStatus` و انتخاب/مرتب‌سازی حداکثر شش دنبالهٔ دائمی برای ویترین شاخص |
 | `/admin/app-settings` | `admin/app-settings/+page.server.ts`, `+page.svelte` | مدیریت support link، تنظیمات notification و اجرای refresh وضعیت ختم‌ها |
 | `/admin/add-zekr` | `admin/add-zekr/+page.server.ts`, `+page.svelte`, `sucess-result.svelte` | ساخت ذکر و ثبت آن به‌عنوان ذکر متعلق به کاربر در IndexedDB همان مرورگر |
 | `/manifest.json` | `manifest.json/+server.ts` | manifest پویا و base-path-aware برای PWA |
@@ -178,13 +177,13 @@ Route group با نام `(khatm)` در URL دیده نمی‌شود. matcherها
 | method و path | route | service/اثر |
 | --- | --- | --- |
 | `GET /api/khatm` | `api/khatm/+server.ts` | دریافت ختم کامل با parts با `khatmId` و `accessToken` |
-| `GET /api/khatm/list` | `api/khatm/list/+server.ts` | فهرست صفحه‌بندی‌شده؛ pending/rejected نیازمند admin، ورودی دیگر به approved محدود می‌شود |
+| `GET /api/khatm/list` | `api/khatm/list/+server.ts` | فهرست صفحه‌بندی‌شده؛ pending/rejected و DTO مدیریتی `admin=1` نیازمند admin، ورودی عمومی به approved محدود می‌شود |
 | `POST /api/khatm/update` | `api/khatm/update/+server.ts` | تغییر review status؛ فقط admin |
+| `GET/POST/PUT /api/khatm/featured` | `api/khatm/featured/+server.ts` | دریافت، انتخاب/حذف و ثبت ترتیب کامل ختم‌های شاخص؛ فقط admin |
 | `POST /api/khatm/refreshStatus` | `api/khatm/refreshStatus/+server.ts` | اصلاح ختم‌هایی که `versesRead` آن‌ها کامل شده؛ فقط admin |
 | `POST /api/khatmPart/pickRange` | `api/khatmPart/pickRange/+server.ts` | validate بازه و ثبت اتمیک `TKhatmPart` بدون overlap |
 | `POST /api/khatmPart/pickNext` | `api/khatmPart/pickNext/+server.ts` | تخصیص ۰ تا ۴۰ آیهٔ بعدی برای ختم آیه‌ای و بازگرداندن متن/ترجمه |
 | `POST /api/zekr/pick` | `api/zekr/pick/+server.ts` | افزایش شمارندهٔ ذکر، با سقف ۱۰۰۰ در هر request |
-| `POST /api/showcase` | `api/showcase/+server.ts` | ذخیرهٔ آرایهٔ شناسه‌های showcase؛ فقط admin |
 | `GET /api/font` | `api/font/+server.ts` | proxy و cache درون‌حافظه‌ای فونت صفحه‌ای QPC؛ مشروط به `PUBLIC_FONT_PROXY=1` |
 
 Routeها مسئول parse/validation سطح HTTP، ساخت پاسخ JSON و اجرای auth هستند. queryهای Prisma و قواعد دامنه باید در serviceها باقی بمانند.
@@ -225,13 +224,15 @@ flowchart TD
 
 وقتی کاربر هنگام ساخت ختم گزینهٔ سری را انتخاب کند، `khatmSeries_createForKhatmId()` یک `TKhatmSeries` با شناسهٔ برابر ختم نخست می‌سازد و آن ختم را به سری متصل می‌کند. `khatmService_setAsCompleted()` وضعیت دور جاری و `endDate` را به‌روز می‌کند و، اگر `maxRounds` مانع نباشد، یک `TKhatm` جدید با `roundNumber + 1` و همان `seriesId` می‌سازد. URLهای `ks...` و `as...` همیشه دور در حال اجرای سری را resolve می‌کنند.
 
+`TKhatmSeries.featuredOrder` جایگاه ۱ تا ۶ ویترین دائمی را روی کل دنباله نگه می‌دارد. فقط دنبالهٔ عمومی، تأییدشده، در حال اجرا و دارای `maxRounds=null` قابل انتخاب است. دور بعدی دنبالهٔ شاخص خودکار approved ساخته می‌شود؛ خصوصی/رد/منتظرشدن، توقف یا حذف دنباله انتخاب را پاک و رتبه‌های بعدی را فشرده می‌کند. پاک‌سازی ختم‌های قدیمیِ شروع‌نشده نیز دنبالهٔ شاخص را حذف نمی‌کند.
+
 ### ختم ذکر
 
 `Zekr.pick()` به `/api/zekr/pick` درخواست می‌دهد؛ `zekrService_pick()` شمارندهٔ سراسری را افزایش می‌دهد و entity کلاینت مقدار reactive را جلو می‌برد. سپس `idb_localZekr_increaseMyCount()` سهم شخصی همان مرورگر را ذخیره می‌کند. بنابراین `TZekr.count` حقیقت جمعی و `LocalZekr.myCount` تاریخچهٔ شخصی است.
 
 ### review، showcase و notification
 
-ختم عمومی با `reviewStatus='pending'` ساخته می‌شود. فهرست عمومی فقط ختم‌های `approved` و غیرخصوصی را نشان می‌دهد. صفحهٔ review از API مدیریتی برای approve/reject استفاده می‌کند. showcase در JSON تنظیمات `TAppSettings` به شکل آرایهٔ شناسه ذخیره و در singleton سرور به آرایهٔ مدل‌های `TKhatm` hydrate می‌شود؛ خواندن آن الگوی stale-while-revalidate درون‌حافظه‌ای دارد.
+ختم عمومی با `reviewStatus='pending'` ساخته می‌شود. فهرست عمومی فقط ختم‌های `approved` و غیرخصوصی را نشان می‌دهد. صفحهٔ review از API مدیریتی برای approve/reject و مدیریت ویترین شاخص استفاده می‌کند. ویترین شاخص از `TKhatmSeries.featuredOrder` خوانده می‌شود؛ showcase خودکارِ جداگانه بر اساس مجموع آیات تلاوت‌شده در ۷۲ ساعت اخیر رتبه‌بندی می‌شود و ختم‌های شاخص را تکرار نمی‌کند.
 
 برای ختم عمومی تازه، form action ساخت ختم `getNotificationProvider().sendNewKhatm()` را صدا می‌زند. provider با توجه به config ذخیره‌شده یا `EitaaAdminNotification` است یا `NoopAdminNotification`. همین abstraction برای گزارش خطاهای سراسری هم استفاده می‌شود.
 
@@ -248,7 +249,7 @@ flowchart TD
 | `service/zekr.ts` | CRUD محدود ذکر و افزایش شمارنده |
 | `service/quran.ts` | map متن‌های سه فونت و ترجمه‌ها به `AyahInfo`؛ بدون query دیتابیس |
 | `service/statistics.ts` | افزایش اتمیک آمار کل/روزانه، cache سراسری process و بازسازی lazy آن در شروع process یا تغییر روز تهران |
-| `service/appSettings.ts` | singleton config، persistence رکورد `id=1`، showcase و setterهای تنظیمات |
+| `service/appSettings.ts` | singleton config، persistence رکورد `id=1` و setterهای تنظیمات عمومی |
 | `service/admin-notification/*` | interface ارسال، provider ایتا و fallback بدون‌عملیات |
 
 ## ۱۰. entityهای کلاینت و ارتباط آن‌ها
@@ -264,7 +265,7 @@ flowchart TD
 | `LocalSettings.svelte.ts` | LocalStorage، Cookie و Svelte context | config reactive و `SettingsEditor` تراکنشی/زنده |
 | `Ayah.ts` | entity آیه و reciter | URL صوت و لینک بیرونی |
 | `Surah.ts`, `Page.ts`, `Juz.ts`, `HizbQuarter.ts` | entity متناظر از `@ghoran/entity` | تبدیل به `QuranRange` و عنوان فارسی |
-| `Showcase.ts` | `request.ts` | facade کوچک ذخیرهٔ showcase برای صفحهٔ admin |
+| `KhatmFeatured.ts` | `request.ts` | DTO و facade کلاینت برای دریافت، انتخاب و مرتب‌سازی ویترین شاخص ادمین |
 | `Theme.ts` | دادهٔ ثابت | فهرست و type حالت‌های رنگ سیستم، روشن و تاریک |
 
 `Khatm.fromPlain()` و `Zekr.fromPlain()` در مرورگر cache سراسری بر اساس id دارند تا componentهای مختلف به یک instance reactive برسند. دادهٔ ختم وقتی `versesRead` یا `pageProgress` جدیدتر باشد، یا وضعیت کامل تازه‌ای برسد، جایگزین می‌شود؛ برای parts ختم، طول بیشتر نیز باعث refresh آرایه می‌شود. در SSR cache استفاده نمی‌شود.
@@ -279,6 +280,7 @@ erDiagram
     TKhatmSeries {
         int id PK
         int maxRounds
+        int featuredOrder
     }
     TKhatm {
         int id PK
@@ -342,7 +344,8 @@ erDiagram
 - `ReviewStatus`: `pending`, `approved`, `rejected` و index روی `TKhatm.reviewStatus`.
 - `TKhatmPart.start/end` و `TKhatm.versesRead` از عددهای unsigned مناسب دامنهٔ ۶۲۳۶ آیه استفاده می‌کنند. `TKhatm.pageProgress` درصد ۰ تا ۱۰۰ صفحه‌محور را برای خواندن مستقیم در فهرست‌ها نگه می‌دارد.
 - وزن هر آیه معکوس تعداد آیات صفحهٔ مصحف آن است. انتخاب بازه و انتخاب ترتیبی آیات، `pageProgress` را همراه `versesRead` در یک تراکنش به‌روز می‌کنند و migration داده‌های قدیمی را از partها یا بازهٔ ترتیبی backfill می‌کند.
-- `TAppSettings` عملاً singleton با `id=1` است و config ساختار support/showcase/notification دارد.
+- `TKhatmSeries.featuredOrder` nullable است؛ مقدارهای ۱ تا ۶ ترتیب ویترین شاخص را تعیین می‌کنند و سرویس تراکنشی آن‌ها را پیوسته نگه می‌دارد.
+- `TAppSettings` عملاً singleton با `id=1` است و config ساختار support/notification دارد.
 - `TSystemStatistics(id=1)` و `TDailyStatistics(day)` شمارنده‌های ازپیش‌تجمیع‌شده‌اند؛ دیتابیس منبع حقیقت است و cache روی `globalThis` پس از commit به‌صورت write-through به‌روز می‌شود.
 - migrationهای timestamped در `prisma/migrations/` تاریخچهٔ افزودن بسم‌الله، app settings، ذکر، سری ختم و review status را نگه می‌دارند.
 
@@ -410,7 +413,8 @@ repositoryهای Dexie فیلدهای snapshot، از جمله `pageProgress`، 
 ## ۱۴. تست‌ها و پوشش فعلی
 
 - `src/lib/utility/overlapping.test.ts` رفتار `findNonOverlappingSubranges()` را پوشش می‌دهد.
-- `src/routes/page.svelte.test.ts` یک smoke test رندر صفحهٔ اصلی است.
+- `src/routes/page.svelte.test.ts` رندر صفحهٔ اصلی، آمار و نمایش/مخفی‌شدن ویترین شاخص را پوشش می‌دهد.
+- تست‌های سرویس ختم، پاک‌سازی، API شاخص و نوار مدیریت، ظرفیت/ترتیب/صلاحیت و چرخهٔ عمر ویترین دائمی را پوشش می‌دهند.
 - `src/demo.spec.ts` تست نمونهٔ جمع است.
 - `vitest-setup-client.ts`، `matchMedia` را برای jsdom mock می‌کند.
 
@@ -429,6 +433,7 @@ repositoryهای Dexie فیلدهای snapshot، از جمله `pageProgress`، 
 | تنظیمات شخصی | `LocalSettings.svelte.ts` | settings UI، root layout، Cookieهای SSR و migration دادهٔ LocalStorage |
 | schema دیتابیس | `prisma/schema.prisma` | migration جدید، serviceها، snapshotهای Dexie و typeهای تولیدی |
 | تنظیمات عمومی | `appSettings.ts` | `TAppSettings.config`، admin form، root layout و notification provider |
+| ختم‌های شاخص | `TKhatmSeries.featuredOrder`, `service/khatm.ts` | migration، صفحهٔ اصلی، review ادمین، نوار جزئیات، تکمیل/توقف/حذف سری و پاک‌سازی |
 | احراز هویت مدیر | `auth.ts` | admin layout و تمام endpointهای مدیریتی |
 | تاریخچهٔ محلی | `idb/idb.ts` | افزایش نسخهٔ Dexie، repository مربوط و componentهای history |
 | base path استقرار | `svelte.config.js` | `request.ts`، `path.ts`، manifest، asset/font URLها و لینک‌های route |
@@ -445,6 +450,7 @@ repositoryهای Dexie فیلدهای snapshot، از جمله `pageProgress`، 
 8. هنگام اضافه‌کردن فیلد اجباری به مدل Prisma، کپی صریح همان مدل در repositoryهای IDB را نیز بازبینی کنید.
 9. کد server-only نباید از مسیر اجرای مرورگر import شود. import type از `$service/quran` و `@prisma-client` باید type-only باقی بماند.
 10. این سند را فقط وقتی یک تغییر معماری، route، مدل داده، جریان بین‌لایه‌ای یا قرارداد مهم را عوض می‌کند به‌روز کنید؛ تغییرهای صرفاً ظاهری یا محلی نیازمند بازنویسی سند نیستند.
+11. شاخص‌بودن متعلق به `TKhatmSeries` است، نه دور منفرد؛ تغییرهای چرخهٔ عمر باید هم‌زمان پیوستگی رتبه‌های `featuredOrder` را حفظ کنند.
 
 ## ۱۷. احراز هویت اختیاری و مالکیت ختم
 

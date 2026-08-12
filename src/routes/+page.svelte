@@ -21,10 +21,12 @@
 	import IconMore from '~icons/ic/outline-read-more'
 	import IconShare from '~icons/ic/round-share'
 	import IconStats from '~icons/ic/round-query-stats'
+	import IconStar from '~icons/ic/round-star'
 
 	const { data }: PageProps = $props()
 
 	const khatms = $derived(Khatm.fromPlainList(data.khatms))
+	const featuredKhatms = $derived(Khatm.fromPlainList(data.featuredKhatms))
 	const showcase = $derived(Khatm.fromPlainList(data.showcase))
 	const zekrList = $derived(Zekr.fromPlainList(data.zekrList))
 	const statistics = $derived(data.statistics)
@@ -272,7 +274,7 @@
 		</section>
 	{/snippet}
 
-	{#if showcase.length > 0 || khatms.length > 0 || zekrList.length > 0}
+	{#if featuredKhatms.length > 0 || showcase.length > 0 || khatms.length > 0 || zekrList.length > 0}
 		<section class="landing-section" aria-labelledby="public-title">
 			<div class="landing-section-heading">
 				<div>
@@ -282,11 +284,31 @@
 				</div>
 			</div>
 
+			{#if featuredKhatms.length > 0}
+				<section class="landing-featured-showcase" aria-labelledby="featured-khatms-title">
+					<div class="landing-featured-heading">
+						<span class="landing-featured-icon" aria-hidden="true"><IconStar /></span>
+						<div>
+							<span class="landing-featured-kicker">نیت‌های ماندگار، همراهی همیشگی</span>
+							<h3 id="featured-khatms-title">ختم‌های شاخص</h3>
+							<p>ختم‌های دائمی برای موضوعات ویژه؛ هر دور که تمام شود، دور تازه‌ای آغاز می‌شود.</p>
+						</div>
+					</div>
+					<ul class="landing-featured-grid">
+						{#each featuredKhatms as khatm (khatm.id)}
+							<li>
+								<KhatmListCard {khatm} meta="ختم دائمی شاخص" showDescription />
+							</li>
+						{/each}
+					</ul>
+				</section>
+			{/if}
+
 			<div class="landing-public-grid">
 				{#if showcase.length > 0}
 					{@render khatmList(
 						showcase,
-						'ختم‌های برگزیده',
+						'پرمشارکت‌های این روزها',
 						'این فهرست به‌صورت خودکار بر اساس بیشترین تعداد آیات خوانده‌شده در ۳ روز گذشته مرتب می‌شود.',
 						undefined,
 						true,
@@ -1011,6 +1033,80 @@
 		background: linear-gradient(180deg, var(--ui-color-primary-soft), var(--ui-color-surface) 12rem);
 	}
 
+	.landing-featured-showcase {
+		position: relative;
+		margin-bottom: 1.5rem;
+		padding: 1.5rem;
+		border: 1px solid var(--ui-color-border-strong);
+		border-radius: 2rem;
+		background: linear-gradient(145deg, var(--ui-color-warning-soft), var(--ui-color-surface) 22rem);
+		box-shadow: var(--ui-shadow-md);
+		overflow: hidden;
+	}
+
+	.landing-featured-heading {
+		display: flex;
+		align-items: center;
+		margin-bottom: 1.25rem;
+	}
+
+	.landing-featured-heading > * + * {
+		margin-right: 0.85rem;
+	}
+
+	.landing-featured-icon {
+		display: flex;
+		width: 3.25rem;
+		height: 3.25rem;
+		align-items: center;
+		justify-content: center;
+		flex: 0 0 auto;
+		border: 1px solid var(--ui-color-border-strong);
+		border-radius: 1rem;
+		background: var(--ui-color-surface);
+		color: var(--ui-color-warning);
+		box-shadow: var(--ui-shadow-sm);
+	}
+
+	.landing-featured-icon svg {
+		width: 1.65rem;
+		height: 1.65rem;
+	}
+
+	.landing-featured-kicker {
+		color: var(--ui-color-warning);
+		font-size: 0.75rem;
+		font-weight: 900;
+	}
+
+	.landing-featured-heading h3 {
+		margin: 0.2rem 0 0;
+		font-size: 1.4rem;
+		font-weight: 950;
+	}
+
+	.landing-featured-heading p {
+		margin: 0.25rem 0 0;
+		color: var(--ui-color-text-muted);
+		font-size: 0.85rem;
+		line-height: 1.7;
+	}
+
+	.landing-featured-grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		grid-gap: 0.85rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.landing-featured-grid :global(.ui-khatm-list-card) {
+		height: 100%;
+		background: var(--ui-color-surface);
+		box-shadow: var(--ui-shadow-sm);
+	}
+
 	.landing-public-header {
 		display: flex;
 		min-height: 9.5rem;
@@ -1232,6 +1328,10 @@
 		.landing-public-grid {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
+
+		.landing-featured-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
 	}
 
 	@media (max-width: 767px) {
@@ -1299,6 +1399,7 @@
 		.landing-features,
 		.landing-history-grid,
 		.landing-public-grid,
+		.landing-featured-grid,
 		.landing-steps {
 			grid-template-columns: minmax(0, 1fr);
 		}
@@ -1351,6 +1452,11 @@
 
 		.landing-public-header {
 			min-height: 0;
+		}
+
+		.landing-featured-showcase {
+			padding: 1.1rem;
+			border-radius: 1.5rem;
 		}
 
 		.landing-daily-panel {

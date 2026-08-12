@@ -13,6 +13,7 @@ import type { Translation } from './LocalSettings.svelte'
 import type { KhatmDirectoryQuery, KhatmDirectoryResult } from './KhatmDirectory'
 import { KhatmParticipation } from './KhatmParticipation.svelte'
 import { roundPercent } from '$lib/utility/percent'
+import type { AdminKhatmListItem } from './KhatmFeatured'
 
 const cache = new Map<number, Khatm>()
 
@@ -79,6 +80,22 @@ export class Khatm {
 		})
 
 		return Khatm.fromPlainList(list)
+	}
+
+	static async getAdminList({
+		pageID,
+		reviewStatus,
+	}: {
+		pageID?: number
+		reviewStatus: ReviewStatus
+	}) {
+		const { list } = await request<{ list: AdminKhatmListItem[] }>('get', '/khatm/list', {
+			pageID,
+			reviewStatus,
+			admin: 1,
+		})
+
+		return list.map((item) => ({ ...item, khatm: Khatm.fromPlain(item.khatm) }))
 	}
 
 	static async getDirectoryList(query: KhatmDirectoryQuery) {

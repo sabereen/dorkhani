@@ -6,6 +6,7 @@ import Page from './+page.svelte'
 describe('/+page.svelte', () => {
 	const data = {
 		khatms: [],
+		featuredKhatms: [],
 		showcase: [],
 		zekrList: [],
 		statistics: {
@@ -27,5 +28,32 @@ describe('/+page.svelte', () => {
 		expect(screen.getByText('۱۷')).toBeInTheDocument()
 		const dailyList = screen.getByRole('list', { name: 'آمار فعالیت هفت روز اخیر' })
 		expect(within(dailyList).getAllByRole('listitem')).toHaveLength(7)
+		expect(screen.queryByRole('heading', { name: 'ختم‌های شاخص' })).not.toBeInTheDocument()
+	})
+
+	test('renders the permanent featured showcase when curated khatms exist', () => {
+		const featuredKhatm = {
+			id: 44,
+			title: 'ختم دائمی برای سلامتی',
+			description: 'همراهی ماندگار برای نیت سلامتی',
+			rangeType: 'page',
+			versesRead: 120,
+			pageProgress: 12,
+			private: false,
+			accessToken: null,
+			created: new Date('2026-08-01T00:00:00Z'),
+			endDate: null,
+			status: 'inProgress',
+			reviewStatus: 'approved',
+			roundNumber: 4,
+			seriesId: 44,
+		}
+
+		render(Page, {
+			props: { data: { ...data, featuredKhatms: [featuredKhatm] } },
+		} as never)
+
+		expect(screen.getByRole('heading', { name: 'ختم‌های شاخص' })).toBeInTheDocument()
+		expect(screen.getByRole('link', { name: 'ختم دائمی برای سلامتی' })).toBeInTheDocument()
 	})
 })

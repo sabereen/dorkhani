@@ -1,6 +1,10 @@
 import { base } from '$app/paths'
 
-export async function request<T>(method: 'get' | 'post', path: string, body?: object): Promise<T> {
+export async function request<T>(
+	method: 'get' | 'post' | 'put',
+	path: string,
+	body?: object,
+): Promise<T> {
 	const url = new URL(`${base}/api${path}`, location.origin)
 
 	if (body != null && method === 'get') {
@@ -11,11 +15,11 @@ export async function request<T>(method: 'get' | 'post', path: string, body?: ob
 		}
 	}
 
-	const postBody = method === 'post' ? JSON.stringify(body) : null
+	const requestBody = method === 'post' || method === 'put' ? JSON.stringify(body) : null
 
 	const response = await fetch(url, {
 		method,
-		body: postBody,
+		body: requestBody,
 		headers: { 'Content-Type': 'application/json' },
 	})
 

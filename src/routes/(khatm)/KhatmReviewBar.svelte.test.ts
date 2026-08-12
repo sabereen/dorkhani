@@ -7,9 +7,11 @@ import { Khatm } from '$lib/entity/Khatm.svelte'
 import KhatmReviewBar from './KhatmReviewBar.svelte'
 
 const toastMock = vi.hoisted(() => vi.fn())
+const featuredMock = vi.hoisted(() => vi.fn())
 vi.mock('$lib/components/TheToast.svelte', () => ({ toast: toastMock }))
+vi.mock('$lib/entity/KhatmFeatured', () => ({ featuredKhatm_set: featuredMock }))
 
-function createKhatm(id: number, reviewStatus: ReviewStatus) {
+function createKhatm(id: number, reviewStatus: ReviewStatus, seriesId: number | null = null) {
 	return Khatm.fromPlain({
 		id,
 		title: 'ختم آزمایشی',
@@ -24,7 +26,7 @@ function createKhatm(id: number, reviewStatus: ReviewStatus) {
 		status: 'inProgress',
 		reviewStatus,
 		roundNumber: 1,
-		seriesId: null,
+		seriesId,
 	} satisfies KhatmData)
 }
 
@@ -67,5 +69,21 @@ describe('KhatmReviewBar', () => {
 		expect(await screen.findByText('خطای بررسی')).toBeInTheDocument()
 		expect(screen.getByText('ردشده')).toBeInTheDocument()
 		expect(toastMock).toHaveBeenCalledWith('error', 'خطای بررسی')
+	})
+
+	it('adds an eligible permanent khatm to the featured showcase', async () => {
+		const khatm = createKhatm(1004, 'approved', 44)
+		featuredMock.mockResolvedValue({
+			items: [{ khatm: khatm.plain, featuredOrder: 2 }],
+		})
+		render(KhatmReviewBar, {
+			props: { khatm, featuredOrder: null, canFeature: true },
+		})
+
+		await fireEvent.click(screen.getByRole('button', { name: 'افزودن به شاخص‌ها' }))
+
+		expect(featuredMock).toHaveBeenCalledWith(1004, true)
+		expect(await screen.findByText('جایگاه ۲ از فهرست صفحهٔ اصلی')).toBeInTheDocument()
+		expect(toastMock).toHaveBeenCalledWith('info', 'ختم به فهرست شاخص‌ها افزوده شد.')
 	})
 })

@@ -17,7 +17,10 @@ function getExpiredUnstartedWhere(cutoff: Date): Prisma.TKhatmWhereInput {
 		status: 'inProgress',
 		versesRead: 0,
 		created: { lte: cutoff },
-		OR: [{ seriesId: null }, { roundNumber: 1 }],
+		AND: [
+			{ OR: [{ seriesId: null }, { roundNumber: 1 }] },
+			{ OR: [{ seriesId: null }, { series: { is: { featuredOrder: null } } }] },
+		],
 	}
 }
 

@@ -11,7 +11,13 @@ const dbMock = vi.hoisted(() => ({
 		create: vi.fn(),
 		deleteMany: vi.fn(),
 	},
-	tKhatmSeries: { update: vi.fn(), delete: vi.fn() },
+	tKhatmSeries: {
+		findUnique: vi.fn(),
+		findMany: vi.fn(),
+		update: vi.fn(),
+		updateMany: vi.fn(),
+		delete: vi.fn(),
+	},
 	tKhatmDeletion: { create: vi.fn(), createMany: vi.fn(), findFirst: vi.fn(), findUnique: vi.fn() },
 	tKhatmRecitation: { groupBy: vi.fn() },
 	$transaction: vi.fn(),
@@ -32,6 +38,9 @@ vi.mock('./statistics', () => ({
 vi.mock('./user-notification', () => ({ userNotification_notify: notificationMock.notify }))
 
 import {
+	KhatmFeaturedEligibilityError,
+	KhatmFeaturedLimitError,
+	KhatmFeaturedOrderError,
 	KhatmHistoricalRoundError,
 	KhatmOwnershipError,
 	KhatmRangeLockedError,
@@ -43,7 +52,12 @@ import {
 	khatmService_getDeletionReason,
 	khatmService_getDirectoryList,
 	khatmService_getForEdit,
+	khatmService_getFeaturedAdminList,
+	khatmService_getPublicList,
+	khatmService_reorderFeatured,
+	khatmService_setFeatured,
 	khatmService_setAsCompleted,
+	khatmService_update,
 } from './khatm'
 
 const ownerActor = { kind: 'owner', ownerId: 'owner-1' } as const
@@ -67,7 +81,7 @@ const baseKhatm = {
 	ownerId: 'owner-1',
 	guestClaimTokenHash: null,
 	_count: { parts: 0 },
-	series: { id: 9, maxRounds: null },
+	series: { id: 9, maxRounds: null, featuredOrder: null },
 }
 
 describe('automatic khatm showcase', () => {
@@ -100,6 +114,7 @@ describe('automatic khatm showcase', () => {
 						private: false,
 						reviewStatus: 'approved',
 						status: 'inProgress',
+						OR: [{ seriesId: null }, { series: { is: { featuredOrder: null } } }],
 					},
 				},
 			},
@@ -118,6 +133,7 @@ describe('automatic khatm showcase', () => {
 				private: false,
 				reviewStatus: 'approved',
 				status: 'inProgress',
+				OR: [{ seriesId: null }, { series: { is: { featuredOrder: null } } }],
 			},
 		})
 		expect(result.map((khatm) => khatm.id)).toEqual([31, 29, 17])
@@ -136,6 +152,158 @@ describe('automatic khatm showcase', () => {
 		expect(dbMock.tKhatm.findMany).toHaveBeenCalledWith(
 			expect.objectContaining({ where: expect.objectContaining({ id: { in: [31] } }) }),
 		)
+	})
+
+	it('keeps curated series out of the newest landing-page list', async () => {
+		dbMock.tKhatm.findMany.mockResolvedValue([])
+
+		await khatmService_getPublicList()
+
+		expect(dbMock.tKhatm.findMany).toHaveBeenCalledWith({
+			where: {
+				private: false,
+				reviewStatus: 'approved',
+				AND: [
+					{ OR: [{ seriesId: { not: null }, status: 'inProgress' }, { seriesId: null }] },
+					{
+						OR: [
+							{ seriesId: null },
+							{ series: { is: { featuredOrder: null } } },
+						],
+					},
+				],
+			},
+			orderBy: { id: 'desc' },
+			take: 20,
+		})
+	})
+})
+
+describe('curated featured khatms', () => {
+	beforeEach(() => {
+		vi.resetAllMocks()
+		dbMock.$transaction.mockImplementation(async (callback) => callback(dbMock))
+		dbMock.tKhatm.findMany.mockResolvedValue([])
+		dbMock.tKhatmSeries.findUnique.mockResolvedValue(null)
+	})
+
+	it('loads only eligible current rounds in their curated order', async () => {
+		dbMock.tKhatm.findMany.mockResolvedValue([
+			{ ...baseKhatm, id: 31, series: { id: 31, maxRounds: null, featuredOrder: 1 } },
+			{ ...baseKhatm, id: 42, series: { id: 42, maxRounds: null, featuredOrder: 2 } },
+		])
+
+		await expect(khatmService_getFeaturedAdminList()).resolves.toMatchObject([
+			{ khatm: { id: 31 }, featuredOrder: 1 },
+			{ khatm: { id: 42 }, featuredOrder: 2 },
+		])
+		expect(dbMock.tKhatm.findMany).toHaveBeenCalledWith({
+			include: { series: true },
+			where: {
+				private: false,
+				reviewStatus: 'approved',
+				status: 'inProgress',
+				series: { is: { maxRounds: null, featuredOrder: { not: null } } },
+			},
+			orderBy: [{ series: { featuredOrder: 'asc' } }, { id: 'desc' }],
+			take: 6,
+		})
+	})
+
+	it('adds an eligible unlimited series at the end of the six available positions', async () => {
+		dbMock.tKhatm.findUnique.mockResolvedValue({
+			...baseKhatm,
+			series: { id: 9, maxRounds: null, featuredOrder: null },
+		})
+		dbMock.tKhatmSeries.findMany.mockResolvedValue(
+			Array.from({ length: 5 }, (_, index) => ({ id: index + 1 })),
+		)
+
+		await expect(khatmService_setFeatured(12, true)).resolves.toEqual([])
+		expect(dbMock.tKhatmSeries.update).toHaveBeenCalledWith({
+			where: { id: 9 },
+			data: { featuredOrder: 6 },
+		})
+	})
+
+	it('rejects a seventh selection and an ineligible khatm', async () => {
+		dbMock.tKhatm.findUnique.mockResolvedValue({
+			...baseKhatm,
+			series: { id: 9, maxRounds: null, featuredOrder: null },
+		})
+		dbMock.tKhatmSeries.findMany.mockResolvedValue(
+			Array.from({ length: 6 }, (_, index) => ({ id: index + 1 })),
+		)
+		await expect(khatmService_setFeatured(12, true)).rejects.toBeInstanceOf(
+			KhatmFeaturedLimitError,
+		)
+
+		dbMock.tKhatm.findUnique.mockResolvedValue({
+			...baseKhatm,
+			private: true,
+			series: { id: 9, maxRounds: null, featuredOrder: null },
+		})
+		await expect(khatmService_setFeatured(12, true)).rejects.toBeInstanceOf(
+			KhatmFeaturedEligibilityError,
+		)
+	})
+
+	it('removes a featured series and compacts every following position', async () => {
+		dbMock.tKhatm.findUnique.mockResolvedValue({
+			...baseKhatm,
+			series: { id: 9, maxRounds: null, featuredOrder: 3 },
+		})
+		dbMock.tKhatmSeries.findUnique.mockResolvedValue({ featuredOrder: 3 })
+
+		await khatmService_setFeatured(12, false)
+
+		expect(dbMock.tKhatmSeries.update).toHaveBeenCalledWith({
+			where: { id: 9 },
+			data: { featuredOrder: null },
+		})
+		expect(dbMock.tKhatmSeries.updateMany).toHaveBeenCalledWith({
+			where: { featuredOrder: { gt: 3 } },
+			data: { featuredOrder: { decrement: 1 } },
+		})
+	})
+
+	it('stores a complete manual order and rejects duplicate or stale input', async () => {
+		dbMock.tKhatmSeries.findMany.mockResolvedValue([{ id: 9 }, { id: 4 }, { id: 7 }])
+
+		await khatmService_reorderFeatured([7, 9, 4])
+		expect(dbMock.tKhatmSeries.update).toHaveBeenNthCalledWith(1, {
+			where: { id: 7 },
+			data: { featuredOrder: 1 },
+		})
+		expect(dbMock.tKhatmSeries.update).toHaveBeenNthCalledWith(3, {
+			where: { id: 4 },
+			data: { featuredOrder: 3 },
+		})
+
+		await expect(khatmService_reorderFeatured([9, 9])).rejects.toBeInstanceOf(
+			KhatmFeaturedOrderError,
+		)
+		dbMock.tKhatmSeries.findMany.mockResolvedValue([{ id: 9 }, { id: 4 }])
+		await expect(khatmService_reorderFeatured([9, 7])).rejects.toBeInstanceOf(
+			KhatmFeaturedOrderError,
+		)
+	})
+
+	it('removes and compacts a featured series when its review status is rejected', async () => {
+		dbMock.tKhatm.findUnique.mockResolvedValue(baseKhatm)
+		dbMock.tKhatm.update.mockResolvedValue({ ...baseKhatm, reviewStatus: 'rejected' })
+		dbMock.tKhatmSeries.findUnique.mockResolvedValue({ featuredOrder: 2 })
+
+		await khatmService_update(12, { reviewStatus: 'rejected' })
+
+		expect(dbMock.tKhatmSeries.update).toHaveBeenCalledWith({
+			where: { id: 9 },
+			data: { featuredOrder: null },
+		})
+		expect(dbMock.tKhatmSeries.updateMany).toHaveBeenCalledWith({
+			where: { featuredOrder: { gt: 2 } },
+			data: { featuredOrder: { decrement: 1 } },
+		})
 	})
 })
 
@@ -450,7 +618,17 @@ describe('khatm ownership service', () => {
 		notificationMock.notify.mockClear()
 		dbMock.tKhatm.findUnique.mockResolvedValue({
 			...baseKhatm,
-			series: { id: 9, maxRounds: 2 },
+			series: { id: 9, maxRounds: null, featuredOrder: 2 },
+		})
+		await khatmService_setAsCompleted(12)
+		expect(dbMock.tKhatm.create).toHaveBeenCalledWith({
+			data: expect.objectContaining({ reviewStatus: 'approved', roundNumber: 3 }),
+		})
+
+		dbMock.tKhatm.create.mockClear()
+		dbMock.tKhatm.findUnique.mockResolvedValue({
+			...baseKhatm,
+			series: { id: 9, maxRounds: 2, featuredOrder: null },
 		})
 		await khatmService_setAsCompleted(12)
 		expect(dbMock.tKhatm.create).not.toHaveBeenCalled()

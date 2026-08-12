@@ -435,7 +435,7 @@
 	}
 
 	.directory-search-input button:focus {
-		outline: 3px solid rgba(99, 102, 241, 0.24);
+		outline: 3px solid var(--ui-color-focus);
 		outline-offset: 1px;
 	}
 
@@ -475,7 +475,7 @@
 	}
 
 	.directory-views > button:focus {
-		outline: 3px solid rgba(99, 102, 241, 0.24);
+		outline: 3px solid var(--ui-color-focus);
 		outline-offset: 2px;
 	}
 

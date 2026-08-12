@@ -410,7 +410,7 @@
 	.add-series[data-selected='true'] {
 		border-color: var(--ui-color-primary);
 		background: var(--ui-color-primary-soft);
-		box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+		box-shadow: 0 0 0 2px var(--ui-color-focus);
 	}
 
 	.add-choice > * + *,

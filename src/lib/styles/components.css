@@ -75,7 +75,7 @@
 .ui-btn-danger {
 	border-color: var(--ui-color-danger);
 	background: var(--ui-color-danger);
-	color: #ffffff;
+	color: var(--ui-color-on-danger);
 }
 
 .ui-btn-success {
@@ -140,12 +140,11 @@
 .ui-btn[disabled],
 .ui-btn-disabled,
 .ui-btn[aria-disabled='true'] {
-	border-color: #cbd5e1;
-	background: #e2e8f0;
-	color: #64748b;
+	border-color: var(--ui-color-disabled-border);
+	background: var(--ui-color-disabled-surface);
+	color: var(--ui-color-disabled-text);
 	box-shadow: none;
 	cursor: not-allowed;
-	opacity: 0.72;
 	pointer-events: none;
 }
 
@@ -334,7 +333,7 @@
 .ui-scheme-option-active {
 	border-color: var(--ui-color-primary);
 	color: var(--ui-color-primary);
-	box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.14);
+	box-shadow: 0 0 0 2px var(--ui-color-focus);
 }
 
 .ui-scheme-preview {
@@ -343,15 +342,15 @@
 	align-items: center;
 	justify-content: center;
 	border-radius: 0.5rem;
-	background: #fffdfc;
+	background: #f8fafc;
 }
 
 .ui-scheme-preview-dark {
-	background: #0f172a;
+	background: #0b1120;
 }
 
 .ui-scheme-preview-system {
-	background: linear-gradient(90deg, #fffdfc 0, #fffdfc 50%, #0f172a 50%, #0f172a 100%);
+	background: linear-gradient(90deg, #f8fafc 0, #f8fafc 50%, #0b1120 50%, #0b1120 100%);
 }
 
 .ui-scheme-preview span {
@@ -367,11 +366,11 @@
 }
 
 .ui-scheme-preview span:nth-child(2) {
-	background: #2a6565;
+	background: #0f766e;
 }
 
 .ui-scheme-preview span:nth-child(3) {
-	background: #c36a04;
+	background: #92400e;
 }
 
 /* Settings */
@@ -499,7 +498,7 @@
 }
 
 .ui-settings-scheme-options .ui-scheme-option:focus {
-	outline: 3px solid rgba(99, 102, 241, 0.28);
+	outline: 3px solid var(--ui-color-focus);
 	outline-offset: 2px;
 }
 
@@ -696,7 +695,7 @@
 .ui-textarea:focus,
 .ui-select:focus {
 	border-color: var(--ui-color-primary);
-	box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.16);
+	box-shadow: 0 0 0 3px var(--ui-color-focus);
 }
 
 .ui-input[aria-invalid='true'],
@@ -967,7 +966,7 @@
 
 .ui-khatm-list-card-heading > a:focus,
 .ui-khatm-list-card-arrow:focus {
-	outline: 3px solid rgba(99, 102, 241, 0.3);
+	outline: 3px solid var(--ui-color-focus);
 	outline-offset: 2px;
 }
 
@@ -2192,7 +2191,7 @@
 }
 
 .ui-tab-input:focus + .ui-tab {
-	outline: 3px solid rgba(99, 102, 241, 0.32);
+	outline: 3px solid var(--ui-color-focus);
 	outline-offset: -2px;
 }
 
@@ -2283,7 +2282,7 @@
 .ui-accordion-trigger:focus {
 	position: relative;
 	z-index: 2;
-	outline: 3px solid rgba(99, 102, 241, 0.32);
+	outline: 3px solid var(--ui-color-focus);
 	outline-offset: 2px;
 }
 
@@ -3474,7 +3473,7 @@
 }
 
 .ui-khatm-my-toggle:focus {
-	outline: 3px solid rgba(99, 102, 241, 0.3);
+	outline: 3px solid var(--ui-color-focus);
 	outline-offset: 2px;
 }
 
@@ -3807,7 +3806,7 @@
 }
 
 .ui-khatm-option:focus {
-	outline: 3px solid rgba(99, 102, 241, 0.3);
+	outline: 3px solid var(--ui-color-focus);
 	outline-offset: 2px;
 }
 
@@ -4975,20 +4974,10 @@
 	padding: 0.7rem 0.8rem;
 	border: 1px solid var(--ui-color-border);
 	border-radius: 0.9rem;
-	background: rgba(255, 255, 255, 0.5);
+	background: var(--ui-color-surface-muted);
 	color: var(--ui-color-text-muted);
 	font-size: 0.73rem;
 	font-weight: 800;
-}
-
-:root[data-color-scheme='dark'] .ui-auth-benefits li {
-	background: rgba(15, 23, 42, 0.32);
-}
-
-@media (prefers-color-scheme: dark) {
-	:root:not([data-color-scheme]) .ui-auth-benefits li {
-		background: rgba(15, 23, 42, 0.32);
-	}
 }
 
 .ui-auth-benefits li + li {
@@ -5159,7 +5148,7 @@
 }
 
 .ui-auth-password-toggle:focus {
-	outline: 3px solid rgba(99, 102, 241, 0.28);
+	outline: 3px solid var(--ui-color-focus);
 	outline-offset: 0;
 }
 
@@ -5978,7 +5967,7 @@
 .ui-admin-btn-reject:hover {
 	border-color: var(--ui-color-danger);
 	background: var(--ui-color-danger);
-	color: #ffffff;
+	color: var(--ui-color-on-danger);
 }
 
 .ui-admin-loading-state,
@@ -7059,7 +7048,7 @@
 }
 
 .ui-khatm-browser-filter .ui-checkbox:focus {
-	outline: 3px solid rgba(99, 102, 241, 0.3);
+	outline: 3px solid var(--ui-color-focus);
 	outline-offset: 2px;
 }
 
@@ -7768,7 +7757,7 @@
 }
 
 .ui-khatm-wizard-progress li > button:focus {
-	outline: 3px solid rgba(99, 102, 241, 0.3);
+	outline: 3px solid var(--ui-color-focus);
 	outline-offset: 2px;
 }
 
@@ -7891,7 +7880,7 @@
 }
 
 .ui-khatm-commitment:focus {
-	outline: 3px solid rgba(99, 102, 241, 0.3);
+	outline: 3px solid var(--ui-color-focus);
 	outline-offset: 2px;
 }
 
@@ -8147,7 +8136,7 @@
 }
 
 .ui-khatm-range-card:focus {
-	outline: 3px solid rgba(99, 102, 241, 0.3);
+	outline: 3px solid var(--ui-color-focus);
 	outline-offset: 2px;
 }
 
@@ -8486,7 +8475,7 @@
 }
 
 .ui-khatm-partial-item-free input:focus {
-	outline: 3px solid rgba(99, 102, 241, 0.3);
+	outline: 3px solid var(--ui-color-focus);
 	outline-offset: 2px;
 }
 

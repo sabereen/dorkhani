@@ -20,12 +20,15 @@
 	const { khatm, claimToken }: Props = $props()
 
 	const canShare = !browser || navigator.share
+	let copied = $state(false)
 
 	async function copy() {
 		try {
 			await khatm.copy()
+			copied = true
 			toast('info', 'لینک ختم قرآن شما کپی شد.')
 		} catch (err) {
+			copied = false
 			console.error(err)
 			toast('error', 'خطا در کپی.')
 		}
@@ -86,17 +89,45 @@
 			{/if}
 
 			<div class="success-link-panel">
-				<div class="success-link-label">
-					<IconLink aria-hidden="true" />
-					<span>لینک دعوت</span>
+				<div class="success-link-heading">
+					<span class="success-link-icon" aria-hidden="true">
+						<IconLink />
+					</span>
+					<div class="success-link-copy">
+						<p class="success-link-title">لینک دعوت آماده است</p>
+						<p class="success-link-hint">آن را برای همراهانتان بفرستید تا به ختم بپیوندند.</p>
+					</div>
+					<span class="ui-badge ui-badge-success success-link-badge">آمادهٔ ارسال</span>
 				</div>
-				<a href={khatm.link} class="success-link" target="_blank" rel="noopener" dir="ltr">
-					{khatm.link}
-				</a>
-				<button class="ui-btn ui-btn-outline ui-btn-sm" type="button" onclick={copy}>
-					<IconCopy aria-hidden="true" />
-					کپی لینک
-				</button>
+
+				<div class="success-link-control">
+					<a
+						href={khatm.link}
+						class="success-link"
+						target="_blank"
+						rel="noopener"
+						dir="ltr"
+						aria-label="باز کردن لینک دعوت در صفحهٔ جدید"
+					>
+						<span>{khatm.link}</span>
+						<IconOpen aria-hidden="true" />
+					</a>
+					<button
+						class={`ui-btn success-copy-button ${copied ? 'ui-btn-success' : 'ui-btn-primary'}`}
+						type="button"
+						onclick={copy}
+						aria-label={copied ? 'لینک دعوت کپی شد' : 'کپی لینک دعوت'}
+						aria-live="polite"
+					>
+						{#if copied}
+							<IconCheck aria-hidden="true" />
+							<span>کپی شد</span>
+						{:else}
+							<IconCopy aria-hidden="true" />
+							<span>کپی لینک</span>
+						{/if}
+					</button>
+				</div>
 			</div>
 
 			<div class="success-actions">
@@ -156,6 +187,7 @@
 	.success-hero h2,
 	.success-title-row p,
 	.success-title-row h3,
+	.success-link-panel p,
 	.success-note {
 		margin-bottom: 0;
 		margin-top: 0;
@@ -237,50 +269,105 @@
 	}
 
 	.success-link-panel {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) auto;
-		grid-gap: 0.6rem;
-		align-items: center;
-		padding: 0.85rem;
-		border: 1px dashed var(--ui-color-border-strong);
-		border-radius: var(--ui-radius-md);
+		padding: 1rem;
+		border: 1px solid var(--ui-color-border);
+		border-right: 0.25rem solid var(--ui-color-primary);
+		border-radius: var(--ui-radius-lg);
 		background: var(--ui-color-surface-muted);
+		box-shadow: var(--ui-shadow-sm);
 	}
 
-	.success-link-label {
-		display: flex;
-		grid-column: 1 / -1;
+	.success-link-heading {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr) auto;
+		grid-gap: 0.75rem;
 		align-items: center;
-		color: var(--ui-color-text-muted);
-		font-size: 0.72rem;
-		font-weight: 800;
 	}
 
-	.success-link-label > :global(*) + :global(*) {
-		margin-right: 0.35rem;
-	}
-
-	.success-link-label :global(svg) {
-		width: 1rem;
-		height: 1rem;
+	.success-link-icon {
+		display: flex;
+		width: 2.75rem;
+		height: 2.75rem;
+		align-items: center;
+		justify-content: center;
+		border-radius: 9999px;
+		background: var(--ui-color-primary-soft);
 		color: var(--ui-color-primary);
 	}
 
-	.success-link {
+	.success-link-icon :global(svg) {
+		width: 1.4rem;
+		height: 1.4rem;
+	}
+
+	.success-link-copy {
 		min-width: 0;
-		overflow: hidden;
+	}
+
+	.success-link-title {
+		font-size: 0.9rem;
+		font-weight: 900;
+	}
+
+	.success-link-hint {
+		margin-top: 0.15rem !important;
+		color: var(--ui-color-text-muted);
+		font-size: 0.72rem;
+		line-height: 1.7;
+	}
+
+	.success-link-badge {
+		white-space: nowrap;
+	}
+
+	.success-link-control {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		grid-gap: 0.5rem;
+		align-items: center;
+		margin-top: 0.85rem;
+		padding: 0.35rem;
+		border: 1px solid var(--ui-color-border-strong);
+		border-radius: var(--ui-radius-md);
+		background: var(--ui-color-surface);
+	}
+
+	.success-link {
+		display: flex;
+		height: 2.75rem;
+		min-width: 0;
+		align-items: center;
+		padding-right: 0.5rem;
+		padding-left: 0.5rem;
 		color: var(--ui-color-primary);
 		font-size: 0.82rem;
 		font-weight: 700;
 		text-align: left;
 		text-decoration: none;
+	}
+
+	.success-link span {
+		min-width: 0;
+		flex: 1 1 auto;
+		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
+
+	.success-link :global(svg) {
+		width: 1rem;
+		height: 1rem;
+		flex: 0 0 auto;
+		margin-left: 0.45rem;
 	}
 
 	.success-link:hover {
 		color: var(--ui-color-primary-hover);
 		text-decoration: underline;
+	}
+
+	.success-copy-button {
+		min-width: 7.5rem;
 	}
 
 	.success-actions {
@@ -321,11 +408,15 @@
 			margin-right: 0;
 		}
 
-		.success-link-panel {
+		.success-link-badge {
+			display: none;
+		}
+
+		.success-link-control {
 			grid-template-columns: minmax(0, 1fr);
 		}
 
-		.success-link-panel .ui-btn {
+		.success-copy-button {
 			width: 100%;
 		}
 	}

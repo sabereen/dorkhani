@@ -180,12 +180,11 @@
 		onclick={() => selectRangeType(type)}
 	>
 		<span class="ui-khatm-commitment-icon">
-			{#if type === 'all'}<IconAll />{:else}<RangeTypeIcon type={type} />{/if}
+			{#if type === 'all'}<IconAll />{:else}<RangeTypeIcon {type} />{/if}
 		</span>
 		<span class="ui-khatm-commitment-copy">
 			<span class="ui-khatm-commitment-title">
 				<strong>{title}</strong>
-				{#if recommended}<span class="ui-badge ui-badge-accent ui-badge-xs">پیشنهاد ما</span>{/if}
 			</span>
 			<span>{description}</span>
 		</span>

@@ -4,6 +4,7 @@
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { CreatedKhatm } from '$lib/entity/CreatedKhatm'
 	import type { Khatm } from '$lib/entity/Khatm.svelte'
+	import RangeTypeIcon from '$lib/components/RangeTypeIcon.svelte'
 	import { onMount } from 'svelte'
 	import IconCheck from '~icons/ic/round-check-circle'
 	import IconCopy from '~icons/ic/outline-copy-all'
@@ -65,7 +66,10 @@
 					<h3>{khatm.title}</h3>
 				</div>
 				<div class="success-badges">
-					<span class="ui-badge ui-badge-info">{khatm.rangeTypeTitle}</span>
+					<span class="ui-badge ui-badge-info ui-range-type-badge">
+						<RangeTypeIcon type={khatm.rangeType} />
+						{khatm.rangeTypeTitle}
+					</span>
 					{#if khatm.private}
 						<span class="ui-badge ui-badge-neutral">خصوصی</span>
 					{:else}

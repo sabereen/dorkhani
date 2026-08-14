@@ -4,13 +4,12 @@
 	import { enhance } from '$app/forms'
 	import { validateForm } from '$lib/actions/validateForm'
 	import Header from '$lib/components/Header.svelte'
-	import type { RangeType } from '@prisma-client'
-	import { slide } from 'svelte/transition'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import SucessResult from './sucess-result.svelte'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
+	import RangeTypePicker from '$lib/components/RangeTypePicker.svelte'
+	import type { RangeType } from '@prisma-client'
 	import IconBook from '~icons/ic/round-menu-book'
-	import IconTune from '~icons/ic/round-tune'
 	import IconLock from '~icons/ic/round-lock'
 	import IconPublic from '~icons/ic/round-public'
 	import IconRepeat from '~icons/ic/round-autorenew'
@@ -23,15 +22,6 @@
 	let rangeType = $state<RangeType>(initialRangeType)
 	let access = $state<'public' | 'private'>('private')
 	let series = $state(false)
-
-	const rangeDescriptions: Record<RangeType, string> = {
-		free: 'هر مشارکت‌کننده می‌تواند به انتخاب خودش یک صفحه، سوره، حزب یا جزء آزاد را بردارد.',
-		page: 'قرآن به صفحه‌های جدا تقسیم می‌شود و هر مشارکت‌کننده یک صفحه را انتخاب می‌کند.',
-		hizbQuarter: 'هر سهم برابر با یک‌چهارم حزب است؛ مناسب برای تقسیم‌های کوتاه و منظم.',
-		surah: 'هر مشارکت‌کننده یک سورهٔ کامل را برای قرائت انتخاب می‌کند.',
-		juz: 'قرآن به سی جزء تقسیم می‌شود و هر مشارکت‌کننده مسئول یک جزء خواهد بود.',
-		ayah: 'سامانه به‌صورت خودکار آیه‌ها را به‌ترتیب برای قرائت در اختیار مشارکت‌کنندگان می‌گذارد.',
-	}
 
 	$effect(() => {
 		if (form?.errorMessage) toast('error', form.errorMessage)
@@ -114,34 +104,9 @@
 
 					{#if data.rangeType === 'ayah'}
 						<input type="hidden" name="rangeType" value="ayah" />
-						<div class="add-fixed-option">
-							<IconTune aria-hidden="true" />
-							<div>
-								<strong>آیه به آیه</strong>
-								<p>{rangeDescriptions.ayah}</p>
-							</div>
-							<span class="ui-badge ui-badge-info">انتخاب شده</span>
-						</div>
+						<RangeTypePicker value="ayah" options={['ayah']} disabled />
 					{:else}
-						<label for="input-range-type" class="ui-field-label">نوع بازه‌بندی</label>
-						<select
-							id="input-range-type"
-							class="ui-select"
-							name="rangeType"
-							bind:value={rangeType}
-							aria-describedby="range-description"
-						>
-							<option value="free">آزاد</option>
-							<option value="page">صفحه به صفحه</option>
-							<option value="hizbQuarter">حزب به حزب (¼)</option>
-							<option value="surah">سوره به سوره</option>
-							<option value="juz">جزء به جزء</option>
-							<option value="ayah">آیه به آیه</option>
-						</select>
-						<div id="range-description" class="add-hint" transition:slide={{ axis: 'y' }}>
-							<IconTune aria-hidden="true" />
-							<p>{rangeDescriptions[rangeType]}</p>
-						</div>
+						<RangeTypePicker bind:value={rangeType} />
 					{/if}
 				</section>
 
@@ -247,8 +212,6 @@
 	.add-intro p,
 	.add-section-heading h3,
 	.add-section-heading p,
-	.add-hint p,
-	.add-fixed-option p,
 	.add-submit p {
 		margin: 0;
 	}
@@ -334,50 +297,6 @@
 		margin-right: 0.35rem;
 		font-size: 0.65rem;
 		font-weight: 500;
-	}
-
-	.add-hint,
-	.add-fixed-option {
-		display: flex;
-		align-items: flex-start;
-		margin-top: 0.65rem;
-		padding: 0.75rem;
-		border-radius: var(--ui-radius-md);
-		background: var(--ui-color-primary-soft);
-		color: var(--ui-color-primary);
-	}
-
-	.add-hint > :global(*) + :global(*),
-	.add-fixed-option > :global(*) + :global(*) {
-		margin-right: 0.65rem;
-	}
-
-	.add-hint > :global(svg),
-	.add-fixed-option > :global(svg) {
-		width: 1.25rem;
-		height: 1.25rem;
-		flex: 0 0 1.25rem;
-		margin-top: 0.1rem;
-	}
-
-	.add-hint p,
-	.add-fixed-option p {
-		font-size: 0.75rem;
-		line-height: 1.8;
-	}
-
-	.add-fixed-option > div {
-		min-width: 0;
-		flex: 1 1 auto;
-	}
-
-	.add-fixed-option strong {
-		display: block;
-		font-size: 0.85rem;
-	}
-
-	.add-fixed-option .ui-badge {
-		flex: 0 0 auto;
 	}
 
 	.add-choice-grid {

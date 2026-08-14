@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { base } from '$app/paths'
 	import { PickedKhatmPart } from '$lib/entity/PickedKhatmPart'
+	import RangeTypeIcon from '$lib/components/RangeTypeIcon.svelte'
 	import { onMount, type Snippet } from 'svelte'
 	import { slide } from 'svelte/transition'
 	import IconCheck from '~icons/ic/round-check-circle'
@@ -63,7 +64,10 @@
 										<span class="ui-badge ui-badge-xs ui-badge-info">خصوصی</span>
 									{/if}
 									{#if !item.khatm.isFree}
-										<span class="ui-badge ui-badge-xs">{item.khatm.rangeTypeTitle}</span>
+										<span class="ui-badge ui-badge-xs ui-range-type-badge">
+											<RangeTypeIcon type={item.khatm.rangeType} />
+											{item.khatm.rangeTypeTitle}
+										</span>
 									{/if}
 								</span>
 							</span>

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { Khatm } from '$lib/entity/Khatm.svelte'
 	import type { Snippet } from 'svelte'
+	import RangeTypeIcon from '$lib/components/RangeTypeIcon.svelte'
 	import IconArrow from '~icons/ic/round-arrow-back'
-	import IconBook from '~icons/ic/round-menu-book'
 
 	type Props = {
 		khatm: Khatm
@@ -15,7 +15,7 @@
 </script>
 
 <article class:ui-khatm-list-card-finished={khatm.finished} class="ui-khatm-list-card">
-	<span class="ui-khatm-list-card-icon" aria-hidden="true"><IconBook /></span>
+	<span class="ui-khatm-list-card-icon" aria-hidden="true"><RangeTypeIcon type={khatm.rangeType} /></span>
 
 	<div class="ui-khatm-list-card-main">
 		<div class="ui-khatm-list-card-heading">

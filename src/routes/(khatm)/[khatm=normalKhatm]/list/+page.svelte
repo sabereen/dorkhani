@@ -8,7 +8,6 @@
 	import IconList from '~icons/ic/round-format-list-bulleted'
 	import IconSearch from '~icons/ic/round-search'
 	import IconExpand from '~icons/ic/round-expand-more'
-	import IconBook from '~icons/ic/round-auto-stories'
 	import IconCheck from '~icons/ic/round-check-circle'
 	import IconRadio from '~icons/ic/round-radio-button-unchecked'
 	import IconPerson from '~icons/ic/round-person'
@@ -21,6 +20,7 @@
 	import Tab from '$lib/components/Tab.svelte'
 	import Accardeon from '$lib/components/Accardeon.svelte'
 	import PickedRangeResult from '../PickedRangeResult.svelte'
+	import RangeTypeIcon from '$lib/components/RangeTypeIcon.svelte'
 
 	type PageState = {
 		modal?: boolean
@@ -256,7 +256,7 @@
 
 						<div class="ui-khatm-browser-view-control">
 							<div>
-								<IconBook />
+								<RangeTypeIcon type={subrangeType} />
 								<span>
 									<strong>تقسیم‌بندی بخش‌ها</strong>
 									<small>نمای مناسب برای مرور را انتخاب کنید</small>

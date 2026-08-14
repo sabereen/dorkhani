@@ -11,11 +11,6 @@
 	import { page } from '$app/state'
 	import { pushState, replaceState } from '$app/navigation'
 	import { useKathmContext } from '../../khatm-context.svelte'
-	import type { Component } from 'svelte'
-	import IconJuz from '~icons/ic/round-auto-stories'
-	import IconQuarter from '~icons/ic/round-timelapse'
-	import IconPage from '~icons/ic/round-insert-drive-file'
-	import IconSurah from '~icons/ic/round-menu-book'
 	import IconAll from '~icons/ic/round-done-all'
 	import IconCheck from '~icons/ic/round-check-circle'
 	import IconSearch from '~icons/ic/round-search'
@@ -23,6 +18,7 @@
 	import IconTune from '~icons/ic/round-tune'
 	import IconBook from '~icons/ic/round-menu-book'
 	import IncompleteRangePicker from './IncompleteRangePicker.svelte'
+	import RangeTypeIcon from '$lib/components/RangeTypeIcon.svelte'
 
 	const khatmContext = useKathmContext()
 	const khatm = $derived(khatmContext.khatm)
@@ -175,7 +171,6 @@
 	title: string,
 	description: string,
 	meta: string,
-	Icon: Component,
 	recommended = false,
 )}
 	<button
@@ -184,7 +179,9 @@
 		type="button"
 		onclick={() => selectRangeType(type)}
 	>
-		<span class="ui-khatm-commitment-icon"><Icon /></span>
+		<span class="ui-khatm-commitment-icon">
+			{#if type === 'all'}<IconAll />{:else}<RangeTypeIcon type={type} />{/if}
+		</span>
 		<span class="ui-khatm-commitment-copy">
 			<span class="ui-khatm-commitment-title">
 				<strong>{title}</strong>
@@ -206,23 +203,21 @@
 		</p>
 	</div>
 	<div class="ui-khatm-commitments">
-		{@render rangeTypeOption('page', 'یک صفحه', 'سبک، سریع و مناسب شروع', 'کم‌حجم', IconPage, true)}
+		{@render rangeTypeOption('page', 'یک صفحه', 'سبک، سریع و مناسب شروع', 'کم‌حجم', true)}
 		{@render rangeTypeOption(
 			'hizbQuarter',
 			'یک ربع حزب',
 			'چند صفحه پیوسته برای قرائتی منظم',
 			'کوتاه',
-			IconQuarter,
 		)}
-		{@render rangeTypeOption('juz', 'یک جزء', 'سهمی کامل‌تر برای همراهی پررنگ', 'پیوسته', IconJuz)}
-		{@render rangeTypeOption('surah', 'یک سوره', 'از آغاز تا پایان یک سوره', 'معنادار', IconSurah)}
+		{@render rangeTypeOption('juz', 'یک جزء', 'سهمی کامل‌تر برای همراهی پررنگ', 'پیوسته')}
+		{@render rangeTypeOption('surah', 'یک سوره', 'از آغاز تا پایان یک سوره', 'معنادار')}
 		{#if khatm.progress > 0.9}
 			{@render rangeTypeOption(
 				'all',
 				'همه بخش‌های باقی‌مانده',
 				'قدم آخر را بردارید و ختم را کامل کنید',
 				'ویژه پایان ختم',
-				IconAll,
 			)}
 		{/if}
 	</div>

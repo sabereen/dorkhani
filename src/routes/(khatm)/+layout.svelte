@@ -28,6 +28,7 @@
 	import { idb_createdKhatm_hasClaim } from '$lib/idb/createdKhatm'
 	import KhatmParticipation from './KhatmParticipation.svelte'
 	import KhatmReviewBar from './KhatmReviewBar.svelte'
+	import RangeTypeIcon from '$lib/components/RangeTypeIcon.svelte'
 
 	const { data, children }: LayoutProps = $props()
 
@@ -214,7 +215,10 @@
 						{/if}
 					</div>
 				{/if}
-				{#if khatm.rangeType === 'ayah'}<span class="ui-badge ui-badge-info">آیه به آیه</span>{/if}
+				<span class="ui-badge ui-badge-info ui-range-type-badge">
+					<RangeTypeIcon type={khatm.rangeType} />
+					{khatm.rangeTypeTitle}
+				</span>
 				{#if khatm.private}<span class="ui-badge ui-badge-neutral">خصوصی</span>{/if}
 			</div>
 			{#if khatm.description}

@@ -1,0 +1,85 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 512 512"
+  width="512"
+  height="512"
+  preserveAspectRatio="xMidYMid meet"
+>
+  <g fill="currentColor">
+
+    <!-- 8 identical ornamental arms -->
+    <g id="juz-arm">
+      <path d="
+        M256 34
+        C244 58 232 77 216 94
+        C228 101 240 108 256 120
+        C272 108 284 101 296 94
+        C280 77 268 58 256 34
+        Z
+      "/>
+
+      <path d="
+        M256 103
+        C243 124 235 145 235 168
+        C235 184 242 201 256 220
+        C270 201 277 184 277 168
+        C277 145 269 124 256 103
+        Z
+      "/>
+    </g>
+
+    <use href="#juz-arm"/>
+    <use href="#juz-arm" transform="rotate(45 256 256)"/>
+    <use href="#juz-arm" transform="rotate(90 256 256)"/>
+    <use href="#juz-arm" transform="rotate(135 256 256)"/>
+    <use href="#juz-arm" transform="rotate(180 256 256)"/>
+    <use href="#juz-arm" transform="rotate(225 256 256)"/>
+    <use href="#juz-arm" transform="rotate(270 256 256)"/>
+    <use href="#juz-arm" transform="rotate(315 256 256)"/>
+
+    <!-- outer ornamental ring -->
+    <path
+      fill-rule="evenodd"
+      d="
+        M256 138
+        C321 138 374 191 374 256
+        C374 321 321 374 256 374
+        C191 374 138 321 138 256
+        C138 191 191 138 256 138
+        Z
+
+        M256 166
+        C206 166 166 206 166 256
+        C166 306 206 346 256 346
+        C306 346 346 306 346 256
+        C346 206 306 166 256 166
+        Z
+      "
+    />
+
+    <!-- central eight-point motif -->
+    <path d="
+      M256 181
+      L274 220
+      L315 197
+      L292 238
+      L331 256
+      L292 274
+      L315 315
+      L274 292
+      L256 331
+      L238 292
+      L197 315
+      L220 274
+      L181 256
+      L220 238
+      L197 197
+      L238 220
+      Z
+    "/>
+
+    <!-- central opening -->
+    <circle cx="256" cy="256" r="36"/>
+
+  </g>
+</svg>

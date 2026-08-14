@@ -1,4 +1,5 @@
 import type { TKhatmPart } from '@prisma-client'
+import { QuranRange } from './Range'
 
 export class KhatmPart {
 	plain: TKhatmPart
@@ -44,5 +45,9 @@ export class KhatmPart {
 
 	get length() {
 		return this.end - this.start
+	}
+
+	getRange() {
+		return new QuranRange(this.start, this.end)
 	}
 }

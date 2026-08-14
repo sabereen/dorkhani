@@ -10,6 +10,7 @@
 	import Modal from '$lib/components/Modal.svelte'
 	import type { Action } from 'svelte/action'
 	import IconAdd from '~icons/ic/round-add'
+	import IconCheck from '~icons/ic/round-check-circle'
 	import IconClose from '~icons/ic/round-close'
 	import IconEdit from '~icons/ic/round-edit'
 	import IconVolunteer from '~icons/ic/round-volunteer-activism'
@@ -21,6 +22,12 @@
 
 	type PageState = {
 		modal?: boolean
+	}
+
+	type PickResult = {
+		status: 'success' | 'error'
+		count: number
+		source: 'primary' | 'quick' | 'custom'
 	}
 
 	let { zekr, myCount = $bindable(0) }: Props = $props()
@@ -50,7 +57,7 @@
 	async function handleModalAction(event: Event) {
 		event.preventDefault()
 		if (customCount === null) return toast('error', 'ورودی خالی است.')
-		const isOk = await pick(customCount)
+		const isOk = await pick(customCount, 'custom')
 		if (isOk) {
 			closeModal()
 			customCount = null
@@ -61,10 +68,21 @@
 	// برای اینکه مشخص باشد روی کدام دکمه لودینگ بخورد تعداد ذکر را در لودینگ میریزیم
 	// هر دکمه‌ای که تعداد ذکرش با این متغیر یکسان بود باید لودینگ بخورد
 	let loading = $state(-1)
+	let pickResult = $state<PickResult | null>(null)
 
-	async function pick(count = 1) {
+	function isSuccessful(count: number, source: PickResult['source']) {
+		return (
+			loading === -1 &&
+			pickResult?.status === 'success' &&
+			pickResult.count === count &&
+			pickResult.source === source
+		)
+	}
+
+	async function pick(count: number, source: PickResult['source']) {
 		if (loading !== -1) return
 
+		pickResult = null
 		loading = count
 
 		const waitPromise = wait(1500)
@@ -72,9 +90,11 @@
 		try {
 			await zekr.pick({ count })
 			myCount += count
+			pickResult = { status: 'success', count, source }
 			return true
 		} catch (err) {
 			console.error(err)
+			pickResult = { status: 'error', count, source }
 			toast('error', (err as { message?: string })?.message || String(err))
 			return false
 		} finally {
@@ -107,30 +127,42 @@
 			<button
 				type="button"
 				class="ui-btn ui-btn-soft ui-zekr-quick-button"
+				class:ui-zekr-action-complete={isSuccessful(count, 'quick')}
 				disabled={loading !== -1}
-				onclick={() => pick(count)}
+				onclick={() => pick(count, 'quick')}
 			>
 				{#if loading === count}
 					<span class="ui-spinner" transition:slide={{ axis: 'x' }}></span>
+				{:else if isSuccessful(count, 'quick')}
+					<IconCheck />
 				{:else}
 					<IconAdd />
 				{/if}
-				<span>{text}</span>
+				<span>{isSuccessful(count, 'quick') ? `${text} ثبت شد` : text}</span>
 			</button>
 		{/snippet}
 
 		<button
 			type="button"
 			class="ui-btn ui-btn-primary ui-btn-xl ui-zekr-primary-action"
+			class:ui-zekr-action-complete={isSuccessful(1, 'primary')}
 			disabled={loading !== -1}
-			onclick={() => pick(1)}
+			onclick={() => pick(1, 'primary')}
 		>
 			{#if loading === 1}
 				<span class="ui-spinner ui-spinner-md" transition:slide={{ axis: 'x' }}></span>
+			{:else if isSuccessful(1, 'primary')}
+				<IconCheck />
 			{:else}
 				<IconVolunteer />
 			{/if}
-			<span>یک مرتبه ذکر گفتم</span>
+			<span>
+				{#if isSuccessful(1, 'primary')}
+					یک مرتبه با موفقیت ثبت شد
+				{:else}
+					یک مرتبه ذکر گفتم
+				{/if}
+			</span>
 		</button>
 
 		<div class="ui-zekr-quick-actions">
@@ -149,11 +181,39 @@
 		</div>
 	</div>
 
-	<div class="ui-zekr-action-status" aria-live="polite">
+	<div class="ui-zekr-action-status" aria-live="polite" aria-atomic="true">
 		{#if loading !== -1}
-			<span>در حال ثبت مشارکت شما…</span>
+			<div class="ui-alert ui-alert-info">
+				<div class="ui-zekr-feedback-content">
+					<span class="ui-spinner" aria-hidden="true"></span>
+					<div>
+						<strong>در حال ثبت {loading.toLocaleString('fa')} مرتبه ذکر…</strong>
+						<small>لطفاً چند لحظه صبر کنید.</small>
+					</div>
+				</div>
+			</div>
+		{:else if pickResult?.status === 'success'}
+			<div class="ui-alert ui-alert-success">
+				<div class="ui-zekr-feedback-content">
+					<IconCheck aria-hidden="true" />
+					<div>
+						<strong>{pickResult.count.toLocaleString('fa')} مرتبه با موفقیت ثبت شد</strong>
+						<small>مجموع مشارکت شما: {myCount.toLocaleString('fa')} مرتبه</small>
+					</div>
+				</div>
+			</div>
+		{:else if pickResult?.status === 'error'}
+			<div class="ui-alert ui-alert-error">
+				<div class="ui-zekr-feedback-content">
+					<span class="ui-zekr-feedback-error" aria-hidden="true">!</span>
+					<div>
+						<strong>ثبت مشارکت انجام نشد</strong>
+						<small>اتصال خود را بررسی و دوباره تلاش کنید.</small>
+					</div>
+				</div>
+			</div>
 		{:else}
-			<span>با ثبت هر مشارکت، آمار بالای صفحه به‌روز می‌شود.</span>
+			<span class="ui-zekr-action-hint">با ثبت هر مشارکت، آمار بالای صفحه به‌روز می‌شود.</span>
 		{/if}
 	</div>
 </section>

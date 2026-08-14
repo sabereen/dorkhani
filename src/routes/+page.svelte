@@ -456,10 +456,10 @@
 		position: relative;
 		display: grid;
 		grid-template-columns: minmax(0, 1.08fr) minmax(18rem, 0.92fr);
-		grid-gap: 3rem;
-		min-height: 38rem;
+		grid-gap: 2.5rem;
+		min-height: 34rem;
 		align-items: center;
-		padding: 4.5rem;
+		padding: 3.5rem;
 		border-radius: 2rem;
 		background: linear-gradient(
 			135deg,
@@ -523,7 +523,7 @@
 
 	.landing-hero h1 {
 		max-width: 38rem;
-		margin: 1.25rem 0 0;
+		margin: 1rem 0 0;
 		font-size: 3.65rem;
 		font-weight: 950;
 		line-height: 1.25;
@@ -536,7 +536,7 @@
 
 	.landing-hero-copy > p {
 		max-width: 38rem;
-		margin: 1.25rem 0 0;
+		margin: 0.9rem 0 0;
 		color: var(--ui-color-landing-hero-muted);
 		font-size: 1.1rem;
 		line-height: 2;
@@ -545,7 +545,7 @@
 	.landing-hero-actions {
 		display: flex;
 		flex-wrap: wrap;
-		margin-top: 1.75rem;
+		margin-top: 1.35rem;
 	}
 
 	.landing-hero-actions > * + * {
@@ -580,7 +580,7 @@
 	.landing-hero-points {
 		display: flex;
 		flex-wrap: wrap;
-		margin-top: 1.5rem;
+		margin-top: 1rem;
 		color: var(--ui-color-landing-hero-muted);
 		font-size: 0.75rem;
 	}
@@ -693,7 +693,7 @@
 	.landing-feature-card {
 		display: flex;
 		align-items: flex-start;
-		padding: 1.35rem;
+		padding: 1.15rem;
 		border: 1px solid var(--ui-color-border);
 		border-radius: 1.25rem;
 		background: var(--ui-color-surface);
@@ -1092,12 +1092,12 @@
 	}
 
 	.landing-section {
-		padding-top: 6rem;
+		padding-top: 4rem;
 	}
 
 	.landing-personal {
-		margin-top: 5rem;
-		padding: 2.5rem;
+		margin-top: 3.5rem;
+		padding: 2rem;
 		border: 1px solid var(--ui-color-border);
 		border-radius: 2rem;
 		background: linear-gradient(135deg, var(--ui-color-surface-muted), var(--ui-color-surface));
@@ -1107,7 +1107,7 @@
 		display: flex;
 		align-items: flex-end;
 		justify-content: space-between;
-		margin-bottom: 1.75rem;
+		margin-bottom: 1.25rem;
 	}
 
 	.landing-section-heading > * + * {
@@ -1148,8 +1148,8 @@
 	}
 
 	.landing-empty-card {
-		min-height: 15rem;
-		padding: 1.5rem;
+		min-height: 13rem;
+		padding: 1.25rem;
 		border: 1px dashed var(--ui-color-border-strong);
 		border-radius: 1.25rem;
 		background: var(--ui-color-surface-muted);
@@ -1204,8 +1204,8 @@
 
 	.landing-featured-showcase {
 		position: relative;
-		margin-bottom: 1.5rem;
-		padding: 1.5rem;
+		margin-bottom: 1rem;
+		padding: 1.25rem;
 		border: 1px solid var(--ui-color-border-strong);
 		border-radius: 2rem;
 		background: linear-gradient(
@@ -1220,7 +1220,7 @@
 	.landing-featured-heading {
 		display: flex;
 		align-items: center;
-		margin-bottom: 1.25rem;
+		margin-bottom: 1rem;
 	}
 
 	.landing-featured-heading > * + * {
@@ -1282,10 +1282,10 @@
 
 	.landing-public-header {
 		display: flex;
-		min-height: 9.5rem;
+		min-height: 8rem;
 		align-items: flex-start;
 		justify-content: space-between;
-		padding: 1.5rem;
+		padding: 1.25rem;
 	}
 
 	.landing-public-header > * + * {
@@ -1408,7 +1408,7 @@
 
 	.landing-steps li {
 		position: relative;
-		padding: 2rem;
+		padding: 1.5rem;
 		border: 1px solid var(--ui-color-border);
 		border-radius: 1.5rem;
 		background: var(--ui-color-surface-muted);
@@ -1447,8 +1447,8 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		margin-top: 6rem;
-		padding: 3rem;
+		margin-top: 4rem;
+		padding: 2.25rem;
 		border-radius: 2rem;
 		background: linear-gradient(
 			135deg,
@@ -1475,8 +1475,8 @@
 	@media (max-width: 1023px) {
 		.landing-hero {
 			grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.75fr);
-			grid-gap: 2rem;
-			padding: 3rem;
+			grid-gap: 1.75rem;
+			padding: 2.5rem;
 		}
 
 		.landing-hero h1 {
@@ -1518,8 +1518,9 @@
 
 		.landing-hero {
 			grid-template-columns: minmax(0, 1fr);
+			grid-gap: 1.5rem;
 			min-height: 0;
-			padding: 2rem 1.25rem 3rem;
+			padding: 1.5rem 1.25rem 2.5rem;
 			border-radius: 1.5rem;
 			text-align: center;
 		}
@@ -1599,11 +1600,11 @@
 		}
 
 		.landing-section {
-			padding-top: 4.5rem;
+			padding-top: 3.25rem;
 		}
 
 		.landing-personal {
-			margin-top: 3.5rem;
+			margin-top: 2.75rem;
 			padding: 1.25rem;
 			border-radius: 1.5rem;
 		}
@@ -1728,7 +1729,7 @@
 		.landing-cta {
 			align-items: stretch;
 			flex-direction: column;
-			margin-top: 4.5rem;
+			margin-top: 3.25rem;
 			padding: 2rem 1.25rem;
 			border-radius: 1.5rem;
 			text-align: center;

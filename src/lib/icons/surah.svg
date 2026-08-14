@@ -1,46 +1,7 @@
-<svg
-  xmlns="http://www.w3.org/2000/svg"
-  width="24"
-  height="24"
-  viewBox="0 0 24 24"
-  fill="none"
-  stroke="currentColor"
-  stroke-width="1.7"
-  stroke-linecap="round"
-  stroke-linejoin="round"
->
-  <!-- Side ornaments -->
-  <path d="M4.3 7.7L2.6 10.2L4.3 12.7"/>
-  <path d="M19.7 7.7L21.4 10.2L19.7 12.7"/>
-
-  <!-- Main Surah header -->
-  <rect
-    x="4.3"
-    y="6.2"
-    width="15.4"
-    height="8"
-    rx="2.2"
-  />
-
-  <!-- Surah title lines -->
-  <path d="M7.3 9.1H16.7"/>
-  <path d="M8.8 11.4H15.2"/>
-
-  <!-- Top Quranic ornament -->
-  <path d="
-    M12 2.5
-    L12.75 3.7
-    L14.15 4.05
-    L13.2 5.15
-    L13.3 6.2
-    L12 5.7
-    L10.7 6.2
-    L10.8 5.15
-    L9.85 4.05
-    L11.25 3.7
-    Z
-  "/>
-
-  <!-- Single lower line -->
-  <path d="M8 17.6H16"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M5 7.2 3.2 10 5 12.8M19 7.2 20.8 10 19 12.8"/>
+  <rect x="5" y="6" width="14" height="8.4" rx="2.1"/>
+  <path d="M8 9.3h8M9.5 11.8h5"/>
+  <path d="m12 2.6.46.9 1 .18-.72.72.14 1.02L12 4.94l-.88.48.14-1.02-.72-.72 1-.18z"/>
+  <path d="M8.5 18h7"/>
 </svg>

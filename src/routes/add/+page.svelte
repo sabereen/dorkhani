@@ -133,7 +133,6 @@
 								<strong>خصوصی</strong>
 								<small>فقط کسانی که لینک را دارند به ختم دسترسی خواهند داشت.</small>
 							</span>
-							<span class="ui-badge ui-badge-neutral">پیشنهادی</span>
 						</label>
 
 						<label class="add-choice" data-selected={access === 'public'}>
@@ -179,7 +178,7 @@
 <style>
 	.add-shell {
 		width: 100%;
-		max-width: 44rem;
+		max-width: 42rem;
 		margin-right: auto;
 		margin-left: auto;
 	}
@@ -187,7 +186,7 @@
 	.add-intro {
 		display: flex;
 		align-items: center;
-		padding: 1rem 0.25rem 1.25rem;
+		padding: 0.65rem 0.25rem 0.85rem;
 	}
 
 	.add-intro > * + * {
@@ -196,15 +195,15 @@
 
 	.add-intro-icon {
 		display: flex;
-		width: 4rem;
-		height: 4rem;
-		flex: 0 0 4rem;
+		width: 3.35rem;
+		height: 3.35rem;
+		flex: 0 0 3.35rem;
 		align-items: center;
 		justify-content: center;
 		border-radius: 1.25rem;
 		background: var(--ui-color-primary-soft);
 		color: var(--ui-color-primary);
-		font-size: 2rem;
+		font-size: 1.7rem;
 		transform: rotate(-4deg);
 	}
 
@@ -217,16 +216,16 @@
 	}
 
 	.add-intro h2 {
-		margin-top: 0.15rem;
-		font-size: 1.35rem;
+		margin-top: 0.1rem;
+		font-size: 1.25rem;
 		font-weight: 900;
 	}
 
 	.add-intro > div:last-child > p:last-child {
-		margin-top: 0.35rem;
+		margin-top: 0.2rem;
 		color: var(--ui-color-text-muted);
-		font-size: 0.88rem;
-		line-height: 1.8;
+		font-size: 0.8rem;
+		line-height: 1.7;
 	}
 
 	.add-eyebrow {
@@ -244,7 +243,7 @@
 	}
 
 	.add-section {
-		padding: 1.25rem;
+		padding: 1rem;
 	}
 
 	.add-section + .add-section {
@@ -254,18 +253,18 @@
 	.add-section-heading {
 		display: flex;
 		align-items: flex-start;
-		margin-bottom: 1rem;
+		margin-bottom: 0.75rem;
 	}
 
 	.add-section-heading > * + * {
-		margin-right: 0.75rem;
+		margin-right: 0.6rem;
 	}
 
 	.add-step {
 		display: flex;
-		width: 2rem;
-		height: 2rem;
-		flex: 0 0 2rem;
+		width: 1.8rem;
+		height: 1.8rem;
+		flex: 0 0 1.8rem;
 		align-items: center;
 		justify-content: center;
 		border-radius: 0.7rem;
@@ -281,16 +280,20 @@
 	}
 
 	.add-section-heading p {
-		margin-top: 0.2rem;
+		margin-top: 0.1rem;
 		color: var(--ui-color-text-muted);
 		font-size: 0.75rem;
-		line-height: 1.7;
+		line-height: 1.6;
 	}
 
 	.add-fields {
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
-		grid-gap: 0.35rem;
+		grid-gap: 0.25rem;
+	}
+
+	.add-fields :global(.ui-textarea) {
+		min-height: 5.5rem;
 	}
 
 	.add-optional {
@@ -302,14 +305,14 @@
 	.add-choice-grid {
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
-		grid-gap: 0.65rem;
+		grid-gap: 0.5rem;
 	}
 
 	.add-choice,
 	.add-series {
 		display: flex;
 		align-items: center;
-		padding: 0.85rem;
+		padding: 0.7rem;
 		border: 1px solid var(--ui-color-border);
 		border-radius: var(--ui-radius-md);
 		background: var(--ui-color-surface-muted);
@@ -334,20 +337,20 @@
 
 	.add-choice > * + *,
 	.add-series > * + * {
-		margin-right: 0.65rem;
+		margin-right: 0.55rem;
 	}
 
 	.add-choice-icon {
 		display: flex;
-		width: 2.25rem;
-		height: 2.25rem;
-		flex: 0 0 2.25rem;
+		width: 2rem;
+		height: 2rem;
+		flex: 0 0 2rem;
 		align-items: center;
 		justify-content: center;
 		border-radius: 0.7rem;
 		background: var(--ui-color-surface);
 		color: var(--ui-color-primary);
-		font-size: 1.2rem;
+		font-size: 1.05rem;
 	}
 
 	.add-choice-copy {
@@ -363,10 +366,10 @@
 	}
 
 	.add-choice-copy small {
-		margin-top: 0.15rem;
+		margin-top: 0.1rem;
 		color: var(--ui-color-text-muted);
 		font-size: 0.7rem;
-		line-height: 1.7;
+		line-height: 1.6;
 	}
 
 	.add-choice .ui-badge {
@@ -374,24 +377,24 @@
 	}
 
 	.add-series {
-		margin-top: 0.65rem;
+		margin-top: 0.5rem;
 	}
 
 	.add-submit {
-		padding: 1rem 1.25rem 1.25rem;
+		padding: 0.85rem 1rem 1rem;
 		border-top: 1px solid var(--ui-color-border);
 		background: var(--ui-color-surface-muted);
 	}
 
 	.add-submit p {
-		margin-bottom: 0.65rem;
+		margin-bottom: 0.5rem;
 		font-size: 0.72rem;
 		text-align: center;
 	}
 
 	@media (min-width: 640px) {
 		.add-section {
-			padding: 1.5rem;
+			padding: 1.2rem;
 		}
 
 		.add-choice-grid {
@@ -399,7 +402,7 @@
 		}
 
 		.add-submit {
-			padding: 1.25rem 1.5rem 1.5rem;
+			padding: 1rem 1.2rem 1.2rem;
 		}
 	}
 

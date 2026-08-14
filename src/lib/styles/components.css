@@ -2359,11 +2359,21 @@
 
 .ui-tabs {
 	position: relative;
+	isolation: isolate;
 	display: grid;
-	padding: 0.25rem;
+	min-width: 0;
+	padding: 0.3rem;
 	border: 1px solid var(--ui-color-border);
-	border-radius: var(--ui-radius-md);
-	background: var(--ui-color-surface-muted);
+	border-radius: 1rem;
+	background: linear-gradient(
+		180deg,
+		var(--ui-color-surface-muted) 0%,
+		var(--ui-color-surface-strong) 160%
+	);
+	box-shadow:
+		inset 0 1px 0 var(--ui-color-surface),
+		inset 0 -1px 2px rgba(15, 23, 42, 0.04),
+		var(--ui-shadow-sm);
 }
 
 .ui-tab-indicator {
@@ -2372,48 +2382,130 @@
 	right: 0;
 	bottom: 0;
 	left: 0;
-	padding: 0.25rem;
-	transition: transform 180ms ease;
+	z-index: -1;
+	padding: 0.3rem;
+	pointer-events: none;
+	will-change: transform;
+	transition:
+		transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+		opacity 160ms ease;
+}
+
+.ui-tab-indicator-hidden {
+	opacity: 0;
 }
 
 .ui-tab-indicator-inner {
+	position: relative;
 	height: 100%;
-	border-radius: 0.55rem;
-	background: var(--ui-color-surface);
-	box-shadow: var(--ui-shadow-sm);
+	border: 1px solid var(--ui-color-primary-soft);
+	border-radius: 0.72rem;
+	background: linear-gradient(
+		145deg,
+		var(--ui-color-surface) 0%,
+		var(--ui-color-surface) 62%,
+		var(--ui-color-primary-soft) 145%
+	);
+	box-shadow:
+		0 4px 12px rgba(15, 23, 42, 0.1),
+		inset 0 1px 0 var(--ui-color-surface);
+	overflow: hidden;
+}
+
+.ui-tab-indicator-inner::after {
+	position: absolute;
+	top: 0;
+	right: 14%;
+	left: 14%;
+	height: 1px;
+	background: var(--ui-color-primary);
+	content: '';
+	opacity: 0.5;
 }
 
 .ui-tab {
 	position: relative;
-	z-index: 1;
 	display: flex;
-	height: 2.25rem;
+	min-width: 0;
+	height: 2.7rem;
+	padding: 0 0.75rem;
+	border: 0;
+	border-radius: 0.72rem;
 	align-items: center;
 	justify-content: center;
-	border: 0;
+	background: transparent;
 	color: var(--ui-color-text-muted);
+	font: inherit;
+	font-size: 0.82rem;
+	font-weight: 600;
+	line-height: 1.2;
+	text-align: center;
+	text-decoration: none;
+	white-space: nowrap;
 	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
+	transition:
+		color 180ms ease,
+		transform 180ms ease,
+		box-shadow 180ms ease;
 }
 
-.ui-tab-input {
-	position: absolute;
-	width: 1px;
-	height: 1px;
-	padding: 0;
-	border: 0;
-	margin: -1px;
-	overflow: hidden;
-	clip: rect(0, 0, 0, 0);
+.ui-tab:hover {
+	color: var(--ui-color-primary-hover);
+	transform: translateY(-1px);
 }
 
-.ui-tab-input:focus + .ui-tab {
-	outline: 3px solid var(--ui-color-focus);
-	outline-offset: -2px;
+.ui-tab:focus {
+	outline: 0;
+	box-shadow: inset 0 0 0 2px var(--ui-color-primary);
 }
 
 .ui-tab-active {
 	color: var(--ui-color-primary);
 	font-weight: 800;
+}
+
+.ui-tab-active:hover {
+	color: var(--ui-color-primary-hover);
+}
+
+.ui-tab-icon {
+	display: flex;
+	flex: 0 0 auto;
+	width: 1.7rem;
+	height: 1.7rem;
+	margin-left: 0.38rem;
+	border-radius: 0.52rem;
+	align-items: center;
+	justify-content: center;
+	color: inherit;
+	transition:
+		background 180ms ease,
+		transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ui-tab-icon svg {
+	width: 1.05rem;
+	height: 1.05rem;
+}
+
+.ui-tab-active .ui-tab-icon {
+	background: var(--ui-color-primary-soft);
+	transform: scale(1.04);
+}
+
+.ui-tab-label {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.ui-tab-indicator,
+	.ui-tab,
+	.ui-tab-icon {
+		transition-duration: 1ms;
+	}
 }
 
 .ui-steps {

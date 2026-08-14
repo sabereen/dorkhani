@@ -670,9 +670,9 @@
 .ui-select {
 	display: block;
 	width: 100%;
-	border: 1px solid var(--ui-color-border);
+	border: 1px solid var(--ui-color-control-border);
 	border-radius: var(--ui-radius-md);
-	background: var(--ui-color-surface-raised);
+	background: var(--ui-color-control-surface);
 	color: var(--ui-color-text);
 	box-shadow: var(--ui-shadow-inset);
 	-webkit-appearance: none;
@@ -699,14 +699,22 @@
 .ui-input:hover,
 .ui-textarea:hover,
 .ui-select:hover {
-	border-color: var(--ui-color-border-strong);
+	border-color: var(--ui-color-primary);
+	background: var(--ui-color-control-hover);
 }
 
 .ui-input:focus,
 .ui-textarea:focus,
 .ui-select:focus {
 	border-color: var(--ui-color-primary);
+	background: var(--ui-color-control-surface);
 	box-shadow: 0 0 0 3px var(--ui-color-focus), var(--ui-shadow-inset);
+}
+
+.ui-input::placeholder,
+.ui-textarea::placeholder {
+	color: var(--ui-color-text-subtle);
+	opacity: 1;
 }
 
 .ui-input[aria-invalid='true'],
@@ -717,22 +725,28 @@
 }
 
 .ui-field-error {
-	display: block;
-	height: 1.45rem;
-	padding-top: 0.2rem;
+	display: grid;
+	grid-template-rows: 0fr;
 	color: var(--ui-color-danger);
 	font-size: 0.68rem;
 	font-weight: 700;
-	line-height: 1.25rem;
 	opacity: 0;
-	overflow: hidden;
 	transform: translateY(-0.25rem);
 	transition:
+		grid-template-rows 180ms ease,
 		opacity 180ms ease,
 		transform 180ms ease;
 }
 
-.ui-field-error:before {
+.ui-field-error-content {
+	min-height: 0;
+	padding-top: 0;
+	line-height: 1.45rem;
+	overflow: hidden;
+	transition: padding-top 180ms ease;
+}
+
+.ui-field-error-content:before {
 	display: inline-block;
 	width: 0.35rem;
 	height: 0.35rem;
@@ -744,8 +758,13 @@
 }
 
 .ui-field-error[data-visible='true'] {
+	grid-template-rows: 1fr;
 	opacity: 1;
 	transform: translateY(0);
+}
+
+.ui-field-error[data-visible='true'] .ui-field-error-content {
+	padding-top: 0.2rem;
 }
 
 .ui-form-status-slot {
@@ -772,6 +791,7 @@
 
 @media (prefers-reduced-motion: reduce) {
 	.ui-field-error,
+	.ui-field-error-content,
 	.ui-form-status-slot .ui-alert {
 		animation: none;
 		transition: none;
@@ -790,8 +810,8 @@
 	height: 1.4rem;
 	flex: 0 0 1.4rem;
 	margin: 0;
-	border: 1px solid var(--ui-color-border-strong);
-	background: var(--ui-color-surface-raised);
+	border: 1px solid var(--ui-color-control-border);
+	background: var(--ui-color-control-surface);
 	box-shadow: var(--ui-shadow-inset);
 	vertical-align: middle;
 	-webkit-appearance: none;

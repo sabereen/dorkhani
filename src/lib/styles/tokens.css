@@ -13,6 +13,9 @@
 	--ui-color-text-subtle: #849188;
 	--ui-color-border: #d8d5c9;
 	--ui-color-border-strong: #b9c1b9;
+	--ui-color-control-surface: #ffffff;
+	--ui-color-control-hover: #f8fbf9;
+	--ui-color-control-border: #aeb9b1;
 	--ui-color-primary: #176b55;
 	--ui-color-primary-hover: #105643;
 	--ui-color-primary-active: #0b4335;
@@ -73,6 +76,9 @@
 	--ui-color-text-subtle: #7f968c;
 	--ui-color-border: #28443b;
 	--ui-color-border-strong: #3c6154;
+	--ui-color-control-surface: #081612;
+	--ui-color-control-hover: #0b201a;
+	--ui-color-control-border: #45695d;
 	--ui-color-primary: #55c8a0;
 	--ui-color-primary-hover: #74d8b5;
 	--ui-color-primary-active: #3eb78c;
@@ -127,6 +133,9 @@
 		--ui-color-text-subtle: #7f968c;
 		--ui-color-border: #28443b;
 		--ui-color-border-strong: #3c6154;
+		--ui-color-control-surface: #081612;
+		--ui-color-control-hover: #0b201a;
+		--ui-color-control-border: #45695d;
 		--ui-color-primary: #55c8a0;
 		--ui-color-primary-hover: #74d8b5;
 		--ui-color-primary-active: #3eb78c;

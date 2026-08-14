@@ -178,7 +178,7 @@
 <style>
 	.add-shell {
 		width: 100%;
-		max-width: 42rem;
+		max-width: 44rem;
 		margin-right: auto;
 		margin-left: auto;
 	}
@@ -186,7 +186,17 @@
 	.add-intro {
 		display: flex;
 		align-items: center;
-		padding: 0.65rem 0.25rem 0.85rem;
+		margin-bottom: 0.85rem;
+		padding: 1.1rem;
+		border: 1px solid var(--ui-color-border);
+		border-radius: var(--ui-radius-lg);
+		background: linear-gradient(
+			135deg,
+			var(--ui-color-primary-softer),
+			var(--ui-color-surface-raised) 62%,
+			var(--ui-color-accent-soft)
+		);
+		box-shadow: var(--ui-shadow-sm);
 	}
 
 	.add-intro > * + * {
@@ -201,9 +211,11 @@
 		align-items: center;
 		justify-content: center;
 		border-radius: 1.25rem;
-		background: var(--ui-color-primary-soft);
-		color: var(--ui-color-primary);
+		border: 1px solid var(--ui-color-accent);
+		background: var(--ui-color-accent-soft);
+		color: var(--ui-color-accent);
 		font-size: 1.7rem;
+		box-shadow: var(--ui-shadow-sm);
 		transform: rotate(-4deg);
 	}
 
@@ -235,6 +247,9 @@
 	}
 
 	.add-form {
+		border-color: var(--ui-color-control-border);
+		border-top: 3px solid var(--ui-color-primary);
+		background: var(--ui-color-surface-raised);
 		box-shadow: var(--ui-shadow-md);
 	}
 
@@ -243,7 +258,8 @@
 	}
 
 	.add-section {
-		padding: 1rem;
+		padding: 1.15rem;
+		background: var(--ui-color-surface-raised);
 	}
 
 	.add-section + .add-section {
@@ -253,7 +269,7 @@
 	.add-section-heading {
 		display: flex;
 		align-items: flex-start;
-		margin-bottom: 0.75rem;
+		margin-bottom: 1rem;
 	}
 
 	.add-section-heading > * + * {
@@ -272,6 +288,17 @@
 		color: var(--ui-color-primary);
 		font-size: 0.8rem;
 		font-weight: 900;
+		box-shadow: inset 0 0 0 1px var(--ui-color-border);
+	}
+
+	.add-section:nth-of-type(2) .add-step {
+		background: var(--ui-color-info-soft);
+		color: var(--ui-color-info);
+	}
+
+	.add-section:nth-of-type(3) .add-step {
+		background: var(--ui-color-accent-soft);
+		color: var(--ui-color-accent);
 	}
 
 	.add-section-heading h3 {
@@ -289,17 +316,60 @@
 	.add-fields {
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
-		grid-gap: 0.25rem;
+		grid-gap: 0.35rem;
+	}
+
+	.add-fields :global(.ui-field-label) {
+		color: var(--ui-color-text-soft);
+		font-size: 0.76rem;
+	}
+
+	.add-fields :global(.ui-input),
+	.add-fields :global(.ui-textarea) {
+		border-radius: 0.9rem;
+	}
+
+	.add-fields :global(.ui-input) {
+		height: 3.25rem;
 	}
 
 	.add-fields :global(.ui-textarea) {
-		min-height: 5.5rem;
+		min-height: 6rem;
 	}
 
 	.add-optional {
-		margin-right: 0.35rem;
+		margin-right: 0.45rem;
+		padding: 0.1rem 0.4rem;
+		border-radius: 9999px;
+		background: var(--ui-color-accent-soft);
+		color: var(--ui-color-accent);
 		font-size: 0.65rem;
-		font-weight: 500;
+		font-weight: 800;
+	}
+
+	.add-form :global(.ui-range-type-picker-option) {
+		border-color: var(--ui-color-control-border);
+		background: var(--ui-color-control-surface);
+		box-shadow: var(--ui-shadow-inset);
+	}
+
+	.add-form :global(.ui-range-type-picker-option:hover) {
+		border-color: var(--ui-color-primary);
+		background: var(--ui-color-primary-softer);
+	}
+
+	.add-form :global(.ui-range-type-picker-option[data-selected='true']) {
+		background: var(--ui-color-primary-softer);
+	}
+
+	.add-form :global(.ui-range-type-picker-icon) {
+		border: 1px solid var(--ui-color-border);
+		background: var(--ui-color-surface-muted);
+	}
+
+	.add-form :global(.ui-range-type-picker-option[data-selected='true'] .ui-range-type-picker-icon) {
+		border-color: var(--ui-color-primary);
+		background: var(--ui-color-primary);
 	}
 
 	.add-choice-grid {
@@ -313,9 +383,10 @@
 		display: flex;
 		align-items: center;
 		padding: 0.7rem;
-		border: 1px solid var(--ui-color-border);
+		border: 1px solid var(--ui-color-control-border);
 		border-radius: var(--ui-radius-md);
-		background: var(--ui-color-surface-muted);
+		background: var(--ui-color-control-surface);
+		box-shadow: var(--ui-shadow-inset);
 		cursor: pointer;
 		transition:
 			border-color 160ms ease,
@@ -325,13 +396,14 @@
 
 	.add-choice:hover,
 	.add-series:hover {
-		border-color: var(--ui-color-border-strong);
+		border-color: var(--ui-color-primary);
+		background: var(--ui-color-primary-softer);
 	}
 
 	.add-choice[data-selected='true'],
 	.add-series[data-selected='true'] {
 		border-color: var(--ui-color-primary);
-		background: var(--ui-color-primary-soft);
+		background: var(--ui-color-primary-softer);
 		box-shadow: 0 0 0 2px var(--ui-color-focus);
 	}
 
@@ -348,9 +420,18 @@
 		align-items: center;
 		justify-content: center;
 		border-radius: 0.7rem;
-		background: var(--ui-color-surface);
+		border: 1px solid var(--ui-color-border);
+		background: var(--ui-color-surface-muted);
 		color: var(--ui-color-primary);
 		font-size: 1.05rem;
+	}
+
+	.add-choice[data-selected='true'] .add-choice-icon,
+	.add-series[data-selected='true'] .add-choice-icon {
+		border-color: var(--ui-color-primary);
+		background: var(--ui-color-primary);
+		color: var(--ui-color-on-primary);
+		box-shadow: var(--ui-shadow-sm);
 	}
 
 	.add-choice-copy {
@@ -377,9 +458,13 @@
 	}
 
 	.add-submit {
-		padding: 0.85rem 1rem 1rem;
+		padding: 1rem;
 		border-top: 1px solid var(--ui-color-border);
 		background: var(--ui-color-surface-muted);
+	}
+
+	.add-submit :global(.ui-btn-primary) {
+		box-shadow: 0 8px 22px var(--ui-color-focus);
 	}
 
 	.add-submit p {
@@ -390,7 +475,7 @@
 
 	@media (min-width: 640px) {
 		.add-section {
-			padding: 1.2rem;
+			padding: 1.35rem;
 		}
 
 		.add-choice-grid {

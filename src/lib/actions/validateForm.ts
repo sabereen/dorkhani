@@ -81,23 +81,29 @@ export const validateForm: Action<HTMLFormElement> = (form) => {
 		(element): element is ValidatableControl =>
 			element instanceof Element && isValidatableControl(element) && hasValidationRule(element),
 	)
-	const errorElements = new Map<ValidatableControl, HTMLElement>()
+	const errorElements = new Map<
+		ValidatableControl,
+		{ root: HTMLElement; content: HTMLElement }
+	>()
 	const touched = new Set<ValidatableControl>()
 	let submitted = false
 
 	controls.forEach((control, index) => {
 		const error = document.createElement('span')
+		const errorContent = document.createElement('span')
 		error.id = errorId(control, index)
 		error.className = 'ui-field-error'
+		errorContent.className = 'ui-field-error-content'
 		error.setAttribute('aria-live', 'polite')
 		error.setAttribute('aria-atomic', 'true')
+		error.append(errorContent)
 
 		const describedBy = control.getAttribute('aria-describedby')
 		control.setAttribute('aria-describedby', [describedBy, error.id].filter(Boolean).join(' '))
 
 		const host = control.closest('[data-ui-validation-host]') || control
 		host.insertAdjacentElement('afterend', error)
-		errorElements.set(control, error)
+		errorElements.set(control, { root: error, content: errorContent })
 	})
 
 	function render(control: ValidatableControl, force = false) {
@@ -106,8 +112,8 @@ export const validateForm: Action<HTMLFormElement> = (form) => {
 
 		const valid = isControlValid(control)
 		const showError = !valid && (force || submitted || touched.has(control))
-		error.textContent = showError ? validationMessage(control) : ''
-		error.dataset.visible = String(showError)
+		error.content.textContent = showError ? validationMessage(control) : ''
+		error.root.dataset.visible = String(showError)
 		control.setAttribute('aria-invalid', String(showError))
 		return valid
 	}
@@ -163,12 +169,12 @@ export const validateForm: Action<HTMLFormElement> = (form) => {
 			for (const [control, error] of errorElements) {
 				const describedBy = (control.getAttribute('aria-describedby') || '')
 					.split(' ')
-					.filter((id) => id && id !== error.id)
+					.filter((id) => id && id !== error.root.id)
 					.join(' ')
 				if (describedBy) control.setAttribute('aria-describedby', describedBy)
 				else control.removeAttribute('aria-describedby')
 				control.removeAttribute('aria-invalid')
-				error.remove()
+				error.root.remove()
 			}
 		},
 	}

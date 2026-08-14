@@ -4772,6 +4772,9 @@
 }
 
 .ui-khatm-map-head {
+	position: sticky;
+	top: 0;
+	z-index: 4;
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
 	border-bottom: 1px solid var(--ui-color-border);
@@ -4781,6 +4784,13 @@
 	font-size: 0.76rem;
 	font-weight: 900;
 	text-align: center;
+}
+
+.ui-khatm-map-scroll {
+	max-height: 68vh;
+	overflow-x: hidden;
+	overflow-y: auto;
+	scroll-behavior: smooth;
 }
 
 .ui-khatm-map-head span {
@@ -4795,12 +4805,8 @@
 	position: relative;
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
-	max-height: 68vh;
 	background: var(--ui-color-surface);
 	font-size: 0.7rem;
-	overflow-x: hidden;
-	overflow-y: auto;
-	scroll-behavior: smooth;
 }
 
 .ui-khatm-map-selectable {
@@ -4840,6 +4846,8 @@
 }
 
 .ui-khatm-map-range {
+	position: relative;
+	z-index: 2;
 	min-height: 1rem;
 	padding: 0.22rem;
 	border: 1px solid var(--ui-color-border);
@@ -4868,6 +4876,9 @@
 }
 
 .ui-khatm-map-picked > span {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 	padding: 0.2rem 0.55rem;
 	border: 1px solid var(--ui-color-border);
 	border-radius: 999px;
@@ -4875,25 +4886,29 @@
 	box-shadow: var(--ui-shadow-sm);
 }
 
+.ui-khatm-map-picked > span small {
+	margin-top: 0.1rem;
+	font-size: 0.62rem;
+	font-weight: 700;
+}
+
 .ui-khatm-map-finished {
 	border-top: 1px solid var(--ui-color-border-strong);
 	border-bottom: 1px solid var(--ui-color-border-strong);
-	background-color: var(--ui-color-surface-muted);
 	background-image: radial-gradient(var(--ui-color-text-muted) 1px, transparent 1px);
-	background-size: 7px 7px;
+	background-size: 10px 10px;
 	color: var(--ui-color-text-muted);
 }
 
 .ui-khatm-map-mine {
 	border-top: 1px solid var(--ui-color-primary);
 	border-bottom: 1px solid var(--ui-color-primary);
-	background-color: var(--ui-color-primary-soft);
 	background-image: repeating-linear-gradient(
 		-45deg,
 		transparent,
-		transparent 9px,
-		var(--ui-color-border-strong) 9px,
-		var(--ui-color-border-strong) 11px
+		transparent 14px,
+		var(--ui-color-primary) 14px,
+		var(--ui-color-primary) 15px
 	);
 	color: var(--ui-color-primary);
 	box-shadow: inset 0 0 0 1px var(--ui-color-primary);
@@ -4983,7 +4998,7 @@
 		justify-content: center;
 	}
 
-	.ui-khatm-map-grid {
+	.ui-khatm-map-scroll {
 		max-height: 62vh;
 	}
 

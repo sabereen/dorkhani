@@ -33,20 +33,29 @@
 	const maximumDailyAyahs = $derived(
 		Math.max(1, ...statistics.daily.map((item) => item.recitedAyahs)),
 	)
-	const dailyDateFormatter = new Intl.DateTimeFormat('fa-IR', {
+	const weeklyRecitedAyahs = $derived(
+		statistics.daily.reduce((total, item) => total + item.recitedAyahs, 0),
+	)
+	const dailyWeekdayFormatter = new Intl.DateTimeFormat('fa-IR', {
 		weekday: 'short',
+		timeZone: 'UTC',
+	})
+	const dailyDateFormatter = new Intl.DateTimeFormat('fa-IR', {
 		month: 'short',
 		day: 'numeric',
 		timeZone: 'UTC',
 	})
 
-	function formatDailyDate(date: string) {
+	function formatDailyWeekday(date: string) {
+		return dailyWeekdayFormatter.format(new Date(`${date}T00:00:00.000Z`))
+	}
+
+	function formatDailyShortDate(date: string) {
 		return dailyDateFormatter.format(new Date(`${date}T00:00:00.000Z`))
 	}
 
 	function dailyBarHeight(recitedAyahs: number) {
-		if (recitedAyahs === 0) return 0
-		return Math.max(8, Math.round((recitedAyahs / maximumDailyAyahs) * 100))
+		return Math.max(3, Math.round((recitedAyahs / maximumDailyAyahs) * 100))
 	}
 </script>
 
@@ -174,31 +183,54 @@
 
 		<div class="landing-daily-panel">
 			<div class="landing-daily-heading">
-				<span class="landing-daily-heading-icon" aria-hidden="true"><IconCalendar /></span>
-				<div>
-					<h3>هفت روز اخیر</h3>
-					<p>آمار روزانهٔ تلاوت و ختم‌های سامانه بر اساس زمان تهران</p>
+				<div class="landing-daily-title">
+					<span class="landing-daily-heading-icon" aria-hidden="true"><IconCalendar /></span>
+					<div>
+						<h3>نبض تلاوت در هفت روز اخیر</h3>
+						<p>روند روزانهٔ فعالیت سامانه بر اساس زمان تهران</p>
+					</div>
+				</div>
+				<div class="landing-daily-summary">
+					<strong>{weeklyRecitedAyahs.toLocaleString('fa')}</strong>
+					<span>آیه در این هفته</span>
 				</div>
 			</div>
-			<div class="landing-daily-scroll">
+
+			<div class="landing-daily-legend" aria-label="راهنمای نمودار">
+				<span class="landing-daily-legend-ayah">آیات تلاوت‌شده</span>
+				<span class="landing-daily-legend-created">ختم ایجادشده</span>
+				<span class="landing-daily-legend-completed">دور کامل‌شده</span>
+			</div>
+
+			<div class="landing-daily-chart-frame">
+				<div class="landing-daily-grid-lines" aria-hidden="true">
+					<span></span>
+					<span></span>
+					<span></span>
+					<span></span>
+				</div>
 				<ul class="landing-daily-list" aria-label="آمار فعالیت هفت روز اخیر">
 					{#each statistics.daily as item}
-						<li class="landing-daily-card">
-							<time datetime={item.date}>{formatDailyDate(item.date)}</time>
-							<div class="landing-daily-chart" aria-hidden="true">
-								<span style={`height: ${dailyBarHeight(item.recitedAyahs)}%`}></span>
-							</div>
-							<div class="landing-daily-primary">
+						<li>
+							<div class="landing-daily-bar-column">
 								<strong>{item.recitedAyahs.toLocaleString('fa')}</strong>
-								<span>آیه تلاوت‌شده</span>
+								<span
+									class="landing-daily-bar"
+									style={`height: ${dailyBarHeight(item.recitedAyahs)}%`}
+									aria-hidden="true"
+								></span>
 							</div>
+							<time datetime={item.date}>
+								<strong>{formatDailyWeekday(item.date)}</strong>
+								<span>{formatDailyShortDate(item.date)}</span>
+							</time>
 							<dl class="landing-daily-details">
 								<div>
-									<dt>ختم ایجادشده</dt>
+									<dt class="ui-sr-only">ختم ایجادشده</dt>
 									<dd>{item.createdKhatms.toLocaleString('fa')}</dd>
 								</div>
 								<div>
-									<dt>دور کامل‌شده</dt>
+									<dt class="ui-sr-only">دور کامل‌شده</dt>
 									<dd>{item.completedRounds.toLocaleString('fa')}</dd>
 								</div>
 							</dl>
@@ -799,19 +831,25 @@
 
 	.landing-daily-panel {
 		margin-top: 1rem;
-		padding: 1.5rem;
+		padding: 1.75rem;
 		border: 1px solid var(--ui-color-border);
 		border-radius: 1.5rem;
 		background: var(--ui-color-surface);
-		box-shadow: var(--ui-shadow-sm);
+		box-shadow: var(--ui-shadow-md);
 	}
 
 	.landing-daily-heading {
 		display: flex;
 		align-items: center;
+		justify-content: space-between;
 	}
 
-	.landing-daily-heading > * + * {
+	.landing-daily-title {
+		display: flex;
+		align-items: center;
+	}
+
+	.landing-daily-title > * + * {
 		margin-right: 0.75rem;
 	}
 
@@ -843,89 +881,185 @@
 		font-size: 0.75rem;
 	}
 
-	.landing-daily-scroll {
-		margin-top: 1rem;
-		padding-bottom: 0.25rem;
-		overflow-x: auto;
+	.landing-daily-summary {
+		padding: 0.65rem 1rem;
+		border: 1px solid var(--ui-color-border);
+		border-radius: 1rem;
+		background: var(--ui-color-primary-soft);
+		color: var(--ui-color-primary);
+		text-align: center;
+	}
+
+	.landing-daily-summary strong,
+	.landing-daily-summary span {
+		display: block;
+	}
+
+	.landing-daily-summary strong {
+		font-size: 1.2rem;
+		font-weight: 950;
+		line-height: 1.2;
+	}
+
+	.landing-daily-summary span {
+		margin-top: 0.15rem;
+		font-size: 0.65rem;
+		font-weight: 800;
+	}
+
+	.landing-daily-legend {
+		display: flex;
+		align-items: center;
+		margin-top: 1.25rem;
+		color: var(--ui-color-text-muted);
+		font-size: 0.68rem;
+		font-weight: 800;
+	}
+
+	.landing-daily-legend > * + * {
+		margin-right: 1.1rem;
+	}
+
+	.landing-daily-legend span {
+		display: inline-flex;
+		align-items: center;
+	}
+
+	.landing-daily-legend span::before {
+		display: inline-block;
+		width: 0.55rem;
+		height: 0.55rem;
+		margin-left: 0.4rem;
+		border-radius: 9999px;
+		background: var(--ui-color-primary);
+		content: '';
+	}
+
+	.landing-daily-legend .landing-daily-legend-ayah::before {
+		width: 1.25rem;
+		border-radius: 9999px 9999px 0.3rem 0.3rem;
+		background: linear-gradient(90deg, var(--ui-color-primary), var(--ui-color-success));
+	}
+
+	.landing-daily-legend .landing-daily-legend-created::before {
+		background: var(--ui-color-success);
+	}
+
+	.landing-daily-legend .landing-daily-legend-completed::before {
+		background: var(--ui-color-warning);
+	}
+
+	.landing-daily-chart-frame {
+		position: relative;
+		margin-top: 0.85rem;
+		padding: 1.35rem 1rem 0.85rem;
+		border: 1px solid var(--ui-color-border);
+		border-radius: 1.25rem;
+		background: var(--ui-color-surface-muted);
+		overflow: hidden;
+	}
+
+	.landing-daily-grid-lines {
+		position: absolute;
+		top: 1.35rem;
+		right: 1rem;
+		left: 1rem;
+		display: flex;
+		height: 12rem;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+
+	.landing-daily-grid-lines span {
+		display: block;
+		border-top: 1px dashed var(--ui-color-border);
 	}
 
 	.landing-daily-list {
+		position: relative;
+		z-index: 1;
 		display: grid;
-		min-width: 67rem;
-		grid-template-columns: repeat(7, minmax(8rem, 1fr));
-		grid-gap: 0.75rem;
+		grid-template-columns: repeat(7, minmax(0, 1fr));
+		grid-gap: 0.5rem;
 		margin: 0;
 		padding: 0;
 		list-style: none;
 	}
 
-	.landing-daily-card {
-		padding: 1rem;
-		border: 1px solid var(--ui-color-border);
-		border-radius: 1rem;
-		background: var(--ui-color-surface-muted);
+	.landing-daily-list > li {
+		display: grid;
+		min-width: 0;
+		grid-template-rows: 12rem 3.2rem 1.8rem;
 		text-align: center;
 	}
 
-	.landing-daily-card time {
-		color: var(--ui-color-text-muted);
-		font-size: 0.72rem;
-		font-weight: 800;
-	}
-
-	.landing-daily-chart {
+	.landing-daily-bar-column {
 		display: flex;
-		width: 2rem;
-		height: 4rem;
+		min-width: 0;
 		align-items: flex-end;
-		justify-content: center;
-		margin: 0.75rem auto 0;
+		justify-content: flex-end;
+		flex-direction: column;
+		padding: 0 0.35rem;
+	}
+
+	.landing-daily-bar-column strong {
+		align-self: center;
+		margin-bottom: 0.4rem;
+		padding: 0.12rem 0.35rem;
+		border: 1px solid var(--ui-color-border);
 		border-radius: 9999px;
-		background: var(--ui-color-surface-strong);
-		overflow: hidden;
-	}
-
-	.landing-daily-chart span {
-		display: block;
-		width: 100%;
-		border-radius: 9999px;
-		background: linear-gradient(180deg, var(--ui-color-primary), var(--ui-color-success));
-	}
-
-	.landing-daily-primary {
-		margin-top: 0.75rem;
-	}
-
-	.landing-daily-primary strong,
-	.landing-daily-primary span {
-		display: block;
-	}
-
-	.landing-daily-primary strong {
-		font-size: 1.25rem;
+		background: var(--ui-color-surface);
+		font-size: 0.72rem;
 		font-weight: 950;
+		box-shadow: var(--ui-shadow-sm);
 	}
 
-	.landing-daily-primary span {
-		margin-top: 0.15rem;
+	.landing-daily-bar {
+		display: block;
+		width: 56%;
+		min-width: 0.8rem;
+		max-width: 3.25rem;
+		align-self: center;
+		border-radius: 0.8rem 0.8rem 0.25rem 0.25rem;
+		background: linear-gradient(180deg, var(--ui-color-primary), var(--ui-color-success));
+		box-shadow: 0 8px 18px rgba(79, 70, 229, 0.2);
+	}
+
+	.landing-daily-list time strong,
+	.landing-daily-list time span {
+		display: block;
+	}
+
+	.landing-daily-list time {
+		padding-top: 0.6rem;
+		border-top: 2px solid var(--ui-color-border-strong);
+		color: var(--ui-color-text);
+	}
+
+	.landing-daily-list time strong {
+		font-size: 0.72rem;
+		font-weight: 900;
+	}
+
+	.landing-daily-list time span {
+		margin-top: 0.2rem;
 		color: var(--ui-color-text-muted);
-		font-size: 0.65rem;
+		font-size: 0.62rem;
 	}
 
 	.landing-daily-details {
-		margin: 0.8rem 0 0;
-		padding-top: 0.7rem;
-		border-top: 1px solid var(--ui-color-border);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin: 0;
 	}
 
 	.landing-daily-details div {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
+		min-width: 0;
 	}
 
 	.landing-daily-details div + div {
-		margin-top: 0.4rem;
+		margin-right: 0.35rem;
 	}
 
 	.landing-daily-details dt,
@@ -933,14 +1067,28 @@
 		margin: 0;
 	}
 
-	.landing-daily-details dt {
-		color: var(--ui-color-text-muted);
-		font-size: 0.62rem;
+	.landing-daily-details dd {
+		display: inline-flex;
+		align-items: center;
+		padding: 0.15rem 0.35rem;
+		border-radius: 9999px;
+		background: var(--ui-color-surface);
+		font-size: 0.68rem;
+		font-weight: 900;
 	}
 
-	.landing-daily-details dd {
-		font-size: 0.75rem;
-		font-weight: 900;
+	.landing-daily-details dd::before {
+		display: inline-block;
+		width: 0.38rem;
+		height: 0.38rem;
+		margin-left: 0.25rem;
+		border-radius: 9999px;
+		background: var(--ui-color-success);
+		content: '';
+	}
+
+	.landing-daily-details div + div dd::before {
+		background: var(--ui-color-warning);
 	}
 
 	.landing-section {
@@ -1490,7 +1638,88 @@
 		}
 
 		.landing-daily-panel {
-			padding: 1.25rem;
+			padding: 1.25rem 1rem;
+		}
+
+		.landing-daily-heading {
+			align-items: stretch;
+			flex-direction: column;
+		}
+
+		.landing-daily-summary {
+			display: flex;
+			align-items: baseline;
+			justify-content: center;
+			margin-top: 1rem;
+		}
+
+		.landing-daily-summary > * + * {
+			margin-right: 0.4rem;
+		}
+
+		.landing-daily-legend {
+			align-items: flex-start;
+			flex-wrap: wrap;
+			line-height: 1.8;
+		}
+
+		.landing-daily-legend > * + * {
+			margin-right: 0.75rem;
+		}
+
+		.landing-daily-chart-frame {
+			padding-right: 0.45rem;
+			padding-left: 0.45rem;
+		}
+
+		.landing-daily-grid-lines {
+			right: 0.45rem;
+			left: 0.45rem;
+			height: 9.5rem;
+		}
+
+		.landing-daily-list {
+			grid-gap: 0.15rem;
+		}
+
+		.landing-daily-list > li {
+			grid-template-rows: 9.5rem 3rem 1.65rem;
+		}
+
+		.landing-daily-bar-column {
+			padding: 0 0.15rem;
+		}
+
+		.landing-daily-bar-column strong {
+			padding: 0.1rem 0.2rem;
+			font-size: 0.6rem;
+		}
+
+		.landing-daily-bar {
+			max-width: 2rem;
+		}
+
+		.landing-daily-list time strong {
+			font-size: 0.62rem;
+		}
+
+		.landing-daily-list time span {
+			font-size: 0.54rem;
+		}
+
+		.landing-daily-details div + div {
+			margin-right: 0.15rem;
+		}
+
+		.landing-daily-details dd {
+			padding: 0.12rem 0.2rem;
+			font-size: 0.58rem;
+		}
+
+		.landing-daily-details dd::before {
+			width: 0.3rem;
+			height: 0.3rem;
+			margin-left: 0.15rem;
 		}
 
 		.landing-steps li {

@@ -169,7 +169,7 @@
 {#snippet rangeTypeOption(
 	type: RangeType,
 	title: string,
-	description: string,
+	_description: string,
 	meta: string,
 	recommended = false,
 )}
@@ -186,7 +186,6 @@
 			<span class="ui-khatm-commitment-title">
 				<strong>{title}</strong>
 			</span>
-			<span>{description}</span>
 		</span>
 		<span class="ui-khatm-commitment-meta">{meta}</span>
 		<span class="ui-khatm-commitment-arrow" aria-hidden="true"><IconArrow /></span>

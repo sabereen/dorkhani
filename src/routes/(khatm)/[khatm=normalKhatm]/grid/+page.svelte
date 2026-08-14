@@ -175,7 +175,7 @@
 				{#if !hideFinishedIntervals}
 					{#each rawParts as part (part.plain.id)}
 						{@const mine = participation.isMine(part)}
-						{@const label = getRangeLabel(part.start, part.end)}
+						{@const label = part.getTitle()}
 						<div
 							class="ui-khatm-map-picked col-span-3 col-start-1"
 							class:ui-khatm-map-finished={!mine}

@@ -13,7 +13,8 @@
 	type Props = { khatm: Khatm; featuredOrder?: number | null; canFeature?: boolean }
 
 	const { khatm, featuredOrder: initialFeaturedOrder = null, canFeature = false }: Props = $props()
-	const initialFeaturedOrderValue = /* svelte-ignore state_referenced_locally */ initialFeaturedOrder
+	const initialFeaturedOrderValue =
+		/* svelte-ignore state_referenced_locally */ initialFeaturedOrder
 	let reviewLoading = $state<ReviewAction | null>(null)
 	let featureLoading = $state(false)
 	let currentFeaturedOrder = $state(initialFeaturedOrderValue)

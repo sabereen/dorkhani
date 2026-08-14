@@ -23,11 +23,7 @@
 
 	let tablist: HTMLDivElement
 
-	function activateTab(
-		event: MouseEvent,
-		slug: TabSlug,
-		onClick?: (event: MouseEvent) => void,
-	) {
+	function activateTab(event: MouseEvent, slug: TabSlug, onClick?: (event: MouseEvent) => void) {
 		value = slug
 		onClick?.(event)
 	}
@@ -67,6 +63,7 @@
 	style:grid-template-columns={`repeat(${Math.max(tabs.length, 1)}, minmax(0, 1fr))`}
 	role="tablist"
 	aria-orientation="horizontal"
+	tabindex="-1"
 	onkeydown={handleKeydown}
 >
 	{#if tabs.length > 0}

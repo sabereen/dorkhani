@@ -37,12 +37,12 @@
 	let juzQuery = $state('')
 	const { rangeType: initialRangeType } = /* svelte-ignore state_referenced_locally */ khatm
 	const initialSubrangeType =
-		initialRangeType === 'hizbQuarter' || initialRangeType === 'page' || initialRangeType === 'surah'
+		initialRangeType === 'hizbQuarter' ||
+		initialRangeType === 'page' ||
+		initialRangeType === 'surah'
 			? initialRangeType
 			: 'surah'
-	let subrangeType = $state<SubrangeType>(
-		initialSubrangeType,
-	)
+	let subrangeType = $state<SubrangeType>(initialSubrangeType)
 
 	const juzRanges = Juz.getAll().map(juz_toRange)
 	const availableJuzCount = $derived(

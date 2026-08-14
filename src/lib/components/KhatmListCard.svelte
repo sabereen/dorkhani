@@ -15,7 +15,9 @@
 </script>
 
 <article class:ui-khatm-list-card-finished={khatm.finished} class="ui-khatm-list-card">
-	<span class="ui-khatm-list-card-icon" aria-hidden="true"><RangeTypeIcon type={khatm.rangeType} /></span>
+	<span class="ui-khatm-list-card-icon" aria-hidden="true"
+		><RangeTypeIcon type={khatm.rangeType} /></span
+	>
 
 	<div class="ui-khatm-list-card-main">
 		<div class="ui-khatm-list-card-heading">

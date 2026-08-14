@@ -12,9 +12,13 @@
 	let { items, selectedIndex = $bindable(), title, content }: Props = $props()
 	const id = $props.id()
 
-	function gridRows(): TransitionConfig {
+	function gridRows(node: Element): TransitionConfig {
+		const prefersReducedMotion =
+			node.ownerDocument.defaultView?.matchMedia('(prefers-reduced-motion: reduce)').matches ??
+			false
+
 		return {
-			duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 250,
+			duration: prefersReducedMotion ? 0 : 250,
 			easing: cubicOut,
 			css: (t) => `grid-template-rows: ${t}fr`,
 		}

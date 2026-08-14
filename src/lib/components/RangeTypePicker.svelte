@@ -34,7 +34,8 @@
 			data-disabled={disabled}
 		>
 			<input class="ui-radio" type="radio" {name} value="free" bind:group={value} {disabled} />
-			<span class="ui-range-type-picker-icon" aria-hidden="true"><RangeTypeIcon type="free" /></span>
+			<span class="ui-range-type-picker-icon" aria-hidden="true"><RangeTypeIcon type="free" /></span
+			>
 			<span class="ui-range-type-picker-copy">
 				<strong>{details.free}</strong>
 				<small>هر همراه می‌تواند به اندازهٔ فرصت خودش، از بخش‌های آزاد قرآن انتخاب کند.</small>
@@ -50,7 +51,9 @@
 				data-disabled={disabled}
 			>
 				<input class="ui-radio" type="radio" {name} value={option} bind:group={value} {disabled} />
-				<span class="ui-range-type-picker-icon" aria-hidden="true"><RangeTypeIcon type={option} /></span>
+				<span class="ui-range-type-picker-icon" aria-hidden="true"
+					><RangeTypeIcon type={option} /></span
+				>
 				<span class="ui-range-type-picker-copy">
 					<strong>{details[option]}</strong>
 				</span>
@@ -65,11 +68,13 @@
 			data-disabled={disabled}
 		>
 			<input class="ui-radio" type="radio" {name} value="ayah" bind:group={value} {disabled} />
-			<span class="ui-range-type-picker-icon" aria-hidden="true"><RangeTypeIcon type="ayah" /></span>
+			<span class="ui-range-type-picker-icon" aria-hidden="true"><RangeTypeIcon type="ayah" /></span
+			>
 			<span class="ui-range-type-picker-copy">
 				<strong>{details.ayah}</strong>
 				<small>
-					آیه‌ها به‌ترتیب میان همراهان پخش می‌شوند؛ در این مدل، هر نفر یک بازهٔ دلخواه انتخاب نمی‌کند.
+					آیه‌ها به‌ترتیب میان همراهان پخش می‌شوند؛ در این مدل، هر نفر یک بازهٔ دلخواه انتخاب
+					نمی‌کند.
 				</small>
 			</span>
 		</label>

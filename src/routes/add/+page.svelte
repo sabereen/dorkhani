@@ -372,10 +372,6 @@
 		line-height: 1.6;
 	}
 
-	.add-choice .ui-badge {
-		flex: 0 0 auto;
-	}
-
 	.add-series {
 		margin-top: 0.5rem;
 	}
@@ -416,10 +412,6 @@
 
 		.add-intro h2 {
 			font-size: 1.15rem;
-		}
-
-		.add-choice .ui-badge {
-			display: none;
 		}
 	}
 </style>

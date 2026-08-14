@@ -23,6 +23,7 @@
 	}
 </script>
 
+<!-- eslint-disable-next-line svelte/no-at-html-tags -- SVGs are local static imports. -->
 <span class="ui-range-type-icon" aria-hidden="true">{@html icons[type]}</span>
 
 <style>

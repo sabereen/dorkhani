@@ -61,8 +61,11 @@
 		return `${filters.view}|${filters.rangeType || ''}|${filters.q}`
 	}
 
-	const { list: initialList, nextCursor: initialNextCursor, filters: initialFilters } =
-		/* svelte-ignore state_referenced_locally */ data
+	const {
+		list: initialList,
+		nextCursor: initialNextCursor,
+		filters: initialFilters,
+	} = /* svelte-ignore state_referenced_locally */ data
 	const initialDirectoryState = {
 		khatms: Khatm.fromPlainList(initialList),
 		nextCursor: initialNextCursor,

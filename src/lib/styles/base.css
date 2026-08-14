@@ -56,6 +56,34 @@ textarea:focus,
 	color: var(--ui-color-primary-hover);
 }
 
+* {
+	scrollbar-color: var(--ui-color-primary) var(--ui-color-surface-inset);
+	scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+	width: 0.75rem;
+	height: 0.75rem;
+}
+
+::-webkit-scrollbar-track {
+	background: var(--ui-color-surface-inset);
+}
+
+::-webkit-scrollbar-thumb {
+	border: 0.18rem solid var(--ui-color-surface-inset);
+	border-radius: var(--ui-radius-lg);
+	background: var(--ui-color-primary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--ui-color-primary-hover);
+}
+
+::-webkit-scrollbar-corner {
+	background: var(--ui-color-surface-inset);
+}
+
 .ui-text {
 	color: var(--ui-color-text);
 }

@@ -173,6 +173,8 @@
 		</div>
 	</section>
 
+	<ZekrActions {zekr} bind:myCount />
+
 	{#if zekr.zekrText}
 		<section class="ui-zekr-text-card" aria-labelledby="zekr-text-title">
 			<div class="ui-zekr-section-heading">
@@ -185,6 +187,4 @@
 			<div dir="auto" class="ui-zekr-text">{zekr.zekrText}</div>
 		</section>
 	{/if}
-
-	<ZekrActions {zekr} bind:myCount />
 </main>

@@ -109,7 +109,9 @@
 			<span>نمایش ابتدا و انتهای بازه</span>
 		</label>
 	</div>
-	<div class="ui-alert ui-alert-info">برای پذیرفتن قرائت، روی بخش روشن مورد نظر بزنید.</div>
+	<div>
+		<div class="ui-alert ui-alert-info">برای پذیرفتن قرائت، روی بخش مورد نظر بزنید.</div>
+	</div>
 	<div class="ui-khatm-map-legend" aria-label="راهنمای وضعیت بازه‌ها">
 		<span><i class="ui-khatm-map-key ui-khatm-map-key-free" aria-hidden="true"></i>آزاد</span>
 		<span

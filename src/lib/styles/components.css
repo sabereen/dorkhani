@@ -2632,7 +2632,7 @@
 
 .ui-header {
 	position: sticky;
-	top: 0.5rem;
+	top: 1.5rem;
 	z-index: 100;
 	border: 1px solid var(--ui-color-border);
 	border-radius: var(--ui-radius-lg);
@@ -3221,6 +3221,10 @@
 }
 
 @media (min-width: 768px) {
+	.ui-header {
+		top: 2.25rem;
+	}
+
 	.ui-card-body {
 		padding: 1.5rem;
 	}

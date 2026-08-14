@@ -2502,6 +2502,16 @@
 	outline-offset: 2px;
 }
 
+.ui-accordion-panel {
+	display: grid;
+	grid-template-rows: 1fr;
+}
+
+.ui-accordion-panel-inner {
+	min-height: 0;
+	overflow: hidden;
+}
+
 .ui-toast {
 	position: fixed;
 	right: 1rem;
@@ -7337,7 +7347,9 @@
 }
 
 .ui-khatm-browser-accordion .ui-accordion-trigger:focus {
-	outline-offset: -3px;
+	border-radius: 1rem;
+	outline: 0;
+	box-shadow: 0 0 0 3px var(--ui-color-focus) inset;
 }
 
 .ui-khatm-browser-juz {

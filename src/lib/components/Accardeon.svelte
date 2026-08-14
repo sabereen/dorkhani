@@ -1,6 +1,7 @@
 <script lang="ts" generics="T">
 	import type { Snippet } from 'svelte'
-	import { fly } from 'svelte/transition'
+	import { cubicOut } from 'svelte/easing'
+	import type { TransitionConfig } from 'svelte/transition'
 
 	type Props = {
 		items: T[]
@@ -10,6 +11,14 @@
 	}
 	let { items, selectedIndex = $bindable(), title, content }: Props = $props()
 	const id = $props.id()
+
+	function gridRows(): TransitionConfig {
+		return {
+			duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 250,
+			easing: cubicOut,
+			css: (t) => `grid-template-rows: ${t}fr`,
+		}
+	}
 </script>
 
 <div class="ui-join">
@@ -29,11 +38,14 @@
 			{#if selected}
 				<div
 					id={`${id}_accordion_panel_${i}`}
+					class="ui-accordion-panel"
 					role="region"
 					aria-labelledby={`${id}_accordion_trigger_${i}`}
-					in:fly={{ y: 30, duration: 200 }}
+					transition:gridRows
 				>
-					{@render content(item, i, selected)}
+					<div class="ui-accordion-panel-inner">
+						{@render content(item, i, selected)}
+					</div>
 				</div>
 			{/if}
 		</section>

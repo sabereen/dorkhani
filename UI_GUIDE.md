@@ -101,6 +101,31 @@ supported.
 Fonts are also tokens. Do not set a page-local font family; this keeps a future move from
 Vazirmatn to the official Nian files localized to the token layer.
 
+### Visual direction and surface hierarchy
+
+The application uses a contemporary spiritual palette. Light mode is warm ivory with deep
+emerald actions; dark mode is ink green with luminous emerald actions and restrained muted-gold
+accents. Purple/indigo must not be reintroduced as a default brand color.
+
+Choose the surface token by elevation rather than by appearance:
+
+- `--ui-color-page` is the document canvas and `--ui-color-surface-inset` is a recessed track or
+  well.
+- `--ui-color-surface`, `--ui-color-surface-muted`, and `--ui-color-surface-strong` build normal
+  grouped regions.
+- `--ui-color-surface-raised` is reserved for cards, menus, dialogs, and controls elevated above
+  their surroundings.
+- `--ui-color-text`, `--ui-color-text-soft`, `--ui-color-text-muted`, and
+  `--ui-color-text-subtle` provide descending emphasis. Do not use opacity to create normal text
+  hierarchy.
+- Primary tokens represent actions and selection. Accent tokens represent the limited gold
+  highlight. Warning tokens remain semantic and must not be used only for decoration.
+
+Prefer a quiet solid surface and a subtle border over decorative gradients. Gradients are
+appropriate for the landing hero, progress/data visualization, or a small directional accent;
+they must not become the default card background. Use the theme-specific shadow tokens instead
+of page-local black or brand-colored shadows.
+
 ## Chrome 64 compatibility
 
 The primary UI contract must not rely on:

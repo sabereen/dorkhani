@@ -5,6 +5,7 @@
 }
 
 .ui-main {
+	position: relative;
 	width: 100%;
 	flex: 1 0 auto;
 }
@@ -27,8 +28,8 @@
 }
 
 .ui-page {
-	padding-top: 1.25rem;
-	padding-bottom: 2.5rem;
+	padding-top: 1.5rem;
+	padding-bottom: 3rem;
 }
 
 .ui-page-grid {
@@ -58,8 +59,8 @@
 	}
 
 	.ui-page {
-		padding-top: 2rem;
-		padding-bottom: 4rem;
+		padding-top: 2.25rem;
+		padding-bottom: 4.5rem;
 	}
 
 	.ui-page-grid {

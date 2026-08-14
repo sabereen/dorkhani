@@ -26,6 +26,20 @@
 		} else {
 			document.documentElement.dataset.colorScheme = colorScheme
 		}
+
+		const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')
+		const darkScheme = window.matchMedia('(prefers-color-scheme: dark)')
+		const syncThemeColor = () => {
+			const isDark = colorScheme === 'dark' || (colorScheme === 'system' && darkScheme.matches)
+			themeColor?.setAttribute('content', isDark ? '#07110f' : '#f7f5ef')
+		}
+
+		syncThemeColor()
+		if (colorScheme === 'system') darkScheme.addListener(syncThemeColor)
+
+		return () => {
+			if (colorScheme === 'system') darkScheme.removeListener(syncThemeColor)
+		}
 	})
 </script>
 

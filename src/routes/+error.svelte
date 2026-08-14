@@ -298,7 +298,7 @@
 		width: 13rem;
 		height: 8rem;
 		grid-template-columns: minmax(0, 1fr) 1.8rem minmax(0, 1fr);
-		filter: drop-shadow(0 1rem 1rem rgba(15, 23, 42, 0.18));
+		filter: drop-shadow(0 1rem 1rem var(--ui-color-focus));
 		transform: perspective(24rem) rotateX(9deg);
 	}
 

@@ -399,7 +399,7 @@
 		padding: 1rem;
 		border: 1px solid var(--ui-color-border);
 		border-radius: 1.25rem;
-		background: var(--ui-color-surface);
+		background: var(--ui-color-surface-raised);
 		box-shadow: var(--ui-shadow-sm);
 	}
 
@@ -461,7 +461,7 @@
 		padding: 0.8rem;
 		border: 1px solid var(--ui-color-border);
 		border-radius: 1rem;
-		background: var(--ui-color-surface);
+		background: var(--ui-color-surface-raised);
 		color: var(--ui-color-text);
 		text-align: right;
 		box-shadow: var(--ui-shadow-sm);
@@ -546,7 +546,7 @@
 		padding: 3rem 1rem;
 		border: 1px dashed var(--ui-color-border-strong);
 		border-radius: 1rem;
-		background: var(--ui-color-surface);
+		background: var(--ui-color-surface-raised);
 		text-align: center;
 	}
 

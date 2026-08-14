@@ -7,9 +7,16 @@ html {
 body {
 	min-height: 100%;
 	margin: 0;
-	background: var(--ui-color-page);
+	background-color: var(--ui-color-page);
+	background-image:
+		radial-gradient(circle at 88% -8%, var(--ui-color-primary-soft) 0, transparent 27rem),
+		radial-gradient(circle at 4% 42%, var(--ui-color-accent-soft) 0, transparent 24rem);
+	background-attachment: fixed;
 	color: var(--ui-color-text);
 	font-family: var(--ui-font-sans);
+	line-height: 1.65;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 	transition:
 		background-color 160ms ease,
 		color 160ms ease;
@@ -45,8 +52,8 @@ textarea:focus,
 }
 
 ::selection {
-	background: var(--ui-color-primary);
-	color: var(--ui-color-on-primary);
+	background: var(--ui-color-primary-soft);
+	color: var(--ui-color-primary-hover);
 }
 
 .ui-text {
@@ -55,6 +62,10 @@ textarea:focus,
 
 .ui-text-muted {
 	color: var(--ui-color-text-muted);
+}
+
+.ui-text-soft {
+	color: var(--ui-color-text-soft);
 }
 
 .ui-text-primary {
@@ -75,6 +86,14 @@ textarea:focus,
 	background-color: var(--ui-color-surface);
 }
 
+.ui-bg-raised {
+	background-color: var(--ui-color-surface-raised);
+}
+
+.ui-bg-inset {
+	background-color: var(--ui-color-surface-inset);
+}
+
 .ui-bg-muted {
 	background-color: var(--ui-color-surface-muted);
 }
@@ -92,7 +111,7 @@ textarea:focus,
 }
 
 .ui-bg-accent {
-	background-color: var(--ui-color-warning);
+	background-color: var(--ui-color-accent);
 }
 
 .ui-bg-neutral {

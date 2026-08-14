@@ -6,8 +6,8 @@ export const GET: RequestHandler = () => {
 	return json({
 		name: 'ختم قرآن گروهی',
 		short_name: 'ختم قرآن گروهی',
-		theme_color: '#1b031c',
-		background_color: '#1b031c',
+		theme_color: '#07110f',
+		background_color: '#f7f5ef',
 		display: 'standalone',
 		orientation: 'portrait',
 		scope: `${base}/`,

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { base } from '$app/paths'
 	import IconSupport from '~icons/ic/round-support-agent'
 	import IconGithub from './IconGithub.svelte'
 
@@ -6,7 +7,7 @@
 </script>
 
 <footer class={[className, 'ui-border ui-bg-surface border-t']}>
-	<div class="ui-container min-h-18 flex items-center justify-between">
+	<div class="ui-container ui-footer-content">
 		<div class="flex items-center">
 			<a
 				href={supportLink}
@@ -20,6 +21,10 @@
 				پشتیبانی
 			</a>
 		</div>
+		<nav class="ui-footer-legal-links" aria-label="پیوندهای حقوقی">
+			<a class="ui-link" href={`${base}/privacy`}>حریم خصوصی</a>
+			<a class="ui-link" href={`${base}/terms`}>شرایط استفاده</a>
+		</nav>
 		<div class="flex items-center">
 			<a
 				class="ui-btn ui-btn-ghost ui-btn-square"

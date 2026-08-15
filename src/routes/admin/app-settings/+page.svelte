@@ -16,10 +16,11 @@
 	import IconSave from '~icons/ic/round-save'
 	import IconSettings from '~icons/ic/round-settings'
 	import IconSupport from '~icons/ic/round-support-agent'
+	import IconPsychology from '~icons/ic/round-psychology'
 
 	const { data, form }: PageProps = $props()
 
-	const { notification, supportLink, staleKhatmRetentionDays } =
+	const { notification, supportLink, staleKhatmRetentionDays, aiKhatmReview } =
 		/* svelte-ignore state_referenced_locally */ data
 
 	const formData = $state({
@@ -28,6 +29,10 @@
 		eitaa: notification.eitaa,
 		eitaaToken: notification.eitaaToken || '',
 		eitaaChatId: notification.eitaaChatId || '',
+		aiKhatmReviewEnabled: aiKhatmReview.enabled,
+		aiKhatmReviewBaseUrl: aiKhatmReview.baseUrl || '',
+		aiKhatmReviewModel: aiKhatmReview.model || '',
+		aiKhatmReviewApiKey: aiKhatmReview.apiKey || '',
 	})
 	let submitting = $state(false)
 
@@ -57,6 +62,10 @@
 			formData.eitaa = form?.eitaa
 			formData.eitaaToken = form?.eitaaToken || ''
 			formData.eitaaChatId = form?.eitaaChatId || ''
+			formData.aiKhatmReviewEnabled = form?.aiKhatmReview?.enabled ?? data.aiKhatmReview.enabled
+			formData.aiKhatmReviewBaseUrl = form?.aiKhatmReview?.baseUrl || data.aiKhatmReview.baseUrl || ''
+			formData.aiKhatmReviewModel = form?.aiKhatmReview?.model || data.aiKhatmReview.model || ''
+			formData.aiKhatmReviewApiKey = form?.aiKhatmReview?.apiKey || ''
 		},
 	)
 
@@ -151,6 +160,43 @@
 					<small id="retention-days-hint" class="ui-admin-field-hint">
 						ختم مستقلی که در این بازه هیچ آیه‌ای از آن خوانده نشود، خودکار حذف خواهد شد.
 					</small>
+				</div>
+			</section>
+
+			<div class="ui-admin-form-divider" aria-hidden="true"></div>
+
+			<section class="ui-admin-settings-section" aria-labelledby="ai-review-settings-title">
+				<div class="ui-admin-settings-section-heading">
+					<span class="ui-admin-settings-icon-warm"><IconPsychology /></span>
+					<div>
+						<h2 id="ai-review-settings-title">بررسی AI ختم‌ها</h2>
+						<p>عنوان و توضیح ختم‌ها را برای راهنمایی کاربر و تأیید خودکار ختم‌های عمومی بررسی کنید.</p>
+					</div>
+				</div>
+
+				<label class="ui-admin-toggle-card">
+					<input class="ui-checkbox" type="checkbox" name="aiKhatmReviewEnabled" bind:checked={formData.aiKhatmReviewEnabled} />
+					<span class="ui-admin-toggle-copy">
+						<strong>بررسی AI فعال باشد</strong>
+						<small>در صورت کندی یا خطای سرویس، ثبت ختم متوقف نمی‌شود.</small>
+					</span>
+					<span class="ui-admin-toggle-status">{formData.aiKhatmReviewEnabled ? 'فعال' : 'غیرفعال'}</span>
+				</label>
+
+				<div class="ui-admin-field-grid" class:ui-admin-fields-muted={!formData.aiKhatmReviewEnabled}>
+					<div class="ui-admin-field">
+						<label for="input-ai-review-base-url" class="ui-field-label">نشانی پایهٔ OpenAI-compatible</label>
+						<input bind:value={formData.aiKhatmReviewBaseUrl} class="ui-input" type="url" name="aiKhatmReviewBaseUrl" dir="ltr" id="input-ai-review-base-url" placeholder="https://api.example.com/v1" required={formData.aiKhatmReviewEnabled} />
+					</div>
+					<div class="ui-admin-field">
+						<label for="input-ai-review-model" class="ui-field-label">نام مدل</label>
+						<input bind:value={formData.aiKhatmReviewModel} class="ui-input" type="text" name="aiKhatmReviewModel" dir="ltr" id="input-ai-review-model" placeholder="gpt-4o-mini" required={formData.aiKhatmReviewEnabled} />
+					</div>
+					<div class="ui-admin-field">
+						<label for="input-ai-review-api-key" class="ui-field-label">کلید API</label>
+						<input bind:value={formData.aiKhatmReviewApiKey} class="ui-input" type="password" name="aiKhatmReviewApiKey" autocomplete="off" dir="ltr" id="input-ai-review-api-key" required={formData.aiKhatmReviewEnabled} />
+						<small class="ui-admin-field-hint">برای حفظ کلید فعلی، این مقدار را تغییر ندهید.</small>
+					</div>
 				</div>
 			</section>
 

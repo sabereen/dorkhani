@@ -4,6 +4,13 @@ export const DEFAULT_STALE_KHATM_RETENTION_DAYS = 30
 export const MIN_STALE_KHATM_RETENTION_DAYS = 1
 export const MAX_STALE_KHATM_RETENTION_DAYS = 3650
 
+export type AiKhatmReviewConfig = {
+	enabled: boolean
+	baseUrl?: string
+	model?: string
+	apiKey?: string
+}
+
 type Config = {
 	/** لینک پشتیبانی سایت */
 	readonly supportLink?: string
@@ -16,6 +23,7 @@ type Config = {
 		eitaaToken?: string
 		eitaaChatId?: string
 	}
+	readonly aiKhatmReview: AiKhatmReviewConfig
 }
 
 type Store = { config: Config }
@@ -26,6 +34,11 @@ const store: Store = {
 		staleKhatmRetentionDays: DEFAULT_STALE_KHATM_RETENTION_DAYS,
 		notification: {
 			eitaa: false,
+		},
+		aiKhatmReview: {
+			enabled: false,
+			baseUrl: '',
+			model: '',
 		},
 	},
 }
@@ -66,6 +79,11 @@ async function apply(newConfig?: Config | null) {
 		notification: {
 			...store.config.notification,
 			...newConfig.notification,
+		},
+		aiKhatmReview: {
+			...store.config.aiKhatmReview,
+			...newConfig.aiKhatmReview,
+			enabled: newConfig.aiKhatmReview?.enabled === true,
 		},
 	}
 }

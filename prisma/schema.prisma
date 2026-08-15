@@ -33,6 +33,14 @@ enum ReviewStatus {
   rejected
 }
 
+enum AiReviewStatus {
+  pending
+  clear
+  warning
+  unavailable
+  disabled
+}
+
 enum KhatmDeletionReason {
   owner
   admin
@@ -79,6 +87,8 @@ model TKhatm {
   status       KhatmStatus   @default(inProgress)
   // وضعیت تأیید ختم توسط مدیر
   reviewStatus ReviewStatus  @default(pending) @map("review_status")
+  aiReviewStatus AiReviewStatus @default(disabled) @map("ai_review_status")
+  aiReviewReason String? @map("ai_review_reason") @db.VarChar(500)
   // شماره دور جاری در دنباله
   roundNumber  Int           @default(1) @map("round_number") @db.UnsignedSmallInt()
   // شناسه دنباله
@@ -89,6 +99,7 @@ model TKhatm {
   guestClaimTokenHash String? @map("guest_claim_token_hash") @db.Char(64)
   parts        TKhatmPart[]
   recitations  TKhatmRecitation[]
+  aiReview     TAiKhatmReview?
 
   @@index([reviewStatus])
   @@index([ownerId])
@@ -97,6 +108,22 @@ model TKhatm {
   @@index([private, reviewStatus, status, roundNumber])
   @@index([private, reviewStatus, status, pageProgress, id])
   @@map("khatm")
+}
+
+model TAiKhatmReview {
+  id          String         @id @default(uuid()) @db.VarChar(191)
+  khatmId     Int?           @unique @map("khatm_id")
+  khatm       TKhatm?        @relation(fields: [khatmId], references: [id], onDelete: Cascade)
+  contentHash String         @map("content_hash") @db.Char(64)
+  status      AiReviewStatus @default(pending)
+  reason      String?        @db.VarChar(500)
+  created     DateTime       @default(now())
+  deadline    DateTime?
+  expiresAt   DateTime?      @map("expires_at")
+
+  @@index([status, deadline])
+  @@index([expiresAt])
+  @@map("ai_khatm_review")
 }
 
 model TZekr {

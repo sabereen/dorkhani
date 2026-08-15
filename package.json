@@ -59,6 +59,7 @@
 		"@ghoran/metadata": "^0.0.7",
 		"@ghoran/text": "^0.0.8",
 		"@ghoran/translation": "^0.0.9",
+		"@opentelemetry/api": "^1.9.0",
 		"@prisma/adapter-mariadb": "7.9.1",
 		"@prisma/client": "7.9.1",
 		"@unocss/reset": "66.1.0-beta.10",

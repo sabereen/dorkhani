@@ -1,4 +1,4 @@
-import type { Prisma, RangeType, ReviewStatus, TKhatm, TKhatmSeries } from '@prisma-client'
+import type { AiReviewStatus, Prisma, RangeType, ReviewStatus, TKhatm, TKhatmSeries } from '@prisma-client'
 import { createHash, randomBytes } from 'node:crypto'
 import { v4 as uuid } from 'uuid'
 import { db } from '$lib/server/db'
@@ -245,6 +245,9 @@ type CreatingKhatm = {
 	description: string
 	rangeType: RangeType
 	private: boolean
+	reviewStatus?: ReviewStatus
+	aiReviewStatus?: AiReviewStatus
+	aiReviewReason?: string | null
 }
 
 export async function khatmService_create(body: CreatingKhatm, ownerId?: string | null) {

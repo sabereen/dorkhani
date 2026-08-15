@@ -248,6 +248,23 @@
 		</div>
 	</section>
 
+	{#if khatm.reviewStatus !== 'approved'}
+		<section class="ui-alert ui-alert-info" role="alert" aria-label="وضعیت تأیید ختم">
+			<div>
+				<strong>این ختم هنوز توسط سامانه تأیید نشده است.</strong>
+				<p>ما محتوای این ختم را تأیید نمی‌کنیم و استفاده و مشارکت در آن با مسئولیت کاربران است.</p>
+			</div>
+		</section>
+	{/if}
+	{#if khatm.aiReviewStatus === 'warning' && khatm.aiReviewReason}
+		<section class="ui-alert ui-alert-error" role="alert" aria-label="هشدار بررسی AI">
+			<div>
+				<strong>هشدار دربارهٔ عنوان یا توضیح ختم</strong>
+				<p>{khatm.aiReviewReason}</p>
+			</div>
+		</section>
+	{/if}
+
 	{#if data.isAdmin && !khatm.private}
 		<KhatmReviewBar {khatm} featuredOrder={data.featuredOrder} canFeature={data.canFeature} />
 	{/if}

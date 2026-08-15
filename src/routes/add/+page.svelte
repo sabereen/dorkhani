@@ -8,6 +8,7 @@
 	import SucessResult from './sucess-result.svelte'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import RangeTypePicker from '$lib/components/RangeTypePicker.svelte'
+	import Modal from '$lib/components/Modal.svelte'
 	import type { RangeType } from '@prisma-client'
 	import IconBook from '~icons/ic/round-menu-book'
 	import IconLock from '~icons/ic/round-lock'
@@ -22,13 +23,35 @@
 	let rangeType = $state<RangeType>(initialRangeType)
 	let access = $state<'public' | 'private'>('private')
 	let series = $state(false)
+	let title = $state('')
+	let description = $state('')
+	let aiWarningOpen = $state(false)
+	let aiWarning = $state<{ id: string; reason: string } | null>(null)
+	let forceAiReviewId = $state<string | null>(null)
+	let formElement = $state<HTMLFormElement>()
 
 	$effect(() => {
 		if (form?.errorMessage) toast('error', form.errorMessage)
+		if (form?.aiWarning) {
+			aiWarning = form.aiWarning
+			aiWarningOpen = true
+		}
 	})
 
 	function handleKeyPress(event: KeyboardEvent) {
 		if (event.code === 'Enter') event.preventDefault()
+	}
+
+	function forceCreate() {
+		if (!aiWarning) return
+		forceAiReviewId = aiWarning.id
+		aiWarningOpen = false
+		formElement?.requestSubmit()
+	}
+
+	function reviseContent() {
+		aiWarningOpen = false
+		forceAiReviewId = null
 	}
 </script>
 
@@ -50,6 +73,7 @@
 		</section>
 
 		<form
+			bind:this={formElement}
 			use:validateForm
 			use:enhance
 			novalidate
@@ -57,6 +81,10 @@
 			action=""
 			method="POST"
 		>
+			{#if forceAiReviewId}
+				<input type="hidden" name="force" value="true" />
+				<input type="hidden" name="aiReviewId" value={forceAiReviewId} />
+			{/if}
 			<div class="ui-card-body">
 				<section class="add-section" aria-labelledby="details-title">
 					<div class="add-section-heading">
@@ -73,6 +101,7 @@
 							class="ui-input"
 							type="text"
 							name="title"
+							bind:value={title}
 							id="input-title"
 							maxlength="100"
 							placeholder="مثلاً ختم قرآن برای سلامتی خانواده"
@@ -86,6 +115,7 @@
 						<textarea
 							class="ui-textarea"
 							name="description"
+							bind:value={description}
 							id="input-description"
 							maxlength="65535"
 							placeholder="نیت ختم یا توضیح کوتاهی برای همراهان بنویسید…"
@@ -175,12 +205,45 @@
 	<SucessResult khatm={Khatm.fromPlain(form.khatm)} claimToken={form.guestClaimToken} />
 {/if}
 
+<Modal bind:open={aiWarningOpen} contentClass="add-ai-warning-dialog">
+	{#if aiWarning}
+		<section aria-labelledby="ai-warning-title">
+			<h2 id="ai-warning-title">نیاز به بررسی عنوان ختم</h2>
+			<p>{aiWarning.reason}</p>
+			<p class="ui-text-muted">می‌توانید متن را اصلاح کنید یا با مسئولیت خودتان ختم را ثبت کنید.</p>
+			<div class="add-ai-warning-actions">
+				<button class="ui-btn ui-btn-outline" type="button" onclick={reviseContent}>ویرایش متن</button>
+				<button class="ui-btn ui-btn-primary" type="button" onclick={forceCreate}>ثبت با وجود هشدار</button>
+			</div>
+		</section>
+	{/if}
+</Modal>
+
 <style>
 	.add-shell {
 		width: 100%;
 		max-width: 44rem;
 		margin-right: auto;
 		margin-left: auto;
+	}
+
+	:global(.add-ai-warning-dialog) h2,
+	:global(.add-ai-warning-dialog) p {
+		margin-top: 0;
+	}
+
+	:global(.add-ai-warning-dialog) p {
+		line-height: 1.8;
+	}
+
+	.add-ai-warning-actions {
+		display: flex;
+		justify-content: flex-start;
+		margin-top: 1rem;
+	}
+
+	.add-ai-warning-actions > * + * {
+		margin-right: 0.5rem;
 	}
 
 	.add-intro {

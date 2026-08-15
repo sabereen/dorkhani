@@ -1,3 +1,9 @@
-import type { TKhatm } from '@prisma-client'
+import type { AiReviewStatus, TKhatm } from '@prisma-client'
 
-export type KhatmData = Omit<TKhatm, 'ownerId' | 'guestClaimTokenHash'>
+export type KhatmData = Omit<
+	TKhatm,
+	'ownerId' | 'guestClaimTokenHash' | 'aiReviewStatus' | 'aiReviewReason'
+> & {
+	aiReviewStatus?: AiReviewStatus
+	aiReviewReason?: string | null
+}

@@ -7,6 +7,7 @@ const serviceMock = vi.hoisted(() => ({
 			supportLink: '',
 			staleKhatmRetentionDays: 30,
 			notification: { eitaa: false },
+			aiKhatmReview: { enabled: false },
 		},
 	},
 }))

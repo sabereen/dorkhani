@@ -31,8 +31,13 @@ export class Khatm {
 	private static normalizePlain(
 		plain: KhatmData & { parts?: TKhatmPart[] },
 	): KhatmData & { parts?: TKhatmPart[] } {
-		if (Number.isFinite(plain.pageProgress)) return plain
-		return { ...plain, pageProgress: 0 }
+		if (Number.isFinite(plain.pageProgress) && plain.aiReviewStatus) return plain
+		return {
+			...plain,
+			pageProgress: Number.isFinite(plain.pageProgress) ? plain.pageProgress : 0,
+			aiReviewStatus: plain.aiReviewStatus || 'disabled',
+			aiReviewReason: plain.aiReviewReason || null,
+		}
 	}
 
 	static fromPlain(plain: KhatmData & { parts?: TKhatmPart[] }) {
@@ -195,6 +200,14 @@ export class Khatm {
 
 	get reviewStatus() {
 		return this.plain.reviewStatus
+	}
+
+	get aiReviewStatus() {
+		return this.plain.aiReviewStatus || 'disabled'
+	}
+
+	get aiReviewReason() {
+		return this.plain.aiReviewReason || null
 	}
 
 	get accessToken() {

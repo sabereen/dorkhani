@@ -77,6 +77,23 @@
 		return 'تغییر فهرست ختم‌های شاخص انجام نشد. دوباره تلاش کنید.'
 	}
 
+	function getReviewMeta(khatm: Khatm) {
+		const publication =
+			khatm.reviewStatus === 'approved'
+				? 'تأییدشده'
+				: khatm.reviewStatus === 'rejected'
+					? 'ردشده'
+					: 'منتظر بررسی'
+		const aiStatus = {
+			pending: 'AI: در حال بررسی',
+			clear: 'AI: مناسب',
+			warning: `AI: ${khatm.aiReviewReason || 'نیازمند توجه'}`,
+			unavailable: 'AI: ناموفق',
+			disabled: 'AI: غیرفعال',
+		}[khatm.aiReviewStatus]
+		return `${publication} · ${aiStatus}`
+	}
+
 	function applyFeaturedItems(items: FeaturedKhatmItem[]) {
 		featuredItems = items.map((item) => ({
 			khatm: Khatm.fromPlain(item.khatm),
@@ -343,11 +360,7 @@
 						<li class:ui-admin-review-item-loading={updatingIds.includes(item.khatm.id)}>
 							<KhatmListCard
 								khatm={item.khatm}
-								meta={item.khatm.reviewStatus === 'approved'
-									? 'تأییدشده'
-									: item.khatm.reviewStatus === 'rejected'
-										? 'ردشده'
-										: 'منتظر بررسی'}
+								meta={getReviewMeta(item.khatm)}
 								showDescription
 							>
 								{#snippet actions()}

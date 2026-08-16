@@ -35,6 +35,8 @@
 		aiKhatmReviewApiKey: aiKhatmReview.apiKey || '',
 	})
 	let submitting = $state(false)
+	let aiConnectionTestLoading = $state(false)
+	let aiConnectionTest: { type: 'success' | 'error'; message: string } | null = $state(null)
 
 	const enhanceForm: SubmitFunction = () => {
 		submitting = true
@@ -44,6 +46,32 @@
 			} finally {
 				submitting = false
 			}
+		}
+	}
+
+	async function testAiConnection() {
+		aiConnectionTestLoading = true
+		aiConnectionTest = null
+		try {
+			const response = await fetch('/api/admin/ai/test', {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({
+					baseUrl: formData.aiKhatmReviewBaseUrl,
+					model: formData.aiKhatmReviewModel,
+					apiKey: formData.aiKhatmReviewApiKey,
+				}),
+			})
+			const result = await response.json().catch(() => ({}))
+			if (!response.ok) throw new Error(result.message || 'تست اتصال ناموفق بود.')
+			aiConnectionTest = { type: 'success', message: result.message }
+		} catch (error) {
+			aiConnectionTest = {
+				type: 'error',
+				message: error instanceof Error ? error.message : 'تست اتصال ناموفق بود.',
+			}
+		} finally {
+			aiConnectionTestLoading = false
 		}
 	}
 
@@ -197,6 +225,26 @@
 						<input bind:value={formData.aiKhatmReviewApiKey} class="ui-input" type="password" name="aiKhatmReviewApiKey" autocomplete="off" dir="ltr" id="input-ai-review-api-key" required={formData.aiKhatmReviewEnabled} />
 						<small class="ui-admin-field-hint">برای حفظ کلید فعلی، این مقدار را تغییر ندهید.</small>
 					</div>
+				</div>
+
+				<div class="ui-admin-field">
+					<button
+						class="ui-btn ui-btn-outline"
+						type="button"
+						onclick={testAiConnection}
+						disabled={aiConnectionTestLoading}
+					>
+						{#if aiConnectionTestLoading}<span class="ui-spinner"></span>{:else}<IconRefresh />{/if}
+						{aiConnectionTestLoading ? 'در حال تست اتصال…' : 'تست اتصال AI'}
+					</button>
+					{#if aiConnectionTest}
+						<div
+							class={`ui-alert ${aiConnectionTest.type === 'success' ? 'ui-alert-success' : 'ui-alert-error'} mt-3`}
+							role={aiConnectionTest.type === 'success' ? 'status' : 'alert'}
+						>
+							{aiConnectionTest.message}
+						</div>
+					{/if}
 				</div>
 			</section>
 

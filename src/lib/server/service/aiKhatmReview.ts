@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto'
 import type { AiReviewStatus } from '@prisma-client'
 import { z } from 'zod'
 import { db } from '$lib/server/db'
-import { appSettings_store } from './appSettings'
+import { appSettings_store, type AiKhatmReviewConfig } from './appSettings'
 
 export const AI_REVIEW_INITIAL_WAIT_MS = 4_000
 export const AI_REVIEW_BACKGROUND_WAIT_MS = 30_000
@@ -34,6 +34,38 @@ function getConfiguredReview() {
 	const config = appSettings_store.config.aiKhatmReview
 	if (!config.enabled || !config.baseUrl || !config.model || !config.apiKey) return null
 	return config as Required<typeof config>
+}
+
+export async function aiKhatmReview_testConnection(
+	config: Required<Pick<AiKhatmReviewConfig, 'baseUrl' | 'model' | 'apiKey'>>,
+	{ timeoutMs = 10_000 }: { timeoutMs?: number } = {},
+) {
+	const controller = new AbortController()
+	const timer = setTimeout(() => controller.abort(), timeoutMs)
+	try {
+		const endpoint = `${config.baseUrl.replace(/\/+$/, '')}/chat/completions`
+		const response = await fetch(endpoint, {
+			method: 'POST',
+			headers: {
+				'content-type': 'application/json',
+				authorization: `Bearer ${config.apiKey}`,
+			},
+			body: JSON.stringify({
+				model: config.model,
+				temperature: 0,
+				max_tokens: 1,
+				messages: [{ role: 'user', content: 'Reply with OK.' }],
+			}),
+			signal: controller.signal,
+		})
+		if (!response.ok) throw new Error(`AI HTTP ${response.status}`)
+		const payload = await response.json()
+		if (!Array.isArray(payload?.choices) || payload.choices.length === 0) {
+			throw new Error('AI response format is invalid')
+		}
+	} finally {
+		clearTimeout(timer)
+	}
 }
 
 function parseResponseContent(content: unknown) {

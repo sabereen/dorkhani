@@ -15,6 +15,7 @@
 	import IconPublic from '~icons/ic/round-public'
 	import IconRepeat from '~icons/ic/round-autorenew'
 	import IconArrow from '~icons/ic/round-arrow-back'
+	import type { SubmitFunction } from '@sveltejs/kit'
 
 	let { data, form }: PageProps = $props()
 
@@ -29,6 +30,18 @@
 	let aiWarning = $state<{ id: string; reason: string } | null>(null)
 	let forceAiReviewId = $state<string | null>(null)
 	let formElement = $state<HTMLFormElement>()
+	let submitting = $state(false)
+
+	const enhanceForm: SubmitFunction = () => {
+		submitting = true
+		return async ({ update }) => {
+			try {
+				await update()
+			} finally {
+				submitting = false
+			}
+		}
+	}
 
 	$effect(() => {
 		if (form?.errorMessage) toast('error', form.errorMessage)
@@ -75,9 +88,10 @@
 		<form
 			bind:this={formElement}
 			use:validateForm
-			use:enhance
+			use:enhance={enhanceForm}
 			novalidate
 			class="ui-card ui-card-bordered add-form"
+			aria-busy={submitting}
 			action=""
 			method="POST"
 		>
@@ -193,9 +207,18 @@
 
 				<div class="add-submit">
 					<p class="ui-text-muted">بعد از ایجاد، لینک دعوت را می‌توانید برای دیگران بفرستید.</p>
-					<button class="ui-btn ui-btn-primary ui-btn-lg ui-btn-block" type="submit">
-						ایجاد ختم و دریافت لینک
-						<IconArrow aria-hidden="true" />
+					<button
+						class="ui-btn ui-btn-primary ui-btn-lg ui-btn-block"
+						type="submit"
+						disabled={submitting}
+					>
+						{#if submitting}
+							<span class="ui-spinner" aria-hidden="true"></span>
+							<span>در حال ایجاد ختم…</span>
+						{:else}
+							<span>ایجاد ختم و دریافت لینک</span>
+							<IconArrow aria-hidden="true" />
+						{/if}
 					</button>
 				</div>
 			</div>

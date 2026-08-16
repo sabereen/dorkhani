@@ -468,6 +468,18 @@
 		display: flex;
 		align-items: flex-start;
 		justify-content: space-between;
+		min-width: 0;
+		flex-wrap: wrap;
+	}
+
+	.admin-featured-heading > div {
+		min-width: 0;
+		flex: 1 1 14rem;
+	}
+
+	.admin-featured-heading > .ui-badge {
+		flex: 0 0 auto;
+		margin-top: 0.25rem;
 	}
 
 	.admin-featured-heading > * + * {

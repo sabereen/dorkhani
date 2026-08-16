@@ -1168,12 +1168,18 @@
 	list-style: none;
 }
 
+.ui-khatm-card-list > li {
+	min-width: 0;
+}
+
 .ui-khatm-list-card {
 	position: relative;
 	display: grid;
 	grid-template-columns: 2.35rem minmax(0, 1fr) auto;
 	grid-gap: 0.7rem;
+	min-width: 0;
 	min-height: 4.3rem;
+	box-sizing: border-box;
 	align-items: center;
 	padding: 0.65rem 0.7rem;
 	border: 1px solid var(--ui-color-border);
@@ -1269,6 +1275,7 @@
 }
 
 .ui-khatm-list-card-heading > a {
+	flex: 1 1 8rem;
 	min-width: 0;
 	max-width: 100%;
 	color: var(--ui-color-text);
@@ -1310,6 +1317,8 @@
 
 .ui-khatm-list-card-badges {
 	display: flex;
+	min-width: 0;
+	flex: 0 1 auto;
 	align-items: center;
 	flex-wrap: wrap;
 	margin-right: 0.4rem;
@@ -5905,7 +5914,10 @@
 /* Admin workspace */
 .ui-admin-shell {
 	position: relative;
+	width: 100%;
+	min-width: 0;
 	max-width: 70rem;
+	box-sizing: border-box;
 	margin: 1rem auto 0;
 }
 
@@ -5921,7 +5933,7 @@
 
 .ui-admin-shell:before {
 	top: 5rem;
-	right: -4rem;
+	right: 0;
 	width: 12rem;
 	height: 12rem;
 	background: var(--ui-color-primary-soft);
@@ -5930,7 +5942,7 @@
 
 .ui-admin-shell:after {
 	top: 23rem;
-	left: -3rem;
+	left: 0;
 	width: 9rem;
 	height: 9rem;
 	background: var(--ui-color-success-soft);
@@ -5939,6 +5951,9 @@
 
 .ui-admin-nav {
 	display: flex;
+	width: 100%;
+	min-width: 0;
+	box-sizing: border-box;
 	align-items: center;
 	padding: 0.35rem;
 	border: 1px solid var(--ui-color-border);
@@ -6315,6 +6330,7 @@
 
 .ui-admin-page-heading {
 	display: flex;
+	min-width: 0;
 	align-items: center;
 	margin-top: 1.5rem;
 	padding: 1.25rem;
@@ -6374,6 +6390,7 @@
 }
 
 .ui-admin-review-panel {
+	min-width: 0;
 	margin-top: 1rem;
 	border: 1px solid var(--ui-color-border);
 	border-radius: 1.35rem;
@@ -6383,6 +6400,7 @@
 }
 
 .ui-admin-review-toolbar {
+	min-width: 0;
 	padding: 0.75rem;
 	border-bottom: 1px solid var(--ui-color-border);
 	background: var(--ui-color-surface-muted);
@@ -6390,6 +6408,7 @@
 
 .ui-admin-review-heading {
 	display: flex;
+	min-width: 0;
 	align-items: center;
 	justify-content: space-between;
 	padding: 1.1rem 1.25rem;
@@ -6399,6 +6418,7 @@
 .ui-admin-review-heading > div {
 	display: flex;
 	min-width: 0;
+	flex: 1 1 auto;
 	align-items: center;
 }
 
@@ -6446,6 +6466,13 @@
 
 .ui-admin-review-content .ui-khatm-card-list {
 	grid-gap: 0.75rem;
+}
+
+.ui-admin-review-content .ui-khatm-card-list > li,
+.admin-featured-list > li,
+.ui-admin-review-content .ui-khatm-list-card,
+.admin-featured-list .ui-khatm-list-card {
+	min-width: 0;
 }
 
 .ui-admin-review-item-loading {
@@ -7273,10 +7300,20 @@
 	}
 
 	.ui-admin-nav-link {
-		min-width: 5.25rem;
-		flex-basis: auto;
+		min-width: 0;
+		flex: 1 1 0;
 		flex-direction: column;
+		padding-right: 0.3rem;
+		padding-left: 0.3rem;
 		font-size: 0.61rem;
+		text-align: center;
+	}
+
+	.ui-admin-nav-link span {
+		max-width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	.ui-admin-nav-link svg {
@@ -7329,11 +7366,33 @@
 		grid-template-columns: 2.35rem minmax(0, 1fr);
 	}
 
+	.ui-admin-review-content .ui-khatm-list-card-actions,
+	.admin-featured-list .ui-khatm-list-card-actions {
+		width: 100%;
+		max-width: none;
+	}
+
 	.ui-admin-review-content .ui-khatm-list-card-actions {
 		grid-column: 1 / -1;
-		justify-content: flex-end;
-		padding-top: 0.35rem;
+		justify-content: flex-start;
+		padding-top: 0.45rem;
 		border-top: 1px solid var(--ui-color-border);
+	}
+
+	.admin-featured-list .ui-khatm-list-card {
+		grid-template-columns: 2.15rem minmax(0, 1fr);
+	}
+
+	.admin-featured-list .ui-khatm-list-card-actions {
+		grid-column: 1 / -1;
+		justify-content: flex-start;
+		padding-top: 0.45rem;
+		border-top: 1px solid var(--ui-color-border);
+	}
+
+	.ui-admin-review-content .ui-khatm-list-card-actions > *,
+	.admin-featured-list .ui-khatm-list-card-actions > * {
+		margin: 0.1rem 0 0.1rem 0.35rem;
 	}
 }
 

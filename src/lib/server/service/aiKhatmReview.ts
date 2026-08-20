@@ -18,7 +18,8 @@ export type AiReviewResult =
 
 const aiResponseSchema = z.object({
 	verdict: z.enum(['clear', 'warning']),
-	reason: z.string().trim().max(500).optional(),
+	// Models commonly return `reason: null` for a clear verdict.
+	reason: z.string().trim().max(500).nullable().optional(),
 })
 
 function contentHash({ title, description }: ReviewInput) {
@@ -69,14 +70,32 @@ export async function aiKhatmReview_testConnection(
 }
 
 function parseResponseContent(content: unknown) {
+	if (Array.isArray(content)) {
+		const text = content
+			.filter(
+				(part): part is { text: string } =>
+					typeof part === 'object' &&
+					part != null &&
+					'text' in part &&
+					typeof part.text === 'string',
+			)
+			.map((part) => part.text)
+			.join('')
+		return parseResponseContent(text)
+	}
 	if (typeof content === 'object' && content != null) return content
 	if (typeof content !== 'string') return null
-	const json = content.replace(/^```(?:json)?\s*|\s*```$/g, '').trim()
-	try {
-		return JSON.parse(json)
-	} catch {
-		return null
+
+	const json = content.replace(/^```(?:json)?\s*|\s*```$/gi, '').trim()
+	for (const candidate of [json, json.slice(json.indexOf('{'), json.lastIndexOf('}') + 1)]) {
+		if (!candidate || !candidate.startsWith('{')) continue
+		try {
+			return JSON.parse(candidate)
+		} catch {
+			// Some reasoning models put a short explanation before the JSON.
+		}
 	}
+	return null
 }
 
 export async function aiKhatmReview_review(

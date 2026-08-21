@@ -52,7 +52,7 @@
 		),
 	)
 
-	let copied = false
+	let copied = $state(false)
 
 	function retry() {
 		window.location.reload()

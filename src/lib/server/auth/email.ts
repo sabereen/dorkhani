@@ -19,6 +19,7 @@ function getTransporter() {
 		host: env.SMTP_HOST,
 		port,
 		secure: env.SMTP_SECURE === '1' || port === 465,
+		tls: { rejectUnauthorized: false },
 		auth: { user: env.SMTP_USER, pass: env.SMTP_PASS },
 	})
 

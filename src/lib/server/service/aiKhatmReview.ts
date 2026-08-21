@@ -146,7 +146,7 @@ Rules:
    - the content is contrary to Islamic ethics;
    - the user explicitly asks to complete only one specific surah or one specific part instead of the complete Quran.
 
-3. A surah-based range/type alone is NOT a warning.
+3. \`reason\` field must be in Persian. 
 
 4. For "clear":
    reason must be null.

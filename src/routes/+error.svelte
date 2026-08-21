@@ -81,7 +81,7 @@
 </script>
 
 <svelte:head>
-	<title>{page.status} | {title}</title>
+	<title>{page.status} | {technicalType}: {technicalMessage}</title>
 	<meta name="robots" content="noindex" />
 </svelte:head>
 
@@ -123,7 +123,7 @@
 			<IconExplore />
 			<span>یا ختم‌های عمومی را ببینید</span>
 		</a>
-		<details class="error-technical-details">
+		<details class="error-technical-details" open={!isNotFound}>
 			<summary>نمایش جزئیات فنی</summary>
 
 			<div class="technical-toolbar">

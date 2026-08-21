@@ -1,4 +1,4 @@
-import { browser, building, dev } from '$app/environment'
+import { building } from '$app/environment'
 import { getNotificationProvider } from '$service/admin-notification'
 import { appSettingsService_init } from '$service/appSettings'
 import { khatmCleanup_startScheduler } from '$service/khatmCleanup'
@@ -48,30 +48,35 @@ export const handle: Handle = async ({ resolve, event }) => {
 }
 
 export const handleError: HandleServerError = async ({ error, event, status, message }) => {
-	const isDevelopment = dev || true
-
-	if (isDevelopment || browser) {
-		console.error(error)
+	const details = getErrorDetails(error)
+	const report = {
+		status,
+		name: details.name,
+		message: details.message || message,
+		method: event.request.method,
+		path: event.url.pathname,
+		url: event.url.href,
+		stack: details.stack ?? null,
+		cause: details.cause ?? null,
 	}
 
-	getNotificationProvider()
-		.sendError(`${status} ${message}`, {
-			href: event.url.href,
-			error: String(error),
-		})
-		.catch(() => {})
+	// This must remain enabled in production: Mini Apps cannot be inspected easily,
+	// so the deployment log is the source of truth for unexpected request failures.
+	console.error('Unhandled SvelteKit request error:', report)
 
-	const details = getErrorDetails(error)
+	getNotificationProvider().sendError(`${status} ${report.message}`, report).catch((notificationError) => {
+		console.error('Failed to send unexpected-error notification:', notificationError)
+	})
 
 	return {
 		status,
 		name: details.name,
-		message: details.message,
+		message: report.message,
 		path: event.url.pathname,
 
-		// فقط در development
-		stack: isDevelopment ? details.stack : undefined,
-		cause: isDevelopment ? details.cause : undefined,
+		// Intentionally exposed in production so Mini App users can copy the exact failure.
+		stack: details.stack,
+		cause: details.cause,
 	}
 }
 
@@ -109,12 +114,23 @@ function getErrorDetails(error: unknown) {
 	}
 
 	if (typeof error === 'object' && error !== null) {
+		const errorLike = error as {
+			name?: unknown
+			message?: unknown
+			stack?: unknown
+			cause?: unknown
+		}
+
 		try {
 			return {
-				name: error.constructor?.name ?? 'UnknownError',
-				message: JSON.stringify(error),
-				stack: undefined,
-				cause: undefined,
+				name:
+					typeof errorLike.name === 'string'
+						? errorLike.name
+						: error.constructor?.name ?? 'UnknownError',
+				message:
+					typeof errorLike.message === 'string' ? errorLike.message : JSON.stringify(error),
+				stack: typeof errorLike.stack === 'string' ? errorLike.stack : undefined,
+				cause: serializeCause(errorLike.cause),
 			}
 		} catch {
 			return {

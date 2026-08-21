@@ -1,13 +1,19 @@
 import { createHash } from 'node:crypto'
 import type { AiReviewStatus } from '@prisma-client'
+import { generateText, NoObjectGeneratedError, Output } from 'ai'
+import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 import { z } from 'zod'
+
 import { db } from '$lib/server/db'
 import { appSettings_store, type AiKhatmReviewConfig } from './appSettings'
 
 export const AI_REVIEW_INITIAL_WAIT_MS = 4_000
 export const AI_REVIEW_BACKGROUND_WAIT_MS = 30_000
 
-type ReviewInput = { title: string; description: string }
+type ReviewInput = {
+	title: string
+	description: string
+}
 
 export type AiReviewResult =
 	| { status: 'pending'; reason: null }
@@ -16,11 +22,25 @@ export type AiReviewResult =
 	| { status: 'unavailable'; reason: string | null }
 	| { status: 'disabled'; reason: null }
 
-const aiResponseSchema = z.object({
-	verdict: z.enum(['clear', 'warning']),
-	// Models commonly return `reason: null` for a clear verdict.
-	reason: z.string().trim().max(500).nullable().optional(),
-})
+/**
+ * Structured output returned by the model.
+ *
+ * The schema deliberately makes the two valid states explicit:
+ * - clear   -> reason must be null
+ * - warning -> reason must be a non-empty Persian string
+ */
+const aiResponseSchema = z.discriminatedUnion('verdict', [
+	z.object({
+		verdict: z.literal('clear'),
+		reason: z.null(),
+	}),
+	z.object({
+		verdict: z.literal('warning'),
+		reason: z.string().trim().min(1).max(500),
+	}),
+])
+
+type AiResponse = z.infer<typeof aiResponseSchema>
 
 function contentHash({ title, description }: ReviewInput) {
 	return createHash('sha256').update(`${title}\n${description}`).digest('hex')
@@ -33,117 +53,184 @@ function trimReason(reason: string | null | undefined) {
 
 function getConfiguredReview() {
 	const config = appSettings_store.config.aiKhatmReview
-	if (!config.enabled || !config.baseUrl || !config.model || !config.apiKey) return null
+
+	if (!config.enabled || !config.baseUrl || !config.model || !config.apiKey) {
+		return null
+	}
+
 	return config as Required<typeof config>
 }
 
+/**
+ * Creates an OpenAI-compatible AI SDK provider dynamically
+ * from the application settings.
+ */
+function createReviewProvider(
+	config: Required<Pick<AiKhatmReviewConfig, 'baseUrl' | 'model' | 'apiKey'>>,
+) {
+	return createOpenAICompatible({
+		name: 'khatm-review',
+		baseURL: config.baseUrl.replace(/\/+$/, ''),
+		apiKey: config.apiKey,
+	})
+}
+
+/**
+ * Tests the configured AI connection.
+ */
 export async function aiKhatmReview_testConnection(
 	config: Required<Pick<AiKhatmReviewConfig, 'baseUrl' | 'model' | 'apiKey'>>,
 	{ timeoutMs = 10_000 }: { timeoutMs?: number } = {},
 ) {
+	const provider = createReviewProvider(config)
+
 	const controller = new AbortController()
 	const timer = setTimeout(() => controller.abort(), timeoutMs)
+
 	try {
-		const endpoint = `${config.baseUrl.replace(/\/+$/, '')}/chat/completions`
-		const response = await fetch(endpoint, {
-			method: 'POST',
-			headers: {
-				'content-type': 'application/json',
-				authorization: `Bearer ${config.apiKey}`,
-			},
-			body: JSON.stringify({
-				model: config.model,
-				temperature: 0,
-				max_tokens: 1,
-				messages: [{ role: 'user', content: 'Reply with OK.' }],
-			}),
-			signal: controller.signal,
+		await generateText({
+			model: provider(config.model),
+			prompt: 'Reply with OK.',
+			temperature: 0,
+			abortSignal: controller.signal,
 		})
-		if (!response.ok) throw new Error(`AI HTTP ${response.status}`)
-		const payload = await response.json()
-		if (!Array.isArray(payload?.choices) || payload.choices.length === 0) {
-			throw new Error('AI response format is invalid')
-		}
 	} finally {
 		clearTimeout(timer)
 	}
 }
 
-function parseResponseContent(content: unknown) {
-	if (Array.isArray(content)) {
-		const text = content
-			.filter(
-				(part): part is { text: string } =>
-					typeof part === 'object' &&
-					part != null &&
-					'text' in part &&
-					typeof part.text === 'string',
-			)
-			.map((part) => part.text)
-			.join('')
-		return parseResponseContent(text)
-	}
-	if (typeof content === 'object' && content != null) return content
-	if (typeof content !== 'string') return null
-
-	const json = content.replace(/^```(?:json)?\s*|\s*```$/gi, '').trim()
-	for (const candidate of [json, json.slice(json.indexOf('{'), json.lastIndexOf('}') + 1)]) {
-		if (!candidate || !candidate.startsWith('{')) continue
-		try {
-			return JSON.parse(candidate)
-		} catch {
-			// Some reasoning models put a short explanation before the JSON.
-		}
-	}
-	return null
-}
-
+/**
+ * Runs the actual AI review.
+ *
+ * The AI SDK is responsible for:
+ * - sending the request
+ * - requesting structured output
+ * - parsing the model response
+ * - validating the result against Zod
+ *
+ * No manual JSON.parse() is needed.
+ */
 export async function aiKhatmReview_review(
 	input: ReviewInput,
 	{ timeoutMs = AI_REVIEW_BACKGROUND_WAIT_MS }: { timeoutMs?: number } = {},
 ): Promise<AiReviewResult> {
 	const config = getConfiguredReview()
-	if (!config) return { status: 'disabled', reason: null }
+
+	if (!config) {
+		return {
+			status: 'disabled',
+			reason: null,
+		}
+	}
+
+	const provider = createReviewProvider(config)
 
 	const controller = new AbortController()
 	const timer = setTimeout(() => controller.abort(), timeoutMs)
+
+	const systemPrompt = `
+You review Persian group Quran-completion titles and descriptions.
+
+Your task is to classify the title and description.
+
+Return a structured result according to the provided schema.
+
+Rules:
+
+1. verdict = "clear"
+   when the title and description are acceptable.
+
+2. verdict = "warning"
+   only when one of the following is true:
+   - the title or description is gibberish or meaningless;
+   - the content is contrary to Islamic ethics;
+   - the user explicitly asks to complete only one specific surah or one specific part instead of the complete Quran.
+
+3. A surah-based range/type alone is NOT a warning.
+
+4. For "clear":
+   reason must be null.
+
+5. For "warning":
+   reason must be a concise Persian explanation of the problem.
+
+Do not invent reasons.
+Do not flag content merely because it is short.
+Do not flag a normal surah selection/range as a violation.
+`
+
 	try {
-		const endpoint = `${config.baseUrl.replace(/\/+$/, '')}/chat/completions`
-		const response = await fetch(endpoint, {
-			method: 'POST',
-			headers: {
-				'content-type': 'application/json',
-				authorization: `Bearer ${config.apiKey}`,
-			},
-			body: JSON.stringify({
-				model: config.model,
-				temperature: 0,
-				messages: [
-					{
-						role: 'system',
-						content:
-							'You review Persian group Quran-completion titles and descriptions. Return only JSON. Warn only for gibberish, content contrary to Islamic ethics, or a request to complete only one specific surah/part instead of the complete Quran. A surah-based range type alone is not a warning. Use a concise Persian reason when warning.',
-					},
-					{
-						role: 'user',
-						content: JSON.stringify(input),
-					},
-				],
+		const result = await generateText({
+			model: provider(config.model),
+
+			system: systemPrompt,
+
+			prompt: JSON.stringify(
+				{
+					title: input.title,
+					description: input.description,
+				},
+				null,
+				2,
+			),
+
+			temperature: 0,
+
+			output: Output.object({
+				name: 'khatm_review',
+				description:
+					'Classification result for a Persian Quran-completion group title and description.',
+				schema: aiResponseSchema,
 			}),
-			signal: controller.signal,
+
+			abortSignal: controller.signal,
 		})
-		if (!response.ok) throw new Error(`AI HTTP ${response.status}`)
-		const payload = await response.json()
-		const parsed = aiResponseSchema.safeParse(parseResponseContent(payload?.choices?.[0]?.message?.content))
-		if (!parsed.success) throw new Error('AI response format is invalid')
-		if (parsed.data.verdict === 'clear') return { status: 'clear', reason: null }
+
+		/**
+		 * At this point result.output is already:
+		 *
+		 * {
+		 *   verdict: "clear" | "warning",
+		 *   reason: null | string
+		 * }
+		 *
+		 * and it has already passed Zod validation.
+		 */
+		const output: AiResponse = result.output
+
+		if (output.verdict === 'clear') {
+			return {
+				status: 'clear',
+				reason: null,
+			}
+		}
+
 		return {
 			status: 'warning',
-			reason: trimReason(parsed.data.reason) || 'عنوان یا توضیح ختم نیاز به اصلاح دارد.',
+			reason: trimReason(output.reason) || 'عنوان یا توضیح ختم نیاز به اصلاح دارد.',
 		}
 	} catch (error) {
-		console.warn('AI khatm review is unavailable.', error)
-		return { status: 'unavailable', reason: null }
+		if (NoObjectGeneratedError.isInstance(error)) {
+			console.error('AI khatm review returned invalid structured output.', {
+				error: error.message,
+				cause: error.cause,
+				text: error.text,
+				response: error.response,
+				usage: error.usage,
+			})
+		} else if (error instanceof Error) {
+			console.error('AI khatm review failed.', {
+				name: error.name,
+				message: error.message,
+			})
+		} else {
+			console.error('AI khatm review failed.', error)
+		}
+
+		return {
+			status: 'unavailable',
+			reason: null,
+		}
 	} finally {
 		clearTimeout(timer)
 	}
@@ -151,6 +238,7 @@ export async function aiKhatmReview_review(
 
 export async function aiKhatmReview_createWarning(input: ReviewInput, reason: string) {
 	const expiresAt = new Date(Date.now() + 15 * 60 * 1000)
+
 	return db.tAiKhatmReview.create({
 		data: {
 			contentHash: contentHash(input),
@@ -163,7 +251,10 @@ export async function aiKhatmReview_createWarning(input: ReviewInput, reason: st
 }
 
 export async function aiKhatmReview_consumeWarning(id: string, input: ReviewInput) {
-	const review = await db.tAiKhatmReview.findUnique({ where: { id } })
+	const review = await db.tAiKhatmReview.findUnique({
+		where: { id },
+	})
+
 	if (
 		!review ||
 		review.khatmId != null ||
@@ -173,18 +264,35 @@ export async function aiKhatmReview_consumeWarning(id: string, input: ReviewInpu
 	) {
 		return null
 	}
+
 	const reserved = await db.tAiKhatmReview.updateMany({
-		where: { id, khatmId: null, status: 'warning' },
-		data: { status: 'pending' },
+		where: {
+			id,
+			khatmId: null,
+			status: 'warning',
+		},
+		data: {
+			status: 'pending',
+		},
 	})
+
 	if (reserved.count === 0) return null
+
 	return review
 }
 
 export async function aiKhatmReview_attachWarning(id: string, khatmId: number) {
 	await db.tAiKhatmReview.updateMany({
-		where: { id, khatmId: null, status: 'pending' },
-		data: { khatmId, status: 'warning', expiresAt: null },
+		where: {
+			id,
+			khatmId: null,
+			status: 'pending',
+		},
+		data: {
+			khatmId,
+			status: 'warning',
+			expiresAt: null,
+		},
 	})
 }
 
@@ -195,6 +303,7 @@ export async function aiKhatmReview_createForKhatm(
 	deadline?: Date,
 ) {
 	const status = result.status as AiReviewStatus
+
 	return db.tAiKhatmReview.create({
 		data: {
 			khatmId,
@@ -207,48 +316,81 @@ export async function aiKhatmReview_createForKhatm(
 }
 
 export async function aiKhatmReview_applyResult(khatmId: number, result: AiReviewResult) {
-	const khatm = await db.tKhatm.findUnique({ where: { id: khatmId } })
+	const khatm = await db.tKhatm.findUnique({
+		where: { id: khatmId },
+	})
+
 	if (!khatm) return
-	const review = await db.tAiKhatmReview.findUnique({ where: { khatmId } })
+
+	const review = await db.tAiKhatmReview.findUnique({
+		where: { khatmId },
+	})
+
 	if (review && review.contentHash !== contentHash(khatm)) {
 		await db.$transaction([
 			db.tAiKhatmReview.update({
 				where: { id: review.id },
-				data: { status: 'unavailable', deadline: null },
+				data: {
+					status: 'unavailable',
+					deadline: null,
+				},
 			}),
 			db.tKhatm.update({
 				where: { id: khatmId },
-				data: { aiReviewStatus: 'unavailable', aiReviewReason: null },
+				data: {
+					aiReviewStatus: 'unavailable',
+					aiReviewReason: null,
+				},
 			}),
 		])
+
 		return
 	}
 
 	const aiReviewStatus = result.status as AiReviewStatus
+
 	await db.$transaction(async (tx) => {
 		await tx.tAiKhatmReview.updateMany({
-			where: { khatmId, status: 'pending' },
-			data: { status: aiReviewStatus, reason: result.reason, deadline: null },
+			where: {
+				khatmId,
+				status: 'pending',
+			},
+			data: {
+				status: aiReviewStatus,
+				reason: result.reason,
+				deadline: null,
+			},
 		})
+
 		await tx.tKhatm.update({
 			where: { id: khatmId },
-			data: { aiReviewStatus, aiReviewReason: result.reason },
+			data: {
+				aiReviewStatus,
+				aiReviewReason: result.reason,
+			},
 		})
-		if (khatm.private || result.status === 'disabled') return
+
+		if (khatm.private || result.status === 'disabled') {
+			return
+		}
+
 		if (result.status === 'clear' || result.status === 'warning') {
 			await tx.tKhatm.updateMany({
-				where: { id: khatmId, reviewStatus: 'pending' },
+				where: {
+					id: khatmId,
+					reviewStatus: 'pending',
+				},
 				data: {
 					reviewStatus: result.status === 'clear' ? 'approved' : 'rejected',
 				},
 			})
-			return
 		}
 	})
 }
 
 export function aiKhatmReview_continue(khatmId: number, pendingReview: Promise<AiReviewResult>) {
 	schedulerState.runningKhatmIds.add(khatmId)
+
 	void pendingReview
 		.then((result) => aiKhatmReview_applyResult(khatmId, result))
 		.catch((error) => {
@@ -259,51 +401,97 @@ export function aiKhatmReview_continue(khatmId: number, pendingReview: Promise<A
 
 export async function aiKhatmReview_processPending() {
 	const now = new Date()
+
 	await db.tAiKhatmReview.deleteMany({
-		where: { khatmId: null, expiresAt: { lte: now } },
+		where: {
+			khatmId: null,
+			expiresAt: { lte: now },
+		},
 	})
+
 	const expired = await db.tAiKhatmReview.findMany({
-		where: { status: 'pending', deadline: { lt: now }, khatmId: { not: null } },
-		select: { khatmId: true },
+		where: {
+			status: 'pending',
+			deadline: { lt: now },
+			khatmId: { not: null },
+		},
+		select: {
+			khatmId: true,
+		},
 		take: 20,
 	})
+
 	await Promise.all(
 		expired.map((review) =>
-			aiKhatmReview_applyResult(review.khatmId!, { status: 'unavailable', reason: null }),
+			aiKhatmReview_applyResult(review.khatmId!, {
+				status: 'unavailable',
+				reason: null,
+			}),
 		),
 	)
+
 	const pending = await db.tAiKhatmReview.findMany({
-		where: { status: 'pending', deadline: { gte: now }, khatmId: { not: null } },
-		include: { khatm: { select: { title: true, description: true } } },
+		where: {
+			status: 'pending',
+			deadline: { gte: now },
+			khatmId: { not: null },
+		},
+		include: {
+			khatm: {
+				select: {
+					title: true,
+					description: true,
+				},
+			},
+		},
 		take: 20,
 	})
+
 	await Promise.all(
-		pending.filter((review) => !schedulerState.runningKhatmIds.has(review.khatmId!)).map(async (review) => {
-			const remaining = review.deadline!.getTime() - Date.now()
-			if (remaining <= 0) return
-			if (!review.khatm) return
-			schedulerState.runningKhatmIds.add(review.khatmId!)
-			try {
-				const result = await aiKhatmReview_review(review.khatm, { timeoutMs: remaining })
-				await aiKhatmReview_applyResult(review.khatmId!, result)
-			} finally {
-				schedulerState.runningKhatmIds.delete(review.khatmId!)
-			}
-		}),
+		pending
+			.filter((review) => !schedulerState.runningKhatmIds.has(review.khatmId!))
+			.map(async (review) => {
+				const remaining = review.deadline!.getTime() - Date.now()
+
+				if (remaining <= 0) return
+				if (!review.khatm) return
+
+				schedulerState.runningKhatmIds.add(review.khatmId!)
+
+				try {
+					const result = await aiKhatmReview_review(review.khatm, {
+						timeoutMs: remaining,
+					})
+
+					await aiKhatmReview_applyResult(review.khatmId!, result)
+				} finally {
+					schedulerState.runningKhatmIds.delete(review.khatmId!)
+				}
+			}),
 	)
 }
 
-type SchedulerState = { started: boolean; active: Promise<void> | null; runningKhatmIds: Set<number> }
-const globalForAiReview = globalThis as unknown as { aiKhatmReviewScheduler?: SchedulerState }
+type SchedulerState = {
+	started: boolean
+	active: Promise<void> | null
+	runningKhatmIds: Set<number>
+}
+
+const globalForAiReview = globalThis as unknown as {
+	aiKhatmReviewScheduler?: SchedulerState
+}
+
 const schedulerState = globalForAiReview.aiKhatmReviewScheduler ?? {
 	started: false,
 	active: null,
 	runningKhatmIds: new Set<number>(),
 }
+
 globalForAiReview.aiKhatmReviewScheduler = schedulerState
 
 function runScheduler() {
 	if (schedulerState.active) return
+
 	schedulerState.active = aiKhatmReview_processPending()
 		.catch((error) => console.error('Failed to process pending AI khatm reviews.', error))
 		.finally(() => {
@@ -313,8 +501,11 @@ function runScheduler() {
 
 export function aiKhatmReview_startScheduler() {
 	if (schedulerState.started) return
+
 	schedulerState.started = true
+
 	runScheduler()
+
 	const interval = setInterval(runScheduler, 10_000)
 	interval.unref?.()
 }

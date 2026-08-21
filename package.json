@@ -54,6 +54,7 @@
 		"vitest": "^3.0.0"
 	},
 	"dependencies": {
+		"@ai-sdk/openai-compatible": "^3.0.33",
 		"@better-auth/prisma-adapter": "^1.6.26",
 		"@ghoran/entity": "^0.2.1",
 		"@ghoran/metadata": "^0.0.7",
@@ -63,6 +64,7 @@
 		"@prisma/adapter-mariadb": "7.9.1",
 		"@prisma/client": "7.9.1",
 		"@unocss/reset": "66.1.0-beta.10",
+		"ai": "^7.0.71",
 		"better-auth": "1.6.26",
 		"clipboard-copy": "^4.0.1",
 		"dexie": "^4.0.11",

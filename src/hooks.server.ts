@@ -48,7 +48,9 @@ export const handle: Handle = async ({ resolve, event }) => {
 }
 
 export const handleError: HandleServerError = async ({ error, event, status, message }) => {
-	if (dev || browser) {
+	const isDevelopment = dev || true
+
+	if (isDevelopment || browser) {
 		console.error(error)
 	}
 
@@ -59,7 +61,90 @@ export const handleError: HandleServerError = async ({ error, event, status, mes
 		})
 		.catch(() => {})
 
+	const details = getErrorDetails(error)
+
 	return {
-		message,
+		status,
+		name: details.name,
+		message: details.message,
+		path: event.url.pathname,
+
+		// فقط در development
+		stack: isDevelopment ? details.stack : undefined,
+		cause: isDevelopment ? details.cause : undefined,
 	}
 }
+
+function serializeCause(cause: unknown): unknown {
+	if (cause == null) return null
+
+	if (cause instanceof Error) {
+		return {
+			name: cause.name,
+			message: cause.message,
+			stack: cause.stack,
+			cause: serializeCause(cause.cause),
+		}
+	}
+
+	if (typeof cause === 'object') {
+		try {
+			return JSON.parse(JSON.stringify(cause))
+		} catch {
+			return String(cause)
+		}
+	}
+
+	return cause
+}
+
+function getErrorDetails(error: unknown) {
+	if (error instanceof Error) {
+		return {
+			name: error.name,
+			message: error.message,
+			stack: error.stack,
+			cause: serializeCause(error.cause),
+		}
+	}
+
+	if (typeof error === 'object' && error !== null) {
+		try {
+			return {
+				name: error.constructor?.name ?? 'UnknownError',
+				message: JSON.stringify(error),
+				stack: undefined,
+				cause: undefined,
+			}
+		} catch {
+			return {
+				name: 'UnknownError',
+				message: String(error),
+				stack: undefined,
+				cause: undefined,
+			}
+		}
+	}
+
+	return {
+		name: 'UnknownError',
+		message: String(error),
+		stack: undefined,
+		cause: undefined,
+	}
+}
+
+// export const handleError: HandleServerError = ({ error, event, status }) => {
+// 	const details = getErrorDetails(error)
+
+// 	return {
+// 		status,
+// 		name: details.name,
+// 		message: details.message,
+// 		path: event.url.pathname,
+
+// 		// فقط در development
+// 		stack: dev ? details.stack : undefined,
+// 		cause: dev ? details.cause : undefined,
+// 	}
+// }

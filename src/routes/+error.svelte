@@ -11,12 +11,48 @@
 	import IconRefresh from '~icons/ic/round-refresh'
 
 	const isNotFound = $derived(page.status === 404)
+
 	const title = $derived(isNotFound ? 'این صفحه پیدا نشد' : 'مشکلی پیش آمده است')
+
 	const description = $derived(
 		isNotFound
 			? 'ممکن است نشانی صفحه تغییر کرده باشد یا این مسیر دیگر در دسترس نباشد.'
 			: page.error?.message || 'در نمایش این صفحه خطایی رخ داده است. لطفاً دوباره تلاش کنید.',
 	)
+
+	const technicalMessage = $derived(page.error?.message || description)
+
+	const technicalType = $derived(page.error?.name || 'UnknownError')
+
+	const technicalStack = $derived(page.error?.stack || '')
+
+	const technicalCause = $derived(page.error?.cause ?? null)
+
+	const technicalPath = $derived(page.error?.path || page.url.pathname)
+
+	const currentUrl = $derived(page.url?.href || '')
+
+	const hasStack = $derived(Boolean(technicalStack))
+
+	const hasCause = $derived(technicalCause !== null && technicalCause !== undefined)
+
+	const errorDump = $derived(
+		JSON.stringify(
+			{
+				status: page.status,
+				name: technicalType,
+				message: technicalMessage,
+				path: technicalPath,
+				url: currentUrl,
+				stack: technicalStack || null,
+				cause: technicalCause,
+			},
+			null,
+			2,
+		),
+	)
+
+	let copied = false
 
 	function retry() {
 		window.location.reload()
@@ -27,6 +63,19 @@
 			history.back()
 		} else {
 			void goto(`${base}/`)
+		}
+	}
+
+	async function copyError() {
+		try {
+			await navigator.clipboard.writeText(errorDump)
+			copied = true
+
+			window.setTimeout(() => {
+				copied = false
+			}, 2000)
+		} catch {
+			copied = false
 		}
 	}
 </script>
@@ -74,6 +123,70 @@
 			<IconExplore />
 			<span>یا ختم‌های عمومی را ببینید</span>
 		</a>
+		<details class="error-technical-details">
+			<summary>نمایش جزئیات فنی</summary>
+
+			<div class="technical-toolbar">
+				<button class="technical-copy-button" type="button" onclick={copyError}>
+					{copied ? 'کپی شد ✓' : 'کپی اطلاعات خطا'}
+				</button>
+			</div>
+
+			<div class="technical-grid">
+				<div class="technical-row">
+					<span class="technical-label">کد خطا</span>
+					<code class="technical-value">{page.status}</code>
+				</div>
+
+				<div class="technical-row">
+					<span class="technical-label">نوع خطا</span>
+					<code class="technical-value">{technicalType}</code>
+				</div>
+
+				<div class="technical-row">
+					<span class="technical-label">مسیر</span>
+					<code class="technical-value" dir="ltr">
+						{technicalPath}
+					</code>
+				</div>
+
+				<div class="technical-row technical-row-block">
+					<span class="technical-label">پیام</span>
+					<pre class="technical-pre" dir="ltr">{technicalMessage}</pre>
+				</div>
+
+				{#if hasStack}
+					<div class="technical-row technical-row-block">
+						<span class="technical-label">Stack Trace</span>
+
+						<pre class="technical-pre technical-stack" dir="ltr">{technicalStack}</pre>
+					</div>
+				{/if}
+
+				{#if hasCause}
+					<div class="technical-row technical-row-block">
+						<span class="technical-label">Cause</span>
+
+						<pre class="technical-pre technical-stack" dir="ltr">{JSON.stringify(
+								technicalCause,
+								null,
+								2,
+							)}</pre>
+					</div>
+				{/if}
+
+				<div class="technical-row technical-row-block">
+					<span class="technical-label">URL</span>
+					<pre class="technical-pre" dir="ltr">{currentUrl}</pre>
+				</div>
+			</div>
+
+			<details class="technical-raw">
+				<summary>JSON خام خطا</summary>
+
+				<pre class="technical-pre technical-stack" dir="ltr">{errorDump}</pre>
+			</details>
+		</details>
 	</div>
 
 	<div class="error-visual" aria-hidden="true">
@@ -234,6 +347,132 @@
 	.error-help-link:hover {
 		color: var(--ui-color-primary);
 		text-decoration: underline;
+	}
+
+	.error-technical-details {
+		margin-top: 0.7rem;
+		color: var(--ui-color-text-muted);
+		font-size: 0.75rem;
+	}
+
+	.error-technical-details summary {
+		display: inline-block;
+		color: var(--ui-color-text-muted);
+		cursor: pointer;
+		font-weight: 800;
+		list-style: none;
+		text-decoration: underline;
+		text-underline-offset: 0.18rem;
+	}
+
+	.error-technical-details summary::-webkit-details-marker {
+		display: none;
+	}
+
+	.error-technical-details summary:hover,
+	.error-technical-details[open] summary {
+		color: var(--ui-color-primary);
+	}
+
+	.error-technical-details summary:focus {
+		outline: 2px solid var(--ui-color-focus);
+		outline-offset: 3px;
+	}
+
+	.technical-toolbar {
+		display: flex;
+		justify-content: flex-start;
+		margin-top: 0.8rem;
+	}
+
+	.technical-copy-button {
+		padding: 0.45rem 0.7rem;
+		border: 1px solid var(--ui-color-border-strong);
+		border-radius: 0.55rem;
+		background: var(--ui-color-surface);
+		color: var(--ui-color-text);
+		cursor: pointer;
+		font: inherit;
+		font-size: 0.72rem;
+		font-weight: 800;
+	}
+
+	.technical-copy-button:hover {
+		background: var(--ui-color-surface-muted);
+	}
+
+	.technical-grid {
+		margin-top: 0.8rem;
+		padding: 0.85rem;
+		border: 1px solid var(--ui-color-border);
+		border-radius: 0.75rem;
+		background: var(--ui-color-surface-muted);
+	}
+
+	.technical-row {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.technical-row + .technical-row {
+		margin-top: 0.65rem;
+	}
+
+	.technical-row-block {
+		display: block;
+	}
+
+	.technical-label {
+		display: block;
+		margin-bottom: 0.35rem;
+		font-weight: 800;
+	}
+
+	.technical-value {
+		word-break: break-word;
+		text-align: left;
+	}
+
+	.technical-pre {
+		margin: 0;
+		padding: 0.75rem;
+		border: 1px solid var(--ui-color-border);
+		border-radius: 0.6rem;
+		background: var(--ui-color-surface);
+		white-space: pre-wrap;
+		overflow-wrap: anywhere;
+		font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+		font-size: 0.72rem;
+		line-height: 1.7;
+		text-align: left;
+	}
+
+	.technical-stack {
+		max-height: 28rem;
+		overflow: auto;
+	}
+
+	.technical-raw {
+		margin-top: 0.75rem;
+	}
+
+	.technical-raw summary {
+		cursor: pointer;
+		font-weight: 800;
+	}
+
+	@media (max-width: 479px) {
+		.technical-row {
+			display: block;
+		}
+
+		.technical-value {
+			display: block;
+			margin-top: 0.25rem;
+			text-align: right;
+		}
 	}
 
 	.error-visual {

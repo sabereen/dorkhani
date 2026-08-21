@@ -33,7 +33,14 @@ declare global {
 
 		interface Error {
 			type?: ErrorType
+			message: string
+			name?: string
+			stack?: string
+			cause?: unknown
+			path?: string
+			status?: number
 		}
+
 		interface Locals {
 			session: AuthSession['session'] | null
 			user: AuthSession['user'] | null

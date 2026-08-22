@@ -4,6 +4,7 @@
 	import { serverUrl } from '$lib/config/runtime'
 	import { claimCreatedKhatms } from '$lib/auth/claimCreatedKhatms'
 	import { localizeHref } from '$lib/paraglide/runtime.js'
+	import * as m from '$lib/paraglide/messages.js'
 	import Modal from './Modal.svelte'
 	import { onMount } from 'svelte'
 
@@ -18,6 +19,7 @@
 	}
 
 	const eitaaSdkUrl = 'https://developer.eitaa.com/eitaa-web-app.js'
+	const provider = 'ایتا'
 
 	function loadEitaaSdk() {
 		if (window.Eitaa?.WebApp) return Promise.resolve()
@@ -79,7 +81,7 @@
 			})
 			const result: EitaaAuthResult = await response.json().catch(() => ({}))
 			if (!response.ok) {
-				errorMessage = result.message || 'ورود خودکار با ایتا ناموفق بود.'
+				errorMessage = result.message || m.miniapp_auto_login_failed({ provider })
 				open = true
 				return
 			}
@@ -93,7 +95,7 @@
 			await claimCreatedKhatms()
 			await invalidateAll()
 		} catch {
-			errorMessage = 'ارتباط با سرور برای ورود ایتا برقرار نشد.'
+			errorMessage = m.miniapp_server_error({ provider })
 			open = true
 		} finally {
 			loading = false
@@ -148,8 +150,8 @@
 </script>
 
 <Modal bind:open contentClass="ui-khatm-auth-dialog">
-	<p class="ui-khatm-auth-eyebrow">ورود از ایتا</p>
-	<h2>{errorMessage ? 'ورود خودکار انجام نشد' : 'انتخاب حساب'}</h2>
+	<p class="ui-khatm-auth-eyebrow">{m.miniapp_login_eyebrow({ provider })}</p>
+	<h2>{errorMessage ? m.miniapp_auto_login_failed_title() : m.miniapp_choose_account()}</h2>
 	{#if errorMessage}
 		<div class="ui-alert ui-alert-error mt-3" role="alert">{errorMessage}</div>
 		<div class="ui-khatm-auth-actions mt-4">
@@ -159,17 +161,17 @@
 				onclick={() => authenticate('auto')}
 				disabled={loading}
 			>
-				{loading ? 'در حال تلاش…' : 'تلاش دوباره'}
+				{loading ? m.common_loading() : m.common_retry()}
 			</button>
 			<button class="ui-btn ui-btn-soft" type="button" onclick={() => (open = false)}>
-				ادامه بدون ورود ایتا
+				{m.miniapp_continue_without({ provider })}
 			</button>
 		</div>
 	{:else}
 		<p class="ui-khatm-auth-description">
 			{reason === 'different-account'
-				? 'حساب ایتا به حساب دیگری متصل است. می‌توانید نشست فعلی را نگه دارید یا وارد حساب ایتا شوید.'
-				: 'یک نشست فعال دارید. حساب ایتا را به همین نشست متصل کنید یا برای آن حساب جداگانه‌ای بسازید.'}
+				? m.miniapp_different_account({ provider })
+				: m.miniapp_active_session({ provider })}
 		</p>
 		<div class="ui-khatm-auth-actions">
 			{#if reason === 'unlinked'}
@@ -179,7 +181,7 @@
 					onclick={() => authenticate('link-current')}
 					disabled={loading}
 				>
-					اتصال به حساب فعلی
+					{m.miniapp_link_current()}
 				</button>
 			{/if}
 			<button
@@ -188,7 +190,9 @@
 				onclick={() => authenticate('use-eitaa')}
 				disabled={loading}
 			>
-				{reason === 'unlinked' ? 'ساخت حساب جدا برای ایتا' : 'ورود به حساب ایتا'}
+				{reason === 'unlinked'
+					? m.miniapp_create_separate({ provider })
+					: m.miniapp_sign_in_provider({ provider })}
 			</button>
 			<button
 				class="ui-btn ui-btn-ghost"
@@ -196,7 +200,7 @@
 				onclick={() => (open = false)}
 				disabled={loading}
 			>
-				ادامه با حساب فعلی
+				{m.miniapp_continue_current()}
 			</button>
 		</div>
 	{/if}

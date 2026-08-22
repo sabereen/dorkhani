@@ -90,7 +90,7 @@
 				{m.quran_context()}
 			</a>
 		{:else}
-			<span class="ui-text-muted">صوت و پیوند آیات به اینترنت نیاز دارد.</span>
+			<span class="ui-text-muted">{m.quran_offline_audio_hint()}</span>
 		{/if}
 		<p class="ui-quran-ayah-meta">
 			{m.quran_ayah_meta({ number: ayah.number.toLocaleString(localeTag()), surah: surah_getName(ayah.surah) })}

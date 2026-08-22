@@ -461,5 +461,22 @@
 	"grid_juz": "جزء",
 	"grid_surah": "سوره",
 	"grid_page": "صفحه",
-	"grid_reading_label": "قرائت شده"
+	"grid_reading_label": "قرائت شده",
+	"range_picker_aria": "انتخاب نوع بازه‌بندی",
+	"range_picker_free_hint": "هر همراه می‌تواند به اندازهٔ فرصت خودش، از بخش‌های آزاد قرآن انتخاب کند.",
+	"range_picker_ayah_hint": "آیه‌ها به‌ترتیب میان همراهان پخش می‌شوند؛ در این مدل، هر نفر یک بازهٔ دلخواه انتخاب نمی‌کند.",
+	"quran_offline_audio_hint": "صوت و پیوند آیات به اینترنت نیاز دارد.",
+	"legal_last_updated": "آخرین به‌روزرسانی: ۲۴ مرداد ۱۴۰۵",
+	"miniapp_auto_login_failed": "ورود خودکار با {provider} ناموفق بود.",
+	"miniapp_server_error": "ارتباط با سرور برای ورود {provider} برقرار نشد.",
+	"miniapp_login_eyebrow": "ورود از {provider}",
+	"miniapp_auto_login_failed_title": "ورود خودکار انجام نشد",
+	"miniapp_choose_account": "انتخاب حساب",
+	"miniapp_continue_without": "ادامه بدون ورود {provider}",
+	"miniapp_different_account": "حساب {provider} به حساب دیگری متصل است. می‌توانید نشست فعلی را نگه دارید یا به حساب {provider} بروید.",
+	"miniapp_active_session": "یک نشست فعال دارید. حساب {provider} را به همین نشست متصل کنید یا برای آن حساب جداگانه‌ای بسازید.",
+	"miniapp_link_current": "اتصال به حساب فعلی",
+	"miniapp_create_separate": "ساخت حساب جدا برای {provider}",
+	"miniapp_sign_in_provider": "ورود به حساب {provider}",
+	"miniapp_continue_current": "ادامه با حساب فعلی"
 }

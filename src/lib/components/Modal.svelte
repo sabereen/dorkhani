@@ -2,6 +2,7 @@
 	import type { Snippet } from 'svelte'
 	import { fade, scale } from 'svelte/transition'
 	import { tick } from 'svelte'
+	import * as m from '$lib/paraglide/messages.js'
 
 	type Props = {
 		open?: boolean
@@ -88,7 +89,7 @@
 		<button
 			in:fade|global
 			type="button"
-			aria-label="بستن پنجره"
+			aria-label={m.common_close()}
 			class="ui-modal-backdrop"
 			onclick={handleBackdrop}
 		></button>

@@ -461,5 +461,22 @@
 	"grid_juz": "جزء",
 	"grid_surah": "سورة",
 	"grid_page": "صفحة",
-	"grid_reading_label": "مقروء"
+	"grid_reading_label": "مقروء",
+	"range_picker_aria": "اختيار نوع تقسيم المقطع",
+	"range_picker_free_hint": "يمكن لكل مشارك اختيار قدر يناسب وقته من الأجزاء المتاحة من القرآن.",
+	"range_picker_ayah_hint": "توزّع الآيات بالتتابع بين المشاركين؛ في هذا النموذج لا يختار كل شخص مقطعًا خاصًا.",
+	"quran_offline_audio_hint": "يحتاج الصوت وروابط الآيات إلى اتصال بالإنترنت.",
+	"legal_last_updated": "آخر تحديث: 15 أغسطس 2026",
+	"miniapp_auto_login_failed": "تعذّر تسجيل الدخول تلقائيًا عبر {provider}.",
+	"miniapp_server_error": "تعذّر الاتصال بالخادم لتسجيل الدخول عبر {provider}.",
+	"miniapp_login_eyebrow": "تسجيل الدخول عبر {provider}",
+	"miniapp_auto_login_failed_title": "تعذّر تسجيل الدخول تلقائيًا",
+	"miniapp_choose_account": "اختيار الحساب",
+	"miniapp_continue_without": "المتابعة من دون تسجيل الدخول عبر {provider}",
+	"miniapp_different_account": "حساب {provider} مرتبط بحساب آخر. يمكنك إبقاء الجلسة الحالية أو الانتقال إلى حساب {provider}.",
+	"miniapp_active_session": "لديك جلسة نشطة. اربط حساب {provider} بهذه الجلسة أو أنشئ له حسابًا منفصلًا.",
+	"miniapp_link_current": "ربط بالحساب الحالي",
+	"miniapp_create_separate": "إنشاء حساب منفصل لـ {provider}",
+	"miniapp_sign_in_provider": "تسجيل الدخول إلى حساب {provider}",
+	"miniapp_continue_current": "المتابعة بالحساب الحالي"
 }

@@ -461,5 +461,22 @@
 	"grid_juz": "Juz",
 	"grid_surah": "Surah",
 	"grid_page": "Page",
-	"grid_reading_label": "Read"
+	"grid_reading_label": "Read",
+	"range_picker_aria": "Choose range type",
+	"range_picker_free_hint": "Each participant can choose as much as their time allows from the available Quran ranges.",
+	"range_picker_ayah_hint": "Ayahs are distributed in order among participants; each person does not choose an arbitrary range in this model.",
+	"quran_offline_audio_hint": "Audio and ayah links require an internet connection.",
+	"legal_last_updated": "Last updated: August 15, 2026",
+	"miniapp_auto_login_failed": "Automatic sign-in with {provider} failed.",
+	"miniapp_server_error": "The server connection for signing in with {provider} failed.",
+	"miniapp_login_eyebrow": "Sign in with {provider}",
+	"miniapp_auto_login_failed_title": "Automatic sign-in failed",
+	"miniapp_choose_account": "Choose an account",
+	"miniapp_continue_without": "Continue without signing in with {provider}",
+	"miniapp_different_account": "Your {provider} account is linked to another account. You can keep the current session or switch to your {provider} account.",
+	"miniapp_active_session": "You have an active session. Link your {provider} account to it or create a separate account for it.",
+	"miniapp_link_current": "Link to current account",
+	"miniapp_create_separate": "Create a separate account for {provider}",
+	"miniapp_sign_in_provider": "Sign in to {provider} account",
+	"miniapp_continue_current": "Continue with current account"
 }

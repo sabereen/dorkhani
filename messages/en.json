@@ -1,4 +1,8 @@
 {
+	"nav_offline_khatm": "Offline khatm",
+	"offline_khatm_title": "Offline khatm",
+	"offline_khatm_create": "Create offline khatm",
+	"offline_khatm_device_only": "This khatm is stored only on this device.",
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"language_fa": "فارسی",
 	"language_ar": "العربية",

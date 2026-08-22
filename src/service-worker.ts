@@ -11,9 +11,14 @@ const CACHE = `${CACHE_PREFIX}-${version}`
 const OFFLINE_PAGE = `${base}/offline.html`
 const PRECACHE = [...build, ...files]
 const PRECACHE_PATHS = new Set(PRECACHE)
+const OFFLINE_KHATM_SHELLS = [
+	`${base}/offline-khatm`,
+	`${base}/ar/offline-khatm`,
+	`${base}/en/offline-khatm`,
+]
 
 worker.addEventListener('install', (event) => {
-	event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(PRECACHE)))
+	event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll([...PRECACHE, ...OFFLINE_KHATM_SHELLS])))
 })
 
 worker.addEventListener('activate', (event) => {
@@ -63,8 +68,21 @@ async function navigationWithOfflineFallback(request: Request) {
 		return await fetch(request)
 	} catch {
 		const cache = await caches.open(CACHE)
+		const url = new URL(request.url)
+		const offlineKhatmShell = getOfflineKhatmShell(url.pathname)
+		if (offlineKhatmShell) {
+			const cachedShell = await cache.match(offlineKhatmShell, { ignoreSearch: true })
+			if (cachedShell) return cachedShell
+		}
 		return (await cache.match(OFFLINE_PAGE)) ?? Response.error()
 	}
+}
+
+function getOfflineKhatmShell(pathname: string) {
+	if (base && pathname !== base && !pathname.startsWith(`${base}/`)) return null
+	const appPath = base ? pathname.slice(base.length) || '/' : pathname
+	const match = /^\/(?:((?:ar|en)\/)?)offline-khatm(?:\/|$)/.exec(appPath)
+	return match ? `${base}/${match[1] || ''}offline-khatm` : null
 }
 
 async function networkFirst(request: Request) {

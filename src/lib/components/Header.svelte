@@ -7,14 +7,16 @@
 	import { getLocale } from '$lib/paraglide/runtime.js'
 	import { localizeHref } from '$lib/paraglide/runtime.js'
 	import * as m from '$lib/paraglide/messages.js'
+	import { isInstalledApp } from '$lib/config/installedApp'
 	import LanguageSwitcher from './LanguageSwitcher.svelte'
-	import type { Component, Snippet } from 'svelte'
+	import { onMount, type Component, type Snippet } from 'svelte'
 	import IconAdd from '~icons/ic/round-add-circle-outline'
 	import IconAccount from '~icons/ic/round-account-circle'
 	import IconBack from '~icons/ic/round-arrow-forward-ios'
 	import IconClose from '~icons/ic/round-close'
 	import IconHistory from '~icons/ic/round-history'
 	import IconHome from '~icons/ic/round-home'
+	import IconOffline from '~icons/ic/round-cloud-off'
 	import IconList from '~icons/ic/round-format-list-bulleted'
 	import IconLogin from '~icons/ic/round-login'
 	import IconLogout from '~icons/ic/round-logout'
@@ -41,10 +43,18 @@
 	const from = navigating.from
 	let open = $state(false)
 	let accountMenu: HTMLDetailsElement | undefined = $state()
+	let offlineKhatmAvailable = $state(false)
+
+	onMount(() => {
+		offlineKhatmAvailable = isInstalledApp()
+	})
 
 	const links = $derived<NavLink[]>([
 		{ href: localizeHref(`${base}/`), label: m.common_home(), icon: IconHome },
 		{ href: localizeHref(`${base}/add`), label: m.nav_create(), icon: IconAdd },
+		...(offlineKhatmAvailable
+			? [{ href: localizeHref(`${base}/offline-khatm`), label: m.nav_offline_khatm(), icon: IconOffline }]
+			: []),
 		{ href: localizeHref(`${base}/list`), label: m.nav_khatms(), icon: IconList },
 		{ href: localizeHref(`${base}/history`), label: m.nav_history(), icon: IconHistory },
 		{ href: localizeHref(`${base}/settings`), label: m.nav_settings(), icon: IconSettings },
@@ -109,7 +119,7 @@
 		</a>
 
 		<nav class="ui-nav ui-desktop-only" aria-label={m.language_selector_label()}>
-			{#each links.slice(0, 4) as navLink}
+			{#each links.slice(0, offlineKhatmAvailable ? 5 : 4) as navLink}
 				{@const NavIcon = navLink.icon}
 				<a
 					class="ui-nav-link"

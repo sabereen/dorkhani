@@ -1,4 +1,8 @@
 {
+	"nav_offline_khatm": "ختم آفلاین",
+	"offline_khatm_title": "ختم آفلاین",
+	"offline_khatm_create": "ایجاد ختم آفلاین",
+	"offline_khatm_device_only": "اطلاعات این ختم فقط روی همین دستگاه ذخیره می‌شود.",
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"language_fa": "فارسی",
 	"language_ar": "العربية",

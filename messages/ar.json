@@ -1,4 +1,8 @@
 {
+	"nav_offline_khatm": "ختمة دون اتصال",
+	"offline_khatm_title": "الختمة دون اتصال",
+	"offline_khatm_create": "إنشاء ختمة دون اتصال",
+	"offline_khatm_device_only": "تُحفظ بيانات هذه الختمة على هذا الجهاز فقط.",
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"language_fa": "فارسی",
 	"language_ar": "العربية",

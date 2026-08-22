@@ -1,6 +1,10 @@
 // db.ts
 import type { ZekrRecord } from '$lib/contracts/domain'
-import type { KhatmData } from '$lib/contracts/domain'
+import type {
+	KhatmData,
+	OfflineKhatmPartRecord,
+	OfflineKhatmRecord,
+} from '$lib/contracts/domain'
 import Dexie, { type EntityTable } from 'dexie'
 
 /** بازه‌ی انتخاب شده برای ختم */
@@ -39,6 +43,8 @@ const db = new Dexie('Khatm') as Dexie & {
 	pickedKhatmParts: EntityTable<PickedKhatmPart, 'id'>
 	createdKhatms: EntityTable<CreatedKhatm, 'id'>
 	localZekr: EntityTable<LocalZekr, 'id'>
+	offlineKhatms: EntityTable<OfflineKhatmRecord, 'id'>
+	offlineKhatmParts: EntityTable<OfflineKhatmPartRecord, 'id'>
 }
 
 // Schema declaration:
@@ -52,6 +58,14 @@ db.version(6).stores({
 	pickedKhatmParts: '++id, date, khatm.id, khatm.seriesId',
 	createdKhatms: 'id, khatm.created',
 	localZekr: 'id, isMine, zekr.created',
+})
+
+db.version(7).stores({
+	pickedKhatmParts: '++id, date, khatm.id, khatm.seriesId',
+	createdKhatms: 'id, khatm.created',
+	localZekr: 'id, isMine, zekr.created',
+	offlineKhatms: '&id, updated, status',
+	offlineKhatmParts: '&id, khatmId, [khatmId+roundNumber], created',
 })
 
 export { db }

@@ -8,14 +8,29 @@
 		children?: Snippet
 		class?: string
 		contentClass?: string
+		labelledBy?: string
+		closeOnBackdrop?: boolean
+		closeOnEscape?: boolean
 	}
 
-	let { open = $bindable(false), children, contentClass, class: className }: Props = $props()
+	let {
+		open = $bindable(false),
+		children,
+		contentClass,
+		class: className,
+		labelledBy,
+		closeOnBackdrop = true,
+		closeOnEscape = true,
+	}: Props = $props()
 	let modalBox = $state<HTMLElement>()
 	let returnFocus: HTMLElement | null = null
 
 	function close() {
 		open = false
+	}
+
+	function handleBackdrop() {
+		if (closeOnBackdrop) close()
 	}
 
 	function getFocusableElements() {
@@ -30,7 +45,7 @@
 	function handleKeyboard(event: KeyboardEvent) {
 		if (!open) return
 		if (event.key === 'Escape') {
-			close()
+			if (closeOnEscape) close()
 			return
 		}
 		if (event.key !== 'Tab') return
@@ -75,7 +90,7 @@
 			type="button"
 			aria-label="بستن پنجره"
 			class="ui-modal-backdrop"
-			onclick={close}
+			onclick={handleBackdrop}
 		></button>
 		<div
 			bind:this={modalBox}
@@ -83,6 +98,7 @@
 			transition:scale|global={{ start: 0.92, opacity: 0 }}
 			role="dialog"
 			aria-modal="true"
+			aria-labelledby={labelledBy}
 			tabindex="-1"
 		>
 			{@render children?.()}

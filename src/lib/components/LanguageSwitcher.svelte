@@ -1,25 +1,28 @@
 <script lang="ts">
 	import { page } from '$app/state'
-	import { getLocale, setLocale, type Locale } from '$lib/paraglide/runtime.js'
+	import { getLocale } from '$lib/paraglide/runtime.js'
 	import { localeLabel } from '$lib/i18n/client'
 	import * as m from '$lib/paraglide/messages.js'
+	import LanguageModal from './LanguageModal.svelte'
+	import IconLanguage from '~icons/ic/round-language'
 
 	let { compact = false }: { compact?: boolean } = $props()
 	const locale = $derived(getLocale())
 	const isAdmin = $derived(page.url.pathname.startsWith('/admin'))
-
-	function change(event: Event) {
-		void setLocale((event.currentTarget as HTMLSelectElement).value as Locale)
-	}
+	let open = $state(false)
 </script>
 
 {#if !isAdmin}
-	<label class={compact ? 'block max-w-28' : 'block w-full max-w-48'}>
-		<span class="sr-only">{m.language_selector_label()}</span>
-		<select class="ui-select h-9 py-1" value={locale} aria-label={m.language_selector_label()} onchange={change}>
-			<option value="fa">{localeLabel('fa')}</option>
-			<option value="ar">{localeLabel('ar')}</option>
-			<option value="en">{localeLabel('en')}</option>
-		</select>
-	</label>
+	<div class:ui-language-switcher-compact={compact} class="ui-language-switcher">
+		<button
+			class="ui-language-switcher-button"
+			type="button"
+			aria-label={`${m.language_selector_label()}: ${localeLabel(locale)}`}
+			title={localeLabel(locale)}
+			onclick={() => (open = true)}
+		>
+			<IconLanguage class="ui-language-icon" aria-hidden="true" />
+		</button>
+	</div>
+	<LanguageModal bind:open />
 {/if}

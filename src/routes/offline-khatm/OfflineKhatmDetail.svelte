@@ -67,7 +67,9 @@
 			ayah: 'آیه‌به‌آیه',
 		}[khatm.rangeType],
 	)
-	const activeType = $derived<FreeUnit>(khatm.rangeType === 'free' ? freeUnit : (khatm.rangeType as FreeUnit))
+	const activeType = $derived<FreeUnit>(
+		khatm.rangeType === 'free' ? freeUnit : (khatm.rangeType as FreeUnit),
+	)
 	const baseRanges = $derived(getRanges(activeType))
 	const rangeItems = $derived(
 		baseRanges.map((range) => ({ range, available: availableRanges(range, parts) })),
@@ -188,23 +190,44 @@
 			<div class="ui-khatm-eyebrow"><IconBook /><span>ختم شخصی ذخیره‌شده روی این دستگاه</span></div>
 			<h1 id="offline-detail-title" class="ui-khatm-title">{khatm.title}</h1>
 			<div class="offline-badges">
-				<span class="ui-badge ui-badge-info"><RangeTypeIcon type={khatm.rangeType} />{rangeTypeTitle}</span>
+				<span class="ui-badge ui-badge-info"
+					><RangeTypeIcon type={khatm.rangeType} />{rangeTypeTitle}</span
+				>
 				<span class="ui-badge ui-badge-neutral">آفلاین</span>
-				{#if khatm.series}<span class="ui-badge ui-badge-accent">دور {khatm.roundNumber.toLocaleString(localeTag())}</span>{/if}
+				{#if khatm.series}<span class="ui-badge ui-badge-accent"
+						>دور {khatm.roundNumber.toLocaleString(localeTag())}</span
+					>{/if}
 			</div>
 			{#if khatm.description}<p class="offline-description" dir="auto">{khatm.description}</p>{/if}
 			<div class="offline-actions">
-				<button class="ui-btn ui-btn-ghost ui-btn-sm" type="button" onclick={() => (editOpen = true)}><IconEdit />ویرایش</button>
-				<button class="ui-btn ui-btn-ghost ui-btn-sm" type="button" onclick={() => (deleteOpen = true)}><IconDelete />حذف</button>
+				<button
+					class="ui-btn ui-btn-ghost ui-btn-sm"
+					type="button"
+					onclick={() => (editOpen = true)}><IconEdit />ویرایش</button
+				>
+				<button
+					class="ui-btn ui-btn-ghost ui-btn-sm"
+					type="button"
+					onclick={() => (deleteOpen = true)}><IconDelete />حذف</button
+				>
 				{#if khatm.series && !khatm.seriesStopped}
-					<button class="ui-btn ui-btn-ghost ui-btn-sm" type="button" onclick={() => (stopOpen = true)}><IconStop />توقف پس از این دور</button>
+					<button
+						class="ui-btn ui-btn-ghost ui-btn-sm"
+						type="button"
+						onclick={() => (stopOpen = true)}><IconStop />توقف پس از این دور</button
+					>
 				{/if}
 			</div>
 		</div>
 		<div class="ui-khatm-progress-card">
 			<strong>پیشرفت دور جاری</strong>
 			<div class="offline-progress-value">{formatPercent(khatm.pageProgress)}</div>
-			<progress class="ui-progress ui-progress-success" max="100" value={khatm.pageProgress} aria-label="پیشرفت ختم"></progress>
+			<progress
+				class="ui-progress ui-progress-success"
+				max="100"
+				value={khatm.pageProgress}
+				aria-label="پیشرفت ختم"
+			></progress>
 			<small>{khatm.versesRead.toLocaleString(localeTag())} آیه ثبت شده است</small>
 		</div>
 	</section>
@@ -217,7 +240,9 @@
 				<h2>بازه‌های خوانده‌شده در این دور</h2>
 				<ul class="ui-list">
 					{#each [...parts].reverse().slice(0, 8) as part (part.id)}
-						<li class="ui-list-row"><IconCheck /><span>{new QuranRange(part.start, part.end).getTitle()}</span></li>
+						<li class="ui-list-row">
+							<IconCheck /><span>{new QuranRange(part.start, part.end).getTitle()}</span>
+						</li>
 					{/each}
 				</ul>
 			</div>
@@ -233,7 +258,9 @@
 						<li class="ui-list-row">
 							<IconCheck />
 							<span>دور {round.roundNumber.toLocaleString(localeTag())}</span>
-							<time datetime={round.completed.toISOString()}>{round.completed.toLocaleDateString(localeTag())}</time>
+							<time datetime={round.completed.toISOString()}
+								>{round.completed.toLocaleDateString(localeTag())}</time
+							>
 						</li>
 					{/each}
 				</ul>
@@ -245,11 +272,20 @@
 		<section class="ui-alert ui-alert-success offline-completed">
 			<IconCheck />
 			<div>
-				<h2>{khatm.series ? `دور ${khatm.roundNumber.toLocaleString(localeTag())} کامل شد` : 'این ختم قرآن کامل شد'}</h2>
+				<h2>
+					{khatm.series
+						? `دور ${khatm.roundNumber.toLocaleString(localeTag())} کامل شد`
+						: 'این ختم قرآن کامل شد'}
+				</h2>
 				<p>تمام آیات قرآن در این دور ثبت شده‌اند.</p>
 			</div>
 			{#if khatm.series && !khatm.seriesStopped}
-				<button class="ui-btn ui-btn-outline" type="button" disabled={working} onclick={startNextRound}><IconRepeat />شروع دور جدید</button>
+				<button
+					class="ui-btn ui-btn-outline"
+					type="button"
+					disabled={working}
+					onclick={startNextRound}><IconRepeat />شروع دور جدید</button
+				>
 			{/if}
 		</section>
 	{:else if khatm.rangeType === 'ayah'}
@@ -258,9 +294,20 @@
 				<h2>سهم بعدی از ختم</h2>
 				<p class="ui-text-muted">آیات بعدی به‌ترتیب ثبت و برای مطالعه نمایش داده می‌شوند.</p>
 				<div class="offline-ayah-actions">
-					<button class="ui-btn ui-btn-primary ui-btn-lg" type="button" disabled={working} onclick={() => pickAyat(1)}>پذیرفتن یک آیه</button>
+					<button
+						class="ui-btn ui-btn-primary ui-btn-lg"
+						type="button"
+						disabled={working}
+						onclick={() => pickAyat(1)}>پذیرفتن یک آیه</button
+					>
 					{#each [3, 5, 7, 10] as count}
-						<button class="ui-btn ui-btn-outline" type="button" disabled={working} onclick={() => pickAyat(count)}>{count.toLocaleString(localeTag())} آیهٔ متوالی</button>
+						<button
+							class="ui-btn ui-btn-outline"
+							type="button"
+							disabled={working}
+							onclick={() => pickAyat(count)}
+							>{count.toLocaleString(localeTag())} آیهٔ متوالی</button
+						>
 					{/each}
 				</div>
 			</div>
@@ -269,9 +316,21 @@
 		{#if khatm.rangeType === 'free'}
 			<section class="offline-view-switch" aria-label="شیوهٔ نمایش بازه‌ها">
 				<div>
-					<button class={['ui-btn', view === 'wizard' ? 'ui-btn-primary' : 'ui-btn-ghost']} type="button" onclick={() => onView('wizard')}><IconWizard />مرحله‌ای</button>
-					<button class={['ui-btn', view === 'list' ? 'ui-btn-primary' : 'ui-btn-ghost']} type="button" onclick={() => onView('list')}><IconList />لیستی</button>
-					<button class={['ui-btn', view === 'grid' ? 'ui-btn-primary' : 'ui-btn-ghost']} type="button" onclick={() => onView('grid')}><IconGrid />جدولی</button>
+					<button
+						class={['ui-btn', view === 'wizard' ? 'ui-btn-primary' : 'ui-btn-ghost']}
+						type="button"
+						onclick={() => onView('wizard')}><IconWizard />مرحله‌ای</button
+					>
+					<button
+						class={['ui-btn', view === 'list' ? 'ui-btn-primary' : 'ui-btn-ghost']}
+						type="button"
+						onclick={() => onView('list')}><IconList />لیستی</button
+					>
+					<button
+						class={['ui-btn', view === 'grid' ? 'ui-btn-primary' : 'ui-btn-ghost']}
+						type="button"
+						onclick={() => onView('grid')}><IconGrid />جدولی</button
+					>
 				</div>
 			</section>
 		{/if}
@@ -285,7 +344,15 @@
 			{#if khatm.rangeType === 'free'}
 				<div class="offline-unit-picker" role="group" aria-label="اندازهٔ سهم">
 					{#each ['page', 'hizbQuarter', 'surah', 'juz'] as type}
-						<button class={['ui-btn', 'ui-btn-sm', freeUnit === type ? 'ui-btn-primary' : 'ui-btn-outline']} type="button" onclick={() => (freeUnit = type as FreeUnit)}>
+						<button
+							class={[
+								'ui-btn',
+								'ui-btn-sm',
+								freeUnit === type ? 'ui-btn-primary' : 'ui-btn-outline',
+							]}
+							type="button"
+							onclick={() => (freeUnit = type as FreeUnit)}
+						>
 							<RangeTypeIcon type={type as FreeUnit} />
 							{freeUnitLabels[type as FreeUnit]}
 						</button>
@@ -299,14 +366,24 @@
 					<article class="offline-range-item" class:offline-range-item-completed={completed}>
 						<div>
 							<strong>{item.range.title || item.range.getTitleSurahOrinted()}</strong>
-							<small>{completed ? 'خوانده‌شده' : item.available.length > 1 || item.available[0]?.length !== item.range.length ? 'بخشی خوانده‌شده' : 'آمادهٔ انتخاب'}</small>
+							<small
+								>{completed
+									? 'خوانده‌شده'
+									: item.available.length > 1 || item.available[0]?.length !== item.range.length
+										? 'بخشی خوانده‌شده'
+										: 'آمادهٔ انتخاب'}</small
+							>
 						</div>
 						{#if completed}
 							<span class="ui-badge ui-badge-success"><IconCheck />کامل</span>
 						{:else}
 							<div class="offline-range-actions">
 								{#each item.available as range (range.start + ':' + range.end)}
-									<button class="ui-btn ui-btn-soft ui-btn-sm" type="button" onclick={() => requestPick(range)}>
+									<button
+										class="ui-btn ui-btn-soft ui-btn-sm"
+										type="button"
+										onclick={() => requestPick(range)}
+									>
 										{range.length === item.range.length ? 'انتخاب' : range.getTitleSurahOrinted()}
 										<IconNext />
 									</button>
@@ -327,8 +404,16 @@
 				<IconCheck class="offline-dialog-icon" />
 				<h2>بازه با موفقیت ثبت شد</h2>
 				<p>{selected.getTitle()}</p>
-				<button class="ui-btn ui-btn-primary ui-btn-block" type="button" onclick={() => onRead(selected!)}><IconBook />مشاهده و قرائت آیات</button>
-				<button class="ui-btn ui-btn-ghost ui-btn-block" type="button" onclick={() => (confirmOpen = false)}>انتخاب بخش دیگر</button>
+				<button
+					class="ui-btn ui-btn-primary ui-btn-block"
+					type="button"
+					onclick={() => onRead(selected!)}><IconBook />مشاهده و قرائت آیات</button
+				>
+				<button
+					class="ui-btn ui-btn-ghost ui-btn-block"
+					type="button"
+					onclick={() => (confirmOpen = false)}>انتخاب بخش دیگر</button
+				>
 			</div>
 		{:else}
 			<div class="offline-dialog-content">
@@ -336,8 +421,18 @@
 				<h2>این بخش به‌عنوان خوانده‌شده ثبت شود؟</h2>
 				<p>{selected.getTitle()}</p>
 				{#if actionError}<div class="ui-alert ui-alert-error">{actionError}</div>{/if}
-				<button class="ui-btn ui-btn-primary ui-btn-block" type="button" disabled={working} onclick={pickSelected}>{working ? 'در حال ثبت…' : 'بله، ثبت شود'}</button>
-				<button class="ui-btn ui-btn-ghost ui-btn-block" type="button" disabled={working} onclick={() => (confirmOpen = false)}>انصراف</button>
+				<button
+					class="ui-btn ui-btn-primary ui-btn-block"
+					type="button"
+					disabled={working}
+					onclick={pickSelected}>{working ? 'در حال ثبت…' : 'بله، ثبت شود'}</button
+				>
+				<button
+					class="ui-btn ui-btn-ghost ui-btn-block"
+					type="button"
+					disabled={working}
+					onclick={() => (confirmOpen = false)}>انصراف</button
+				>
 			</div>
 		{/if}
 	{/if}
@@ -352,8 +447,18 @@
 		<IconDelete class="offline-dialog-icon offline-dialog-icon-danger" />
 		<h2>این ختم آفلاین حذف شود؟</h2>
 		<p>تمام دورها و بازه‌های ثبت‌شده برای همیشه از این دستگاه حذف می‌شوند.</p>
-		<button class="ui-btn ui-btn-danger ui-btn-block" type="button" disabled={working} onclick={removeKhatm}>حذف کامل ختم</button>
-		<button class="ui-btn ui-btn-ghost ui-btn-block" type="button" disabled={working} onclick={() => (deleteOpen = false)}>انصراف</button>
+		<button
+			class="ui-btn ui-btn-danger ui-btn-block"
+			type="button"
+			disabled={working}
+			onclick={removeKhatm}>حذف کامل ختم</button
+		>
+		<button
+			class="ui-btn ui-btn-ghost ui-btn-block"
+			type="button"
+			disabled={working}
+			onclick={() => (deleteOpen = false)}>انصراف</button
+		>
 	</div>
 </Modal>
 
@@ -362,48 +467,179 @@
 		<IconStop class="offline-dialog-icon offline-dialog-icon-danger" />
 		<h2>این دور، آخرین دور باشد؟</h2>
 		<p>دور جاری ادامه پیدا می‌کند، اما پس از کامل‌شدن آن دور تازه‌ای ساخته نمی‌شود.</p>
-		<button class="ui-btn ui-btn-danger ui-btn-block" type="button" disabled={working} onclick={stopSeries}>توقف ختم پیوسته</button>
-		<button class="ui-btn ui-btn-ghost ui-btn-block" type="button" disabled={working} onclick={() => (stopOpen = false)}>انصراف</button>
+		<button
+			class="ui-btn ui-btn-danger ui-btn-block"
+			type="button"
+			disabled={working}
+			onclick={stopSeries}>توقف ختم پیوسته</button
+		>
+		<button
+			class="ui-btn ui-btn-ghost ui-btn-block"
+			type="button"
+			disabled={working}
+			onclick={() => (stopOpen = false)}>انصراف</button
+		>
 	</div>
 </Modal>
 
 <style>
-	.offline-detail > * + * { margin-top: 1rem; }
-	.offline-hero { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(15rem, 0.75fr); grid-gap: 1rem; }
-	.offline-badges, .offline-actions, .offline-unit-picker, .offline-range-actions, .offline-ayah-actions { display: flex; flex-wrap: wrap; align-items: center; }
-	.offline-badges > * + *, .offline-actions > * + *, .offline-unit-picker > * + *, .offline-range-actions > * + *, .offline-ayah-actions > * + * { margin-inline-start: 0.5rem; }
-	.offline-badges, .offline-actions { margin-top: 0.75rem; }
-	.offline-description { color: var(--ui-color-text-muted); line-height: 1.9; }
-	.offline-progress-value { margin: 0.75rem 0; font-size: 2rem; font-weight: 950; }
-	.offline-parts h2 { margin-top: 0; }
-	.offline-round-history h2 { margin-top: 0; }
-	.offline-parts :global(.ui-list-row), .offline-round-history :global(.ui-list-row) { display: flex; align-items: center; }
-	.offline-parts :global(.ui-list-row) > * + *, .offline-round-history :global(.ui-list-row) > * + * { margin-inline-start: 0.5rem; }
-	.offline-round-history time { margin-inline-start: auto; color: var(--ui-color-text-muted); }
-	.offline-completed { display: flex; align-items: center; }
-	.offline-completed > * + * { margin-inline-start: 0.75rem; }
-	.offline-completed h2, .offline-completed p { margin: 0; }
-	.offline-view-switch { display: flex; justify-content: flex-end; }
-	.offline-unit-picker { margin: 1rem 0; }
-	.offline-range-list, .offline-range-grid { display: grid; grid-template-columns: minmax(0, 1fr); grid-gap: 0.6rem; }
-	.offline-range-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-	.offline-range-item { display: flex; align-items: center; justify-content: space-between; padding: 0.8rem; border: 1px solid var(--ui-color-border); border-radius: var(--ui-radius-md); background: var(--ui-color-surface-raised); }
-	.offline-range-item > * + * { margin-inline-start: 0.75rem; }
-	.offline-range-item strong, .offline-range-item small { display: block; }
-	.offline-range-item small { margin-top: 0.2rem; color: var(--ui-color-text-muted); }
-	.offline-range-item-completed { background: var(--ui-color-surface-muted); }
-	.offline-dialog-content { text-align: center; }
-	.offline-dialog-content h2 { margin: 0.75rem 0 0; }
-	.offline-dialog-content p { color: var(--ui-color-text-muted); line-height: 1.8; }
-	.offline-dialog-content :global(.ui-btn) + :global(.ui-btn) { margin-top: 0.5rem; }
-	.offline-dialog-icon { width: 3rem; height: 3rem; color: var(--ui-color-success); }
-	.offline-dialog-icon-danger { color: var(--ui-color-error); }
-	:global(.offline-edit-dialog) { width: 95vw; max-width: 44rem; }
+	.offline-detail > * + * {
+		margin-top: 1rem;
+	}
+	.offline-hero {
+		display: grid;
+		grid-template-columns: minmax(0, 1.5fr) minmax(15rem, 0.75fr);
+		grid-gap: 1rem;
+	}
+	.offline-badges,
+	.offline-actions,
+	.offline-unit-picker,
+	.offline-range-actions,
+	.offline-ayah-actions {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+	}
+	.offline-badges > * + *,
+	.offline-actions > * + *,
+	.offline-unit-picker > * + *,
+	.offline-range-actions > * + *,
+	.offline-ayah-actions > * + * {
+		margin-inline-start: 0.5rem;
+	}
+	.offline-badges,
+	.offline-actions {
+		margin-top: 0.75rem;
+	}
+	.offline-description {
+		color: var(--ui-color-text-muted);
+		line-height: 1.9;
+	}
+	.offline-progress-value {
+		margin: 0.75rem 0;
+		font-size: 2rem;
+		font-weight: 950;
+	}
+	.offline-parts h2 {
+		margin-top: 0;
+	}
+	.offline-round-history h2 {
+		margin-top: 0;
+	}
+	.offline-parts :global(.ui-list-row),
+	.offline-round-history :global(.ui-list-row) {
+		display: flex;
+		align-items: center;
+	}
+	.offline-parts .ui-list-row > * + *,
+	.offline-round-history .ui-list-row > * + * {
+		margin-inline-start: 0.5rem;
+	}
+	.offline-round-history time {
+		margin-inline-start: auto;
+		color: var(--ui-color-text-muted);
+	}
+	.offline-completed {
+		display: flex;
+		align-items: center;
+	}
+	.offline-completed > * + * {
+		margin-inline-start: 0.75rem;
+	}
+	.offline-completed h2,
+	.offline-completed p {
+		margin: 0;
+	}
+	.offline-view-switch {
+		display: flex;
+		justify-content: flex-end;
+	}
+	.offline-unit-picker {
+		margin: 1rem 0;
+	}
+	.offline-range-list,
+	.offline-range-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		grid-gap: 0.6rem;
+	}
+	.offline-range-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+	.offline-range-item {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0.8rem;
+		border: 1px solid var(--ui-color-border);
+		border-radius: var(--ui-radius-md);
+		background: var(--ui-color-surface-raised);
+	}
+	.offline-range-item > * + * {
+		margin-inline-start: 0.75rem;
+	}
+	.offline-range-item strong,
+	.offline-range-item small {
+		display: block;
+	}
+	.offline-range-item small {
+		margin-top: 0.2rem;
+		color: var(--ui-color-text-muted);
+	}
+	.offline-range-item-completed {
+		background: var(--ui-color-surface-muted);
+	}
+	.offline-dialog-content {
+		text-align: center;
+	}
+	.offline-dialog-content h2 {
+		margin: 0.75rem 0 0;
+	}
+	.offline-dialog-content p {
+		color: var(--ui-color-text-muted);
+		line-height: 1.8;
+	}
+	.offline-dialog-content :global(.ui-btn) + :global(.ui-btn) {
+		margin-top: 0.5rem;
+	}
+	.offline-dialog-icon {
+		width: 3rem;
+		height: 3rem;
+		color: var(--ui-color-success);
+	}
+	.offline-dialog-icon-danger {
+		color: var(--ui-color-error);
+	}
+	:global(.offline-edit-dialog) {
+		width: 95vw;
+		max-width: 44rem;
+	}
 	@media (max-width: 767px) {
-		.offline-hero, .offline-range-grid { grid-template-columns: minmax(0, 1fr); }
-		.offline-range-item { align-items: stretch; flex-direction: column; }
-		.offline-range-item > * + * { margin-top: 0.65rem; margin-inline-start: 0; }
-		.offline-actions, .offline-unit-picker, .offline-range-actions, .offline-ayah-actions { align-items: stretch; flex-direction: column; }
-		.offline-actions > * + *, .offline-unit-picker > * + *, .offline-range-actions > * + *, .offline-ayah-actions > * + * { margin-top: 0.5rem; margin-inline-start: 0; }
+		.offline-hero,
+		.offline-range-grid {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.offline-range-item {
+			align-items: stretch;
+			flex-direction: column;
+		}
+		.offline-range-item > * + * {
+			margin-top: 0.65rem;
+			margin-inline-start: 0;
+		}
+		.offline-actions,
+		.offline-unit-picker,
+		.offline-range-actions,
+		.offline-ayah-actions {
+			align-items: stretch;
+			flex-direction: column;
+		}
+		.offline-actions > * + *,
+		.offline-unit-picker > * + *,
+		.offline-range-actions > * + *,
+		.offline-ayah-actions > * + * {
+			margin-top: 0.5rem;
+			margin-inline-start: 0;
+		}
 	}
 </style>

@@ -16,6 +16,7 @@
 	import IconRepeat from '~icons/ic/round-autorenew'
 	import IconArrow from '~icons/ic/round-arrow-back'
 	import type { SubmitFunction } from '@sveltejs/kit'
+	import { tick } from 'svelte'
 
 	let { data, form }: PageProps = $props()
 
@@ -55,10 +56,11 @@
 		if (event.code === 'Enter') event.preventDefault()
 	}
 
-	function forceCreate() {
+	async function forceCreate() {
 		if (!aiWarning) return
 		forceAiReviewId = aiWarning.id
 		aiWarningOpen = false
+		await tick()
 		formElement?.requestSubmit()
 	}
 

@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { afterNavigate, goto, invalidateAll } from '$app/navigation'
+	import { goto, invalidateAll } from '$app/navigation'
+	import { page } from '$app/state'
 	import { base } from '$app/paths'
 	import { claimCreatedKhatms } from '$lib/auth/claimCreatedKhatms'
 	import Modal from './Modal.svelte'
@@ -55,11 +56,12 @@
 	let reason = $state<EitaaAuthResult['reason']>()
 	let errorMessage = $state('')
 
-	afterNavigate(() => {
+	$effect(() => {
 		const backButton = window.Eitaa?.WebApp?.BackButton
 		if (!backButton) return
-		if (location.pathname === `${base}/`) backButton.hide?.()
+		if (page.url.pathname === `${base}/`) backButton.hide?.()
 		else backButton.show?.()
+		return () => backButton.hide?.()
 	})
 
 	async function authenticate(intent: 'auto' | 'link-current' | 'use-eitaa') {

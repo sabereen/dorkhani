@@ -4,8 +4,8 @@
 	import '../app.css'
 	import TheToast from '$lib/components/TheToast.svelte'
 	import TheFooter from '$lib/components/TheFooter.svelte'
-	import BaleMiniApp from '$lib/components/BaleMiniApp.svelte'
-	import EitaaMiniApp from '$lib/components/EitaaMiniApp.svelte'
+	import MiniAppHost from '$lib/components/MiniAppHost.svelte'
+	import TheBProgress from '$lib/components/TheBProgress.svelte'
 	import type { LayoutProps } from './$types'
 	import { LocalSettings } from '$lib/entity/LocalSettings.svelte'
 	import { claimCreatedKhatms } from '$lib/auth/claimCreatedKhatms'
@@ -44,16 +44,16 @@
 	})
 </script>
 
-<BaleMiniApp enabled={data.authProviders.bale} />
-<EitaaMiniApp enabled={data.authProviders.eitaa} />
+<MiniAppHost
+	baleEnabled={data.authProviders.bale}
+	eitaaEnabled={data.authProviders.eitaa}
+/>
 
 <main class="ui-main ui-container ui-page">
 	{@render children()}
 </main>
 
-{#await import('$lib/components/TheBProgress.svelte') then { default: TheBProgress }}
-	<TheBProgress />
-{/await}
+<TheBProgress />
 
 <div class="z-1000 relative">
 	<TheToast />

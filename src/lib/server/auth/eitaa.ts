@@ -77,6 +77,10 @@ export function eitaaAuthPlugin() {
 					if (!profile)
 						throw new APIError('UNAUTHORIZED', { message: 'اطلاعات ورود ایتا معتبر نیست.' })
 
+					const profileName =
+						[profile.first_name, profile.last_name].filter(Boolean).join(' ').trim() ||
+						profile.username ||
+						'کاربر ایتا'
 					const accountId = String(profile.id)
 					const currentSession = await getSessionFromCtx(ctx, { disableRefresh: true })
 					const existingAccount = await ctx.context.internalAdapter.findAccountByProviderId(
@@ -117,7 +121,7 @@ export function eitaaAuthPlugin() {
 
 					if (!user) {
 						user = await ctx.context.internalAdapter.createUser({
-							name: [profile.first_name, profile.last_name].filter(Boolean).join(' '),
+							name: profileName,
 							email: `eitaa-${accountId}@users.invalid`,
 							emailVerified: false,
 							image: profile.photo_url ?? undefined,
@@ -128,6 +132,13 @@ export function eitaaAuthPlugin() {
 
 					if (!user)
 						throw new APIError('INTERNAL_SERVER_ERROR', { message: 'ساخت حساب ناموفق بود.' })
+
+					if (!user.name?.trim()) {
+						user = await ctx.context.internalAdapter.updateUser(user.id, {
+							name: profileName,
+							image: profile.photo_url ?? undefined,
+						})
+					}
 
 					if (!existingAccount) {
 						await ctx.context.internalAdapter.createAccount({

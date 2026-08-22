@@ -3,6 +3,10 @@ import { env } from '$env/dynamic/private'
 import { authEmail_isConfigured, authEmail_send } from '$lib/server/auth/email'
 import { db } from '$lib/server/db'
 import { appSettings_store } from './appSettings'
+import { getBrandingText } from '$lib/entity/Branding'
+import { formatNumber } from '$lib/i18n/format'
+import { isLocale, localizeUrl, type Locale } from '$lib/paraglide/runtime.js'
+import * as m from '$lib/paraglide/messages.js'
 
 export type UserNotificationChannel = 'bale' | 'eitaa' | 'email'
 
@@ -55,52 +59,69 @@ type NotificationSettingsInput = {
 const defaultPriority: UserNotificationChannel[] = ['bale', 'eitaa', 'email']
 const PROVIDER_TIMEOUT_MS = 5000
 
-function fullUrl(path: string) {
+function fullUrl(path: string, locale: Locale) {
 	const origin = env.ORIGIN || env.BETTER_AUTH_URL
 	if (!origin) throw new Error('ORIGIN or BETTER_AUTH_URL must be configured for notifications.')
-	return new URL(`${base}${path.startsWith('/') ? path : `/${path}`}`, origin).href
+	const url = new URL(`${base}${path.startsWith('/') ? path : `/${path}`}`, origin)
+	return localizeUrl(url, { locale }).href
 }
 
-function toMessage(event: UserNotificationEvent): NotificationMessage {
+function toMessage(event: UserNotificationEvent, locale: Locale): NotificationMessage {
+	const branding = getBrandingText(appSettings_store.config.branding, locale)
 	switch (event.type) {
 		case 'khatmCreated': {
-			const khatmUrl = fullUrl(event.khatmPath)
+			const khatmUrl = fullUrl(event.khatmPath, locale)
 			return {
-				subject: 'ختم شما ایجاد شد',
-				text: `ختم «${event.title}» با موفقیت ایجاد شد.${event.private ? ' این ختم خصوصی است.' : ''}`,
-				url: fullUrl(`/account/khatms/${event.khatmId}/edit`),
+				subject: m.notification_khatm_created_subject({}, { locale }),
+				text: m.notification_khatm_created_text(
+					{
+						title: event.title,
+						privacy: event.private ? m.notification_private_suffix({}, { locale }) : '',
+					},
+					{ locale },
+				),
+				url: fullUrl(`/account/khatms/${event.khatmId}/edit`, locale),
 				forward: {
 					url: khatmUrl,
 					text: [
-						`🌙 دعوت به ${appSettings_store.config.branding.name}`,
+						m.notification_invite_title({ name: branding.name }, { locale }),
 						'',
-						`ختم «${event.title}» آغاز شده است.`,
-						'برای همراهی در این کار خیر، از طریق لینک زیر به جمع ما بپیوندید و سهمی از تلاوت قرآن را بر عهده بگیرید:',
+						m.notification_invite_started({ title: event.title }, { locale }),
+						m.notification_invite_body({}, { locale }),
 						'',
-						`🔗 لینک پیوستن به ختم:\n${khatmUrl}`,
+						m.notification_invite_link({ url: khatmUrl }, { locale }),
 						'',
-						'این پیام را برای دوستان و عزیزانتان فوروارد کنید تا در این ثواب جمعی همراه شوند. 🤍',
+						m.notification_invite_forward({}, { locale }),
 					].join('\n'),
 				},
 			}
 		}
 		case 'participationPicked':
 			return {
-				subject: 'سهم شما ثبت شد',
-				text: `سهم شما در «${event.title}» ثبت شد.\n${event.description}`,
-				url: fullUrl(event.targetPath),
+				subject: m.notification_participation_subject({}, { locale }),
+				text: m.notification_participation_text(
+					{ title: event.title, description: event.description },
+					{ locale },
+				),
+				url: fullUrl(event.targetPath, locale),
 			}
 		case 'roundCompleted':
 			return {
-				subject: 'یک دور از ختم شما کامل شد',
-				text: `دور ${event.roundNumber.toLocaleString('fa-IR')} از ختم «${event.title}» کامل شد.`,
-				url: fullUrl('/account'),
+				subject: m.notification_round_subject({}, { locale }),
+				text: m.notification_round_text(
+					{ round: formatNumber(event.roundNumber, locale), title: event.title },
+					{ locale },
+				),
+				url: fullUrl('/account', locale),
 			}
 		case 'seriesCompleted':
 			return {
-				subject: 'دنباله ختم شما به پایان رسید',
-				text: `دنباله ختم «${event.title}» پس از ${event.roundNumber.toLocaleString('fa-IR')} دور به پایان رسید.`,
-				url: fullUrl('/account'),
+				subject: m.notification_series_subject({}, { locale }),
+				text: m.notification_series_text(
+					{ title: event.title, round: formatNumber(event.roundNumber, locale) },
+					{ locale },
+				),
+				url: fullUrl('/account', locale),
 			}
 	}
 }
@@ -123,13 +144,13 @@ async function requestJson(url: string, body: object) {
 	}
 }
 
-async function sendBale(address: string, message: NotificationMessage) {
+async function sendBale(address: string, message: NotificationMessage, locale: Locale) {
 	if (!env.BALE_BOT_TOKEN) throw new Error('BALE_BOT_TOKEN is not configured.')
 	await requestJson(`https://tapi.bale.ai/bot${env.BALE_BOT_TOKEN}/sendMessage`, {
 		chat_id: address,
 		text: `${message.subject}\n\n${message.text}`,
 		reply_markup: {
-			inline_keyboard: [[{ text: 'باز کردن برنامه', web_app: { url: message.url } }]],
+			inline_keyboard: [[{ text: m.notification_open_app({}, { locale }), web_app: { url: message.url } }]],
 		},
 	})
 
@@ -139,7 +160,7 @@ async function sendBale(address: string, message: NotificationMessage) {
 				chat_id: address,
 				text: message.forward.text,
 				reply_markup: {
-					inline_keyboard: [[{ text: 'پیوستن به ختم', url: message.forward.url }]],
+					inline_keyboard: [[{ text: m.notification_join_khatm({}, { locale }), url: message.forward.url }]],
 				},
 			})
 		} catch (error) {
@@ -239,10 +260,11 @@ export async function userNotification_enableEndpointFromProvider(
 ) {
 	const account = await db.account.findUnique({
 		where: { providerId_accountId: { providerId: channel, accountId: address } },
+		include: { user: { select: { locale: true } } },
 	})
 	if (!account) return false
 	await userNotification_upsertEndpoint(account.userId, channel, address, true)
-	return true
+	return isLocale(account.user.locale) ? account.user.locale : 'fa'
 }
 
 export async function userNotification_send(userId: string, event: UserNotificationEvent) {
@@ -251,12 +273,13 @@ export async function userNotification_send(userId: string, event: UserNotificat
 		include: { notificationPreference: true, notificationEndpoints: true },
 	})
 	if (!user || user.notificationPreference?.enabled === false) return
+	const locale: Locale = isLocale(user.locale) ? user.locale : 'fa'
 
 	const preference = user.notificationPreference
 	const endpoints = new Map(
 		user.notificationEndpoints.map((endpoint) => [endpoint.channel, endpoint]),
 	)
-	const message = toMessage(event)
+	const message = toMessage(event, locale)
 	const enabled = {
 		bale: preference?.baleEnabled ?? true,
 		eitaa: preference?.eitaaEnabled ?? true,
@@ -271,7 +294,7 @@ export async function userNotification_send(userId: string, event: UserNotificat
 			if (channel === 'bale') {
 				const endpoint = endpoints.get('bale')
 				if (!endpoint?.canSend) continue
-				await sendBale(endpoint.address, message)
+				await sendBale(endpoint.address, message, locale)
 			} else if (channel === 'eitaa') {
 				const endpoint = endpoints.get('eitaa')
 				if (!endpoint?.canSend) continue

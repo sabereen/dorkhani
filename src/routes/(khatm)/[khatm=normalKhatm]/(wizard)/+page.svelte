@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { formatPercent, localeTag } from '$lib/i18n/format'
 	import Modal from '$lib/components/Modal.svelte'
 	import { juz_toRange } from '$lib/entity/Juz'
 	import { page_toRange } from '$lib/entity/Page'
@@ -227,7 +228,7 @@
 		<div>
 			<span class="ui-khatm-wizard-kicker">انتخاب {rangeTypeTitle}</span>
 			<h2>کدام بازه برای شما مناسب‌تر است؟</h2>
-			<p>{availableRangeCount.toLocaleString('fa')} بازه هنوز سهم آزاد دارد.</p>
+			<p>{availableRangeCount.toLocaleString(localeTag())} بازه هنوز سهم آزاد دارد.</p>
 		</div>
 		{#if khatm.rangeType === 'free'}
 			<button type="button" class="ui-btn ui-btn-soft ui-btn-sm" onclick={() => goToStep(1)}>
@@ -300,12 +301,12 @@
 						</span>
 						{#if partial}
 							<span class="ui-khatm-range-card-progress">
-								<span><b>{percent.toLocaleString('fa')}٪</b> انتخاب شده</span>
+								<span><b>{formatPercent(percent)}</b> انتخاب شده</span>
 								<progress
 									class="ui-progress"
 									max={100}
 									value={percent}
-									aria-label={`${percent.toLocaleString('fa')} درصد انتخاب شده`}
+									aria-label={`${percent.toLocaleString(localeTag())} درصد انتخاب شده`}
 								></progress>
 							</span>
 						{/if}
@@ -321,7 +322,7 @@
 		{#if visibleRanges.length < filteredRanges.length}
 			<div class="ui-khatm-range-more">
 				<p>
-					در حال نمایش {visibleRanges.length.toLocaleString('fa')} مورد از {filteredRanges.length.toLocaleString(
+					در حال نمایش {visibleRanges.length.toLocaleString(localeTag())} مورد از {filteredRanges.length.toLocaleString(
 						'fa',
 					)} مورد
 				</p>

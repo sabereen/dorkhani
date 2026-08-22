@@ -1,3 +1,4 @@
+import '@inlang/paraglide-js/urlpattern-polyfill'
 import { building } from '$app/environment'
 import { getNotificationProvider } from '$service/admin-notification'
 import { appSettingsService_init } from '$service/appSettings'
@@ -7,6 +8,21 @@ import type { ServerInit, HandleServerError, Handle } from '@sveltejs/kit'
 import { isManualColorScheme } from '$lib/entity/Theme'
 import { auth } from '$lib/server/auth'
 import { svelteKitHandler } from 'better-auth/svelte-kit'
+import { base } from '$app/paths'
+import { db } from '$lib/server/db'
+import {
+	INTERNAL_LOCALE_HEADER,
+	PARAGLIDE_LOCALE_COOKIE,
+	isLocale,
+	localeDirection,
+	resolveRequestLocale,
+} from '$lib/i18n/locale'
+import { defineCustomServerStrategy } from '$lib/paraglide/runtime.js'
+import { paraglideMiddleware } from '$lib/paraglide/server.js'
+
+defineCustomServerStrategy('custom-preference', {
+	getLocale: (request) => request?.headers.get(INTERNAL_LOCALE_HEADER) ?? undefined,
+})
 
 export const init: ServerInit = async () => {
 	await appSettingsService_init()
@@ -17,25 +33,65 @@ export const init: ServerInit = async () => {
 }
 
 export const handle: Handle = async ({ resolve, event }) => {
+	const canonicalAdmin = canonicalAdminUrl(event.url)
+	if (canonicalAdmin) return Response.redirect(canonicalAdmin, 307)
+
 	const authSession = await auth.api.getSession({ headers: event.request.headers })
 	event.locals.session = authSession?.session ?? null
 	event.locals.user = authSession?.user ?? null
 
-	const response = await svelteKitHandler({
-		auth,
-		event,
-		building,
-		resolve: (currentEvent) =>
-			resolve(currentEvent, {
-				transformPageChunk(input) {
-					let html = input.html
-					const colorScheme = currentEvent.cookies.get('colorScheme')
-					if (isManualColorScheme(colorScheme)) {
-						html = html.replace('<html', `<html data-color-scheme="${colorScheme}"`)
-					}
-					return html
-				},
-			}),
+	const cookieLocale = event.cookies.get(PARAGLIDE_LOCALE_COOKIE)
+	const accountLocale = authSession?.user?.locale
+	const localeResolution = resolveRequestLocale({
+		pathname: withoutBase(event.url.pathname),
+		cookieLocale,
+		accountLocale,
+		acceptLanguage: event.request.headers.get('accept-language'),
+	})
+	event.locals.locale = localeResolution.locale
+	event.locals.needsLocaleChoice = localeResolution.needsLocaleChoice
+
+	if (event.locals.user && isLocale(cookieLocale) && cookieLocale !== accountLocale) {
+		await db.user.update({
+			where: { id: event.locals.user.id },
+			data: { locale: cookieLocale },
+		})
+		event.locals.user.locale = cookieLocale
+	} else if (!isLocale(cookieLocale) && isLocale(accountLocale)) {
+		event.cookies.set(PARAGLIDE_LOCALE_COOKIE, accountLocale, {
+			path: '/',
+			maxAge: 365 * 24 * 60 * 60,
+			sameSite: 'lax',
+			httpOnly: false,
+			secure: event.url.protocol === 'https:',
+		})
+	}
+
+	const requestHeaders = new Headers(event.request.headers)
+	requestHeaders.set(INTERNAL_LOCALE_HEADER, localeResolution.locale)
+	event.request = new Request(event.request, { headers: requestHeaders })
+
+	const response = await paraglideMiddleware(event.request, ({ request, locale }) => {
+		event.request = request
+		event.locals.locale = locale
+		return svelteKitHandler({
+			auth,
+			event,
+			building,
+			resolve: (currentEvent) =>
+				resolve(currentEvent, {
+					transformPageChunk(input) {
+						let html = input.html
+							.replace('%lang%', locale)
+							.replace('%dir%', localeDirection(locale))
+						const colorScheme = currentEvent.cookies.get('colorScheme')
+						if (isManualColorScheme(colorScheme)) {
+							html = html.replace('<html', `<html data-color-scheme="${colorScheme}"`)
+						}
+						return html
+					},
+				}),
+		})
 	})
 	response.headers.delete('x-frame-options')
 	if (!response.headers.has('content-security-policy')) {
@@ -45,6 +101,19 @@ export const handle: Handle = async ({ resolve, event }) => {
 		)
 	}
 	return response
+}
+
+function withoutBase(pathname: string) {
+	return base && pathname.startsWith(base) ? pathname.slice(base.length) || '/' : pathname
+}
+
+function canonicalAdminUrl(url: URL) {
+	const pathname = withoutBase(url.pathname)
+	const match = /^\/(?:ar|en)(\/(?:admin|api\/admin)(?:\/.*)?$)/.exec(pathname)
+	if (!match) return null
+	const target = new URL(url)
+	target.pathname = `${base}${match[1]}`
+	return target
 }
 
 export const handleError: HandleServerError = async ({ error, event, status, message }) => {

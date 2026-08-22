@@ -10,6 +10,8 @@
 	import IconSave from '~icons/ic/round-save'
 	import IconVisibility from '~icons/ic/round-visibility'
 	import IconVisibilityOff from '~icons/ic/round-visibility-off'
+	import { localizeHref } from '$lib/paraglide/runtime.js'
+	import * as m from '$lib/paraglide/messages.js'
 
 	let password = $state('')
 	let completed = $state(false)
@@ -26,24 +28,24 @@
 			token: page.url.searchParams.get('token') || '',
 		})
 		loading = false
-		if (result.error) errorMessage = result.error.message || 'تغییر رمز ناموفق بود.'
+		if (result.error) errorMessage = result.error.message || m.auth_reset_failed()
 		else completed = true
 	}
 </script>
 
-<PageTitle title="رمز تازه" />
+<PageTitle title={m.auth_reset_title()} />
 
 <AuthShell
-	title="انتخاب رمز تازه"
-	eyebrow="یک قدم تا ورود"
-	description="یک رمز امن و به‌یادماندنی برای حساب خود انتخاب کنید."
+	title={m.auth_reset_title()}
+	eyebrow={m.auth_reset_eyebrow()}
+	description={m.auth_reset_description()}
 >
 	{#if completed}
 		<div class="ui-auth-success" role="status">
 			<span class="ui-auth-success-icon"><IconCheck /></span>
-			<h3>رمز عبور تغییر کرد</h3>
-			<p>همه‌چیز آماده است؛ اکنون می‌توانید با رمز تازه وارد حساب خود شوید.</p>
-			<a class="ui-btn ui-btn-primary ui-btn-block" href={`${base}/auth/login`}>ورود به حساب</a>
+			<h3>{m.auth_reset_completed_title()}</h3>
+			<p>{m.auth_reset_completed_text()}</p>
+			<a class="ui-btn ui-btn-primary ui-btn-block" href={localizeHref(`${base}/auth/login`)}>{m.auth_login_action()}</a>
 		</div>
 	{:else}
 		<div class="ui-form-status-slot" aria-live="polite">
@@ -54,7 +56,7 @@
 
 		<form use:validateForm novalidate class="ui-auth-form" onsubmit={submit} aria-busy={loading}>
 			<div class="ui-auth-field">
-				<label class="ui-field-label" for="new-password"><IconLock /> رمز عبور تازه</label>
+				<label class="ui-field-label" for="new-password"><IconLock /> {m.auth_new_password()}</label>
 				<div class="ui-auth-password-wrap" data-ui-validation-host>
 					<input
 						id="new-password"
@@ -64,24 +66,24 @@
 						bind:value={password}
 						minlength="8"
 						autocomplete="new-password"
-						placeholder="حداقل ۸ نویسه"
+						placeholder={m.auth_password_placeholder()}
 						required
 					/>
 					<button
 						class="ui-auth-password-toggle"
 						type="button"
-						aria-label={showPassword ? 'پنهان کردن رمز عبور' : 'نمایش رمز عبور'}
+						aria-label={showPassword ? m.auth_hide_password() : m.auth_show_password()}
 						aria-pressed={showPassword}
 						onclick={() => (showPassword = !showPassword)}
 					>
 						{#if showPassword}<IconVisibilityOff />{:else}<IconVisibility />{/if}
 					</button>
 				</div>
-				<small class="ui-auth-hint">رمز عبور باید دست‌کم ۸ نویسه باشد.</small>
+				<small class="ui-auth-hint">{m.auth_password_hint()}</small>
 			</div>
 			<button class="ui-btn ui-btn-primary ui-btn-lg ui-btn-block" type="submit" disabled={loading}>
 				{#if loading}<span class="ui-spinner"></span>{:else}<IconSave />{/if}
-				<span>{loading ? 'در حال ذخیره…' : 'ذخیره رمز تازه'}</span>
+				<span>{loading ? m.auth_saving() : m.auth_save_new_password()}</span>
 			</button>
 		</form>
 	{/if}

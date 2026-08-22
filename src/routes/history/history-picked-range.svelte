@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { localeTag } from '$lib/i18n/format'
 	import { base } from '$app/paths'
+	import { localizeHref } from '$lib/paraglide/runtime.js'
 	import { PickedKhatmPart } from '$lib/entity/PickedKhatmPart'
 	import RangeTypeIcon from '$lib/components/RangeTypeIcon.svelte'
 	import { onMount, type Snippet } from 'svelte'
@@ -45,7 +47,7 @@
 					<h2>{props.title || 'آخرین مشارکت‌ها'}</h2>
 					<p>سهم‌هایی که برای قرائت برداشته‌اید</p>
 				</div>
-				<span class="ui-activity-count">{history.length.toLocaleString('fa')}</span>
+				<span class="ui-activity-count">{history.length.toLocaleString(localeTag())}</span>
 			</header>
 
 			<ul class="ui-activity-list">
@@ -87,7 +89,7 @@
 
 			{#if hasMore}
 				<div class="ui-activity-footer">
-					<a class="ui-btn ui-btn-ghost ui-btn-sm" href={`${base}/history`}>
+					<a class="ui-btn ui-btn-ghost ui-btn-sm" href={localizeHref(`${base}/history`)}>
 						دیدن همه
 						<IconArrow />
 					</a>

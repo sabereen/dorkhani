@@ -8,10 +8,12 @@ export const load: LayoutServerLoad = ({ locals }) => {
 	const { supportLink, branding } = appSettings_store.config
 
 	return {
+		locale: locals.locale,
+		needsLocaleChoice: locals.needsLocaleChoice,
 		supportLink,
-		branding: getPublicBranding(branding, base),
+		branding: getPublicBranding(branding, locals.locale, base),
 		user: locals.user
-			? { id: locals.user.id, name: locals.user.name, image: locals.user.image }
+			? { id: locals.user.id, name: locals.user.name, image: locals.user.image, locale: locals.user.locale }
 			: null,
 		authProviders: {
 			google: Boolean(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET),

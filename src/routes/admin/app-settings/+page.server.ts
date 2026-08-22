@@ -8,7 +8,8 @@ import { BrandingImageError, processBrandingImages } from '$service/brandingAsse
 import { auth_ensureIsAdmin } from '$service/auth'
 import { randomUUID } from 'node:crypto'
 import { base } from '$app/paths'
-import { getPublicBranding } from '$lib/entity/Branding'
+import { getPublicBranding, type BrandingText } from '$lib/entity/Branding'
+import type { Locale } from '$lib/paraglide/runtime.js'
 import { fail } from '@sveltejs/kit'
 import type { PageServerLoad, Actions } from './$types'
 
@@ -27,7 +28,8 @@ export const load: PageServerLoad = () => {
 			...aiKhatmReview,
 			apiKey: aiKhatmReview.apiKey ? 'unchanged' : '',
 		},
-		branding: getPublicBranding(branding, base),
+		branding,
+		brandingAssets: getPublicBranding(branding, 'fa', base),
 	}
 }
 
@@ -53,22 +55,40 @@ const brandingLabels: Record<keyof typeof brandingLimits, string> = {
 	seoDescription: 'توضیح SEO',
 }
 
+const brandingLocales = ['fa', 'ar', 'en'] as const satisfies readonly Locale[]
+const brandingLanguageLabels: Record<Locale, string> = {
+	fa: 'فارسی',
+	ar: 'عربی',
+	en: 'انگلیسی',
+}
+
 function readBranding(form: FormData) {
-	const branding = Object.fromEntries(
-		Object.keys(brandingLimits).map((key) => [key, form.get(key)?.toString().trim() || '']),
-	) as Record<keyof typeof brandingLimits, string>
-	for (const [key, maxLength] of Object.entries(brandingLimits) as [
-		keyof typeof brandingLimits,
-		number,
-	][]) {
-		if (!branding[key]) throw new Error('تکمیل همهٔ متن‌های بخش برندینگ ضروری است.')
-		if (branding[key].length > maxLength) {
-			throw new Error(
-				`مقدار «${brandingLabels[key]}» نباید بیشتر از ${maxLength.toLocaleString('fa')} نویسه باشد.`,
-			)
-		}
-	}
-	return branding
+	return Object.fromEntries(
+		brandingLocales.map((locale) => {
+			const branding = Object.fromEntries(
+				Object.keys(brandingLimits).map((key) => [
+					key,
+					form.get(`branding_${locale}_${key}`)?.toString().trim() || '',
+				]),
+			) as BrandingText
+			for (const [key, maxLength] of Object.entries(brandingLimits) as [
+				keyof typeof brandingLimits,
+				number,
+			][]) {
+				if (!branding[key]) {
+					throw new Error(
+						`تکمیل «${brandingLabels[key]}» برای زبان ${brandingLanguageLabels[locale]} ضروری است.`,
+					)
+				}
+				if (branding[key].length > maxLength) {
+					throw new Error(
+						`مقدار «${brandingLabels[key]}» برای زبان ${brandingLanguageLabels[locale]} نباید بیشتر از ${maxLength.toLocaleString('fa')} نویسه باشد.`,
+					)
+				}
+			}
+			return [locale, branding]
+		}),
+	) as Record<Locale, BrandingText>
 }
 
 export const actions = {
@@ -140,14 +160,12 @@ export const actions = {
 					error instanceof BrandingImageError ? error.message : 'پردازش تصاویر برندینگ ناموفق بود.',
 			})
 		}
-		const brandingChanged = Object.entries(brandingInput).some(
-			([key, value]) => config.branding[key as keyof typeof brandingInput] !== value,
-		)
+		const brandingChanged = JSON.stringify(brandingInput) !== JSON.stringify(config.branding.texts)
 		const assetsChanged = Boolean(
 			brandingAssets.hero || brandingAssets.icon192 || brandingAssets.icon512,
 		)
 		const branding = {
-			...brandingInput,
+			texts: brandingInput,
 			revision:
 				brandingChanged || assetsChanged ? randomUUID() : config.branding.revision,
 		}

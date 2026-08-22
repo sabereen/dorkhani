@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { formatPercent, localeTag } from '$lib/i18n/format'
 	/* eslint-disable svelte/no-unused-svelte-ignore */
 	import Modal from '$lib/components/Modal.svelte'
 	import { Juz } from '@ghoran/entity'
@@ -143,11 +144,11 @@
 		</div>
 
 		<div class="ui-khatm-browser-stats" aria-label="خلاصه وضعیت فهرست">
-			<div><strong>{khatm.percent.toLocaleString('fa')}٪</strong><span>پیشرفت ختم</span></div>
+			<div><strong>{formatPercent(khatm.percent)}</strong><span>پیشرفت ختم</span></div>
 			<div>
-				<strong>{availableJuzCount.toLocaleString('fa')}</strong><span>جزء دارای بخش آزاد</span>
+				<strong>{availableJuzCount.toLocaleString(localeTag())}</strong><span>جزء دارای بخش آزاد</span>
 			</div>
-			<div><strong>{myJuzCount.toLocaleString('fa')}</strong><span>جزء شامل سهم شما</span></div>
+			<div><strong>{myJuzCount.toLocaleString(localeTag())}</strong><span>جزء شامل سهم شما</span></div>
 		</div>
 	</header>
 
@@ -202,7 +203,7 @@
 						class:ui-khatm-browser-juz-open={expanded}
 						class:ui-khatm-browser-juz-finished={percent >= 100}
 					>
-						<span class="ui-khatm-browser-juz-number">{juzNumber.toLocaleString('fa')}</span>
+						<span class="ui-khatm-browser-juz-number">{juzNumber.toLocaleString(localeTag())}</span>
 						<span class="ui-khatm-browser-juz-main">
 							<span class="ui-khatm-browser-juz-title">
 								<strong>{range.title}</strong>
@@ -219,7 +220,7 @@
 									value={percent}
 									aria-label={`پیشرفت ${range.title}`}
 								></progress>
-								<small><b>{percent.toLocaleString('fa')}٪</b> انتخاب شده</small>
+								<small><b>{formatPercent(percent)}</b> انتخاب شده</small>
 							</span>
 						</span>
 						<span class="ui-khatm-browser-juz-action">
@@ -282,7 +283,7 @@
 										<header>
 											<div>
 												<strong>{subrange.title}</strong>
-												<span>{percent.toLocaleString('fa')}٪ انتخاب شده</span>
+												<span>{formatPercent(percent)} انتخاب شده</span>
 											</div>
 											<progress
 												class="ui-progress"

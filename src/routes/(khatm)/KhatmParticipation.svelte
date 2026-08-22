@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { formatPercent, localeTag } from '$lib/i18n/format'
 	import type { Khatm } from '$lib/entity/Khatm.svelte'
 	import type { KhatmParticipationRound } from '$lib/entity/KhatmParticipation.svelte'
 	import type { PickedKhatmPart } from '$lib/entity/PickedKhatmPart'
@@ -29,7 +30,7 @@
 	function getRoundTitle(roundNumber: number) {
 		if (roundNumber === 1) return 'دور اوّل'
 		if (roundNumber === 2) return 'دور دوم'
-		return 'دور ' + roundNumber.toLocaleString('fa')
+		return 'دور ' + roundNumber.toLocaleString(localeTag())
 	}
 </script>
 
@@ -55,7 +56,7 @@
 	<section class="ui-khatm-my-round">
 		<header>
 			<strong>{getRoundTitle(round.roundNumber)}</strong>
-			<span>{round.verseCount.toLocaleString('fa')} آیه</span>
+			<span>{round.verseCount.toLocaleString(localeTag())} آیه</span>
 		</header>
 		{#if !khatm.isAyahOriented}
 			<ul class="ui-khatm-my-ranges">
@@ -74,7 +75,7 @@
 			<h2 id={`${componentId}-title`}>مشارکت من</h2>
 			{#if participation.loaded}
 				<p>
-					<strong>{verseCount.toLocaleString('fa')}</strong>
+					<strong>{verseCount.toLocaleString(localeTag())}</strong>
 					<span>آیه در {khatm.isSerial ? 'این دور' : 'این ختم'}</span>
 				</p>
 			{:else}
@@ -85,7 +86,7 @@
 			{/if}
 		</div>
 		{#if participation.loaded}
-			<span class="ui-khatm-my-percent">{percent.toLocaleString('fa')}٪ از قرآن</span>
+			<span class="ui-khatm-my-percent">{formatPercent(percent)} از قرآن</span>
 		{/if}
 	</div>
 

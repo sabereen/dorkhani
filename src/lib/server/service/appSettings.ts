@@ -1,6 +1,7 @@
 import { db } from '../db'
 import {
 	DEFAULT_BRANDING_CONFIG,
+	normalizeBrandingConfig,
 	type BrandingConfig,
 } from '$lib/entity/Branding'
 
@@ -100,10 +101,7 @@ async function apply(newConfig?: Config | null) {
 			...newConfig.aiKhatmReview,
 			enabled: newConfig.aiKhatmReview?.enabled === true,
 		},
-		branding: {
-			...DEFAULT_BRANDING_CONFIG,
-			...newConfig.branding,
-		},
+		branding: normalizeBrandingConfig(newConfig.branding),
 	}
 }
 

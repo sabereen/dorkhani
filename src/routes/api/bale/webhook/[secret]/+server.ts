@@ -2,6 +2,9 @@ import { base } from '$app/paths'
 import { env } from '$env/dynamic/private'
 import { userNotification_enableEndpointFromProvider } from '$service/user-notification'
 import { appSettings_store } from '$service/appSettings'
+import { getBrandingText } from '$lib/entity/Branding'
+import { isLocale, localizeUrl, type Locale } from '$lib/paraglide/runtime.js'
+import * as m from '$lib/paraglide/messages.js'
 import { json, type RequestHandler } from '@sveltejs/kit'
 import { timingSafeEqual } from 'node:crypto'
 import { z } from 'zod'
@@ -28,19 +31,20 @@ function validSecret(received: string | undefined) {
 	)
 }
 
-async function sendWelcome(chatId: string) {
+async function sendWelcome(chatId: string, locale: Locale) {
 	if (!env.BALE_BOT_TOKEN) return
 	const origin = env.ORIGIN || env.BETTER_AUTH_URL
 	if (!origin) return
-	const appUrl = new URL(`${base}/`, origin).href
+	const appUrl = localizeUrl(new URL(`${base}/`, origin), { locale }).href
+	const branding = getBrandingText(appSettings_store.config.branding, locale)
 	await fetch(`https://tapi.bale.ai/bot${env.BALE_BOT_TOKEN}/sendMessage`, {
 		method: 'POST',
 		headers: { 'content-type': 'application/json' },
 		body: JSON.stringify({
 			chat_id: chatId,
-			text: `برای ورود به ${appSettings_store.config.branding.name}، برنامه را باز کنید.`,
+			text: m.notification_welcome({ name: branding.name }, { locale }),
 			reply_markup: {
-				inline_keyboard: [[{ text: 'باز کردن برنامه', web_app: { url: appUrl } }]],
+				inline_keyboard: [[{ text: m.notification_open_app({}, { locale }), web_app: { url: appUrl } }]],
 			},
 		}),
 	})
@@ -55,11 +59,12 @@ export const POST: RequestHandler = async ({ params, request }) => {
 	const message = parsed.data.message
 	const chatId = String(message.chat.id)
 	const senderId = String(message.from?.id ?? message.chat.id)
-	if (message.text?.startsWith('/start')) {
-		await userNotification_enableEndpointFromProvider('bale', senderId)
-	}
+	const accountLocale = message.text?.startsWith('/start')
+		? await userNotification_enableEndpointFromProvider('bale', senderId)
+		: false
+	const locale: Locale = isLocale(accountLocale) ? accountLocale : 'fa'
 
-	await sendWelcome(chatId).catch((error) => {
+	await sendWelcome(chatId, locale).catch((error) => {
 		console.error('Failed to send Bale bot welcome message.', error)
 	})
 	return json({ ok: true })

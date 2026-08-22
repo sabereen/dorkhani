@@ -7,6 +7,7 @@
 	import { goto, invalidateAll } from '$app/navigation'
 	import { base } from '$app/paths'
 	import type { PageProps } from './$types'
+	import { localizeHref } from '$lib/paraglide/runtime.js'
 
 	const { data, form }: PageProps = $props()
 	const khatms = $derived(Khatm.fromPlainList(data.khatms))
@@ -14,7 +15,7 @@
 	async function signOut() {
 		await authClient.signOut()
 		await invalidateAll()
-		await goto(`${base}/`)
+		await goto(localizeHref(`${base}/`))
 	}
 </script>
 
@@ -141,7 +142,7 @@
 							<a class="ui-btn ui-btn-ghost ui-btn-xs" href={khatm.link}>مشاهده</a>
 							<a
 								class="ui-btn ui-btn-primary ui-btn-xs"
-								href={`${base}/account/khatms/${khatm.id}/edit`}>ویرایش</a
+								href={localizeHref(`${base}/account/khatms/${khatm.id}/edit`)}>ویرایش</a
 							>
 						{/snippet}
 					</KhatmListCard>

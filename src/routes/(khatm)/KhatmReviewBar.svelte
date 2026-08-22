@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { localeTag } from '$lib/i18n/format'
 	/* eslint-disable svelte/no-unused-svelte-ignore */
 	import type { ReviewStatus } from '@prisma-client'
 	import type { Khatm } from '$lib/entity/Khatm.svelte'
@@ -135,7 +136,7 @@
 			<div>
 				<strong>نمایش در ختم‌های شاخص</strong>
 				{#if currentFeaturedOrder != null}
-					<span>جایگاه {currentFeaturedOrder.toLocaleString('fa')} از فهرست صفحهٔ اصلی</span>
+					<span>جایگاه {currentFeaturedOrder.toLocaleString(localeTag())} از فهرست صفحهٔ اصلی</span>
 				{:else if featureAllowed}
 					<span>این ختم دائمی آمادهٔ انتخاب است.</span>
 				{:else if canFeature}

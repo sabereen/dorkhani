@@ -3,6 +3,7 @@
 	import { page } from '$app/state'
 	import { base } from '$app/paths'
 	import { claimCreatedKhatms } from '$lib/auth/claimCreatedKhatms'
+	import { localizeHref } from '$lib/paraglide/runtime.js'
 	import Modal from './Modal.svelte'
 	import { onMount } from 'svelte'
 
@@ -125,7 +126,7 @@
 				if (location.pathname === `${base}/`) return
 				history.back()
 			}
-			const handleSettings = () => void goto(`${base}/settings`)
+			const handleSettings = () => void goto(localizeHref(`${base}/settings`))
 			webApp.BackButton?.onClick?.(handleBack)
 			webApp.SettingsButton?.onClick?.(handleSettings)
 			webApp.SettingsButton?.show?.()

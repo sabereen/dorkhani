@@ -5,6 +5,7 @@ import translationGharaati from '@ghoran/translation/json/fa/tanzil-gharaati.jso
 import quranTextQPC1 from '@ghoran/text/json/quran-text-qpc-v1.json'
 import quranTextQPC2 from '@ghoran/text/json/quran-text-qpc-v2.json'
 import quranTextHafs from '@ghoran/text/json/quran-text-hafs.json'
+import type { QuranTranslationId } from '$lib/entity/QuranTranslation'
 
 export type AyahInfo = {
 	index: number
@@ -20,7 +21,7 @@ const translationMap = {
 	gharaati: translationGharaati,
 }
 
-export type Translation = keyof typeof translationMap
+export type Translation = QuranTranslationId
 
 export function getAyahInfo(ayahIndex: number, translation: Translation) {
 	const translationStrings = translationMap[translation] || translationAnsarian

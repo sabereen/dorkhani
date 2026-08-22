@@ -247,8 +247,8 @@
 	.add-shell {
 		width: 100%;
 		max-width: 44rem;
-		margin-right: auto;
-		margin-left: auto;
+		margin-inline-start: auto;
+		margin-inline-end: auto;
 	}
 
 	:global(.add-ai-warning-dialog) h2,
@@ -267,7 +267,7 @@
 	}
 
 	.add-ai-warning-actions > * + * {
-		margin-right: 0.5rem;
+		margin-inline-start: 0.5rem;
 	}
 
 	.add-intro {
@@ -287,7 +287,7 @@
 	}
 
 	.add-intro > * + * {
-		margin-right: 1rem;
+		margin-inline-start: 1rem;
 	}
 
 	.add-intro-icon {
@@ -360,7 +360,7 @@
 	}
 
 	.add-section-heading > * + * {
-		margin-right: 0.6rem;
+		margin-inline-start: 0.6rem;
 	}
 
 	.add-step {
@@ -425,7 +425,7 @@
 	}
 
 	.add-optional {
-		margin-right: 0.45rem;
+		margin-inline-start: 0.45rem;
 		padding: 0.1rem 0.4rem;
 		border-radius: 9999px;
 		background: var(--ui-color-accent-soft);
@@ -496,7 +496,7 @@
 
 	.add-choice > * + *,
 	.add-series > * + * {
-		margin-right: 0.55rem;
+		margin-inline-start: 0.55rem;
 	}
 
 	.add-choice-icon {

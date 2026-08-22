@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { localeTag } from '$lib/i18n/format'
 	import { base } from '$app/paths'
+	import { localizeHref } from '$lib/paraglide/runtime.js'
 	import KhatmListCard from '$lib/components/KhatmListCard.svelte'
 	import { CreatedKhatm } from '$lib/entity/CreatedKhatm'
 	import { onMount, type Snippet } from 'svelte'
@@ -44,7 +46,7 @@
 					<h2>{props.title || 'ختم‌های ساخته‌شده'}</h2>
 					<p>جمع‌هایی که آغاز کرده‌اید</p>
 				</div>
-				<span class="ui-activity-count">{history.length.toLocaleString('fa')}</span>
+				<span class="ui-activity-count">{history.length.toLocaleString(localeTag())}</span>
 			</header>
 
 			<ul class="ui-activity-list ui-khatm-card-list">
@@ -60,7 +62,7 @@
 
 			{#if hasMore}
 				<div class="ui-activity-footer">
-					<a class="ui-btn ui-btn-ghost ui-btn-sm" href={`${base}/history`}>
+					<a class="ui-btn ui-btn-ghost ui-btn-sm" href={localizeHref(`${base}/history`)}>
 						دیدن همه
 						<IconArrow />
 					</a>

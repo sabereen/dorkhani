@@ -1,9 +1,12 @@
 <script lang="ts">
+	import { localeTag } from '$lib/i18n/format'
 	import { goto } from '$app/navigation'
 	import { base } from '$app/paths'
 	import { page } from '$app/state'
 	import Header from '$lib/components/Header.svelte'
-	import { DEFAULT_BRANDING_CONFIG } from '$lib/entity/Branding'
+	import { DEFAULT_BRANDING_CONFIG, getBrandingText } from '$lib/entity/Branding'
+	import { getLocale, localizeHref } from '$lib/paraglide/runtime.js'
+	import * as m from '$lib/paraglide/messages.js'
 
 	import IconArrow from '~icons/ic/round-arrow-back'
 	import IconExplore from '~icons/ic/round-explore'
@@ -13,12 +16,12 @@
 
 	const isNotFound = $derived(page.status === 404)
 
-	const title = $derived(isNotFound ? 'این صفحه پیدا نشد' : 'مشکلی پیش آمده است')
+	const title = $derived(isNotFound ? m.error_not_found_title() : m.error_system_title())
 
 	const description = $derived(
 		isNotFound
-			? 'ممکن است نشانی صفحه تغییر کرده باشد یا این مسیر دیگر در دسترس نباشد.'
-			: page.error?.message || 'در نمایش این صفحه خطایی رخ داده است. لطفاً دوباره تلاش کنید.',
+			? m.error_not_found_description()
+			: page.error?.message || m.error_generic_description(),
 	)
 
 	const technicalMessage = $derived(page.error?.message || description)
@@ -63,7 +66,7 @@
 		if (document.referrer && new URL(document.referrer).origin === window.location.origin) {
 			history.back()
 		} else {
-			void goto(`${base}/`)
+			void goto(localizeHref(`${base}/`))
 		}
 	}
 
@@ -82,83 +85,83 @@
 </script>
 
 <svelte:head>
-	<title>{page.status} | {technicalType}: {technicalMessage} | {page.data.branding?.name || DEFAULT_BRANDING_CONFIG.name}</title>
+	<title>{page.status} | {technicalType}: {technicalMessage} | {page.data.branding?.name || getBrandingText(DEFAULT_BRANDING_CONFIG, getLocale()).name}</title>
 	<meta name="robots" content="noindex" />
 </svelte:head>
 
-<Header title={isNotFound ? 'صفحه پیدا نشد' : 'خطای سامانه'} />
+<Header title={isNotFound ? m.error_not_found_title() : m.error_system_title()} />
 
 <section class="error-page" aria-labelledby="error-title">
 	<div class="error-orb error-orb-one" aria-hidden="true"></div>
 	<div class="error-orb error-orb-two" aria-hidden="true"></div>
 
 	<div class="error-copy">
-		<div class="error-status" aria-label={`کد خطا ${page.status}`}>
+		<div class="error-status" aria-label={m.error_code({ status: page.status.toLocaleString(localeTag()) })}>
 			<span aria-hidden="true"></span>
-			خطای {page.status.toLocaleString('fa')}
+			{m.error_code({ status: page.status.toLocaleString(localeTag()) })}
 		</div>
 
-		<p class="error-eyebrow">گاهی مسیرها کمی دورتر از انتظارند</p>
+		<p class="error-eyebrow">{m.error_eyebrow()}</p>
 		<h1 id="error-title">{title}</h1>
 		<p class="error-description">{description}</p>
 
 		<div class="error-actions">
-			<a class="ui-btn ui-btn-primary ui-btn-lg" href={`${base}/`}>
+			<a class="ui-btn ui-btn-primary ui-btn-lg" href={localizeHref(`${base}/`)}>
 				<IconHome />
-				بازگشت به خانه
+				{m.common_home()}
 			</a>
 			{#if isNotFound}
 				<button class="ui-btn ui-btn-outline ui-btn-lg" type="button" onclick={goBack}>
 					<IconArrow />
-					صفحهٔ قبلی
+					{m.common_back()}
 				</button>
 			{:else}
 				<button class="ui-btn ui-btn-outline ui-btn-lg" type="button" onclick={retry}>
 					<IconRefresh />
-					تلاش دوباره
+					{m.common_retry()}
 				</button>
 			{/if}
 		</div>
 
-		<a class="error-help-link" href={`${base}/list`}>
+		<a class="error-help-link" href={localizeHref(`${base}/list`)}>
 			<IconExplore />
-			<span>یا ختم‌های عمومی را ببینید</span>
+			<span>{m.error_view_public()}</span>
 		</a>
 		<details class="error-technical-details" open={!isNotFound}>
-			<summary>نمایش جزئیات فنی</summary>
+			<summary>{m.error_technical_details()}</summary>
 
 			<div class="technical-toolbar">
 				<button class="technical-copy-button" type="button" onclick={copyError}>
-					{copied ? 'کپی شد ✓' : 'کپی اطلاعات خطا'}
+					{copied ? m.error_copied() : m.error_copy()}
 				</button>
 			</div>
 
 			<div class="technical-grid">
 				<div class="technical-row">
-					<span class="technical-label">کد خطا</span>
+					<span class="technical-label">{m.error_code({ status: '' })}</span>
 					<code class="technical-value">{page.status}</code>
 				</div>
 
 				<div class="technical-row">
-					<span class="technical-label">نوع خطا</span>
+					<span class="technical-label">{m.error_type()}</span>
 					<code class="technical-value">{technicalType}</code>
 				</div>
 
 				<div class="technical-row">
-					<span class="technical-label">مسیر</span>
+					<span class="technical-label">{m.error_path()}</span>
 					<code class="technical-value" dir="ltr">
 						{technicalPath}
 					</code>
 				</div>
 
 				<div class="technical-row technical-row-block">
-					<span class="technical-label">پیام</span>
+					<span class="technical-label">{m.error_message()}</span>
 					<pre class="technical-pre" dir="ltr">{technicalMessage}</pre>
 				</div>
 
 				{#if hasStack}
 					<div class="technical-row technical-row-block">
-						<span class="technical-label">Stack Trace</span>
+						<span class="technical-label">{m.error_stack()}</span>
 
 						<pre class="technical-pre technical-stack" dir="ltr">{technicalStack}</pre>
 					</div>
@@ -166,7 +169,7 @@
 
 				{#if hasCause}
 					<div class="technical-row technical-row-block">
-						<span class="technical-label">Cause</span>
+						<span class="technical-label">{m.error_cause()}</span>
 
 						<pre class="technical-pre technical-stack" dir="ltr">{JSON.stringify(
 								technicalCause,
@@ -177,13 +180,13 @@
 				{/if}
 
 				<div class="technical-row technical-row-block">
-					<span class="technical-label">URL</span>
+					<span class="technical-label">{m.error_url()}</span>
 					<pre class="technical-pre" dir="ltr">{currentUrl}</pre>
 				</div>
 			</div>
 
 			<details class="technical-raw">
-				<summary>JSON خام خطا</summary>
+				<summary>{m.error_raw()}</summary>
 
 				<pre class="technical-pre technical-stack" dir="ltr">{errorDump}</pre>
 			</details>
@@ -208,7 +211,7 @@
 			<div class="error-spark error-spark-two">✦</div>
 			<div class="error-spark error-spark-three">·</div>
 		</div>
-		<p>راه خانه همیشه روشن است</p>
+		<p>{m.error_home_light()}</p>
 	</div>
 </section>
 
@@ -281,7 +284,7 @@
 		display: block;
 		width: 0.5rem;
 		height: 0.5rem;
-		margin-left: 0.45rem;
+		margin-inline-end: 0.45rem;
 		border-radius: 9999px;
 		background: var(--ui-color-warning);
 		box-shadow: 0 0 0 0.22rem var(--ui-color-warning-soft);
@@ -322,7 +325,7 @@
 	}
 
 	.error-actions > * + * {
-		margin-right: 0.65rem;
+		margin-inline-start: 0.65rem;
 	}
 
 	.error-actions :global(svg),
@@ -342,7 +345,7 @@
 	}
 
 	.error-help-link > :global(*) + :global(*) {
-		margin-right: 0.4rem;
+		margin-inline-start: 0.4rem;
 	}
 
 	.error-help-link:hover {
@@ -433,7 +436,7 @@
 
 	.technical-value {
 		word-break: break-word;
-		text-align: left;
+		text-align: end;
 	}
 
 	.technical-pre {
@@ -447,7 +450,7 @@
 		font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 		font-size: 0.72rem;
 		line-height: 1.7;
-		text-align: left;
+		text-align: end;
 	}
 
 	.technical-stack {
@@ -472,7 +475,7 @@
 		.technical-value {
 			display: block;
 			margin-top: 0.25rem;
-			text-align: right;
+			text-align: start;
 		}
 	}
 

@@ -5,6 +5,7 @@ import { rebaseFullPath } from '$lib/utility/path'
 import { browser } from '$app/environment'
 import { request } from '$lib/utility/request'
 import { idb_localZekr_increaseMyCount } from '$lib/idb/localZekr'
+import * as m from '$lib/paraglide/messages.js'
 
 const cache = new Map<number, Zekr>()
 
@@ -100,7 +101,7 @@ export class Zekr {
 		try {
 			await navigator.share({
 				url: this.link,
-				text: `سامانه ختم ذکر گروهی | ${this.title}\n` + this.description + '\n',
+				text: m.share_zekr({ title: this.title, description: this.description }),
 			})
 		} catch (err) {
 			console.error(err)

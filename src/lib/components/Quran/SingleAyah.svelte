@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { localeTag } from '$lib/i18n/format'
 	import { ayah_getExternalLink } from '$lib/entity/Ayah'
 	import { surah_getName } from '$lib/entity/Surah'
 	import type { AyahInfo } from '$service/quran'
@@ -6,6 +7,7 @@
 	import { fade, slide } from 'svelte/transition'
 	import type { FontManager } from './FontManager.svelte'
 	import type { AudioManager } from './AudioManager.svelte'
+	import * as m from '$lib/paraglide/messages.js'
 
 	import IconPlay from '~icons/ic/round-play-arrow'
 	import IconPause from '~icons/ic/round-pause'
@@ -31,20 +33,22 @@
 	<div class="ui-card-body">
 		{#if ayah.isFirstOfSurah}
 			<header class="ui-quran-surah-heading">
-				<span>سوره</span>
+				<span>{m.quran_surah()}</span>
 				<h2>{surah_getName(ayah.surah)}</h2>
 				{#if ayah.surah.hasBasmalah}
-					<p>بسم الله الرحمن الرحیم</p>
+					<p lang="ar" dir="rtl">بسم الله الرحمن الرحیم</p>
 				{/if}
 			</header>
 		{/if}
 		{#if ayah.obligatorySajdah}
 			<div class="ui-alert ui-alert-error">
-				<p>این آیه دارای سجده واجب است.</p>
+				<p>{m.quran_obligatory_sajdah()}</p>
 			</div>
 		{/if}
 		<p
 			class={['ui-quran-ayah-text transition-opacity', fontManager.className]}
+			lang="ar"
+			dir="rtl"
 			class:opacity-0={fontManager.isLoading(ayah)}
 			style:font-family={fontManager.getFontFamily(ayah)}
 		>
@@ -53,7 +57,7 @@
 			{#if font === 'qpc2'}{ayahInfo.textQPC2}{/if}
 			{#if font === 'hafs'}{ayah.number.toLocaleString('ar-IQ')}{/if}
 		</p>
-		<p class="ui-quran-translation">{ayahInfo.translation}</p>
+		<p class="ui-quran-translation" lang="fa" dir="rtl">{ayahInfo.translation}</p>
 	</div>
 	<footer class="ui-quran-ayah-footer">
 		{#if !audioManager.paused && audioManager.playingIndex === ayah.index}
@@ -67,7 +71,7 @@
 				{:else}
 					<IconPause class="size-5" />
 				{/if}
-				توقف صوت
+				{m.quran_pause_audio()}
 			</button>
 		{:else}
 			<button
@@ -76,15 +80,15 @@
 				onclick={() => audioManager.play(ayah.index)}
 			>
 				<IconPlay class="size-5" />
-				پخش صوت
+				{m.quran_play_audio()}
 			</button>
 		{/if}
 		<a href={ayah_getExternalLink(ayah)} target="_blank" class="ui-btn ui-btn-sm ui-btn-ghost">
 			<IconContext class="size-5" />
-			آیات پیرامون
+			{m.quran_context()}
 		</a>
 		<p class="ui-quran-ayah-meta">
-			آیه {ayah.number.toLocaleString('fa')} · {surah_getName(ayah.surah)}
+			{m.quran_ayah_meta({ number: ayah.number.toLocaleString(localeTag()), surah: surah_getName(ayah.surah) })}
 		</p>
 		{#if audioManager.audioDuration && !audioManager.paused && audioManager.playingIndex === ayah.index}
 			<progress

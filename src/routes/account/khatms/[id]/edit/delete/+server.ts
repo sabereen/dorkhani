@@ -1,6 +1,7 @@
 import { KhatmOwnershipError, type KhatmManagementActor, khatmService_delete } from '$service/khatm'
 import { auth_checkIsAdmin, auth_ensureIsAdmin } from '$service/auth'
 import { base } from '$app/paths'
+import { localizeHref } from '$lib/paraglide/runtime.js'
 import { error, redirect, type RequestEvent, type RequestHandler } from '@sveltejs/kit'
 
 type ManagementEvent = Pick<RequestEvent, 'locals' | 'request' | 'setHeaders' | 'url'>
@@ -30,5 +31,5 @@ export const POST: RequestHandler = async (event) => {
 		}
 		throw cause
 	}
-	redirect(303, actor.kind === 'admin' ? `${base}/admin/review` : `${base}/account`)
+	redirect(303, actor.kind === 'admin' ? `${base}/admin/review` : localizeHref(`${base}/account`))
 }

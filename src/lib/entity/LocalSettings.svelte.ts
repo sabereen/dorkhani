@@ -4,9 +4,12 @@ import { localStore } from '$lib/utility/localStore'
 import { setCookie } from '$lib/utility/setCookie'
 import { getContext, setContext } from 'svelte'
 import type { ColorScheme } from './Theme'
+import { isLocale } from '$lib/i18n/locale'
+import type { Locale } from '$lib/paraglide/runtime.js'
+import type { QuranTranslationId } from './QuranTranslation'
 
 export type QuranFont = 'hafs' | 'qpc1' | 'qpc2'
-export type Translation = 'ansarian' | 'makarem' | 'gharaati'
+export type Translation = QuranTranslationId
 export type Reciter = 'minshawi' | 'parhizgar' | 'husari' | 'abdulbasit'
 
 export interface ILocalSettings {
@@ -16,6 +19,7 @@ export interface ILocalSettings {
 	readedRangesVisibility: 'visible' | 'invisible' | 'auto'
 	externalQuranProvider: 'ketabmobin' | 'quran-com' | 'quran-projector'
 	colorScheme: ColorScheme
+	locale: Locale
 }
 
 export type SettingKey = keyof ILocalSettings
@@ -27,6 +31,7 @@ const defaultSettings = {
 	translation: 'ansarian',
 	externalQuranProvider: 'quran-com',
 	colorScheme: 'system',
+	locale: 'fa',
 } as const satisfies ILocalSettings
 
 const localStoreKey = 'localSettings'
@@ -145,6 +150,7 @@ export function normalizeSettings(value: unknown): Partial<ILocalSettings> {
 	) {
 		result.colorScheme = stored.colorScheme
 	}
+	if (isLocale(stored.locale)) result.locale = stored.locale
 	return result
 }
 

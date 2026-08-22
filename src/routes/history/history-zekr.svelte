@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { localeTag } from '$lib/i18n/format'
 	import { base } from '$app/paths'
+	import { localizeHref } from '$lib/paraglide/runtime.js'
 	import { Zekr } from '$lib/entity/Zekr.svelte'
 	import type { LocalZekr } from '$lib/idb/idb'
 	import { idb_localZekr_getList } from '$lib/idb/localZekr'
@@ -45,7 +47,7 @@
 					<h2>{props.title || 'ختم‌های ذکر شما'}</h2>
 					<p>حلقه‌های ذکری که همراهی کرده‌اید</p>
 				</div>
-				<span class="ui-activity-count">{history.length.toLocaleString('fa')}</span>
+				<span class="ui-activity-count">{history.length.toLocaleString(localeTag())}</span>
 			</header>
 
 			<ul class="ui-activity-list">
@@ -60,7 +62,7 @@
 									<span>{zekr.plain.created.toLocaleDateString('fa-IR')}</span>
 									{#if zekr.isFinite}
 										<span class="ui-badge ui-badge-xs ui-badge-info"
-											>{zekr.targetCount.toLocaleString('fa')} تایی</span
+											>{zekr.targetCount.toLocaleString(localeTag())} تایی</span
 										>
 									{/if}
 								</span>
@@ -73,7 +75,7 @@
 
 			{#if hasMore}
 				<div class="ui-activity-footer">
-					<a class="ui-btn ui-btn-ghost ui-btn-sm" href={`${base}/history`}>
+					<a class="ui-btn ui-btn-ghost ui-btn-sm" href={localizeHref(`${base}/history`)}>
 						دیدن همه
 						<IconArrow />
 					</a>

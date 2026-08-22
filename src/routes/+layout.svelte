@@ -11,6 +11,7 @@
 	import { claimCreatedKhatms } from '$lib/auth/claimCreatedKhatms'
 	import { onMount } from 'svelte'
 	import { base } from '$app/paths'
+	import LocaleChooser from '$lib/components/LocaleChooser.svelte'
 
 	let { children, data }: LayoutProps = $props()
 
@@ -19,6 +20,9 @@
 
 	onMount(() => {
 		if (data.user) void claimCreatedKhatms()
+		if (!data.needsLocaleChoice) {
+			localSettings.update({ locale: data.locale }, { bypassLocalStore: false })
+		}
 	})
 
 	$effect(() => {
@@ -57,6 +61,8 @@
 	baleEnabled={data.authProviders.bale}
 	eitaaEnabled={data.authProviders.eitaa}
 />
+
+<LocaleChooser unresolved={data.needsLocaleChoice} />
 
 <main class="ui-main ui-container ui-page">
 	{@render children()}

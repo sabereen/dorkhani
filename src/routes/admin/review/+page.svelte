@@ -482,7 +482,7 @@
 	}
 
 	.admin-featured-heading > * + * {
-		margin-right: 1rem;
+		margin-inline-start: 1rem;
 	}
 
 	.admin-featured-kicker {
@@ -496,7 +496,7 @@
 	.admin-featured-kicker :global(svg) {
 		width: 1rem;
 		height: 1rem;
-		margin-left: 0.35rem;
+		margin-inline-end: 0.35rem;
 	}
 
 	.admin-featured-heading h2 {
@@ -525,7 +525,7 @@
 	}
 
 	.admin-featured-loading > :global(*) + :global(*) {
-		margin-right: 0.5rem;
+		margin-inline-start: 0.5rem;
 	}
 
 	.admin-featured-message {

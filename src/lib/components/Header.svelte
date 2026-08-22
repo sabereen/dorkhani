@@ -4,6 +4,10 @@
 	import { navigating, page } from '$app/state'
 	import { authClient } from '$lib/auth-client'
 	import { DEFAULT_BRANDING_CONFIG, getPublicBranding } from '$lib/entity/Branding'
+	import { getLocale } from '$lib/paraglide/runtime.js'
+	import { localizeHref } from '$lib/paraglide/runtime.js'
+	import * as m from '$lib/paraglide/messages.js'
+	import LanguageSwitcher from './LanguageSwitcher.svelte'
 	import type { Component, Snippet } from 'svelte'
 	import IconAdd from '~icons/ic/round-add-circle-outline'
 	import IconAccount from '~icons/ic/round-account-circle'
@@ -32,21 +36,21 @@
 
 	const { title, link, end, start }: Props = $props()
 	const branding = $derived(
-		page.data.branding ?? getPublicBranding(DEFAULT_BRANDING_CONFIG, base),
+		page.data.branding ?? getPublicBranding(DEFAULT_BRANDING_CONFIG, getLocale(), base),
 	)
 	const from = navigating.from
 	let open = $state(false)
 	let accountMenu: HTMLDetailsElement | undefined = $state()
 
 	const links = $derived<NavLink[]>([
-		{ href: `${base}/`, label: 'خانه', icon: IconHome },
-		{ href: `${base}/add`, label: 'ایجاد ختم', icon: IconAdd },
-		{ href: `${base}/list`, label: 'فهرست عمومی', icon: IconList },
-		{ href: `${base}/history`, label: 'تاریخچه', icon: IconHistory },
-		{ href: `${base}/settings`, label: 'تنظیمات', icon: IconSettings },
+		{ href: localizeHref(`${base}/`), label: m.common_home(), icon: IconHome },
+		{ href: localizeHref(`${base}/add`), label: m.nav_create(), icon: IconAdd },
+		{ href: localizeHref(`${base}/list`), label: m.nav_khatms(), icon: IconList },
+		{ href: localizeHref(`${base}/history`), label: m.nav_history(), icon: IconHistory },
+		{ href: localizeHref(`${base}/settings`), label: m.nav_settings(), icon: IconSettings },
 		page.data.user
-			? { href: `${base}/account`, label: page.data.user.name || 'حساب من', icon: IconAccount }
-			: { href: `${base}/auth/login`, label: 'ورود', icon: IconLogin },
+			? { href: localizeHref(`${base}/account`), label: page.data.user.name || m.nav_account(), icon: IconAccount }
+			: { href: localizeHref(`${base}/auth/login`), label: m.nav_login(), icon: IconLogin },
 	])
 
 	function isActive(href: string) {
@@ -59,14 +63,14 @@
 		open = false
 		accountMenu?.removeAttribute('open')
 		await invalidateAll()
-		await goto(`${base}/`)
+		await goto(localizeHref(`${base}/`))
 	}
 
 	function back() {
 		if (from) {
 			history.back()
 		} else {
-			goto(`${base}/`, { replaceState: true })
+			goto(localizeHref(`${base}/`), { replaceState: true })
 		}
 	}
 
@@ -91,7 +95,7 @@
 		<a
 			class="ui-header-brand"
 			class:ui-header-brand-desktop={title}
-			href={`${base}/`}
+			href={localizeHref(`${base}/`)}
 			aria-label={branding.name}
 		>
 			<span class="ui-header-brand-mark">
@@ -103,7 +107,7 @@
 			</span>
 		</a>
 
-		<nav class="ui-nav ui-desktop-only" aria-label="ناوبری اصلی">
+		<nav class="ui-nav ui-desktop-only" aria-label={m.language_selector_label()}>
 			{#each links.slice(0, 4) as navLink}
 				{@const NavIcon = navLink.icon}
 				<a
@@ -120,42 +124,43 @@
 
 		<div class="ui-header-global">
 			{#if !title}
-				<a class="ui-header-create ui-desktop-only" href={`${base}/add`}>
+				<a class="ui-header-create ui-desktop-only" href={localizeHref(`${base}/add`)}>
 					<span class="ui-header-create-icon"><IconAdd /></span>
-					<span><small>یک همراهی تازه</small><strong>ایجاد ختم جدید</strong></span>
+					<span><strong>{m.nav_create()}</strong></span>
 				</a>
 			{/if}
+			<LanguageSwitcher compact />
 
 			{#if page.data.user}
 				<details class="ui-header-account ui-desktop-only" bind:this={accountMenu}>
-					<summary aria-label="باز کردن منوی حساب کاربری">
+					<summary aria-label={m.nav_account()}>
 						<IconAccount />
 						<span>
-							<small>حساب کاربری</small>
-							<strong>{page.data.user.name || 'حساب من'}</strong>
+							<small>{m.nav_account()}</small>
+							<strong>{page.data.user.name || m.nav_account()}</strong>
 						</span>
 					</summary>
 					<div class="ui-header-account-menu">
-						<a href={`${base}/account`}><IconAccount /><span>حساب من</span></a>
-						<a href={`${base}/settings`}><IconSettings /><span>تنظیمات</span></a>
+						<a href={localizeHref(`${base}/account`)}><IconAccount /><span>{m.nav_account()}</span></a>
+						<a href={localizeHref(`${base}/settings`)}><IconSettings /><span>{m.nav_settings()}</span></a>
 						<button type="button" onclick={signOut}>
-							<IconLogout /><span>خروج</span>
+							<IconLogout /><span>{m.nav_logout()}</span>
 						</button>
 					</div>
 				</details>
 			{:else}
-				<a class="ui-header-utility ui-desktop-only" href={`${base}/settings`} aria-label="تنظیمات">
+				<a class="ui-header-utility ui-desktop-only" href={localizeHref(`${base}/settings`)} aria-label={m.nav_settings()}>
 					<IconSettings />
 				</a>
-				<a class="ui-header-login ui-desktop-only" href={`${base}/auth/login`}>
-					<IconLogin /><span>ورود</span>
+				<a class="ui-header-login ui-desktop-only" href={localizeHref(`${base}/auth/login`)}>
+					<IconLogin /><span>{m.nav_login()}</span>
 				</a>
 			{/if}
 
 			<button
 				type="button"
 				class="ui-header-menu-button ui-mobile-only"
-				aria-label={open ? 'بستن منو' : 'باز کردن منو'}
+				aria-label={open ? m.common_close() : m.common_more()}
 				aria-expanded={open}
 				onclick={() => (open = !open)}
 			>
@@ -169,13 +174,13 @@
 					{#if start}
 						{@render start()}
 					{:else}
-						<button type="button" class="ui-header-back" aria-label="بازگشت" onclick={back}>
+						<button type="button" class="ui-header-back" aria-label={m.common_back()} onclick={back}>
 							<IconBack />
 						</button>
 					{/if}
 
 					<div class="ui-header-page-copy">
-						<span>صفحه جاری</span>
+						<span>{m.common_view()}</span>
 						<h1 class="ui-header-title select-none">
 							{#if link}<a href={link}>{title}</a>{:else}{title}{/if}
 						</h1>
@@ -191,8 +196,8 @@
 		{/if}
 
 		{#if open}
-			<nav class="ui-mobile-menu ui-mobile-only" aria-label="ناوبری موبایل">
-				<span class="ui-mobile-menu-label">مسیرهای اصلی</span>
+			<nav class="ui-mobile-menu ui-mobile-only" aria-label={m.nav_khatms()}>
+				<LanguageSwitcher />
 				{#each links as navLink}
 					{@const NavIcon = navLink.icon}
 					<a
@@ -209,7 +214,7 @@
 				{#if page.data.user}
 					<button class="ui-btn ui-btn-ghost ui-btn-block mt-1" type="button" onclick={signOut}>
 						<span class="ui-mobile-nav-icon"><IconLogout /></span>
-						<span>خروج</span>
+						<span>{m.nav_logout()}</span>
 					</button>
 				{/if}
 			</nav>

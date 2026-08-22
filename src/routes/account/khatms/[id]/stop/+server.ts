@@ -1,4 +1,5 @@
 import { base } from '$app/paths'
+import { localizeHref } from '$lib/paraglide/runtime.js'
 import {
 	KhatmHistoricalRoundError,
 	KhatmOwnershipError,
@@ -7,7 +8,7 @@ import {
 import { error, redirect, type RequestHandler } from '@sveltejs/kit'
 
 export const POST: RequestHandler = async ({ locals, params, url }) => {
-	if (!locals.user) redirect(303, `${base}/auth/login`)
+	if (!locals.user) redirect(303, localizeHref(`${base}/auth/login`))
 
 	const id = Number(params.id)
 	if (!Number.isSafeInteger(id)) throw error(404, { message: 'ختم پیدا نشد.' })

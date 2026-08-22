@@ -13,10 +13,10 @@
 .ui-container,
 .ui-container-reading {
 	width: 100%;
-	margin-right: auto;
-	margin-left: auto;
-	padding-right: 1rem;
-	padding-left: 1rem;
+	margin-inline-start: auto;
+	margin-inline-end: auto;
+	padding-inline-start: 1rem;
+	padding-inline-end: 1rem;
 }
 
 .ui-container {
@@ -54,8 +54,8 @@
 @media (min-width: 768px) {
 	.ui-container,
 	.ui-container-reading {
-		padding-right: 3rem;
-		padding-left: 3rem;
+		padding-inline-start: 3rem;
+		padding-inline-end: 3rem;
 	}
 
 	.ui-page {
@@ -71,12 +71,12 @@
 	.ui-hero {
 		min-height: 22rem;
 		flex-direction: row;
-		text-align: right;
+		text-align: start;
 	}
 
 	.ui-hero > * + * {
 		margin-top: 0;
-		margin-right: 3rem;
+		margin-inline-start: 3rem;
 	}
 }
 

@@ -9,6 +9,8 @@ import { ayah_getExternalLink } from './Ayah'
 import type { RangeType } from '@prisma-client'
 import type { Khatm } from './Khatm.svelte'
 import { roundPercent } from '$lib/utility/percent'
+import { formatNumber } from '$lib/i18n/format'
+import * as m from '$lib/paraglide/messages.js'
 
 export class QuranRange {
 	start: number
@@ -199,18 +201,18 @@ export class QuranRange {
 			this.lastAyah.isLastOfSurah &&
 			startSurahName === lastSurahName
 		) {
-			return `سوره‌ی ${startSurahName}`
+			return m.range_surah_title({ surah: startSurahName })
 		}
 
 		const from = this.startAyah.isFirstOfSurah
-			? `ابتدای ${startSurahName}`
-			: `${this.startAyah.number} ${startSurahName}`
+			? m.range_start_surah({ surah: startSurahName })
+			: m.range_ayah_in_surah({ ayah: formatNumber(this.startAyah.number), surah: startSurahName })
 
 		const to = this.lastAyah.isLastOfSurah
-			? `انتهای ${lastSurahName}`
-			: `${this.endAyah.number} ${lastSurahName}`
+			? m.range_end_surah({ surah: lastSurahName })
+			: m.range_ayah_in_surah({ ayah: formatNumber(this.lastAyah.number), surah: lastSurahName })
 
-		return `از ${from} تا ${to}`
+		return m.range_from_to({ from, to })
 	}
 
 	getTitleSurahOrinted() {
@@ -218,11 +220,15 @@ export class QuranRange {
 		const surahName = surah_getName(this.startAyah.surah)
 
 		if (!this.startAyah.isFirstOfSurah && !this.lastAyah.isLastOfSurah) {
-			return `${surahName} (از آیه ${this.startAyah.number} تا ${this.endAyah.number})`
+			return m.range_surah_between({
+				surah: surahName,
+				start: formatNumber(this.startAyah.number),
+				end: formatNumber(this.lastAyah.number),
+			})
 		} else if (!this.startAyah.isFirstOfSurah) {
-			return `${surahName} (از آیه ${this.startAyah.number})`
+			return m.range_surah_from({ surah: surahName, start: formatNumber(this.startAyah.number) })
 		} else if (!this.lastAyah.isLastOfSurah) {
-			return `${surahName} (تا آیه ${this.endAyah.number})`
+			return m.range_surah_to({ surah: surahName, end: formatNumber(this.lastAyah.number) })
 		} else {
 			return surahName
 		}

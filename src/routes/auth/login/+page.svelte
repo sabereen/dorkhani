@@ -13,6 +13,8 @@
 	import IconVisibility from '~icons/ic/round-visibility'
 	import IconVisibilityOff from '~icons/ic/round-visibility-off'
 	import type { PageProps } from './$types'
+	import { localizeHref } from '$lib/paraglide/runtime.js'
+	import * as m from '$lib/paraglide/messages.js'
 
 	const { data }: PageProps = $props()
 	let email = $state('')
@@ -24,7 +26,7 @@
 	async function finishLogin() {
 		await claimCreatedKhatms()
 		await invalidateAll()
-		await goto(`${base}/account`)
+		await goto(localizeHref(`${base}/account`))
 	}
 
 	async function signInEmail(event: SubmitEvent) {
@@ -34,7 +36,7 @@
 		const result = await authClient.signIn.email({ email, password })
 		loading = false
 		if (result.error) {
-			errorMessage = result.error.message || 'ورود ناموفق بود.'
+			errorMessage = result.error.message || m.auth_login_failed()
 			return
 		}
 		await finishLogin()
@@ -43,18 +45,18 @@
 	async function signInGoogle() {
 		loading = true
 		errorMessage = ''
-		await authClient.signIn.social({ provider: 'google', callbackURL: `${base}/account` })
+		await authClient.signIn.social({ provider: 'google', callbackURL: localizeHref(`${base}/account`) })
 		loading = false
 	}
 
 </script>
 
-<PageTitle title="ورود" />
+<PageTitle title={m.auth_login_title()} />
 
 <AuthShell
-	title="ورود به حساب"
-	eyebrow="خوش آمدید"
-	description="برای ادامه، اطلاعات حساب کاربری خود را وارد کنید."
+	title={m.auth_login_heading()}
+	eyebrow={m.auth_login_eyebrow()}
+	description={m.auth_login_description()}
 >
 	<div class="ui-form-status-slot" aria-live="polite">
 		{#if errorMessage}
@@ -64,7 +66,7 @@
 
 	<form use:validateForm novalidate class="ui-auth-form" onsubmit={signInEmail} aria-busy={loading}>
 		<div class="ui-auth-field">
-			<label class="ui-field-label" for="login-email"><IconEmail /> ایمیل</label>
+			<label class="ui-field-label" for="login-email"><IconEmail /> {m.auth_email()}</label>
 			<input
 				id="login-email"
 				dir="ltr"
@@ -80,8 +82,8 @@
 
 		<div class="ui-auth-field">
 			<div class="ui-auth-label-row">
-				<label class="ui-field-label" for="login-password"><IconLock /> رمز عبور</label>
-				<a class="ui-link" href={`${base}/auth/forgot-password`}>فراموش کرده‌ام</a>
+				<label class="ui-field-label" for="login-password"><IconLock /> {m.auth_password()}</label>
+				<a class="ui-link" href={localizeHref(`${base}/auth/forgot-password`)}>{m.auth_forgot_link()}</a>
 			</div>
 			<div class="ui-auth-password-wrap" data-ui-validation-host>
 				<input
@@ -91,13 +93,13 @@
 					type={showPassword ? 'text' : 'password'}
 					bind:value={password}
 					autocomplete="current-password"
-					placeholder="رمز عبور"
+					placeholder={m.auth_password()}
 					required
 				/>
 				<button
 					class="ui-auth-password-toggle"
 					type="button"
-					aria-label={showPassword ? 'پنهان کردن رمز عبور' : 'نمایش رمز عبور'}
+					aria-label={showPassword ? m.auth_hide_password() : m.auth_show_password()}
 					aria-pressed={showPassword}
 					onclick={() => (showPassword = !showPassword)}
 				>
@@ -108,12 +110,12 @@
 
 		<button class="ui-btn ui-btn-primary ui-btn-lg ui-btn-block" type="submit" disabled={loading}>
 			{#if loading}<span class="ui-spinner"></span>{:else}<IconLogin />{/if}
-			<span>{loading ? 'در حال ورود…' : 'ورود به حساب'}</span>
+			<span>{loading ? m.auth_login_loading() : m.auth_login_action()}</span>
 		</button>
 	</form>
 
 	{#if data.authProviders.google}
-		<div class="ui-auth-divider"><span>یا ادامه با</span></div>
+		<div class="ui-auth-divider"><span>{m.auth_continue_with()}</span></div>
 		<div class="ui-auth-socials">
 			{#if data.authProviders.google}
 				<button
@@ -123,13 +125,13 @@
 					disabled={loading}
 				>
 					<IconLanguage />
-					<span>گوگل</span>
+					<span>{m.auth_google()}</span>
 				</button>
 			{/if}
 		</div>
 	{/if}
 
 	<p class="ui-auth-switch">
-		حساب کاربری ندارید؟ <a href={`${base}/auth/register`}>ساخت حساب جدید</a>
+		{m.auth_no_account()} <a href={localizeHref(`${base}/auth/register`)}>{m.auth_create_account()}</a>
 	</p>
 </AuthShell>

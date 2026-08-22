@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { formatPercent, localeTag } from '$lib/i18n/format'
 	import type { PageProps } from './$types'
 	import Header from '$lib/components/Header.svelte'
 	import PageTitle from '$lib/components/PageTitle.svelte'
@@ -107,7 +108,7 @@
 					</span>
 				{:else if zekr.isFinite}
 					<span class="ui-badge ui-badge-info">
-						هدف: {zekr.targetCount.toLocaleString('fa')} مرتبه
+						هدف: {zekr.targetCount.toLocaleString(localeTag())} مرتبه
 					</span>
 				{:else}
 					<span class="ui-badge ui-badge-accent">
@@ -129,7 +130,7 @@
 				<span class="ui-zekr-progress-icon"><IconGroups /></span>
 				<div>
 					<span>مشارکت جمعی</span>
-					<strong>{zekr.count.toLocaleString('fa')}</strong>
+					<strong>{zekr.count.toLocaleString(localeTag())}</strong>
 					<small>مرتبه ذکر گفته شده</small>
 				</div>
 			</div>
@@ -137,22 +138,22 @@
 			{#if zekr.isFinite}
 				<div class="ui-zekr-progress-details">
 					<div class="ui-zekr-progress-labels">
-						<span>{percent.toLocaleString('fa')}٪ پیشرفت</span>
+						<span>{formatPercent(percent)} پیشرفت</span>
 						{#if zekr.finished}
 							<span>هدف تکمیل شده</span>
 						{:else}
-							<span>{remainingCount.toLocaleString('fa')} مرتبه تا هدف</span>
+							<span>{remainingCount.toLocaleString(localeTag())} مرتبه تا هدف</span>
 						{/if}
 					</div>
 					<progress
 						class="ui-progress ui-progress-success"
 						max={100}
 						value={percent}
-						aria-label={`پیشرفت ختم: ${percent.toLocaleString('fa')} درصد`}
+						aria-label={`پیشرفت ختم: ${percent.toLocaleString(localeTag())} درصد`}
 					></progress>
 					<div class="ui-zekr-progress-scale">
 						<span>شروع</span>
-						<span>هدف {zekr.targetCount.toLocaleString('fa')}</span>
+						<span>هدف {zekr.targetCount.toLocaleString(localeTag())}</span>
 					</div>
 				</div>
 			{:else}
@@ -167,7 +168,7 @@
 						<span class="ui-zekr-personal-icon"><IconCheck /></span>
 						<div>
 							<span>سهم شما در این ختم</span>
-							<strong>{myCount.toLocaleString('fa')} مرتبه</strong>
+							<strong>{myCount.toLocaleString(localeTag())} مرتبه</strong>
 						</div>
 					</div>
 				{/if}

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { localeTag } from '$lib/i18n/format'
 	import '@ghoran/text/fonts/uthmanic-hafs/style.css'
 	import { slide } from 'svelte/transition'
 	import { toast } from '$lib/components/TheToast.svelte'
@@ -187,7 +188,7 @@
 				<div class="ui-zekr-feedback-content">
 					<span class="ui-spinner" aria-hidden="true"></span>
 					<div>
-						<strong>در حال ثبت {loading.toLocaleString('fa')} مرتبه ذکر…</strong>
+						<strong>در حال ثبت {loading.toLocaleString(localeTag())} مرتبه ذکر…</strong>
 						<small>لطفاً چند لحظه صبر کنید.</small>
 					</div>
 				</div>
@@ -197,8 +198,8 @@
 				<div class="ui-zekr-feedback-content">
 					<IconCheck aria-hidden="true" />
 					<div>
-						<strong>{pickResult.count.toLocaleString('fa')} مرتبه با موفقیت ثبت شد</strong>
-						<small>مجموع مشارکت شما: {myCount.toLocaleString('fa')} مرتبه</small>
+						<strong>{pickResult.count.toLocaleString(localeTag())} مرتبه با موفقیت ثبت شد</strong>
+						<small>مجموع مشارکت شما: {myCount.toLocaleString(localeTag())} مرتبه</small>
 					</div>
 				</div>
 			</div>

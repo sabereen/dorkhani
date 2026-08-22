@@ -56,7 +56,7 @@
 	}
 
 	.history-intro > * + * {
-		margin-right: 1rem;
+		margin-inline-start: 1rem;
 	}
 
 	.history-intro-icon {

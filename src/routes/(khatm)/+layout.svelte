@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { formatPercent, localeTag } from '$lib/i18n/format'
 	import type { LayoutProps } from './$types'
 	import Header from '$lib/components/Header.svelte'
 	import PageTitle from '$lib/components/PageTitle.svelte'
@@ -23,6 +24,7 @@
 	import Tab from '$lib/components/Tab.svelte'
 	import { browser } from '$app/environment'
 	import { base } from '$app/paths'
+	import { localizeHref } from '$lib/paraglide/runtime.js'
 	import ExpandableText from '$lib/components/ExpandableText.svelte'
 	import { invalidateAll } from '$app/navigation'
 	import { idb_createdKhatm_hasClaim } from '$lib/idb/createdKhatm'
@@ -200,7 +202,7 @@
 						<span class="ui-badge ui-badge-accent">
 							{roundTitle}
 							{#if data.seriesMaxRounds != null}
-								از {data.seriesMaxRounds.toLocaleString('fa')} دور
+								از {data.seriesMaxRounds.toLocaleString(localeTag())} دور
 							{/if}
 						</span>
 						{#if canRequestSeriesStop}
@@ -238,7 +240,7 @@
 				</div>
 			</div>
 			<div class="ui-khatm-progress-value">
-				<strong>{percent.toLocaleString('fa')}</strong><span>٪</span>
+				<strong>{formatPercent(percent)}</strong>
 			</div>
 			<progress
 				class="ui-progress ui-progress-success"
@@ -367,11 +369,11 @@
 		کنید.
 	</p>
 	<div class="ui-khatm-auth-actions">
-		<a class="ui-btn ui-btn-primary ui-btn-lg" href={`${base}/auth/login`}>
+		<a class="ui-btn ui-btn-primary ui-btn-lg" href={localizeHref(`${base}/auth/login`)}>
 			<IconLogin class="size-5" />
 			ورود به حساب
 		</a>
-		<a class="ui-btn ui-btn-soft ui-btn-lg" href={`${base}/auth/register`}>
+		<a class="ui-btn ui-btn-soft ui-btn-lg" href={localizeHref(`${base}/auth/register`)}>
 			<IconPersonAdd class="size-5" />
 			ثبت‌نام
 		</a>

@@ -132,14 +132,21 @@ The primary UI contract must not rely on:
 
 - Flexbox `gap`; use the existing margin-based helper or explicit sibling margins. CSS Grid
   spacing must include the legacy `grid-gap` form.
-- Logical properties or logical utility names such as `margin-inline`, `inset-inline`, `ms-*`,
-  `me-*`, `ps-*`, or `pe-*`.
-- The `inset` shorthand; write `top`, `right`, `bottom`, and `left` explicitly.
+- The `inset` shorthand; use block offsets plus logical inline longhands and the documented
+  directional fallback where needed.
 - `:focus-visible`, `:is()`, `:where()`, `:has()`, or CSS cascade layers.
 - `oklch()`, `oklab()`, `color-mix()`, or space-separated modern color syntax. Use hex,
   `rgb()`, or `rgba()`.
 
-Use physical left/right properties deliberately for the RTL layout. Never remove an outline
+Directional spacing must use logical longhands. In markup, prefer UnoCSS utilities such as
+`ms-*`, `me-*`, `ps-*`, `pe-*`, and `text-start/end`; shared `ui-*` contracts use
+`margin-inline-start/end` and `padding-inline-start/end`. The existing PostCSS/Autoprefixer
+pipeline supplies vendor-prefixed longhands (including WebKit start/end forms) according to
+the repository browserslist. Do not add a physical-to-logical mapper.
+
+For directional offsets and logical properties without a usable Chrome 64 prefix, keep an
+explicit physical fallback selected by `[dir="rtl"]` and `[dir="ltr"]`. Physical left/right
+properties are otherwise reserved for genuinely physical geometry. Never remove an outline
 unless an equally visible `:focus` replacement is provided.
 
 ## Accessibility and interaction checklist

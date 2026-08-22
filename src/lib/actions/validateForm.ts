@@ -1,4 +1,6 @@
 import type { Action } from 'svelte/action'
+import { formatNumber } from '$lib/i18n/format'
+import * as m from '$lib/paraglide/messages.js'
 
 type ValidatableControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
 
@@ -45,28 +47,28 @@ function validationMessage(control: ValidatableControl) {
 	if (customMessage) return customMessage
 
 	const { validity } = control
-	if (isBlankRequired(control)) return 'لطفاً این فیلد را تکمیل کنید.'
-	if (validity.valueMissing) return 'لطفاً این فیلد را تکمیل کنید.'
+	if (isBlankRequired(control)) return m.validation_required()
+	if (validity.valueMissing) return m.validation_required()
 	if (validity.typeMismatch && control instanceof HTMLInputElement && control.type === 'email') {
-		return 'یک نشانی ایمیل معتبر وارد کنید.'
+		return m.validation_email()
 	}
 	if (validity.typeMismatch && control instanceof HTMLInputElement && control.type === 'url') {
-		return 'یک نشانی اینترنتی معتبر وارد کنید.'
+		return m.validation_url()
 	}
 	if (validity.tooShort)
-		return `حداقل ${(control as HTMLInputElement).minLength?.toLocaleString('fa-IR') || ''} نویسه وارد کنید.`
+		return m.validation_min_length({ count: formatNumber((control as HTMLInputElement).minLength) })
 	if (validity.tooLong)
-		return `حداکثر ${(control as HTMLInputElement).maxLength?.toLocaleString('fa-IR') || ''} نویسه مجاز است.`
+		return m.validation_max_length({ count: formatNumber((control as HTMLInputElement).maxLength) })
 	if (validity.rangeUnderflow && control instanceof HTMLInputElement) {
-		return `مقدار باید دست‌کم ${Number(control.min).toLocaleString('fa-IR')} باشد.`
+		return m.validation_min_value({ value: formatNumber(Number(control.min)) })
 	}
 	if (validity.rangeOverflow && control instanceof HTMLInputElement) {
-		return `مقدار باید حداکثر ${Number(control.max).toLocaleString('fa-IR')} باشد.`
+		return m.validation_max_value({ value: formatNumber(Number(control.max)) })
 	}
-	if (validity.stepMismatch) return 'یک مقدار مجاز وارد کنید.'
-	if (validity.badInput) return 'مقدار واردشده معتبر نیست.'
-	if (validity.patternMismatch) return 'قالب مقدار واردشده معتبر نیست.'
-	return 'مقدار این فیلد را بررسی کنید.'
+	if (validity.stepMismatch) return m.validation_step()
+	if (validity.badInput) return m.validation_bad_input()
+	if (validity.patternMismatch) return m.validation_pattern()
+	return m.validation_generic()
 }
 
 function errorId(control: ValidatableControl, index: number) {

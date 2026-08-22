@@ -4,11 +4,13 @@
 	import { validateForm } from '$lib/actions/validateForm'
 	import SettingsAyahKhatm from './SettingsAyahKhatm.svelte'
 	import SettingsTheme from './SettingsTheme.svelte'
+	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte'
+	import * as m from '$lib/paraglide/messages.js'
 </script>
 
-<PageTitle title="تنظیمات" />
+<PageTitle title={m.settings_title()} />
 
-<Header title="تنظیمات">
+<Header title={m.settings_title()}>
 	{#snippet end()}{/snippet}
 </Header>
 
@@ -20,6 +22,11 @@
 	method="POST"
 	onsubmit={(e) => e.preventDefault()}
 >
-	<SettingsTheme class="w-full!" />
-	<SettingsAyahKhatm class="mt-3" legend="تنظیمات ختم آیه به آیه" />
+	<fieldset class="ui-fieldset ui-settings-card w-full!">
+		<legend class="ui-fieldset-legend">{m.settings_language()}</legend>
+		<p>{m.settings_language_description()}</p>
+		<LanguageSwitcher />
+	</fieldset>
+	<SettingsTheme class="mt-3 w-full!" />
+	<SettingsAyahKhatm class="mt-3" legend={m.settings_quran()} />
 </form>

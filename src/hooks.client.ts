@@ -1,4 +1,6 @@
+import '@inlang/paraglide-js/urlpattern-polyfill'
 import './polyfill'
+import '$lib/i18n/client'
 import { base } from '$app/paths'
 import type { ClientInit, HandleClientError } from '@sveltejs/kit'
 

@@ -5,12 +5,13 @@ import {
 	type UserNotificationChannel,
 } from '$service/user-notification'
 import { base } from '$app/paths'
+import { localizeHref } from '$lib/paraglide/runtime.js'
 import { env } from '$env/dynamic/private'
 import { fail, redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async ({ locals }) => {
-	if (!locals.user) redirect(303, `${base}/auth/login`)
+	if (!locals.user) redirect(303, localizeHref(`${base}/auth/login`))
 	const [khatms, notificationSettings] = await Promise.all([
 		khatmService_getOwnedList(locals.user.id),
 		userNotification_getSettings(locals.user.id),
@@ -35,7 +36,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 export const actions = {
 	notifications: async ({ locals, request }) => {
-		if (!locals.user) redirect(303, `${base}/auth/login`)
+		if (!locals.user) redirect(303, localizeHref(`${base}/auth/login`))
 		const form = await request.formData()
 		const preferredValue = String(form.get('preferredChannel') || '')
 		const preferredChannel = preferredValue || null

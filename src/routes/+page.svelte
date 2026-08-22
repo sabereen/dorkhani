@@ -6,6 +6,9 @@
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import { Zekr } from '$lib/entity/Zekr.svelte'
 	import { DEFAULT_BRANDING_CONFIG, getPublicBranding } from '$lib/entity/Branding'
+	import { getLocale, localizeHref } from '$lib/paraglide/runtime.js'
+	import { localeTag } from '$lib/i18n/format'
+	import * as m from '$lib/paraglide/messages.js'
 	import type { PageProps } from './$types'
 	import HistoryKhatm from './history/history-khatm.svelte'
 	import HistoryPickedRange from './history/history-picked-range.svelte'
@@ -32,7 +35,7 @@
 	const zekrList = $derived(Zekr.fromPlainList(data.zekrList))
 	const statistics = $derived(data.statistics)
 	const branding = $derived(
-		data.branding ?? getPublicBranding(DEFAULT_BRANDING_CONFIG, base),
+		data.branding ?? getPublicBranding(DEFAULT_BRANDING_CONFIG, getLocale(), base),
 	)
 	const maximumDailyAyahs = $derived(
 		Math.max(1, ...statistics.daily.map((item) => item.recitedAyahs)),
@@ -40,11 +43,11 @@
 	const weeklyRecitedAyahs = $derived(
 		statistics.daily.reduce((total, item) => total + item.recitedAyahs, 0),
 	)
-	const dailyWeekdayFormatter = new Intl.DateTimeFormat('fa-IR', {
+	const dailyWeekdayFormatter = new Intl.DateTimeFormat(localeTag(), {
 		weekday: 'short',
 		timeZone: 'UTC',
 	})
-	const dailyDateFormatter = new Intl.DateTimeFormat('fa-IR', {
+	const dailyDateFormatter = new Intl.DateTimeFormat(localeTag(), {
 		month: 'short',
 		day: 'numeric',
 		timeZone: 'UTC',
@@ -85,24 +88,24 @@
 		<div class="landing-hero-copy">
 			<span class="landing-eyebrow">
 				<IconAutoAwesome class="size-5" />
-				یک قرار جمعی برای انس با قرآن
+				{m.home_eyebrow()}
 			</span>
 			<h1 id="landing-title">{branding.heroTitle}<br /><span>{branding.heroHighlight}</span></h1>
 			<p>{branding.heroDescription}</p>
 			<div class="landing-hero-actions">
-				<a class="ui-btn ui-btn-xl landing-primary-action" href={`${base}/add`}>
+				<a class="ui-btn ui-btn-xl landing-primary-action" href={localizeHref(`${base}/add`)}>
 					<IconAdd class="size-6" />
-					ایجاد ختم جدید
+					{m.nav_create()}
 				</a>
-				<a class="ui-btn ui-btn-xl landing-secondary-action" href={`${base}/list`}>
-					دیدن ختم‌های عمومی
+				<a class="ui-btn ui-btn-xl landing-secondary-action" href={localizeHref(`${base}/list`)}>
+					{m.home_view_public()}
 					<IconArrow class="size-5" />
 				</a>
 			</div>
-			<div class="landing-hero-points" aria-label="ویژگی‌های سامانه">
-				<span><IconCheck /> تقسیم منظم بازه‌ها</span>
-				<span><IconCheck /> گزارش پیشرفت جمع</span>
-				<span><IconCheck /> دسترسی ساده با لینک</span>
+			<div class="landing-hero-points" aria-label={m.home_features_label()}>
+				<span><IconCheck /> {m.home_point_ranges()}</span>
+				<span><IconCheck /> {m.home_point_progress()}</span>
+				<span><IconCheck /> {m.home_point_link()}</span>
 			</div>
 		</div>
 
@@ -112,35 +115,35 @@
 			</div>
 			<div class="landing-floating-card landing-floating-top">
 				<span class="landing-floating-icon"><IconGroups /></span>
-				<span><strong>با هم شروع کنید</strong><small>هر نفر، یک سهم روشن</small></span>
+				<span><strong>{m.home_start_together()}</strong><small>{m.home_start_together_hint()}</small></span>
 			</div>
 			<div class="landing-floating-card landing-floating-bottom">
 				<span class="landing-progress-mark"><IconCheck /></span>
-				<span><strong>مسیر همیشه پیداست</strong><small>پیشرفت ختم را یک‌جا ببینید</small></span>
+				<span><strong>{m.home_clear_path()}</strong><small>{m.home_clear_path_hint()}</small></span>
 			</div>
 		</div>
 	</section>
 
-	<section class="landing-features" aria-label="چرا ختم جمعی؟">
+	<section class="landing-features" aria-label={m.home_why()}>
 		<article class="landing-feature-card">
 			<span class="landing-feature-icon landing-feature-icon-purple"><IconMenuBook /></span>
 			<div>
-				<h2>سهم هرکس مشخص</h2>
-				<p>بازه‌های خوانده‌نشده شفاف‌اند و هر همراه می‌تواند سهم مناسب خود را انتخاب کند.</p>
+				<h2>{m.home_feature_share_title()}</h2>
+				<p>{m.home_feature_share_text()}</p>
 			</div>
 		</article>
 		<article class="landing-feature-card">
 			<span class="landing-feature-icon landing-feature-icon-green"><IconStats /></span>
 			<div>
-				<h2>پیشرفت قابل پیگیری</h2>
-				<p>وضعیت ختم، مشارکت‌ها و بخش‌های باقی‌مانده همیشه پیش چشم همه‌ی اعضاست.</p>
+				<h2>{m.home_feature_progress_title()}</h2>
+				<p>{m.home_feature_progress_text()}</p>
 			</div>
 		</article>
 		<article class="landing-feature-card">
 			<span class="landing-feature-icon landing-feature-icon-gold"><IconShare /></span>
 			<div>
-				<h2>دعوت با یک لینک</h2>
-				<p>لینک ختم را برای خانواده و دوستان بفرستید و جمع‌تان را به‌سادگی شکل دهید.</p>
+				<h2>{m.home_feature_invite_title()}</h2>
+				<p>{m.home_feature_invite_text()}</p>
 			</div>
 		</article>
 	</section>
@@ -163,7 +166,7 @@
 					<div>
 						<p class="landing-stat-total-label">آیات تلاوت‌شده در سامانه</p>
 						<strong class="landing-stat-total-value">
-							{statistics.totals.recitedAyahs.toLocaleString('fa')}
+							{statistics.totals.recitedAyahs.toLocaleString(localeTag())}
 						</strong>
 						<p class="landing-stat-total-description">آیه که با همراهی جمع خوانده شده است</p>
 					</div>
@@ -177,7 +180,7 @@
 					<div>
 						<p class="landing-stat-total-label">دورهای کامل‌شده در سامانه</p>
 						<strong class="landing-stat-total-value">
-							{statistics.totals.completedRounds.toLocaleString('fa')}
+							{statistics.totals.completedRounds.toLocaleString(localeTag())}
 						</strong>
 						<p class="landing-stat-total-description">دور ختم قرآن که به پایان رسیده است</p>
 					</div>
@@ -195,7 +198,7 @@
 					</div>
 				</div>
 				<div class="landing-daily-summary">
-					<strong>{weeklyRecitedAyahs.toLocaleString('fa')}</strong>
+					<strong>{weeklyRecitedAyahs.toLocaleString(localeTag())}</strong>
 					<span>آیه در این هفته</span>
 				</div>
 			</div>
@@ -217,7 +220,7 @@
 					{#each statistics.daily as item}
 						<li>
 							<div class="landing-daily-bar-column">
-								<strong>{item.recitedAyahs.toLocaleString('fa')}</strong>
+								<strong>{item.recitedAyahs.toLocaleString(localeTag())}</strong>
 								<span
 									class="landing-daily-bar"
 									style={`height: ${dailyBarHeight(item.recitedAyahs)}%`}
@@ -231,11 +234,11 @@
 							<dl class="landing-daily-details">
 								<div>
 									<dt class="ui-sr-only">ختم ایجادشده</dt>
-									<dd>{item.createdKhatms.toLocaleString('fa')}</dd>
+									<dd>{item.createdKhatms.toLocaleString(localeTag())}</dd>
 								</div>
 								<div>
 									<dt class="ui-sr-only">دور کامل‌شده</dt>
-									<dd>{item.completedRounds.toLocaleString('fa')}</dd>
+									<dd>{item.completedRounds.toLocaleString(localeTag())}</dd>
 								</div>
 							</dl>
 						</li>
@@ -252,7 +255,7 @@
 				<h2 id="personal-title">از همان‌جایی که بودید ادامه دهید</h2>
 				<p>آخرین ختم‌ها و مشارکت‌های شما روی همین دستگاه نگهداری می‌شوند.</p>
 			</div>
-			<a class="ui-btn ui-btn-ghost" href={`${base}/history`}>
+			<a class="ui-btn ui-btn-ghost" href={localizeHref(`${base}/history`)}>
 				تاریخچه کامل
 				<IconArrow class="size-5" />
 			</a>
@@ -265,7 +268,7 @@
 						<span class="landing-empty-icon"><IconAdd /></span>
 						<h3>هنوز ختمی نساخته‌اید</h3>
 						<p>اولین جمع قرآنی‌تان را همین امروز شکل دهید.</p>
-						<a class="ui-btn ui-btn-soft ui-btn-sm" href={`${base}/add`}>ایجاد اولین ختم</a>
+						<a class="ui-btn ui-btn-soft ui-btn-sm" href={localizeHref(`${base}/add`)}>ایجاد اولین ختم</a>
 					</article>
 				{/snippet}
 			</HistoryKhatm>
@@ -276,7 +279,7 @@
 						<span class="landing-empty-icon"><IconMenuBook /></span>
 						<h3>هنوز سهمی انتخاب نکرده‌اید</h3>
 						<p>به یک ختم عمومی بپیوندید و سهم خودتان را بردارید.</p>
-						<a class="ui-btn ui-btn-soft ui-btn-sm" href={`${base}/list`}>مشاهده ختم‌ها</a>
+						<a class="ui-btn ui-btn-soft ui-btn-sm" href={localizeHref(`${base}/list`)}>مشاهده ختم‌ها</a>
 					</article>
 				{/snippet}
 			</HistoryPickedRange>
@@ -383,14 +386,14 @@
 											<span>
 												{#if zekr.isFinite}
 													<span class="ui-badge ui-badge-info ui-badge-xs"
-														>{zekr.targetCount.toLocaleString('fa')} تایی</span
+														>{zekr.targetCount.toLocaleString(localeTag())} تایی</span
 													>
 												{/if}
 												<span class="landing-list-hint">تعداد ثبت‌شده</span>
 											</span>
 										</span>
 										<span class="landing-list-progress">
-											<strong>{zekr.count.toLocaleString('fa')}</strong>
+											<strong>{zekr.count.toLocaleString(localeTag())}</strong>
 											{#if zekr.isFinite}
 												<progress
 													class="ui-progress ui-progress-success"
@@ -444,7 +447,7 @@
 			<h2 id="cta-title">جمع قرآنی شما می‌تواند همین امروز شکل بگیرد</h2>
 			<p>نیت کنید، ختم را بسازید و اولین دعوت را برای یک همراه بفرستید.</p>
 		</div>
-		<a class="ui-btn ui-btn-xl landing-primary-action" href={`${base}/add`}>
+		<a class="ui-btn ui-btn-xl landing-primary-action" href={localizeHref(`${base}/add`)}>
 			<IconAdd class="size-6" />
 			شروع ختم جدید
 		</a>
@@ -523,7 +526,7 @@
 
 	.landing-eyebrow > :global(*) + :global(*),
 	.landing-section-kicker > :global(*) + :global(*) {
-		margin-right: 0.4rem;
+		margin-inline-start: 0.4rem;
 	}
 
 	.landing-hero h1 {
@@ -554,7 +557,7 @@
 	}
 
 	.landing-hero-actions > * + * {
-		margin-right: 0.75rem;
+		margin-inline-start: 0.75rem;
 	}
 
 	.landing-primary-action {
@@ -594,20 +597,20 @@
 		display: inline-flex;
 		align-items: center;
 		margin-top: 0.5rem;
-		margin-left: 1rem;
+		margin-inline-end: 1rem;
 	}
 
 	.landing-hero-points :global(svg) {
 		width: 1rem;
 		height: 1rem;
-		margin-left: 0.3rem;
+		margin-inline-end: 0.3rem;
 		color: var(--ui-color-landing-accent);
 	}
 
 	.landing-visual {
 		max-width: 28rem;
-		margin-right: auto;
-		margin-left: auto;
+		margin-inline-start: auto;
+		margin-inline-end: auto;
 	}
 
 	.landing-image-frame {
@@ -623,8 +626,8 @@
 		width: 100%;
 		height: auto;
 		max-height: 28rem;
-		margin-right: auto;
-		margin-left: auto;
+		margin-inline-start: auto;
+		margin-inline-end: auto;
 		border-radius: var(--ui-radius-lg);
 		object-fit: contain;
 	}
@@ -643,7 +646,7 @@
 	}
 
 	.landing-floating-card > * + * {
-		margin-right: 0.7rem;
+		margin-inline-start: 0.7rem;
 	}
 
 	.landing-floating-card strong,
@@ -709,7 +712,7 @@
 	}
 
 	.landing-feature-card > * + * {
-		margin-right: 0.85rem;
+		margin-inline-start: 0.85rem;
 	}
 
 	.landing-feature-icon {
@@ -783,7 +786,7 @@
 
 	.landing-stat-total-card .ui-card-body > * + * {
 		margin-top: 0;
-		margin-right: 1rem;
+		margin-inline-start: 1rem;
 	}
 
 	.landing-stat-total-icon {
@@ -858,7 +861,7 @@
 	}
 
 	.landing-daily-title > * + * {
-		margin-right: 0.75rem;
+		margin-inline-start: 0.75rem;
 	}
 
 	.landing-daily-heading-icon {
@@ -925,7 +928,7 @@
 	}
 
 	.landing-daily-legend > * + * {
-		margin-right: 1.1rem;
+		margin-inline-start: 1.1rem;
 	}
 
 	.landing-daily-legend span {
@@ -937,7 +940,7 @@
 		display: inline-block;
 		width: 0.55rem;
 		height: 0.55rem;
-		margin-left: 0.4rem;
+		margin-inline-end: 0.4rem;
 		border-radius: 9999px;
 		background: var(--ui-color-primary);
 		content: '';
@@ -1067,7 +1070,7 @@
 	}
 
 	.landing-daily-details div + div {
-		margin-right: 0.35rem;
+		margin-inline-start: 0.35rem;
 	}
 
 	.landing-daily-details dt,
@@ -1089,7 +1092,7 @@
 		display: inline-block;
 		width: 0.38rem;
 		height: 0.38rem;
-		margin-left: 0.25rem;
+		margin-inline-end: 0.25rem;
 		border-radius: 9999px;
 		background: var(--ui-color-success);
 		content: '';
@@ -1119,7 +1122,7 @@
 	}
 
 	.landing-section-heading > * + * {
-		margin-right: 1rem;
+		margin-inline-start: 1rem;
 	}
 
 	.landing-section-kicker {
@@ -1232,7 +1235,7 @@
 	}
 
 	.landing-featured-heading > * + * {
-		margin-right: 0.85rem;
+		margin-inline-start: 0.85rem;
 	}
 
 	.landing-featured-icon {
@@ -1297,7 +1300,7 @@
 	}
 
 	.landing-public-header > * + * {
-		margin-right: 0.75rem;
+		margin-inline-start: 0.75rem;
 	}
 
 	.landing-public-icon {
@@ -1377,7 +1380,7 @@
 	}
 
 	.landing-list-hint {
-		margin-right: 0.4rem;
+		margin-inline-start: 0.4rem;
 		color: var(--ui-color-text-muted);
 		font-size: 0.67rem;
 	}
@@ -1385,8 +1388,8 @@
 	.landing-list-progress {
 		width: 3.5rem;
 		flex: 0 0 3.5rem;
-		margin-right: 0.75rem;
-		text-align: left;
+		margin-inline-start: 0.75rem;
+		text-align: end;
 	}
 
 	.landing-list-progress strong {
@@ -1469,7 +1472,7 @@
 	}
 
 	.landing-cta > * + * {
-		margin-right: 2rem;
+		margin-inline-start: 2rem;
 	}
 
 	.landing-cta > div {
@@ -1497,8 +1500,8 @@
 		}
 
 		.landing-features {
-			margin-right: 1rem;
-			margin-left: 1rem;
+			margin-inline-start: 1rem;
+			margin-inline-end: 1rem;
 		}
 
 		.landing-feature-card {
@@ -1507,7 +1510,7 @@
 
 		.landing-feature-card > * + * {
 			margin-top: 0.8rem;
-			margin-right: 0;
+			margin-inline-start: 0;
 		}
 
 		.landing-history-grid,
@@ -1561,7 +1564,7 @@
 
 		.landing-hero-actions > * + * {
 			margin-top: 0.65rem;
-			margin-right: 0;
+			margin-inline-start: 0;
 		}
 
 		.landing-hero-points {
@@ -1606,7 +1609,7 @@
 
 		.landing-feature-card > * + * {
 			margin-top: 0;
-			margin-right: 0.85rem;
+			margin-inline-start: 0.85rem;
 		}
 
 		.landing-section {
@@ -1626,7 +1629,7 @@
 
 		.landing-section-heading > * + * {
 			margin-top: 1rem;
-			margin-right: 0;
+			margin-inline-start: 0;
 		}
 
 		.landing-section-heading h2,
@@ -1664,7 +1667,7 @@
 		}
 
 		.landing-daily-summary > * + * {
-			margin-right: 0.4rem;
+			margin-inline-start: 0.4rem;
 		}
 
 		.landing-daily-legend {
@@ -1674,12 +1677,12 @@
 		}
 
 		.landing-daily-legend > * + * {
-			margin-right: 0.75rem;
+			margin-inline-start: 0.75rem;
 		}
 
 		.landing-daily-chart-frame {
-			padding-right: 0.45rem;
-			padding-left: 0.45rem;
+			padding-inline-start: 0.45rem;
+			padding-inline-end: 0.45rem;
 		}
 
 		.landing-daily-grid-lines {
@@ -1718,7 +1721,7 @@
 		}
 
 		.landing-daily-details div + div {
-			margin-right: 0.15rem;
+			margin-inline-start: 0.15rem;
 		}
 
 		.landing-daily-details dd {
@@ -1729,7 +1732,7 @@
 		.landing-daily-details dd::before {
 			width: 0.3rem;
 			height: 0.3rem;
-			margin-left: 0.15rem;
+			margin-inline-end: 0.15rem;
 		}
 
 		.landing-steps li {
@@ -1747,14 +1750,14 @@
 
 		.landing-cta > * + * {
 			margin-top: 1.5rem;
-			margin-right: 0;
+			margin-inline-start: 0;
 		}
 	}
 
 	@media (max-width: 419px) {
 		.landing-hero {
-			padding-right: 1rem;
-			padding-left: 1rem;
+			padding-inline-start: 1rem;
+			padding-inline-end: 1rem;
 		}
 
 		.landing-hero h1 {

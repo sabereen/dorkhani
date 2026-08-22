@@ -46,11 +46,13 @@ declare global {
 
 	namespace App {
 		type AuthSession = import('$lib/server/auth').AuthSession
+		type Locale = import('$lib/paraglide/runtime.js').Locale
 		type ErrorType =
 			/** به علت تداخل بازه‌ها امکان درج رکورد جدید نیست */
 			'conflict-ranges' | 'khatm-deleted' | 'khatm-expired'
 
 		interface Error {
+			code?: string
 			type?: ErrorType
 			message: string
 			name?: string
@@ -63,6 +65,8 @@ declare global {
 		interface Locals {
 			session: AuthSession['session'] | null
 			user: AuthSession['user'] | null
+			locale: Locale
+			needsLocaleChoice: boolean
 		}
 		// interface PageData {}
 		// interface PageState {}

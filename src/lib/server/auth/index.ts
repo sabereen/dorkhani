@@ -2,31 +2,55 @@ import { building } from '$app/environment'
 import { getRequestEvent } from '$app/server'
 import { env } from '$env/dynamic/private'
 import { db } from '$lib/server/db'
-import { DEFAULT_BRANDING_CONFIG } from '$lib/entity/Branding'
+import { DEFAULT_BRANDING_CONFIG, getBrandingText } from '$lib/entity/Branding'
+import { appSettings_store } from '$lib/server/service/appSettings'
 import { prismaAdapter } from '@better-auth/prisma-adapter'
 import { betterAuth } from 'better-auth'
 import { sveltekitCookies } from 'better-auth/svelte-kit'
 import { authEmail_send } from './email'
 import { baleAuthPlugin } from './bale'
 import { eitaaAuthPlugin } from './eitaa'
+import { getLocale, isLocale } from '$lib/paraglide/runtime.js'
+import * as m from '$lib/paraglide/messages.js'
 
 const authBaseUrl = env.BETTER_AUTH_URL || env.ORIGIN
 const isSecureOrigin = authBaseUrl?.startsWith('https://')
 
 export const auth = betterAuth({
-	appName: DEFAULT_BRANDING_CONFIG.name,
+	appName: DEFAULT_BRANDING_CONFIG.texts.fa.name,
 	baseURL: authBaseUrl,
 	secret: env.BETTER_AUTH_SECRET,
 	database: prismaAdapter(db, { provider: 'mysql' }),
+	user: {
+		additionalFields: {
+			locale: {
+				type: ['fa', 'ar', 'en'],
+				required: true,
+				defaultValue: 'fa',
+				input: false,
+			},
+		},
+	},
+	databaseHooks: {
+		user: {
+			create: {
+				before: async (user) => ({
+					data: { ...user, locale: isLocale(getLocale()) ? getLocale() : 'fa' },
+				}),
+			},
+		},
+	},
 	emailAndPassword: {
 		enabled: true,
 		requireEmailVerification: true,
 		minPasswordLength: 8,
 		sendResetPassword: async ({ user, url }) => {
+			const locale = isLocale(user.locale) ? user.locale : getLocale()
+			const branding = getBrandingText(appSettings_store.config.branding, locale)
 			await authEmail_send(
 				user.email,
-				'بازیابی رمز عبور',
-				`برای انتخاب رمز تازه این پیوند را باز کنید:\n${url}`,
+				m.auth_reset_email_subject({ name: branding.name }, { locale }),
+				m.auth_reset_email_text({ url }, { locale }),
 			)
 		},
 	},
@@ -34,10 +58,12 @@ export const auth = betterAuth({
 		sendOnSignUp: true,
 		autoSignInAfterVerification: true,
 		sendVerificationEmail: async ({ user, url }) => {
+			const locale = isLocale(user.locale) ? user.locale : getLocale()
+			const branding = getBrandingText(appSettings_store.config.branding, locale)
 			await authEmail_send(
 				user.email,
-				'تأیید نشانی ایمیل',
-				`برای تأیید ایمیل این پیوند را باز کنید:\n${url}`,
+				m.auth_verify_email_subject({ name: branding.name }, { locale }),
+				m.auth_verify_email_text({ url }, { locale }),
 			)
 		},
 	},

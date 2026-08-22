@@ -1,5 +1,6 @@
 import type { RangeType } from '@prisma-client'
 import { base } from '$app/paths'
+import { localizeHref } from '$lib/paraglide/runtime.js'
 import {
 	KhatmHistoricalRoundError,
 	KhatmOwnershipError,
@@ -35,7 +36,7 @@ function getAdminDetailPath(khatm: { id: number; rangeType: RangeType; seriesId:
 export const load: PageServerLoad = async (event) => {
 	const { params } = event
 	const actor = getManagementActor(event)
-	if (!actor) redirect(303, `${base}/auth/login`)
+	if (!actor) redirect(303, localizeHref(`${base}/auth/login`))
 	const id = Number(params.id)
 	if (!Number.isSafeInteger(id)) throw error(404, { message: 'ختم پیدا نشد.' })
 

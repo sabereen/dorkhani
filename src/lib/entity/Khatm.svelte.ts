@@ -14,6 +14,8 @@ import type { KhatmDirectoryQuery, KhatmDirectoryResult } from './KhatmDirectory
 import { KhatmParticipation } from './KhatmParticipation.svelte'
 import { roundPercent } from '$lib/utility/percent'
 import type { AdminKhatmListItem } from './KhatmFeatured'
+import { formatNumber } from '$lib/i18n/format'
+import * as m from '$lib/paraglide/messages.js'
 
 const cache = new Map<number, Khatm>()
 
@@ -122,23 +124,23 @@ export class Khatm {
 
 	static getRangeTypeTitle(rangeType: RangeType) {
 		return {
-			ayah: 'آیه به آیه',
-			surah: 'سوره به سوره',
-			juz: 'جزء به جزء',
-			hizbQuarter: 'حزب به حزب',
-			page: 'صفحه به صفحه',
-			free: 'آزاد',
+			ayah: m.range_ayah(),
+			surah: m.range_surah(),
+			juz: m.range_juz(),
+			hizbQuarter: m.range_hizb(),
+			page: m.range_page(),
+			free: m.range_free(),
 		}[rangeType]
 	}
 
 	static getOneItemFromRangeTitle(rangeType: RangeType) {
 		return {
-			ayah: 'یک آیه',
-			surah: 'یک سوره',
-			juz: 'یک جزء',
-			hizbQuarter: 'یک چهارم حزب',
-			page: 'یک صفحه',
-			free: 'یک بازه‌ی آزاد',
+			ayah: m.range_one_ayah(),
+			surah: m.range_one_surah(),
+			juz: m.range_one_juz(),
+			hizbQuarter: m.range_one_hizb(),
+			page: m.range_one_page(),
+			free: m.range_one_free(),
 		}[rangeType]
 	}
 
@@ -232,9 +234,9 @@ export class Khatm {
 
 	getRoundTitle() {
 		if (!this.isSerial) return ''
-		if (this.roundNumber === 1) return 'دور اوّل'
-		if (this.roundNumber === 2) return 'دور دوم'
-		return 'دور ' + this.roundNumber.toLocaleString('fa')
+		if (this.roundNumber === 1) return m.round_first()
+		if (this.roundNumber === 2) return m.round_second()
+		return m.round_number({ number: formatNumber(this.roundNumber) })
 	}
 
 	getLink(layout: 'wizard' | 'grid' | 'list' = 'wizard') {
@@ -277,7 +279,7 @@ export class Khatm {
 		try {
 			await navigator.share({
 				url: this.link,
-				text: `سامانه ختم قرآن گروهی | ${this.title}\n` + this.description + '\n',
+				text: m.share_khatm({ title: this.title, description: this.description }),
 			})
 		} catch (err) {
 			console.error(err)

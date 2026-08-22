@@ -152,8 +152,8 @@
 	.success-shell {
 		width: 100%;
 		max-width: 44rem;
-		margin-right: auto;
-		margin-left: auto;
+		margin-inline-start: auto;
+		margin-inline-end: auto;
 		padding-top: 1rem;
 	}
 
@@ -226,7 +226,7 @@
 	}
 
 	.success-title-row > * + * {
-		margin-right: 1rem;
+		margin-inline-start: 1rem;
 	}
 
 	.success-title-row > div:first-child {
@@ -254,7 +254,7 @@
 	}
 
 	.success-badges > * + * {
-		margin-right: 0.35rem;
+		margin-inline-start: 0.35rem;
 	}
 
 	.success-description {
@@ -271,7 +271,7 @@
 	.success-link-panel {
 		padding: 1rem;
 		border: 1px solid var(--ui-color-border);
-		border-right: 0.25rem solid var(--ui-color-primary);
+		border-inline-start: 0.25rem solid var(--ui-color-primary);
 		border-radius: var(--ui-radius-lg);
 		background: var(--ui-color-surface-muted);
 		box-shadow: var(--ui-shadow-sm);
@@ -337,12 +337,12 @@
 		height: 2.75rem;
 		min-width: 0;
 		align-items: center;
-		padding-right: 0.5rem;
-		padding-left: 0.5rem;
+		padding-inline-start: 0.5rem;
+		padding-inline-end: 0.5rem;
 		color: var(--ui-color-primary);
 		font-size: 0.82rem;
 		font-weight: 700;
-		text-align: left;
+		text-align: end;
 		text-decoration: none;
 	}
 
@@ -358,7 +358,7 @@
 		width: 1rem;
 		height: 1rem;
 		flex: 0 0 auto;
-		margin-left: 0.45rem;
+		margin-inline-end: 0.45rem;
 	}
 
 	.success-link:hover {
@@ -405,7 +405,7 @@
 
 		.success-title-row > * + * {
 			margin-top: 0.65rem;
-			margin-right: 0;
+			margin-inline-start: 0;
 		}
 
 		.success-link-badge {

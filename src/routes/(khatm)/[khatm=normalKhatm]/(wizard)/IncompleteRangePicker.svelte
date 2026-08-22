@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { formatPercent, localeTag } from '$lib/i18n/format'
 	import type { Khatm } from '$lib/entity/Khatm.svelte'
 	import type { KhatmPart } from '$lib/entity/KhatmPart'
 	import type { KhatmParticipation } from '$lib/entity/KhatmParticipation.svelte'
@@ -59,16 +60,16 @@
 
 		<div class="ui-khatm-partial-summary">
 			<div>
-				<strong>{availableCount.toLocaleString('fa')}</strong>
+				<strong>{availableCount.toLocaleString(localeTag())}</strong>
 				<span>بخش آزاد</span>
 			</div>
 			<div>
-				<span><b>{percent.toLocaleString('fa')}٪</b> از این بازه پیش‌تر انتخاب شده است</span>
+				<span><b>{formatPercent(percent)}</b> از این بازه پیش‌تر انتخاب شده است</span>
 				<progress
 					class="ui-progress"
 					max={100}
 					value={percent}
-					aria-label={`${percent.toLocaleString('fa')} درصد انتخاب شده`}
+					aria-label={`${percent.toLocaleString(localeTag())} درصد انتخاب شده`}
 				></progress>
 			</div>
 		</div>

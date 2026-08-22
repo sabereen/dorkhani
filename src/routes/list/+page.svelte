@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { localeTag } from '$lib/i18n/format'
 	/* eslint-disable svelte/no-unused-svelte-ignore */
 	import { goto } from '$app/navigation'
 	import { navigating, page } from '$app/state'
@@ -165,11 +166,11 @@
 
 	function getCardMeta(khatm: Khatm) {
 		if (data.filters.view === 'progress') {
-			return `${khatm.versesRead.toLocaleString('fa')} آیه خوانده‌شده`
+			return `${khatm.versesRead.toLocaleString(localeTag())} آیه خوانده‌شده`
 		}
 		if (data.filters.view === 'continuous') {
 			const completedRounds = Math.max(0, khatm.roundNumber - 1)
-			return `${completedRounds.toLocaleString('fa')} دور کامل‌شده`
+			return `${completedRounds.toLocaleString(localeTag())} دور کامل‌شده`
 		}
 		return 'آماده برای مشارکت شما'
 	}
@@ -381,7 +382,7 @@
 
 	.directory-kicker > :global(*) + :global(*),
 	.directory-control-label > :global(*) + :global(*) {
-		margin-right: 0.35rem;
+		margin-inline-start: 0.35rem;
 	}
 
 	.directory-kicker :global(svg),
@@ -412,7 +413,7 @@
 	}
 
 	.directory-search-input .ui-input {
-		padding-left: 3rem;
+		padding-inline-end: 3rem;
 	}
 
 	.directory-search-input button {
@@ -462,7 +463,7 @@
 		border-radius: 1rem;
 		background: var(--ui-color-surface-raised);
 		color: var(--ui-color-text);
-		text-align: right;
+		text-align: start;
 		box-shadow: var(--ui-shadow-sm);
 		cursor: pointer;
 		transition:
@@ -493,7 +494,7 @@
 		flex: 0 0 2.4rem;
 		align-items: center;
 		justify-content: center;
-		margin-left: 0.65rem;
+		margin-inline-end: 0.65rem;
 		border-radius: 0.8rem;
 		background: var(--ui-color-surface-muted);
 		color: var(--ui-color-primary);
@@ -538,7 +539,7 @@
 
 	.directory-results-header > .ui-btn {
 		flex: 0 0 auto;
-		margin-right: 1rem;
+		margin-inline-start: 1rem;
 	}
 
 	.directory-empty {
@@ -594,7 +595,7 @@
 	}
 
 	.directory-load-error > * + * {
-		margin-right: 1rem;
+		margin-inline-start: 1rem;
 	}
 
 	@media (max-width: 767px) {
@@ -624,7 +625,7 @@
 
 		.directory-results-header > .ui-btn {
 			margin-top: 0.65rem;
-			margin-right: 0;
+			margin-inline-start: 0;
 		}
 
 		.directory-load-error {
@@ -634,7 +635,7 @@
 
 		.directory-load-error > * + * {
 			margin-top: 0.65rem;
-			margin-right: 0;
+			margin-inline-start: 0;
 		}
 	}
 </style>

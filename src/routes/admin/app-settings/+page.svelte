@@ -23,8 +23,17 @@
 
 	const { data, form }: PageProps = $props()
 
-	const { notification, supportLink, staleKhatmRetentionDays, aiKhatmReview, branding } =
+	const { notification, supportLink, staleKhatmRetentionDays, aiKhatmReview, branding, brandingAssets } =
 		/* svelte-ignore state_referenced_locally */ data
+	const brandingLocales = [
+		{ locale: 'fa', label: 'فارسی', dir: 'rtl' },
+		{ locale: 'ar', label: 'عربی', dir: 'rtl' },
+		{ locale: 'en', label: 'انگلیسی', dir: 'ltr' },
+	] as const
+	let activeBrandingLocale: 'fa' | 'ar' | 'en' = $state('fa')
+	function copyBrandingTexts(texts: typeof branding.texts) {
+		return { fa: { ...texts.fa }, ar: { ...texts.ar }, en: { ...texts.en } }
+	}
 
 	const formData = $state({
 		supportLink,
@@ -36,17 +45,10 @@
 		aiKhatmReviewBaseUrl: aiKhatmReview.baseUrl || '',
 		aiKhatmReviewModel: aiKhatmReview.model || '',
 		aiKhatmReviewApiKey: aiKhatmReview.apiKey || '',
-		name: branding.name,
-		tagline: branding.tagline,
-		heroTitle: branding.heroTitle,
-		heroHighlight: branding.heroHighlight,
-		heroDescription: branding.heroDescription,
-		heroImageAlt: branding.heroImageAlt,
-		seoTitle: branding.seoTitle,
-		seoDescription: branding.seoDescription,
+		branding: copyBrandingTexts(branding.texts),
 	})
-	let heroPreview = $state(branding.heroImageUrl)
-	let iconPreview = $state(branding.icon512Url)
+	let heroPreview = $state(brandingAssets.heroImageUrl)
+	let iconPreview = $state(brandingAssets.icon512Url)
 	let heroObjectUrl: string | undefined
 	let iconObjectUrl: string | undefined
 	let submitting = $state(false)
@@ -149,14 +151,7 @@
 			formData.aiKhatmReviewModel = form?.aiKhatmReview?.model || data.aiKhatmReview.model || ''
 			formData.aiKhatmReviewApiKey = form?.aiKhatmReview?.apiKey || ''
 			if (form?.branding) {
-				formData.name = form.branding.name
-				formData.tagline = form.branding.tagline
-				formData.heroTitle = form.branding.heroTitle
-				formData.heroHighlight = form.branding.heroHighlight
-				formData.heroDescription = form.branding.heroDescription
-				formData.heroImageAlt = form.branding.heroImageAlt
-				formData.seoTitle = form.branding.seoTitle
-				formData.seoDescription = form.branding.seoDescription
+				formData.branding = copyBrandingTexts(form.branding.texts)
 			}
 		},
 	)
@@ -211,40 +206,62 @@
 					</div>
 				</div>
 
-				<div class="ui-admin-field-grid">
-					<div class="ui-admin-field">
-						<label for="input-brand-name" class="ui-field-label">نام برنامه</label>
-						<input bind:value={formData.name} class="ui-input" type="text" name="name" id="input-brand-name" maxlength="60" data-ui-validate required />
-					</div>
-					<div class="ui-admin-field">
-						<label for="input-brand-tagline" class="ui-field-label">شعار کوتاه</label>
-						<input bind:value={formData.tagline} class="ui-input" type="text" name="tagline" id="input-brand-tagline" maxlength="100" data-ui-validate required />
-					</div>
-					<div class="ui-admin-field">
-						<label for="input-hero-title" class="ui-field-label">خط اول عنوان Hero</label>
-						<input bind:value={formData.heroTitle} class="ui-input" type="text" name="heroTitle" id="input-hero-title" maxlength="120" data-ui-validate required />
-					</div>
-					<div class="ui-admin-field">
-						<label for="input-hero-highlight" class="ui-field-label">خط برجستهٔ عنوان Hero</label>
-						<input bind:value={formData.heroHighlight} class="ui-input" type="text" name="heroHighlight" id="input-hero-highlight" maxlength="120" data-ui-validate required />
-					</div>
+				<div class="ui-tabs" role="tablist" aria-label="زبان متن‌های برندینگ">
+					{#each brandingLocales as item}
+						<button
+							type="button"
+							class="ui-tab"
+							class:ui-tab-active={activeBrandingLocale === item.locale}
+							role="tab"
+							aria-selected={activeBrandingLocale === item.locale}
+							onclick={() => (activeBrandingLocale = item.locale)}
+						>{item.label}</button>
+					{/each}
 				</div>
 
-				<div class="ui-admin-field">
-					<label for="input-hero-description" class="ui-field-label">توضیح Hero</label>
-					<textarea bind:value={formData.heroDescription} class="ui-textarea" name="heroDescription" id="input-hero-description" maxlength="500" rows="3" data-ui-validate required></textarea>
-				</div>
+				{#each brandingLocales as item}
+					<div hidden={activeBrandingLocale !== item.locale} dir={item.dir} lang={item.locale}>
+						<div class="ui-admin-field-grid">
+							<div class="ui-admin-field">
+								<label for={`input-brand-${item.locale}-name`} class="ui-field-label">نام برنامه</label>
+								<input bind:value={formData.branding[item.locale].name} class="ui-input" type="text" name={`branding_${item.locale}_name`} id={`input-brand-${item.locale}-name`} maxlength="60" data-ui-validate required />
+							</div>
+							<div class="ui-admin-field">
+								<label for={`input-brand-${item.locale}-tagline`} class="ui-field-label">شعار کوتاه</label>
+								<input bind:value={formData.branding[item.locale].tagline} class="ui-input" type="text" name={`branding_${item.locale}_tagline`} id={`input-brand-${item.locale}-tagline`} maxlength="100" data-ui-validate required />
+							</div>
+							<div class="ui-admin-field">
+								<label for={`input-brand-${item.locale}-hero-title`} class="ui-field-label">خط اول عنوان Hero</label>
+								<input bind:value={formData.branding[item.locale].heroTitle} class="ui-input" type="text" name={`branding_${item.locale}_heroTitle`} id={`input-brand-${item.locale}-hero-title`} maxlength="120" data-ui-validate required />
+							</div>
+							<div class="ui-admin-field">
+								<label for={`input-brand-${item.locale}-hero-highlight`} class="ui-field-label">خط برجستهٔ عنوان Hero</label>
+								<input bind:value={formData.branding[item.locale].heroHighlight} class="ui-input" type="text" name={`branding_${item.locale}_heroHighlight`} id={`input-brand-${item.locale}-hero-highlight`} maxlength="120" data-ui-validate required />
+							</div>
+						</div>
 
-				<div class="ui-admin-field-grid">
-					<div class="ui-admin-field">
-						<label for="input-seo-title" class="ui-field-label">عنوان SEO صفحهٔ اصلی</label>
-						<input bind:value={formData.seoTitle} class="ui-input" type="text" name="seoTitle" id="input-seo-title" maxlength="120" data-ui-validate required />
+						<div class="ui-admin-field">
+							<label for={`input-brand-${item.locale}-hero-description`} class="ui-field-label">توضیح Hero</label>
+							<textarea bind:value={formData.branding[item.locale].heroDescription} class="ui-textarea" name={`branding_${item.locale}_heroDescription`} id={`input-brand-${item.locale}-hero-description`} maxlength="500" rows="3" data-ui-validate required></textarea>
+						</div>
+
+						<div class="ui-admin-field-grid">
+							<div class="ui-admin-field">
+								<label for={`input-brand-${item.locale}-seo-title`} class="ui-field-label">عنوان SEO صفحهٔ اصلی</label>
+								<input bind:value={formData.branding[item.locale].seoTitle} class="ui-input" type="text" name={`branding_${item.locale}_seoTitle`} id={`input-brand-${item.locale}-seo-title`} maxlength="120" data-ui-validate required />
+							</div>
+							<div class="ui-admin-field">
+								<label for={`input-brand-${item.locale}-seo-description`} class="ui-field-label">توضیح SEO صفحهٔ اصلی</label>
+								<textarea bind:value={formData.branding[item.locale].seoDescription} class="ui-textarea" name={`branding_${item.locale}_seoDescription`} id={`input-brand-${item.locale}-seo-description`} maxlength="200" rows="3" data-ui-validate required></textarea>
+							</div>
+						</div>
+
+						<div class="ui-admin-field">
+							<label for={`input-brand-${item.locale}-hero-image-alt`} class="ui-field-label">متن جایگزین تصویر Hero</label>
+							<input bind:value={formData.branding[item.locale].heroImageAlt} class="ui-input" type="text" name={`branding_${item.locale}_heroImageAlt`} id={`input-brand-${item.locale}-hero-image-alt`} maxlength="160" data-ui-validate required />
+						</div>
 					</div>
-					<div class="ui-admin-field">
-						<label for="input-seo-description" class="ui-field-label">توضیح SEO صفحهٔ اصلی</label>
-						<textarea bind:value={formData.seoDescription} class="ui-textarea" name="seoDescription" id="input-seo-description" maxlength="200" rows="3" data-ui-validate required></textarea>
-					</div>
-				</div>
+				{/each}
 
 				<div class="ui-admin-brand-assets">
 					<div class="ui-admin-field">
@@ -259,11 +276,6 @@
 						<input class="ui-input" type="file" name="appIcon" id="input-app-icon" accept="image/png,image/jpeg" onchange={(event) => previewImage(event, 'icon')} />
 						<small class="ui-admin-field-hint">تصویر مربعی PNG یا JPEG، حداکثر ۵ مگابایت و حداقل ۵۱۲×۵۱۲ پیکسل.</small>
 					</div>
-				</div>
-
-				<div class="ui-admin-field">
-					<label for="input-hero-image-alt" class="ui-field-label">متن جایگزین تصویر Hero</label>
-					<input bind:value={formData.heroImageAlt} class="ui-input" type="text" name="heroImageAlt" id="input-hero-image-alt" maxlength="160" data-ui-validate required />
 				</div>
 			</section>
 

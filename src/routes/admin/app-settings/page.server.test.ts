@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DEFAULT_BRANDING_CONFIG } from '$lib/entity/Branding'
 
 const serviceMock = vi.hoisted(() => {
-	const branding = {
+	const brandingText = {
 		name: 'ختم جمعی قرآن',
 		tagline: 'هر آیه، یک قدم روشن',
 		heroTitle: 'هر آیه، یک قدم؛',
@@ -11,6 +11,9 @@ const serviceMock = vi.hoisted(() => {
 		heroImageAlt: 'تصویر Hero',
 		seoTitle: 'عنوان SEO',
 		seoDescription: 'توضیح SEO',
+	}
+	const branding = {
+		texts: { fa: brandingText, ar: { ...brandingText }, en: { ...brandingText } },
 		revision: 'default',
 	}
 	return {
@@ -46,8 +49,10 @@ function submitRetentionDays(value: string) {
 	const form = new FormData()
 	form.set('supportLink', '')
 	form.set('staleKhatmRetentionDays', value)
-	for (const [key, fieldValue] of Object.entries(DEFAULT_BRANDING_CONFIG)) {
-		if (key !== 'revision') form.set(key, fieldValue)
+	for (const [locale, texts] of Object.entries(DEFAULT_BRANDING_CONFIG.texts)) {
+		for (const [key, fieldValue] of Object.entries(texts)) {
+			form.set(`branding_${locale}_${key}`, fieldValue)
+		}
 	}
 	return actions.default({
 		request: new Request('http://localhost', { method: 'POST', body: form }),

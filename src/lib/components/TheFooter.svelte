@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { base } from '$app/paths'
+	import { localizeHref } from '$lib/paraglide/runtime.js'
+	import * as m from '$lib/paraglide/messages.js'
 	import IconSupport from '~icons/ic/round-support-agent'
 	import IconGithub from './IconGithub.svelte'
 
@@ -18,12 +20,12 @@
 				rel="noopener"
 			>
 				<IconSupport class="vertical-middle inline-block size-6" />
-				پشتیبانی
+				{m.footer_support()}
 			</a>
 		</div>
-		<nav class="ui-footer-legal-links" aria-label="پیوندهای حقوقی">
-			<a class="ui-link" href={`${base}/privacy`}>حریم خصوصی</a>
-			<a class="ui-link" href={`${base}/terms`}>شرایط استفاده</a>
+		<nav class="ui-footer-legal-links" aria-label={m.footer_legal_label()}>
+			<a class="ui-link" href={localizeHref(`${base}/privacy`)}>{m.footer_privacy()}</a>
+			<a class="ui-link" href={localizeHref(`${base}/terms`)}>{m.footer_terms()}</a>
 		</nav>
 		<div class="flex items-center">
 			<a

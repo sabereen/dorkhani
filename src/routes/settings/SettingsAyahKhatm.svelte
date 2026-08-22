@@ -6,6 +6,8 @@
 	import IconSave from '~icons/ic/round-save'
 	import IconTranslate from '~icons/ic/round-translate'
 	import IconVoice from '~icons/ic/round-record-voice-over'
+	import { quranTranslationRegistry } from '$lib/entity/QuranTranslation'
+	import * as m from '$lib/paraglide/messages.js'
 
 	const editor = SettingsEditor.use()
 
@@ -22,13 +24,13 @@
 
 	<div class="ui-settings-intro">
 		<div>
-			<h2>تجربهٔ تلاوت را شخصی‌سازی کن</h2>
-			<p>ترجمه، قلم قرآن و صدایی را انتخاب کن که همراه بهتری برای ختم توست.</p>
+			<h2>{m.settings_reading_title()}</h2>
+			<p>{m.settings_reading_description()}</p>
 		</div>
 		{#if editor.dirty}
-			<span class="ui-badge ui-badge-accent">ذخیره‌نشده</span>
+			<span class="ui-badge ui-badge-accent">{m.settings_unsaved()}</span>
 		{:else}
-			<span class="ui-badge ui-badge-success">ذخیره‌شده</span>
+			<span class="ui-badge ui-badge-success">{m.settings_saved()}</span>
 		{/if}
 	</div>
 
@@ -37,8 +39,8 @@
 			<div class="ui-settings-field-heading">
 				<span class="ui-settings-field-icon" aria-hidden="true"><IconTranslate /></span>
 				<div>
-					<label for="input-translation" class="ui-field-label">ترجمهٔ آیات</label>
-					<span>مترجم متن فارسی قرآن</span>
+					<label for="input-translation" class="ui-field-label">{m.translation_label()}</label>
+					<span>{m.settings_translation_hint()}</span>
 				</div>
 			</div>
 			<select
@@ -47,9 +49,9 @@
 				name="translation"
 				bind:value={editor.config.translation}
 			>
-				<option value="ansarian">انصاریان</option>
-				<option value="makarem">مکارم شیرازی</option>
-				<option value="gharaati">قرائتی</option>
+				{#each quranTranslationRegistry as translation}
+					<option value={translation.id}>{translation.label()}</option>
+				{/each}
 			</select>
 		</div>
 
@@ -58,8 +60,8 @@
 				<div class="ui-settings-field-heading">
 					<span class="ui-settings-field-icon" aria-hidden="true"><IconFont /></span>
 					<div>
-						<label for="input-font" class="ui-field-label">قلم قرآن</label>
-						<span>شیوهٔ نمایش متن عربی</span>
+						<label for="input-font" class="ui-field-label">{m.settings_quran_font()}</label>
+						<span>{m.settings_quran_font_hint()}</span>
 					</div>
 				</div>
 				<select id="input-font" class="ui-select" name="font" bind:value={editor.config.quranFont}>
@@ -74,8 +76,8 @@
 			<div class="ui-settings-field-heading">
 				<span class="ui-settings-field-icon" aria-hidden="true"><IconVoice /></span>
 				<div>
-					<label for="input-reciter" class="ui-field-label">قاری</label>
-					<span>صدای پخش آیات قرآن</span>
+					<label for="input-reciter" class="ui-field-label">{m.settings_reciter()}</label>
+					<span>{m.settings_reciter_hint()}</span>
 				</div>
 			</div>
 			<select
@@ -94,7 +96,7 @@
 
 	<div class="ui-settings-actions">
 		<p aria-live="polite">
-			{editor.dirty ? 'تغییرات آمادهٔ ذخیره‌شدن هستند.' : 'همهٔ تنظیمات ذخیره شده‌اند.'}
+			{editor.dirty ? m.settings_unsaved_status() : m.settings_saved_status()}
 		</p>
 		<button
 			disabled={!editor.dirty}
@@ -103,7 +105,7 @@
 			onclick={() => editor.commit()}
 		>
 			<IconSave aria-hidden="true" />
-			{editor.dirty ? 'ذخیرهٔ تغییرات' : 'ذخیره‌شده'}
+			{editor.dirty ? m.settings_save_changes() : m.settings_saved()}
 		</button>
 	</div>
 </fieldset>

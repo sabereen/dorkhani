@@ -1,0 +1,2 @@
+ALTER TABLE `user`
+ADD COLUMN `locale` VARCHAR(5) NOT NULL DEFAULT 'fa' AFTER `email`;

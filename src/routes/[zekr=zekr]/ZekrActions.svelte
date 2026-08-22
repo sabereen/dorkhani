@@ -15,6 +15,7 @@
 	import IconClose from '~icons/ic/round-close'
 	import IconEdit from '~icons/ic/round-edit'
 	import IconVolunteer from '~icons/ic/round-volunteer-activism'
+	import * as m from '$lib/paraglide/messages.js'
 
 	type Props = {
 		zekr: Zekr
@@ -57,7 +58,7 @@
 
 	async function handleModalAction(event: Event) {
 		event.preventDefault()
-		if (customCount === null) return toast('error', 'ورودی خالی است.')
+		if (customCount === null) return toast('error', m.zekr_empty_input())
 		const isOk = await pick(customCount, 'custom')
 		if (isOk) {
 			closeModal()
@@ -115,11 +116,11 @@
 	<div class="ui-zekr-participation-heading">
 		<span class="ui-zekr-participation-icon"><IconVolunteer /></span>
 		<div>
-			<span>ثبت همراهی</span>
+			<span>{m.zekr_participation_eyebrow()}</span>
 			<h2 id="participation-title">
-				{myCount ? 'دوباره در این ختم سهیم شوید' : 'سهم خود را به این ختم اضافه کنید'}
+				{myCount ? m.zekr_join_again() : m.zekr_add_share()}
 			</h2>
-			<p>تعداد ذکری را که خوانده‌اید انتخاب کنید؛ مشارکت شما همان لحظه ثبت می‌شود.</p>
+			<p>{m.zekr_participation_description()}</p>
 		</div>
 	</div>
 
@@ -139,7 +140,7 @@
 				{:else}
 					<IconAdd />
 				{/if}
-				<span>{isSuccessful(count, 'quick') ? `${text} ثبت شد` : text}</span>
+				<span>{isSuccessful(count, 'quick') ? m.zekr_registered_count({ count: text }) : text}</span>
 			</button>
 		{/snippet}
 
@@ -159,17 +160,17 @@
 			{/if}
 			<span>
 				{#if isSuccessful(1, 'primary')}
-					یک مرتبه با موفقیت ثبت شد
+					{m.zekr_one_success()}
 				{:else}
-					یک مرتبه ذکر گفتم
+					{m.zekr_one_said()}
 				{/if}
 			</span>
 		</button>
 
 		<div class="ui-zekr-quick-actions">
-			{@render quickButton('۵ مرتبه', 5)}
-			{@render quickButton('۱۰ مرتبه', 10)}
-			{@render quickButton('۵۰ مرتبه', 50)}
+			{@render quickButton(m.zekr_count_times({ count: '5' }), 5)}
+			{@render quickButton(m.zekr_count_times({ count: '10' }), 10)}
+			{@render quickButton(m.zekr_count_times({ count: '50' }), 50)}
 			<button
 				type="button"
 				class="ui-btn ui-btn-outline ui-zekr-quick-button"
@@ -177,7 +178,7 @@
 				onclick={openModal}
 			>
 				<IconEdit />
-				<span>تعداد دلخواه</span>
+				<span>{m.zekr_custom_count()}</span>
 			</button>
 		</div>
 	</div>
@@ -188,8 +189,8 @@
 				<div class="ui-zekr-feedback-content">
 					<span class="ui-spinner" aria-hidden="true"></span>
 					<div>
-						<strong>در حال ثبت {loading.toLocaleString(localeTag())} مرتبه ذکر…</strong>
-						<small>لطفاً چند لحظه صبر کنید.</small>
+						<strong>{m.zekr_registering({ count: loading.toLocaleString(localeTag()) })}</strong>
+						<small>{m.zekr_wait()}</small>
 					</div>
 				</div>
 			</div>
@@ -198,8 +199,8 @@
 				<div class="ui-zekr-feedback-content">
 					<IconCheck aria-hidden="true" />
 					<div>
-						<strong>{pickResult.count.toLocaleString(localeTag())} مرتبه با موفقیت ثبت شد</strong>
-						<small>مجموع مشارکت شما: {myCount.toLocaleString(localeTag())} مرتبه</small>
+						<strong>{m.zekr_registered_count({ count: pickResult.count.toLocaleString(localeTag()) })}</strong>
+						<small>{m.zekr_success_total({ count: myCount.toLocaleString(localeTag()) })}</small>
 					</div>
 				</div>
 			</div>
@@ -208,13 +209,13 @@
 				<div class="ui-zekr-feedback-content">
 					<span class="ui-zekr-feedback-error" aria-hidden="true">!</span>
 					<div>
-						<strong>ثبت مشارکت انجام نشد</strong>
-						<small>اتصال خود را بررسی و دوباره تلاش کنید.</small>
+						<strong>{m.zekr_participation_failed()}</strong>
+						<small>{m.zekr_check_connection()}</small>
 					</div>
 				</div>
 			</div>
 		{:else}
-			<span class="ui-zekr-action-hint">با ثبت هر مشارکت، آمار بالای صفحه به‌روز می‌شود.</span>
+			<span class="ui-zekr-action-hint">{m.zekr_stats_updated()}</span>
 		{/if}
 	</div>
 </section>
@@ -231,7 +232,7 @@
 		<button
 			type="button"
 			class="ui-btn ui-btn-icon ui-btn-sm ui-btn-ghost ui-zekr-modal-close"
-			aria-label="بستن پنجره"
+			aria-label={m.common_close()}
 			onclick={closeModal}
 		>
 			<IconClose />
@@ -240,12 +241,12 @@
 		<div class="ui-zekr-modal-heading">
 			<span><IconEdit /></span>
 			<div>
-				<small>مشارکت با تعداد دلخواه</small>
-				<h2 id="custom-count-title">چند مرتبه ذکر گفته‌اید؟</h2>
+				<small>{m.zekr_custom_participation()}</small>
+				<h2 id="custom-count-title">{m.zekr_count_question()}</h2>
 			</div>
 		</div>
 
-		<label class="ui-field-label" for="input-count">تعداد مشارکت</label>
+		<label class="ui-field-label" for="input-count">{m.zekr_participation_count()}</label>
 		<input
 			bind:value={customCount}
 			class="ui-input"
@@ -255,12 +256,12 @@
 			inputmode="numeric"
 			step="1"
 			min="1"
-			placeholder="مثلاً ۱۰۰"
+			placeholder={m.zekr_example_100()}
 			aria-describedby="custom-count-hint"
 			required
 			use:autoFocus
 		/>
-		<p id="custom-count-hint" class="ui-zekr-modal-hint">یک عدد بزرگ‌تر از صفر وارد کنید.</p>
+		<p id="custom-count-hint" class="ui-zekr-modal-hint">{m.zekr_positive_number()}</p>
 
 		<button
 			type="submit"
@@ -270,7 +271,7 @@
 			{#if loading !== -1}
 				<span class="ui-spinner ui-spinner-md" transition:slide={{ axis: 'x' }}></span>
 			{/if}
-			<span>{loading !== -1 ? 'در حال ثبت…' : 'ثبت مشارکت'}</span>
+			<span>{loading !== -1 ? m.zekr_registering_short() : m.zekr_register_participation()}</span>
 		</button>
 	</form>
 </Modal>

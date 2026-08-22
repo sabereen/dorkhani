@@ -9,6 +9,7 @@
 	import type { PageProps } from './$types'
 	import { localizeHref } from '$lib/paraglide/runtime.js'
 	import { apiRequest } from '$lib/utility/request'
+	import * as m from '$lib/paraglide/messages.js'
 
 	const { data }: PageProps = $props()
 	const khatms = $derived(Khatm.fromPlainList(data.khatms))
@@ -41,7 +42,7 @@
 			})
 			notificationStatus = 'saved'
 		} catch (cause) {
-			notificationError = cause instanceof Error ? cause.message : 'ذخیره تنظیمات ناموفق بود.'
+			notificationError = cause instanceof Error ? cause.message : m.account_notifications_error()
 			notificationStatus = 'error'
 		} finally {
 			notificationSubmitting = false
@@ -49,9 +50,9 @@
 	}
 </script>
 
-<PageTitle title="حساب من" />
+<PageTitle title={m.account_title()} />
 
-<Header title="حساب من" />
+<Header title={m.account_title()} />
 
 <section class="ui-card ui-card-bordered mt-4">
 	<div class="ui-card-body flex-row items-center justify-between">
@@ -59,19 +60,19 @@
 			<h2 class="font-bold">{data.user.name}</h2>
 			{#if data.user.email}<p class="text-sm opacity-70">{data.user.email}</p>{/if}
 		</div>
-		<button class="ui-btn ui-btn-outline" type="button" onclick={signOut}>خروج</button>
+		<button class="ui-btn ui-btn-outline" type="button" onclick={signOut}>{m.account_sign_out()}</button>
 	</div>
 </section>
 
 <section class="ui-card ui-card-bordered mt-4">
 	<div class="ui-card-body">
-		<h2 class="ui-card-title">اعلان‌ها</h2>
+		<h2 class="ui-card-title">{m.account_notifications()}</h2>
 		<p class="ui-text-muted">
-			پیام‌های ساخت، انتخاب سهم و پایان ختم از نخستین کانال در دسترس فرستاده می‌شوند.
+			{m.account_notifications_description()}
 		</p>
 
 		{#if notificationStatus === 'saved'}
-			<div class="ui-alert ui-alert-success mt-3" role="status">تنظیمات اعلان ذخیره شد.</div>
+			<div class="ui-alert ui-alert-success mt-3" role="status">{m.account_notifications_saved()}</div>
 		{:else if notificationStatus === 'error'}
 			<div class="ui-alert ui-alert-error mt-3" role="alert">{notificationError}</div>
 		{/if}
@@ -84,11 +85,11 @@
 					name="enabled"
 					checked={data.notificationSettings?.enabled ?? true}
 				/>
-				<span>اعلان‌های کاربری فعال باشد</span>
+				<span>{m.account_notifications_enabled()}</span>
 			</label>
 
 			<fieldset class="ui-fieldset">
-				<legend class="ui-fieldset-legend">کانال‌ها</legend>
+				<legend class="ui-fieldset-legend">{m.account_channels()}</legend>
 				<label class="ui-field-label">
 					<input
 						class="ui-checkbox"
@@ -96,13 +97,13 @@
 						name="baleEnabled"
 						checked={data.notificationSettings?.channels.bale.enabled ?? true}
 					/>
-					<span>بله</span>
+					<span>Bale</span>
 					{#if data.notificationSettings?.channels.bale.available}
-						<span class="ui-badge ui-badge-success">آماده</span>
+						<span class="ui-badge ui-badge-success">{m.account_ready()}</span>
 					{:else if data.messengerLinks.bale}
-						<a class="ui-link" href={data.messengerLinks.bale}>شروع گفت‌وگو</a>
+						<a class="ui-link" href={data.messengerLinks.bale}>{m.account_start_chat()}</a>
 					{:else}
-						<span class="ui-text-muted">در دسترس نیست</span>
+						<span class="ui-text-muted">{m.account_unavailable()}</span>
 					{/if}
 				</label>
 
@@ -113,13 +114,13 @@
 						name="eitaaEnabled"
 						checked={data.notificationSettings?.channels.eitaa.enabled ?? true}
 					/>
-					<span>ایتا</span>
+					<span>Eitaa</span>
 					{#if data.notificationSettings?.channels.eitaa.available}
-						<span class="ui-badge ui-badge-success">آماده</span>
+						<span class="ui-badge ui-badge-success">{m.account_ready()}</span>
 					{:else if data.messengerLinks.eitaa}
-						<a class="ui-link" href={data.messengerLinks.eitaa}>شروع گفت‌وگو</a>
+						<a class="ui-link" href={data.messengerLinks.eitaa}>{m.account_start_chat()}</a>
 					{:else}
-						<span class="ui-text-muted">در دسترس نیست</span>
+						<span class="ui-text-muted">{m.account_unavailable()}</span>
 					{/if}
 				</label>
 
@@ -130,49 +131,49 @@
 						name="emailEnabled"
 						checked={data.notificationSettings?.channels.email.enabled ?? true}
 					/>
-					<span>ایمیل</span>
+					<span>{m.account_email()}</span>
 					<span class="ui-text-muted">
 						{data.notificationSettings?.channels.email.available
-							? 'آماده'
-							: 'ایمیل تأییدشده یا SMTP موجود نیست'}
+							? m.account_ready()
+							: m.account_email_unavailable()}
 					</span>
 				</label>
 			</fieldset>
 
 			<div class="ui-auth-field">
-				<label class="ui-field-label" for="preferred-notification-channel">کانال ترجیحی</label>
+				<label class="ui-field-label" for="preferred-notification-channel">{m.account_preferred_channel()}</label>
 				<select
 					id="preferred-notification-channel"
 					class="ui-select"
 					name="preferredChannel"
 					value={data.notificationSettings?.preferredChannel || ''}
 				>
-					<option value="">اولویت پیش‌فرض: بله، ایتا، ایمیل</option>
-					<option value="bale">بله</option>
-					<option value="eitaa">ایتا</option>
-					<option value="email">ایمیل</option>
+					<option value="">{m.account_default_priority()}</option>
+					<option value="bale">Bale</option>
+					<option value="eitaa">Eitaa</option>
+					<option value="email">{m.account_email()}</option>
 				</select>
 			</div>
 
-			<button class="ui-btn ui-btn-primary" type="submit" disabled={notificationSubmitting}>ذخیره تنظیمات اعلان</button>
+			<button class="ui-btn ui-btn-primary" type="submit" disabled={notificationSubmitting}>{m.account_save_notifications()}</button>
 		</form>
 	</div>
 </section>
 
 <section class="mt-6">
-	<h2 class="mb-3 text-xl font-black">ختم‌های من</h2>
+	<h2 class="mb-3 text-xl font-black">{m.account_my_khatms()}</h2>
 	{#if khatms.length === 0}
-		<div class="ui-alert">هنوز ختمی به این حساب متصل نشده است.</div>
+		<div class="ui-alert">{m.account_no_khatms()}</div>
 	{:else}
 		<ul class="ui-khatm-card-list ui-khatm-card-list-grid">
 			{#each khatms as khatm (khatm.id)}
 				<li>
-					<KhatmListCard {khatm} meta={khatm.private ? 'ختم خصوصی' : 'ختم عمومی'}>
+					<KhatmListCard {khatm} meta={khatm.private ? m.account_private_khatm() : m.account_public_khatm()}>
 						{#snippet actions()}
-							<a class="ui-btn ui-btn-ghost ui-btn-xs" href={khatm.link}>مشاهده</a>
+							<a class="ui-btn ui-btn-ghost ui-btn-xs" href={khatm.link}>{m.account_view()}</a>
 							<a
 								class="ui-btn ui-btn-primary ui-btn-xs"
-								href={localizeHref(`${base}/account/khatms/${khatm.id}/edit`)}>ویرایش</a
+								href={localizeHref(`${base}/account/khatms/${khatm.id}/edit`)}>{m.account_edit()}</a
 							>
 						{/snippet}
 					</KhatmListCard>

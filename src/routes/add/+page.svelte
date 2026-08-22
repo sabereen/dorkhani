@@ -18,6 +18,7 @@
 	import { tick } from 'svelte'
 	import type { CreateKhatmResult } from '$lib/contracts/api'
 	import { ApiError, apiRequest } from '$lib/utility/request'
+	import * as m from '$lib/paraglide/messages.js'
 
 	let { data }: PageProps = $props()
 	let result = $state<CreateKhatmResult | null>(null)
@@ -58,7 +59,7 @@
 				aiWarning = response.aiWarning
 				aiWarningOpen = true
 			} else {
-				toast('error', response?.errorMessage || (cause instanceof Error ? cause.message : 'خطایی رخ داده است.'))
+				toast('error', response?.errorMessage || (cause instanceof Error ? cause.message : m.error_generic()))
 			}
 		} finally {
 			submitting = false
@@ -83,18 +84,18 @@
 	}
 </script>
 
-<PageTitle title="ایجاد ختم گروهی جدید" />
+<PageTitle title={m.add_title()} />
 
-<Header title="ایجاد ختم گروهی جدید" />
+<Header title={m.add_title()} />
 
 {#if !result?.khatm}
 	<div class="add-shell">
 		<section class="add-intro" aria-labelledby="add-intro-title">
 			<div class="add-intro-icon" aria-hidden="true"><IconBook /></div>
 			<div>
-				<p class="add-eyebrow">یک نیت، یک همراهی جمعی</p>
-				<h2 id="add-intro-title">ختم تازه‌تان را بسازید</h2>
-				<p>مشخصات و شیوهٔ تقسیم را انتخاب کنید؛ لینک دعوت بلافاصله آماده می‌شود.</p>
+				<p class="add-eyebrow">{m.add_eyebrow()}</p>
+				<h2 id="add-intro-title">{m.add_heading()}</h2>
+				<p>{m.add_description()}</p>
 			</div>
 		</section>
 
@@ -115,13 +116,13 @@
 					<div class="add-section-heading">
 						<span class="add-step">۱</span>
 						<div>
-							<h3 id="details-title">مشخصات ختم</h3>
-							<p>یک عنوان کوتاه و به‌یادماندنی انتخاب کنید.</p>
+							<h3 id="details-title">{m.add_details_title()}</h3>
+							<p>{m.add_details_hint()}</p>
 						</div>
 					</div>
 
 					<div class="add-fields">
-						<label for="input-title" class="ui-field-label">عنوان ختم</label>
+						<label for="input-title" class="ui-field-label">{m.add_khatm_title()}</label>
 						<input
 							class="ui-input"
 							type="text"
@@ -129,13 +130,13 @@
 							bind:value={title}
 							id="input-title"
 							maxlength="100"
-							placeholder="مثلاً ختم قرآن برای سلامتی خانواده"
+							placeholder={m.add_title_placeholder()}
 							required
 							onkeypress={handleKeyPress}
 						/>
 
 						<label for="input-description" class="ui-field-label">
-							توضیحات <span class="add-optional">اختیاری</span>
+							{m.add_description_label()} <span class="add-optional">{m.add_optional()}</span>
 						</label>
 						<textarea
 							class="ui-textarea"
@@ -143,7 +144,7 @@
 							bind:value={description}
 							id="input-description"
 							maxlength="65535"
-							placeholder="نیت ختم یا توضیح کوتاهی برای همراهان بنویسید…"
+							placeholder={m.add_description_placeholder()}
 						></textarea>
 					</div>
 				</section>
@@ -152,8 +153,8 @@
 					<div class="add-section-heading">
 						<span class="add-step">۲</span>
 						<div>
-							<h3 id="range-title">نحوهٔ تقسیم قرائت</h3>
-							<p>اندازهٔ سهم هر مشارکت‌کننده را مشخص کنید.</p>
+							<h3 id="range-title">{m.add_range_title()}</h3>
+							<p>{m.add_range_hint()}</p>
 						</div>
 					</div>
 
@@ -169,8 +170,8 @@
 					<div class="add-section-heading">
 						<span class="add-step">۳</span>
 						<div>
-							<h3 id="access-title">دسترسی و تکرار</h3>
-							<p>مشخص کنید چه کسانی ختم را پیدا کنند و بعد از پایان چه اتفاقی بیفتد.</p>
+							<h3 id="access-title">{m.add_access_title()}</h3>
+							<p>{m.add_access_hint()}</p>
 						</div>
 					</div>
 
@@ -185,8 +186,8 @@
 							/>
 							<span class="add-choice-icon" aria-hidden="true"><IconLock /></span>
 							<span class="add-choice-copy">
-								<strong>خصوصی</strong>
-								<small>فقط کسانی که لینک را دارند به ختم دسترسی خواهند داشت.</small>
+								<strong>{m.add_private()}</strong>
+								<small>{m.add_private_hint()}</small>
 							</span>
 						</label>
 
@@ -200,8 +201,8 @@
 							/>
 							<span class="add-choice-icon" aria-hidden="true"><IconPublic /></span>
 							<span class="add-choice-copy">
-								<strong>عمومی</strong>
-								<small>پس از تأیید مدیر، امکان نمایش ختم در صفحهٔ اصلی وجود دارد.</small>
+								<strong>{m.add_public()}</strong>
+								<small>{m.add_public_hint()}</small>
 							</span>
 						</label>
 					</div>
@@ -210,14 +211,14 @@
 						<input class="ui-checkbox" type="checkbox" name="series" bind:checked={series} />
 						<span class="add-choice-icon" aria-hidden="true"><IconRepeat /></span>
 						<span class="add-choice-copy">
-							<strong>ختم پیوسته باشد</strong>
-							<small>پس از پایان هر دور، دور تازه‌ای به‌صورت خودکار آغاز می‌شود.</small>
+							<strong>{m.add_serial()}</strong>
+							<small>{m.add_serial_hint()}</small>
 						</span>
 					</label>
 				</section>
 
 				<div class="add-submit">
-					<p class="ui-text-muted">بعد از ایجاد، لینک دعوت را می‌توانید برای دیگران بفرستید.</p>
+				<p class="ui-text-muted">{m.add_submit_hint()}</p>
 					<button
 						class="ui-btn ui-btn-primary ui-btn-lg ui-btn-block"
 						type="submit"
@@ -225,9 +226,9 @@
 					>
 						{#if submitting}
 							<span class="ui-spinner" aria-hidden="true"></span>
-							<span>در حال ایجاد ختم…</span>
+							<span>{m.add_creating()}</span>
 						{:else}
-							<span>ایجاد ختم و دریافت لینک</span>
+							<span>{m.add_create()}</span>
 							<IconArrow aria-hidden="true" />
 						{/if}
 					</button>
@@ -242,12 +243,12 @@
 <Modal bind:open={aiWarningOpen} contentClass="add-ai-warning-dialog">
 	{#if aiWarning}
 		<section aria-labelledby="ai-warning-title">
-			<h2 id="ai-warning-title">نیاز به بررسی عنوان ختم</h2>
+			<h2 id="ai-warning-title">{m.add_ai_title()}</h2>
 			<p>{aiWarning.reason}</p>
-			<p class="ui-text-muted">می‌توانید متن را اصلاح کنید یا با مسئولیت خودتان ختم را ثبت کنید.</p>
+			<p class="ui-text-muted">{m.add_ai_description()}</p>
 			<div class="add-ai-warning-actions">
-				<button class="ui-btn ui-btn-outline" type="button" onclick={reviseContent}>ویرایش متن</button>
-				<button class="ui-btn ui-btn-primary" type="button" onclick={forceCreate}>ثبت با وجود هشدار</button>
+				<button class="ui-btn ui-btn-outline" type="button" onclick={reviseContent}>{m.add_edit_text()}</button>
+				<button class="ui-btn ui-btn-primary" type="button" onclick={forceCreate}>{m.add_force_create()}</button>
 			</div>
 		</section>
 	{/if}

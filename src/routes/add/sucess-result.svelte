@@ -11,6 +11,7 @@
 	import IconShare from '~icons/ic/outline-share'
 	import IconOpen from '~icons/ic/round-open-in-new'
 	import IconLink from '~icons/ic/round-link'
+	import * as m from '$lib/paraglide/messages.js'
 
 	type Props = {
 		khatm: Khatm
@@ -26,11 +27,11 @@
 		try {
 			await khatm.copy()
 			copied = true
-			toast('info', 'لینک ختم قرآن شما کپی شد.')
+			toast('info', m.success_invite_copied())
 		} catch (err) {
 			copied = false
 			console.error(err)
-			toast('error', 'خطا در کپی.')
+			toast('error', m.common_copy_error())
 		}
 	}
 
@@ -56,16 +57,16 @@
 		<div class="success-mark" aria-hidden="true">
 			<IconCheck />
 		</div>
-		<p class="success-eyebrow">همه‌چیز آماده است</p>
-		<h2 id="success-title">ختم شما با موفقیت ایجاد شد</h2>
-		<p>لینک زیر را برای همراهانتان بفرستید تا قرائت گروهی را آغاز کنید.</p>
+	<p class="success-eyebrow">{m.success_ready()}</p>
+	<h2 id="success-title">{m.success_created()}</h2>
+	<p>{m.success_description()}</p>
 	</section>
 
-	<section class="ui-card ui-card-bordered success-card" aria-label="مشخصات ختم ایجاد شده">
+	<section class="ui-card ui-card-bordered success-card" aria-label={m.success_details()}>
 		<div class="ui-card-body">
 			<div class="success-title-row">
 				<div>
-					<p>عنوان ختم</p>
+					<p>{m.add_khatm_title()}</p>
 					<h3>{khatm.title}</h3>
 				</div>
 				<div class="success-badges">
@@ -74,11 +75,11 @@
 						{khatm.rangeTypeTitle}
 					</span>
 					{#if khatm.private}
-						<span class="ui-badge ui-badge-neutral">خصوصی</span>
+						<span class="ui-badge ui-badge-neutral">{m.add_private()}</span>
 					{:else}
-						<span class="ui-badge ui-badge-outline">عمومی</span>
+						<span class="ui-badge ui-badge-outline">{m.add_public()}</span>
 					{/if}
-					{#if khatm.isSerial}<span class="ui-badge ui-badge-accent">پیوسته</span>{/if}
+					{#if khatm.isSerial}<span class="ui-badge ui-badge-accent">{m.add_serial()}</span>{/if}
 				</div>
 			</div>
 
@@ -94,10 +95,10 @@
 						<IconLink />
 					</span>
 					<div class="success-link-copy">
-						<p class="success-link-title">لینک دعوت آماده است</p>
-						<p class="success-link-hint">آن را برای همراهانتان بفرستید تا به ختم بپیوندند.</p>
+						<p class="success-link-title">{m.success_invite_ready()}</p>
+						<p class="success-link-hint">{m.success_invite_hint()}</p>
 					</div>
-					<span class="ui-badge ui-badge-success success-link-badge">آمادهٔ ارسال</span>
+					<span class="ui-badge ui-badge-success success-link-badge">{m.success_ready_to_send()}</span>
 				</div>
 
 				<div class="success-link-control">
@@ -107,7 +108,7 @@
 						target="_blank"
 						rel="noopener"
 						dir="ltr"
-						aria-label="باز کردن لینک دعوت در صفحهٔ جدید"
+						aria-label={m.success_open_link()}
 					>
 						<span>{khatm.link}</span>
 						<IconOpen aria-hidden="true" />
@@ -116,15 +117,15 @@
 						class={`ui-btn success-copy-button ${copied ? 'ui-btn-success' : 'ui-btn-primary'}`}
 						type="button"
 						onclick={copy}
-						aria-label={copied ? 'لینک دعوت کپی شد' : 'کپی لینک دعوت'}
+						aria-label={copied ? m.success_invite_copied() : m.success_copy_invite()}
 						aria-live="polite"
 					>
 						{#if copied}
 							<IconCheck aria-hidden="true" />
-							<span>کپی شد</span>
+							<span>{m.success_copied()}</span>
 						{:else}
 							<IconCopy aria-hidden="true" />
-							<span>کپی لینک</span>
+							<span>{m.success_copy_invite()}</span>
 						{/if}
 					</button>
 				</div>
@@ -133,19 +134,19 @@
 			<div class="success-actions">
 				<a href={khatm.link} class="ui-btn ui-btn-primary ui-btn-lg" target="_blank" rel="noopener">
 					<IconOpen aria-hidden="true" />
-					ورود به صفحهٔ ختم
+						{m.success_open_khatm()}
 				</a>
 				{#if canShare}
 					<button class="ui-btn ui-btn-soft ui-btn-lg" type="button" onclick={share}>
 						<IconShare aria-hidden="true" />
-						اشتراک‌گذاری
+						{m.common_share()}
 					</button>
 				{/if}
 			</div>
 		</div>
 	</section>
 
-	<p class="success-note">این ختم در بخش «فعالیت‌های من» نیز ذخیره شده است.</p>
+	<p class="success-note">{m.success_saved_note()}</p>
 </div>
 
 <style>

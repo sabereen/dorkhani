@@ -152,7 +152,7 @@
 		<div class="landing-section-heading">
 			<div>
 				<span class="landing-section-kicker"><IconStats /> روایت همراهی‌ها</span>
-				<h2 id="statistics-title">هر تلاوت، بخشی از یک جریان زنده</h2>
+				<h2 id="statistics-title">{m.home_statistics_title()}</h2>
 				<p>نگاهی به ثمرهٔ همراهی همهٔ کسانی که در این سامانه قرآن خوانده‌اند.</p>
 			</div>
 		</div>
@@ -216,7 +216,7 @@
 					<span></span>
 					<span></span>
 				</div>
-				<ul class="landing-daily-list" aria-label="آمار فعالیت هفت روز اخیر">
+				<ul class="landing-daily-list" aria-label={m.home_statistics_daily_label()}>
 					{#each statistics.daily as item}
 						<li>
 							<div class="landing-daily-bar-column">
@@ -335,7 +335,7 @@
 						<span class="landing-featured-icon" aria-hidden="true"><IconStar /></span>
 						<div>
 							<span class="landing-featured-kicker">نیت‌های ماندگار، همراهی همیشگی</span>
-							<h3 id="featured-khatms-title">ختم‌های شاخص</h3>
+							<h3 id="featured-khatms-title">{m.home_featured_title()}</h3>
 							<p>ختم‌های دائمی برای موضوعات ویژه؛ هر دور که تمام شود، دور تازه‌ای آغاز می‌شود.</p>
 						</div>
 					</div>

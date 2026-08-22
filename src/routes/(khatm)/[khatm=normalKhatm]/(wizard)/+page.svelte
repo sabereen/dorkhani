@@ -20,6 +20,7 @@
 	import IconBook from '~icons/ic/round-menu-book'
 	import IncompleteRangePicker from './IncompleteRangePicker.svelte'
 	import RangeTypeIcon from '$lib/components/RangeTypeIcon.svelte'
+	import * as m from '$lib/paraglide/messages.js'
 
 	const khatmContext = useKathmContext()
 	const khatm = $derived(khatmContext.khatm)
@@ -88,11 +89,11 @@
 
 	const rangeTypeTitle = $derived(
 		{
-			juz: 'جزء',
-			hizbQuarter: 'ربع حزب',
-			page: 'صفحه',
-			surah: 'سوره',
-			all: 'بخش باقی‌مانده',
+			juz: m.wizard_range_juz(),
+			hizbQuarter: m.wizard_range_hizb(),
+			page: m.wizard_range_page(),
+			surah: m.wizard_range_surah(),
+			all: m.wizard_range_all(),
 		}[rangeType],
 	)
 
@@ -127,7 +128,7 @@
 	function normalizeQuery(value: string) {
 		return value
 			.trim()
-			.toLocaleLowerCase('fa')
+			.toLocaleLowerCase(localeTag())
 			.replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)))
 			.replace(/[٠-٩]/g, (digit) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(digit)))
 			.replace(/ي/g, 'ی')
@@ -196,28 +197,28 @@
 
 {#snippet stepSelectRangeType()}
 	<div class="ui-khatm-wizard-heading">
-		<span class="ui-khatm-wizard-kicker">میزان همراهی شما</span>
-		<h2>از یک سهم کوچک و دل‌خواه شروع کنید</h2>
+		<span class="ui-khatm-wizard-kicker">{m.wizard_commitment_eyebrow()}</span>
+		<h2>{m.wizard_commitment_title()}</h2>
 		<p>
-			اندازه‌ای را انتخاب کنید که با فرصت امروزتان هماهنگ است؛ در مرحله بعد بازه دقیق را برمی‌دارید.
+			{m.wizard_commitment_description()}
 		</p>
 	</div>
 	<div class="ui-khatm-commitments">
-		{@render rangeTypeOption('page', 'یک صفحه', 'سبک، سریع و مناسب شروع', 'کم‌حجم', true)}
+		{@render rangeTypeOption('page', m.wizard_one_page(), m.wizard_one_page_description(), m.wizard_short(), true)}
 		{@render rangeTypeOption(
 			'hizbQuarter',
-			'یک ربع حزب',
-			'چند صفحه پیوسته برای قرائتی منظم',
-			'کوتاه',
+			m.wizard_one_hizb(),
+			m.wizard_one_hizb_description(),
+			m.wizard_brief(),
 		)}
-		{@render rangeTypeOption('juz', 'یک جزء', 'سهمی کامل‌تر برای همراهی پررنگ', 'پیوسته')}
-		{@render rangeTypeOption('surah', 'یک سوره', 'از آغاز تا پایان یک سوره', 'معنادار')}
+		{@render rangeTypeOption('juz', m.wizard_one_juz(), m.wizard_one_juz_description(), m.wizard_continuous())}
+		{@render rangeTypeOption('surah', m.wizard_one_surah(), m.wizard_one_surah_description(), m.wizard_meaningful())}
 		{#if khatm.progress > 0.9}
 			{@render rangeTypeOption(
 				'all',
-				'همه بخش‌های باقی‌مانده',
-				'قدم آخر را بردارید و ختم را کامل کنید',
-				'ویژه پایان ختم',
+				m.wizard_all_remaining(),
+				m.wizard_all_remaining_description(),
+				m.wizard_finale(),
 			)}
 		{/if}
 	</div>
@@ -226,28 +227,28 @@
 {#snippet stepSelectRange()}
 	<div class="ui-khatm-range-heading">
 		<div>
-			<span class="ui-khatm-wizard-kicker">انتخاب {rangeTypeTitle}</span>
-			<h2>کدام بازه برای شما مناسب‌تر است؟</h2>
-			<p>{availableRangeCount.toLocaleString(localeTag())} بازه هنوز سهم آزاد دارد.</p>
+			<span class="ui-khatm-wizard-kicker">{m.wizard_select_range_eyebrow({ rangeType: rangeTypeTitle })}</span>
+			<h2>{m.wizard_select_range_title()}</h2>
+			<p>{m.wizard_available_ranges({ count: availableRangeCount.toLocaleString(localeTag()) })}</p>
 		</div>
 		{#if khatm.rangeType === 'free'}
 			<button type="button" class="ui-btn ui-btn-soft ui-btn-sm" onclick={() => goToStep(1)}>
 				<IconTune />
-				تغییر اندازه سهم
+				{m.wizard_change_commitment()}
 			</button>
 		{/if}
 	</div>
 
 	{#if ranges.length > 12}
 		<div class="ui-khatm-range-search">
-			<label for="khatm-range-search">جست‌وجوی {rangeTypeTitle}</label>
+			<label for="khatm-range-search">{m.wizard_search_range({ rangeType: rangeTypeTitle })}</label>
 			<div>
 				<IconSearch aria-hidden="true" />
 				<input
 					id="khatm-range-search"
 					class="ui-input"
 					type="search"
-					placeholder={`نام یا شماره ${rangeTypeTitle} را بنویسید`}
+					placeholder={m.wizard_search_placeholder({ rangeType: rangeTypeTitle })}
 					bind:value={rangeQuery}
 					oninput={() => (visibleRangeLimit = 30)}
 				/>
@@ -256,19 +257,19 @@
 	{/if}
 
 	<div class="ui-khatm-range-tools">
-		<div class="ui-khatm-range-legend" aria-label="راهنمای وضعیت بازه‌ها">
-			<span><i class="ui-khatm-range-key ui-khatm-range-key-free"></i>کاملاً آزاد</span>
-			<span><i class="ui-khatm-range-key ui-khatm-range-key-partial"></i>دارای بخش آزاد</span>
-			<span><i class="ui-khatm-range-key ui-khatm-range-key-mine"></i>سهم شما</span>
+		<div class="ui-khatm-range-legend" aria-label={m.wizard_range_legend()}>
+			<span><i class="ui-khatm-range-key ui-khatm-range-key-free"></i>{m.wizard_fully_free()}</span>
+			<span><i class="ui-khatm-range-key ui-khatm-range-key-partial"></i>{m.wizard_partially_free()}</span>
+			<span><i class="ui-khatm-range-key ui-khatm-range-key-mine"></i>{m.wizard_my_share()}</span>
 		</div>
 		<label class="ui-khatm-check">
 			<input type="checkbox" class="ui-checkbox" bind:checked={hideFinishedIntervals} />
-			<span>پنهان‌کردن تکمیل‌شده‌ها</span>
+			<span>{m.wizard_hide_completed()}</span>
 		</label>
 	</div>
 
 	{#if visibleRanges.length > 0}
-		<ul class="ui-khatm-range-results" aria-label={`فهرست ${rangeTypeTitle}ها`}>
+		<ul class="ui-khatm-range-results" aria-label={m.wizard_range_list({ rangeType: rangeTypeTitle })}>
 			{#each visibleRanges as { range, percent, myLength }}
 				{@const completed = percent >= 100}
 				{@const partial = percent > 0 && !completed}
@@ -287,31 +288,31 @@
 							<span class="ui-khatm-range-card-status">
 								{#if mine}
 									<span class="ui-badge ui-badge-accent ui-badge-xs">
-										{myLength === range.length ? 'سهم شما' : 'شامل سهم شما'}
+										{myLength === range.length ? m.wizard_my_share() : m.wizard_includes_my_share()}
 									</span>
 								{/if}
 								{#if partial}
-									<span class="ui-badge ui-badge-info ui-badge-xs">بخشی آزاد است</span>
+								<span class="ui-badge ui-badge-info ui-badge-xs">{m.wizard_partial_free()}</span>
 								{:else if completed}
-									<span class="ui-badge ui-badge-neutral ui-badge-xs">تکمیل‌شده</span>
+								<span class="ui-badge ui-badge-neutral ui-badge-xs">{m.wizard_completed()}</span>
 								{:else}
-									<span class="ui-badge ui-badge-success ui-badge-xs">کاملاً آزاد</span>
+								<span class="ui-badge ui-badge-success ui-badge-xs">{m.wizard_fully_free()}</span>
 								{/if}
 							</span>
 						</span>
 						{#if partial}
 							<span class="ui-khatm-range-card-progress">
-								<span><b>{formatPercent(percent)}</b> انتخاب شده</span>
+								<span>{m.wizard_selected_percent({ percent: formatPercent(percent) })}</span>
 								<progress
 									class="ui-progress"
 									max={100}
 									value={percent}
-									aria-label={`${percent.toLocaleString(localeTag())} درصد انتخاب شده`}
+									aria-label={m.wizard_selected_percent({ percent: percent.toLocaleString(localeTag()) })}
 								></progress>
 							</span>
 						{/if}
 						<span class="ui-khatm-range-card-action">
-							{completed ? 'بدون سهم آزاد' : partial ? 'دیدن بخش‌های آزاد' : 'انتخاب این سهم'}
+							{completed ? m.wizard_no_free_share() : partial ? m.wizard_view_free_parts() : m.wizard_select_share()}
 							{#if !completed}<IconArrow aria-hidden="true" />{/if}
 						</span>
 					</button>
@@ -322,16 +323,17 @@
 		{#if visibleRanges.length < filteredRanges.length}
 			<div class="ui-khatm-range-more">
 				<p>
-					در حال نمایش {visibleRanges.length.toLocaleString(localeTag())} مورد از {filteredRanges.length.toLocaleString(
-						'fa',
-					)} مورد
+					{m.wizard_showing_items({
+						visible: visibleRanges.length.toLocaleString(localeTag()),
+						total: filteredRanges.length.toLocaleString(localeTag()),
+					})}
 				</p>
 				<button
 					type="button"
 					class="ui-btn ui-btn-outline"
 					onclick={() => (visibleRangeLimit += 30)}
 				>
-					نمایش موارد بیشتر
+					{m.wizard_show_more()}
 				</button>
 			</div>
 		{/if}
@@ -339,20 +341,20 @@
 		<div class="ui-khatm-empty ui-khatm-wizard-empty">
 			<IconSearch aria-hidden="true" />
 			<h3>
-				{rangeQuery ? 'بازه‌ای با این جست‌وجو پیدا نشد' : 'بازه آزادی در این دسته نمانده است'}
+				{rangeQuery ? m.wizard_no_search_result() : m.wizard_no_free_range()}
 			</h3>
 			<p>
 				{rangeQuery
-					? 'عبارت دیگری را امتحان کنید یا فیلتر را پاک کنید.'
-					: 'اندازه دیگری برای سهمتان انتخاب کنید.'}
+					? m.wizard_try_another_search()
+					: m.wizard_choose_another_size()}
 			</p>
 			{#if rangeQuery}
 				<button type="button" class="ui-btn ui-btn-soft" onclick={() => (rangeQuery = '')}
-					>پاک‌کردن جست‌وجو</button
+					>{m.wizard_clear_search()}</button
 				>
 			{:else if khatm.rangeType === 'free'}
 				<button type="button" class="ui-btn ui-btn-primary" onclick={() => goToStep(1)}
-					>انتخاب اندازه دیگر</button
+					>{m.wizard_choose_other_size()}</button
 				>
 			{/if}
 		</div>
@@ -362,48 +364,48 @@
 {#snippet stepShowResult(selectedRange: QuranRange)}
 	<div class="ui-khatm-wizard-success" role="status" aria-live="polite">
 		<span class="ui-khatm-wizard-success-icon"><IconCheck /></span>
-		<span class="ui-khatm-wizard-kicker">انتخاب با موفقیت انجام شد</span>
-		<h2>این سهم برای شما کنار گذاشته شد</h2>
+		<span class="ui-khatm-wizard-kicker">{m.wizard_selection_success()}</span>
+		<h2>{m.wizard_share_reserved()}</h2>
 		<p class="ui-khatm-wizard-success-copy">
-			حالا می‌توانید آیات سهم خود را باز کنید و قرائت را آغاز کنید.
+			{m.wizard_share_success_description()}
 		</p>
 		<div class="ui-khatm-wizard-success-range">
 			<IconBook aria-hidden="true" />
-			<div><span>سهم شما</span><strong>{selectedRange.getTitle()}</strong></div>
+			<div><span>{m.wizard_my_share()}</span><strong>{selectedRange.getTitle()}</strong></div>
 		</div>
 		<a href={selectedRange.getLink(khatm)} class="ui-btn ui-btn-primary ui-btn-lg ui-btn-block">
 			<IconBook />
-			مشاهده و قرائت آیات
+			{m.wizard_view_read_ayahs()}
 		</a>
 		<button type="button" class="ui-btn ui-btn-ghost" onclick={() => goToStep(1)}
-			>انتخاب یک سهم دیگر</button
+			>{m.wizard_choose_another_share()}</button
 		>
 	</div>
 {/snippet}
 
 <section class="ui-khatm-wizard" aria-labelledby="wizard-title">
-	<h2 id="wizard-title" class="ui-sr-only">انتخاب مرحله‌ای سهم ختم قرآن</h2>
-	<nav class="ui-khatm-wizard-progress" aria-label="مراحل انتخاب سهم">
+	<h2 id="wizard-title" class="ui-sr-only">{m.wizard_title()}</h2>
+	<nav class="ui-khatm-wizard-progress" aria-label={m.wizard_steps()}>
 		<ol>
 			{#if khatm.rangeType === 'free'}
 				<li class:ui-khatm-wizard-step-active={step >= 1}>
 					{#if step > 1}
 						<button type="button" onclick={() => goToStep(1)}>
-							<span>۱</span><b>اندازه سهم</b>
+							<span>۱</span><b>{m.wizard_share_size()}</b>
 						</button>
 					{:else}
-						<span aria-current="step"><i>۱</i><b>اندازه سهم</b></span>
+						<span aria-current="step"><i>۱</i><b>{m.wizard_share_size()}</b></span>
 					{/if}
 				</li>
 			{/if}
 			<li class:ui-khatm-wizard-step-active={step >= (khatm.rangeType === 'free' ? 2 : 1)}>
 				<span aria-current={step === (khatm.rangeType === 'free' ? 2 : 1) ? 'step' : undefined}>
-					<i>{khatm.rangeType === 'free' ? '۲' : '۱'}</i><b>انتخاب بازه</b>
+					<i>{khatm.rangeType === 'free' ? '۲' : '۱'}</i><b>{m.wizard_choose_range()}</b>
 				</span>
 			</li>
 			<li class:ui-khatm-wizard-step-active={step >= (khatm.rangeType === 'free' ? 3 : 2)}>
 				<span aria-current={step === (khatm.rangeType === 'free' ? 3 : 2) ? 'step' : undefined}>
-					<i>{khatm.rangeType === 'free' ? '۳' : '۲'}</i><b>شروع قرائت</b>
+					<i>{khatm.rangeType === 'free' ? '۳' : '۲'}</i><b>{m.wizard_start_reading()}</b>
 				</span>
 			</li>
 		</ol>

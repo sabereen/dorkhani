@@ -35,6 +35,7 @@
 	import { apiRequest } from '$lib/utility/request'
 	import { onMount } from 'svelte'
 	import { isKhatmShortcutSupported, pinKhatmShortcut } from '$lib/native/khatm-shortcuts'
+	import * as m from '$lib/paraglide/messages.js'
 
 	const { data, children }: LayoutProps = $props()
 
@@ -83,10 +84,10 @@
 	async function copy() {
 		try {
 			await khatm.copy()
-			toast('info', 'لینک ختم قرآن شما کپی شد.')
+			toast('info', m.khatm_copy_success())
 		} catch (err) {
 			console.error(err)
-			toast('error', 'خطا در کپی.')
+			toast('error', m.khatm_copy_error())
 		}
 	}
 
@@ -134,10 +135,10 @@
 		pinningShortcut = true
 		try {
 			const { requested } = await pinKhatmShortcut(khatm)
-			if (requested) toast('info', 'درخواست افزودن میان‌بر به صفحه اصلی نمایش داده شد.')
-			else toast('error', 'لانچر گوشی از افزودن میان‌بر پشتیبانی نمی‌کند.')
+			if (requested) toast('info', m.khatm_shortcut_requested())
+			else toast('error', m.khatm_shortcut_unsupported())
 		} catch {
-			toast('error', 'افزودن میان‌بر ختم ناموفق بود.')
+			toast('error', m.khatm_shortcut_error())
 		} finally {
 			pinningShortcut = false
 		}
@@ -157,9 +158,9 @@
 			})
 			showStopPrompt = false
 			await invalidateAll()
-			toast('info', 'این دور به‌عنوان آخرین دور ختم ثبت شد.')
+			toast('info', m.khatm_round_saved_as_last())
 		} catch (cause) {
-			toast('error', cause instanceof Error ? cause.message : 'توقف ختم ناموفق بود.')
+			toast('error', cause instanceof Error ? cause.message : m.khatm_stop_error())
 		} finally {
 			stoppingSeries = false
 		}
@@ -210,30 +211,30 @@
 				class="ui-header-page-action"
 				onclick={requestShortcut}
 				disabled={pinningShortcut}
-				aria-label="افزودن ختم به صفحه اصلی"
+				aria-label={m.khatm_add_to_home_aria()}
 			>
 				{#if pinningShortcut}
 					<span class="ui-spinner"></span>
 				{:else}
 					<IconAddToHome class="size-5" />
 				{/if}
-				<span>صفحه اصلی</span>
+				<span>{m.khatm_home()}</span>
 			</button>
 		{/if}
 		{#if data.canEdit}
-			<a href={editHref} class="ui-header-page-action" aria-label="ویرایش ختم">
+			<a href={editHref} class="ui-header-page-action" aria-label={m.khatm_edit_aria()}>
 				<IconEdit class="size-5" />
-				<span>ویرایش</span>
+				<span>{m.common_edit()}</span>
 			</a>
 		{:else if canManageAsGuest}
 			<button
 				type="button"
 				class="ui-header-page-action"
 				onclick={() => (showAuthPrompt = true)}
-				aria-label="ویرایش یا حذف ختم"
+				aria-label={m.khatm_manage_aria()}
 			>
 				<IconEdit class="size-5" />
-				<span>مدیریت</span>
+				<span>{m.khatm_manage()}</span>
 			</button>
 		{/if}
 		{#if canShare}
@@ -241,20 +242,20 @@
 				type="button"
 				class="ui-header-page-action ui-header-page-action-primary"
 				onclick={share}
-				aria-label="اشتراک‌گذاری"
+				aria-label={m.khatm_share()}
 			>
 				<IconShare class="size-5" />
-				<span>اشتراک‌گذاری</span>
+				<span>{m.khatm_share()}</span>
 			</button>
 		{:else}
 			<button
 				type="button"
 				class="ui-header-page-action ui-header-page-action-primary"
 				onclick={copy}
-				aria-label="کپی لینک"
+				aria-label={m.khatm_copy_link()}
 			>
 				<IconCopy class="size-5" />
-				<span>کپی لینک</span>
+				<span>{m.khatm_copy_link()}</span>
 			</button>
 		{/if}
 	{/snippet}
@@ -267,7 +268,7 @@
 		<div class="ui-khatm-hero-copy">
 			<div class="ui-khatm-eyebrow">
 				<span class="ui-khatm-eyebrow-icon"><IconPeople /></span>
-				<span>یک همراهی نورانی برای ختم قرآن</span>
+				<span>{m.khatm_hero_eyebrow()}</span>
 			</div>
 			<h1 id="khatm-title" class="ui-khatm-title">{khatm.title}</h1>
 			<div class="ui-khatm-badges">
@@ -276,7 +277,7 @@
 						<span class="ui-badge ui-badge-accent">
 							{roundTitle}
 							{#if data.seriesMaxRounds != null}
-								از {data.seriesMaxRounds.toLocaleString(localeTag())} دور
+								{m.khatm_round_of({ total: data.seriesMaxRounds.toLocaleString(localeTag()) })}
 							{/if}
 						</span>
 						{#if canRequestSeriesStop}
@@ -284,10 +285,10 @@
 								type="button"
 								class="ui-btn ui-btn-xs ui-khatm-series-stop"
 								onclick={requestSeriesStop}
-								aria-label="توقف ختم پس از پایان دور جاری"
+								aria-label={m.khatm_stop_after_round_aria()}
 							>
 								<IconStop />
-								<span>توقف پس از این دور</span>
+								<span>{m.khatm_stop_after_round()}</span>
 							</button>
 						{/if}
 					</div>
@@ -296,7 +297,7 @@
 					<RangeTypeIcon type={khatm.rangeType} />
 					{khatm.rangeTypeTitle}
 				</span>
-				{#if khatm.private}<span class="ui-badge ui-badge-neutral">خصوصی</span>{/if}
+				{#if khatm.private}<span class="ui-badge ui-badge-neutral">{m.khatm_private()}</span>{/if}
 			</div>
 			{#if khatm.description}
 				<div dir="auto" class="ui-khatm-description">
@@ -309,8 +310,8 @@
 			<div class="ui-khatm-progress-heading">
 				<span class="ui-khatm-progress-icon"><IconBook /></span>
 				<div>
-					<strong>پیشرفت ختم</strong>
-					<span>قدم‌به‌قدم تا پایان این همراهی</span>
+					<strong>{m.khatm_progress()}</strong>
+					<span>{m.khatm_progress_hint()}</span>
 				</div>
 			</div>
 			<div class="ui-khatm-progress-value">
@@ -320,23 +321,23 @@
 				class="ui-progress ui-progress-success"
 				max={100}
 				value={percent}
-				aria-label="پیشرفت ختم"
+				aria-label={m.khatm_progress()}
 			></progress>
 		</div>
 	</section>
 
 	{#if khatm.reviewStatus !== 'approved'}
-		<section class="ui-alert ui-alert-info" role="alert" aria-label="وضعیت تأیید ختم">
+		<section class="ui-alert ui-alert-info" role="alert" aria-label={m.khatm_unapproved_aria()}>
 			<div>
-				<strong>این ختم هنوز توسط سامانه تأیید نشده است.</strong>
-				<p>ما محتوای این ختم را تأیید نمی‌کنیم و استفاده و مشارکت در آن با مسئولیت کاربران است.</p>
+				<strong>{m.khatm_unapproved_title()}</strong>
+				<p>{m.khatm_unapproved_text()}</p>
 			</div>
 		</section>
 	{/if}
 	{#if khatm.aiReviewStatus === 'warning' && khatm.aiReviewReason}
-		<section class="ui-alert ui-alert-error" role="alert" aria-label="هشدار بررسی AI">
+		<section class="ui-alert ui-alert-error" role="alert" aria-label={m.khatm_ai_warning_aria()}>
 			<div>
-				<strong>هشدار دربارهٔ عنوان یا توضیح ختم</strong>
+				<strong>{m.khatm_ai_warning_title()}</strong>
 				<p>{khatm.aiReviewReason}</p>
 			</div>
 		</section>
@@ -349,10 +350,10 @@
 	<KhatmParticipation {khatm} />
 
 	{#if canSelectLayout}
-		<section class="ui-khatm-view-switch" aria-label="شیوه نمایش بازه‌ها">
+		<section class="ui-khatm-view-switch" aria-label={m.khatm_view_switch_aria()}>
 			<div class="ui-khatm-view-copy">
 				<CurrentLayoutIcon />
-				<div><strong>شیوه انتخاب</strong><span>نمای مناسب خودتان را انتخاب کنید</span></div>
+				<div><strong>{m.khatm_selection_method()}</strong><span>{m.khatm_selection_method_hint()}</span></div>
 			</div>
 			<div class="ui-khatm-view-tabs">
 				<Tab
@@ -361,11 +362,11 @@
 						{
 							slug: 'wizard',
 							icon: IconViewWizard,
-							title: 'مرحله‌ای',
+							title: m.khatm_layout_wizard(),
 							link: khatm.getLink('wizard'),
 						},
-						{ slug: 'list', icon: IconViewList, title: 'لیستی', link: khatm.getLink('list') },
-						{ slug: 'grid', icon: IconViewTable, title: 'جدولی', link: khatm.getLink('grid') },
+						{ slug: 'list', icon: IconViewList, title: m.khatm_layout_list(), link: khatm.getLink('list') },
+						{ slug: 'grid', icon: IconViewTable, title: m.khatm_layout_grid(), link: khatm.getLink('grid') },
 					]}
 					bind:value={() => layout, () => {}}
 				/>
@@ -378,16 +379,16 @@
 			<div class="ui-alert ui-alert-success ui-khatm-complete">
 				<p>
 					{#if khatm.isSerial}
-						این دور از ختم کامل شده است ({roundTitle})
+						{m.khatm_serial_complete({ round: roundTitle })}
 					{:else}
-						این ختم قرآن کامل شده است.
+						{m.khatm_complete()}
 					{/if}
 				</p>
 				{#if khatm.isSerial}
 					{#if hasNextRound}
-						<button class="ui-btn ui-btn-outline" onclick={invalidateAll}>شروع دور جدید</button>
+						<button class="ui-btn ui-btn-outline" onclick={invalidateAll}>{m.khatm_start_new_round()}</button>
 					{:else}
-						<span class="ui-badge ui-badge-success">آخرین دور ختم</span>
+						<span class="ui-badge ui-badge-success">{m.khatm_last_round()}</span>
 					{/if}
 				{/if}
 			</div>
@@ -399,16 +400,16 @@
 
 <Modal bind:open={showStopPrompt} contentClass="ui-khatm-stop-dialog">
 	<div class="ui-khatm-stop-icon" aria-hidden="true"><IconStop /></div>
-	<p class="ui-khatm-stop-eyebrow">پایان ختم تمام‌نشدنی</p>
-	<h2>این دور، آخرین دور باشد؟</h2>
+	<p class="ui-khatm-stop-eyebrow">{m.khatm_stop_eyebrow()}</p>
+	<h2>{m.khatm_stop_title()}</h2>
 	<p class="ui-khatm-stop-description">
-		دور جاری بدون تغییر ادامه پیدا می‌کند، اما پس از کامل‌شدن آن دور تازه‌ای ساخته نخواهد شد.
+		{m.khatm_stop_description()}
 	</p>
 	<div class="ui-khatm-stop-actions">
 		<form onsubmit={stopSeries} aria-busy={stoppingSeries}>
 			<button class="ui-btn ui-btn-danger ui-btn-block" type="submit" disabled={stoppingSeries}>
 				<IconStop class="size-5" />
-				بله، ختم متوقف شود
+				{m.khatm_stop_confirm()}
 			</button>
 		</form>
 		<button
@@ -416,29 +417,29 @@
 			type="button"
 			onclick={() => (showStopPrompt = false)}
 		>
-			ادامهٔ دورهای ختم
+			{m.khatm_continue_rounds()}
 		</button>
 	</div>
 </Modal>
 
 <Modal bind:open={showPrivateShortcutPrompt} contentClass="ui-khatm-auth-dialog">
 	<div class="ui-khatm-auth-icon" aria-hidden="true"><IconAddToHome /></div>
-	<p class="ui-khatm-auth-eyebrow">میان‌بر ختم خصوصی</p>
-	<h2>این میان‌بر دسترسی مستقیم دارد</h2>
+	<p class="ui-khatm-auth-eyebrow">{m.khatm_private_shortcut_eyebrow()}</p>
+	<h2>{m.khatm_private_shortcut_title()}</h2>
 	<p class="ui-khatm-auth-description">
-		لینک خصوصی ختم داخل میان‌بر ذخیره می‌شود. اگر گوشی مشترک است، میان‌بر را نسازید.
+		{m.khatm_private_shortcut_description()}
 	</p>
 	<div class="ui-khatm-auth-actions">
 		<button class="ui-btn ui-btn-primary ui-btn-lg" type="button" onclick={pinShortcut}>
 			<IconAddToHome class="size-5" />
-			افزودن به صفحه اصلی
+			{m.khatm_add_to_home()}
 		</button>
 		<button
 			class="ui-btn ui-btn-ghost ui-btn-lg"
 			type="button"
 			onclick={() => (showPrivateShortcutPrompt = false)}
 		>
-			انصراف
+			{m.common_cancel()}
 		</button>
 	</div>
 </Modal>
@@ -448,27 +449,26 @@
 		type="button"
 		class="ui-btn ui-btn-icon ui-btn-ghost ui-khatm-auth-close"
 		onclick={() => (showAuthPrompt = false)}
-		aria-label="بستن پنجره"
+		aria-label={m.common_close()}
 	>
 		<IconClose class="size-5" />
 	</button>
 	<div class="ui-khatm-auth-icon" aria-hidden="true">
 		<IconManageAccounts />
 	</div>
-	<p class="ui-khatm-auth-eyebrow">مدیریت ختم</p>
-	<h2>برای مدیریت ختم خود وارد حساب شوید</h2>
+	<p class="ui-khatm-auth-eyebrow">{m.khatm_auth_eyebrow()}</p>
+	<h2>{m.khatm_auth_title()}</h2>
 	<p class="ui-khatm-auth-description">
-		پس از ورود یا ثبت‌نام، این ختم به حساب شما متصل می‌شود و می‌توانید آن را ویرایش، متوقف یا حذف
-		کنید.
+		{m.khatm_auth_description()}
 	</p>
 	<div class="ui-khatm-auth-actions">
 		<a class="ui-btn ui-btn-primary ui-btn-lg" href={localizeHref(`${base}/auth/login`)}>
 			<IconLogin class="size-5" />
-			ورود به حساب
+			{m.nav_login()}
 		</a>
 		<a class="ui-btn ui-btn-soft ui-btn-lg" href={localizeHref(`${base}/auth/register`)}>
 			<IconPersonAdd class="size-5" />
-			ثبت‌نام
+			{m.auth_register_action()}
 		</a>
 	</div>
 </Modal>

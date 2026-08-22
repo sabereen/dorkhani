@@ -22,6 +22,7 @@
 	import Accardeon from '$lib/components/Accardeon.svelte'
 	import PickedRangeResult from '../PickedRangeResult.svelte'
 	import RangeTypeIcon from '$lib/components/RangeTypeIcon.svelte'
+	import * as m from '$lib/paraglide/messages.js'
 
 	type PageState = {
 		modal?: boolean
@@ -56,7 +57,7 @@
 	function normalizeQuery(value: string) {
 		return value
 			.trim()
-			.toLocaleLowerCase('fa')
+			.toLocaleLowerCase(localeTag())
 			.replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)))
 			.replace(/[٠-٩]/g, (digit) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(digit)))
 			.replace(/ي/g, 'ی')
@@ -116,7 +117,7 @@
 		if (!range.matchRangeType(khatm.rangeType)) {
 			toast(
 				'error',
-				`این ختم بر اساس ${khatm.rangeTypeTitle} تقسیم شده و این بازه قابل انتخاب نیست.`,
+				m.list_unavailable_range({ rangeType: khatm.rangeTypeTitle }),
 			)
 			return
 		}
@@ -135,46 +136,46 @@
 		<div class="ui-khatm-browser-heading">
 			<span class="ui-khatm-browser-heading-icon"><IconList /></span>
 			<div>
-				<span class="ui-khatm-wizard-kicker">مرور جزء‌به‌جزء قرآن</span>
-				<h2 id="khatm-list-title">سهمتان را با جزئیات پیدا کنید</h2>
+				<span class="ui-khatm-wizard-kicker">{m.list_eyebrow()}</span>
+				<h2 id="khatm-list-title">{m.list_title()}</h2>
 				<p>
-					هر جزء را باز کنید، شیوه تقسیم‌بندی را تغییر دهید و وضعیت تمام بخش‌ها را یک‌جا ببینید.
+					{m.list_description()}
 				</p>
 			</div>
 		</div>
 
-		<div class="ui-khatm-browser-stats" aria-label="خلاصه وضعیت فهرست">
-			<div><strong>{formatPercent(khatm.percent)}</strong><span>پیشرفت ختم</span></div>
+		<div class="ui-khatm-browser-stats" aria-label={m.list_summary()}>
+			<div><strong>{formatPercent(khatm.percent)}</strong><span>{m.list_progress()}</span></div>
 			<div>
-				<strong>{availableJuzCount.toLocaleString(localeTag())}</strong><span>جزء دارای بخش آزاد</span>
+				<strong>{availableJuzCount.toLocaleString(localeTag())}</strong><span>{m.list_available_juz()}</span>
 			</div>
-			<div><strong>{myJuzCount.toLocaleString(localeTag())}</strong><span>جزء شامل سهم شما</span></div>
+			<div><strong>{myJuzCount.toLocaleString(localeTag())}</strong><span>{m.list_my_juz()}</span></div>
 		</div>
 	</header>
 
 	<div class="ui-khatm-browser-controls">
 		<div class="ui-khatm-browser-search">
-			<label for="juz-search">رفتن به جزء</label>
+			<label for="juz-search">{m.list_go_to_juz()}</label>
 			<div>
 				<IconSearch aria-hidden="true" />
 				<input
 					id="juz-search"
 					class="ui-input"
 					type="search"
-					placeholder="مثلاً جزء ۱۲"
+					placeholder={m.list_search_placeholder()}
 					bind:value={juzQuery}
 					oninput={resetOpenedJuz}
 				/>
 				{#if juzQuery}
 					<button type="button" class="ui-btn ui-btn-ghost ui-btn-xs" onclick={clearSearch}
-						>پاک‌کردن</button
+						>{m.wizard_clear_search()}</button
 					>
 				{/if}
 			</div>
 		</div>
 		<label class="ui-khatm-browser-filter">
 			<span class="ui-khatm-browser-filter-icon"><IconTune /></span>
-			<span><strong>فقط جزءهای دارای ظرفیت</strong><small>جزءهای تکمیل‌شده پنهان شوند</small></span>
+			<span><strong>{m.list_capacity_only()}</strong><small>{m.list_hide_completed()}</small></span>
 			<input
 				type="checkbox"
 				class="ui-checkbox"
@@ -184,10 +185,10 @@
 		</label>
 	</div>
 
-	<div class="ui-khatm-browser-legend" aria-label="راهنمای وضعیت بخش‌ها">
-		<span><i class="ui-khatm-browser-key ui-khatm-browser-key-free"></i>آزاد و قابل انتخاب</span>
-		<span><i class="ui-khatm-browser-key ui-khatm-browser-key-picked"></i>برداشته‌شده</span>
-		<span><i class="ui-khatm-browser-key ui-khatm-browser-key-mine"></i>سهم شما</span>
+	<div class="ui-khatm-browser-legend" aria-label={m.list_legend()}>
+		<span><i class="ui-khatm-browser-key ui-khatm-browser-key-free"></i>{m.list_free_selectable()}</span>
+		<span><i class="ui-khatm-browser-key ui-khatm-browser-key-picked"></i>{m.list_picked()}</span>
+		<span><i class="ui-khatm-browser-key ui-khatm-browser-key-mine"></i>{m.wizard_my_share()}</span>
 	</div>
 
 	{#if visibleJuzRanges.length > 0}
@@ -207,10 +208,10 @@
 						<span class="ui-khatm-browser-juz-main">
 							<span class="ui-khatm-browser-juz-title">
 								<strong>{range.title}</strong>
-								{#if mine}<span class="ui-badge ui-badge-accent ui-badge-xs">شامل سهم شما</span
+								{#if mine}<span class="ui-badge ui-badge-accent ui-badge-xs">{m.wizard_includes_my_share()}</span
 									>{/if}
 								{#if percent >= 100}<span class="ui-badge ui-badge-neutral ui-badge-xs"
-										>تکمیل‌شده</span
+										>{m.wizard_completed()}</span
 									>{/if}
 							</span>
 							<span class="ui-khatm-browser-juz-progress">
@@ -218,14 +219,14 @@
 									class="ui-progress"
 									max={100}
 									value={percent}
-									aria-label={`پیشرفت ${range.title}`}
+									aria-label={m.khatm_progress_range({ range: range.title })}
 								></progress>
-								<small><b>{formatPercent(percent)}</b> انتخاب شده</small>
+								<small>{m.wizard_selected_percent({ percent: formatPercent(percent) })}</small>
 							</span>
 						</span>
 						<span class="ui-khatm-browser-juz-action">
 							<span>
-								{expanded ? 'بستن جزئیات' : percent >= 100 ? 'مشاهده جزئیات' : 'دیدن بخش‌ها'}
+								{expanded ? m.list_close_details() : percent >= 100 ? m.list_view_details() : m.list_view_parts()}
 							</span>
 							<IconExpand aria-hidden="true" />
 						</span>
@@ -237,11 +238,11 @@
 					<div class="ui-khatm-browser-content">
 						<div class="ui-khatm-browser-content-head">
 							<div>
-								<span>جزئیات {range.title}</span>
+								<span>{m.list_details({ title: range.title })}</span>
 								<strong>
 									{juzPercent >= 100
-										? 'همه بخش‌های این جزء برداشته شده‌اند'
-										: 'بخش‌های سبزرنگ هنوز آزاد هستند'}
+										? m.list_all_picked()
+										: m.list_green_free()}
 								</strong>
 							</div>
 							{#if juzPercent === 0 && range.matchRangeType(khatm.rangeType)}
@@ -250,7 +251,7 @@
 									class="ui-btn ui-btn-primary ui-btn-sm"
 									onclick={() => openModal(range)}
 								>
-									انتخاب کامل {range.title}
+									{m.list_select_all({ title: range.title })}
 								</button>
 							{/if}
 						</div>
@@ -259,16 +260,16 @@
 							<div>
 								<RangeTypeIcon type={subrangeType} />
 								<span>
-									<strong>تقسیم‌بندی بخش‌ها</strong>
-									<small>نمای مناسب برای مرور را انتخاب کنید</small>
+									<strong>{m.list_divide_parts()}</strong>
+									<small>{m.list_choose_view()}</small>
 								</span>
 							</div>
 							<div class="ui-khatm-browser-tabs">
 								<Tab
 									tabs={[
-										{ title: 'ربع حزب', slug: 'hizbQuarter' },
-										{ title: 'صفحه', slug: 'page' },
-										{ title: 'سوره', slug: 'surah' },
+										{ title: m.wizard_range_hizb(), slug: 'hizbQuarter' },
+										{ title: m.wizard_range_page(), slug: 'page' },
+										{ title: m.wizard_range_surah(), slug: 'surah' },
 									]}
 									bind:value={subrangeType}
 								/>
@@ -283,13 +284,13 @@
 										<header>
 											<div>
 												<strong>{subrange.title}</strong>
-												<span>{formatPercent(percent)} انتخاب شده</span>
+										<span>{m.wizard_selected_percent({ percent: formatPercent(percent) })}</span>
 											</div>
 											<progress
 												class="ui-progress"
 												max={100}
 												value={percent}
-												aria-label={`پیشرفت ${subrange.title}`}
+										aria-label={m.khatm_progress_range({ range: subrange.title })}
 											></progress>
 										</header>
 										<ul class="ui-khatm-browser-parts">
@@ -310,12 +311,12 @@
 														<strong>{part.getTitleSurahOrinted()}</strong>
 														<span>
 															{mine
-																? 'این بخش سهم شماست'
-																: khatmPart
-																	? 'این بخش پیش‌تر برداشته شده است'
-																	: canSelect
-																		? 'آزاد و آماده انتخاب'
-																		: `این ختم فقط با بازه ${khatm.rangeTypeTitle} انتخاب می‌شود`}
+											? m.list_this_share()
+											: khatmPart
+												? m.list_picked_before()
+												: canSelect
+													? m.list_ready()
+													: m.list_range_type_only({ rangeType: khatm.rangeTypeTitle })}
 														</span>
 													</div>
 													<div class="ui-khatm-browser-part-actions">
@@ -325,12 +326,12 @@
 																class="ui-btn ui-btn-primary ui-btn-sm"
 																onclick={() => openModal(part)}
 															>
-																انتخاب این بخش
+										{m.list_select_part()}
 															</button>
 														{/if}
 														<a
 															class="ui-btn ui-btn-icon ui-btn-ghost ui-btn-sm"
-															aria-label={`مشاهده ${part.getTitleSurahOrinted()}`}
+										aria-label={`${m.common_view()} ${part.getTitleSurahOrinted()}`}
 															target="_blank"
 															rel="noreferrer"
 															href={part.getLink(khatm)}><IconEye /></a
@@ -345,8 +346,8 @@
 						{:else}
 							<div class="ui-khatm-browser-empty">
 								<IconCheck />
-								<strong>بخش آزادی در این تقسیم‌بندی باقی نمانده است</strong>
-								<span>فیلتر جزءهای تکمیل‌شده را خاموش کنید تا همه جزئیات نمایش داده شوند.</span>
+								<strong>{m.list_no_free_parts()}</strong>
+								<span>{m.list_disable_filter()}</span>
 							</div>
 						{/if}
 					</div>
@@ -356,14 +357,14 @@
 	{:else}
 		<div class="ui-khatm-browser-empty ui-khatm-browser-empty-page">
 			<IconSearch />
-			<strong>{juzQuery ? 'جزئی با این شماره پیدا نشد' : 'همه جزءها تکمیل شده‌اند'}</strong>
+			<strong>{juzQuery ? m.list_no_juz() : m.list_all_completed()}</strong>
 			<span
 				>{juzQuery
-					? 'شماره دیگری را جست‌وجو کنید.'
-					: 'برای مرور نتیجه، فیلتر جزءهای دارای ظرفیت را خاموش کنید.'}</span
+					? m.list_search_another_number()
+					: m.list_disable_capacity_filter()}</span
 			>
 			{#if juzQuery}<button type="button" class="ui-btn ui-btn-soft" onclick={clearSearch}
-					>پاک‌کردن جست‌وجو</button
+					>{m.wizard_clear_search()}</button
 				>{/if}
 		</div>
 	{/if}

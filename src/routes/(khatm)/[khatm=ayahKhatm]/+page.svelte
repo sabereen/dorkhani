@@ -16,6 +16,7 @@
 	import IconSparkle from '~icons/ic/round-auto-awesome'
 	import IconTune from '~icons/ic/round-tune'
 	import IconDone from '~icons/ic/round-check-circle'
+	import * as m from '$lib/paraglide/messages.js'
 
 	const khatmContext = useKathmContext()
 	const khatm = $derived(khatmContext.khatm)
@@ -90,17 +91,17 @@
 	{#if !selectedAyat.length}
 		<div class="ui-khatm-panel-header">
 			<span class="ui-khatm-option-icon"><IconSparkle /></span>
-			<h2>سهم امروز شما از این ختم</h2>
-			<p>با یک انتخاب، نزدیک‌ترین آیات خوانده‌نشده به شما سپرده می‌شود.</p>
+			<h2>{m.ayah_today_share()}</h2>
+			<p>{m.ayah_today_description()}</p>
 		</div>
 	{/if}
 	<div>
 		{#if isFinished}
 			<div class="ui-khatm-confirm">
 				<span class="ui-khatm-confirm-icon"><IconDone /></span>
-				<h2>آخرین آیه هم به پایان رسید</h2>
+				<h2>{m.ayah_last_completed()}</h2>
 				<button class="ui-btn ui-btn-success ui-btn-block" onclick={() => khatm.refresh()}>
-					پایان
+					{m.ayah_end()}
 					{#if khatm.isSerial}
 						{khatm.getRoundTitle()}
 					{/if}
@@ -125,20 +126,20 @@
 						<div class="ui-spinner ui-spinner-md" transition:slide={{ axis: 'x' }}></div>
 					{/if}
 					{#if selectedAyat.length}
-						پذیرفتن یک آیه بیشتر
+						{m.ayah_accept_one_more()}
 					{:else}
-						پذیرفتن خواندن یک آیه
+						{m.ayah_accept_one()}
 					{/if}
 				</button>
 
-				{@render smallButton('پذیرفتن ۳ آیه متوالی', 3)}
-				{@render smallButton('پذیرفتن ۵ آیه متوالی', 5)}
-				{@render smallButton('پذیرفتن ۷ آیه متوالی', 7)}
-				{@render smallButton('پذیرفتن ۱۰ آیه متوالی', 10)}
+				{@render smallButton(m.ayah_accept_consecutive({ count: (3).toLocaleString(localeTag()) }), 3)}
+				{@render smallButton(m.ayah_accept_consecutive({ count: (5).toLocaleString(localeTag()) }), 5)}
+				{@render smallButton(m.ayah_accept_consecutive({ count: (7).toLocaleString(localeTag()) }), 7)}
+				{@render smallButton(m.ayah_accept_consecutive({ count: (10).toLocaleString(localeTag()) }), 10)}
 
 				<button type="button" class="ui-btn ui-btn-ghost col-span-2" onclick={openSettings}>
 					<IconTune class="size-5" />
-					تنظیم ترجمه، صوت و نمایش
+					{m.ayah_settings()}
 				</button>
 			</div>
 		{/if}
@@ -146,5 +147,5 @@
 </section>
 
 <Modal bind:open={() => modalSettings, () => history.back()} contentClass="bg-transparent p-0">
-	<SettingsAyahKhatm class="!w-full" legend="تنظیم ترجمه، صوت و نمایش" />
+	<SettingsAyahKhatm class="!w-full" legend={m.ayah_settings()} />
 </Modal>

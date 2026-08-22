@@ -5,6 +5,7 @@
 	import IconVolunteer from '~icons/ic/round-volunteer-activism'
 	import IconEye from '~icons/ic/round-visibility'
 	import IconCheck from '~icons/ic/round-check-circle'
+	import * as m from '$lib/paraglide/messages.js'
 
 	type Props = {
 		range: QuranRange | null
@@ -40,15 +41,15 @@
 {#if range}
 	<div class="ui-khatm-confirm ui-khatm-confirm-review">
 		<span class="ui-khatm-confirm-icon"><IconVolunteer /></span>
-		<span class="ui-khatm-wizard-kicker">بررسی نهایی انتخاب</span>
-		<h2>این سهم را برای قرائت برمی‌دارید؟</h2>
+		<span class="ui-khatm-wizard-kicker">{m.wizard_confirm_eyebrow()}</span>
+		<h2>{m.wizard_confirm_title()}</h2>
 		<p class="ui-khatm-confirm-description">
-			پس از تأیید، این بازه به‌عنوان سهم شما ثبت می‌شود تا همراه دیگری آن را انتخاب نکند.
+			{m.wizard_confirm_description()}
 		</p>
 
 		<div class="ui-khatm-confirm-range">
 			<IconCheck aria-hidden="true" />
-			<div><span>سهم انتخاب‌شده</span><strong>{range.getTitle()}</strong></div>
+			<div><span>{m.wizard_selected_share()}</span><strong>{range.getTitle()}</strong></div>
 		</div>
 
 		<a
@@ -58,24 +59,24 @@
 			class="ui-btn ui-btn-soft ui-btn-sm"
 		>
 			<IconEye />
-			دیدن آیات پیش از تأیید
+			{m.wizard_preview_before_confirm()}
 		</a>
 
 		<div class="ui-khatm-confirm-actions">
 			<button class="ui-btn ui-btn-primary" disabled={loading} onclick={pickRange}>
 				{#if loading}<span class="ui-spinner"></span>{/if}
-				{loading ? 'در حال ثبت سهم…' : 'بله، این سهم را برمی‌دارم'}
+				{loading ? m.wizard_confirm_loading() : m.wizard_confirm_action()}
 			</button>
 			<button class="ui-btn ui-btn-ghost" disabled={loading} onclick={onClose}
-				>انتخاب بازه دیگر</button
+				>{m.wizard_choose_another_range()}</button
 			>
 		</div>
 	</div>
 {:else}
 	<div class="ui-khatm-empty ui-khatm-wizard-empty">
-		<h3>این بازه دیگر آزاد نیست</h3>
-		<p>یکی از همراهان کمی زودتر آن را انتخاب کرده است. لطفاً بازه دیگری بردارید.</p>
-		<button class="ui-btn ui-btn-primary" type="button" onclick={onClose}>دیدن بازه‌های آزاد</button
+		<h3>{m.wizard_range_taken_title()}</h3>
+		<p>{m.wizard_range_taken_description()}</p>
+		<button class="ui-btn ui-btn-primary" type="button" onclick={onClose}>{m.wizard_view_free_ranges()}</button
 		>
 	</div>
 {/if}

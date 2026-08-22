@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Header from '$lib/components/Header.svelte'
 	import type { Snippet } from 'svelte'
+	import PageTitle from './PageTitle.svelte'
 
 	type Props = {
 		title: string
@@ -12,8 +13,9 @@
 	const { title, eyebrow, summary, children }: Props = $props()
 </script>
 
+<PageTitle {title} />
+
 <svelte:head>
-	<title>{title} | ختم قرآن</title>
 	<meta name="description" content={summary} />
 </svelte:head>
 

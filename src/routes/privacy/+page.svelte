@@ -1,11 +1,12 @@
 <script lang="ts">
 	import LegalPage from '$lib/components/LegalPage.svelte'
+	import { page } from '$app/state'
 </script>
 
 <LegalPage
 	title="حریم خصوصی"
 	eyebrow="شفافیت در نگهداری داده‌ها"
-	summary="این صفحه توضیح می‌دهد چه داده‌هایی برای فراهم‌کردن تجربهٔ ختم جمعی قرآن پردازش می‌شوند و چه انتخاب‌هایی در اختیار شماست."
+	summary={`این صفحه توضیح می‌دهد چه داده‌هایی برای فراهم‌کردن تجربهٔ ${page.data.branding.name} پردازش می‌شوند و چه انتخاب‌هایی در اختیار شماست.`}
 >
 	<section class="ui-legal-section" aria-labelledby="privacy-purpose">
 		<span class="ui-legal-section-number" aria-hidden="true">۱</span>

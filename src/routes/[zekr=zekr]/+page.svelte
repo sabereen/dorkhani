@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageProps } from './$types'
 	import Header from '$lib/components/Header.svelte'
+	import PageTitle from '$lib/components/PageTitle.svelte'
 	import IconShare from '~icons/ic/outline-share'
 	import IconCopy from '~icons/ic/outline-copy-all'
 	import IconAutoAwesome from '~icons/ic/round-auto-awesome'
@@ -10,7 +11,7 @@
 	import { Zekr } from '$lib/entity/Zekr.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { browser } from '$app/environment'
-	import { rebaseFullPath } from '$lib/utility/path'
+	import { page } from '$app/state'
 	import ExpandableText from '$lib/components/ExpandableText.svelte'
 	import ZekrActions from './ZekrActions.svelte'
 	import { idb_localZekr_get } from '$lib/idb/localZekr'
@@ -47,13 +48,14 @@
 	const remainingCount = $derived(Math.max(zekr.targetCount - zekr.count, 0))
 </script>
 
+<PageTitle title={zekr.title} />
+
 <svelte:head>
-	<title>ختم اذکار | {zekr.title}</title>
 	<meta name="description" content={zekr.description} />
-	<meta property="og:title" content="ختم اذکار | {zekr.title}" />
+	<meta property="og:title" content={`${zekr.title} | ${page.data.branding.name}`} />
 	<meta property="og:description" content={zekr.description} />
-	<meta property="og:logo" content={rebaseFullPath('/hero.png')} />
-	<meta property="og:image" content={rebaseFullPath('/hero.png')} />
+	<meta property="og:logo" content={new URL(page.data.branding.icon512Url, page.url.origin).href} />
+	<meta property="og:image" content={new URL(page.data.branding.icon512Url, page.url.origin).href} />
 	<meta property="og:url" content={zekr.link} />
 	<meta property="og:type" content="website" />
 </svelte:head>

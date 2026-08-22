@@ -2,6 +2,7 @@
 	import { base } from '$app/paths'
 	import { validateForm } from '$lib/actions/validateForm'
 	import Header from '$lib/components/Header.svelte'
+	import PageTitle from '$lib/components/PageTitle.svelte'
 	import type { PageProps } from './$types'
 
 	const { data, form }: PageProps = $props()
@@ -10,7 +11,7 @@
 	)
 </script>
 
-<svelte:head><title>ویرایش ختم | ختم قرآن</title></svelte:head>
+<PageTitle title="ویرایش ختم" />
 
 <Header title="ویرایش ختم" />
 

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Header from '$lib/components/Header.svelte'
+	import PageTitle from '$lib/components/PageTitle.svelte'
 	import KhatmListCard from '$lib/components/KhatmListCard.svelte'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import { authClient } from '$lib/auth-client'
@@ -17,7 +18,7 @@
 	}
 </script>
 
-<svelte:head><title>حساب من | ختم قرآن</title></svelte:head>
+<PageTitle title="حساب من" />
 
 <Header title="حساب من" />
 

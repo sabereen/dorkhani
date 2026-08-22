@@ -3,6 +3,7 @@
 	import type { ReviewStatus } from '@prisma-client'
 	import AdminNav from '$lib/components/AdminNav.svelte'
 	import Header from '$lib/components/Header.svelte'
+	import PageTitle from '$lib/components/PageTitle.svelte'
 	import KhatmListCard from '$lib/components/KhatmListCard.svelte'
 	import Tab from '$lib/components/Tab.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
@@ -224,9 +225,7 @@
 	)
 </script>
 
-<svelte:head>
-	<title>ختم قرآن | بررسی ختم‌ها</title>
-</svelte:head>
+<PageTitle title="بررسی ختم‌ها" />
 
 <Header title="بررسی ختم‌ها" />
 

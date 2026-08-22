@@ -3,6 +3,7 @@
 	import { authClient } from '$lib/auth-client'
 	import { validateForm } from '$lib/actions/validateForm'
 	import AuthShell from '$lib/components/AuthShell.svelte'
+	import PageTitle from '$lib/components/PageTitle.svelte'
 	import IconArrow from '~icons/ic/round-arrow-forward'
 	import IconCheck from '~icons/ic/round-check-circle'
 	import IconEmail from '~icons/ic/round-email'
@@ -27,7 +28,7 @@
 	}
 </script>
 
-<svelte:head><title>بازیابی رمز | ختم قرآن</title></svelte:head>
+<PageTitle title="بازیابی رمز" />
 
 <AuthShell
 	title="بازیابی رمز عبور"

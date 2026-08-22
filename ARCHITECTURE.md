@@ -104,7 +104,7 @@ flowchart LR
 ### راه‌اندازی سرور
 
 1. `src/hooks.server.ts:init`، تابع `appSettingsService_init()` را اجرا می‌کند.
-2. `src/lib/server/service/appSettings.ts` رکورد ثابت `TAppSettings(id=1)` را می‌خواند یا می‌سازد، config را در singleton حافظه نگه می‌دارد و ختم‌های showcase را hydrate می‌کند.
+2. `src/lib/server/service/appSettings.ts` رکورد ثابت `TAppSettings(id=1)` را می‌خواند یا می‌سازد و config عمومی، از جمله برندینگ، را در singleton حافظه نگه می‌دارد؛ تصویرهای برند جدا از config در ستون‌های binary همان رکورد قرار دارند.
 3. نخستین import دیتابیس، `src/lib/server/db.ts` را اجرا می‌کند؛ URL اتصال تجزیه و `PrismaMariaDb` ساخته می‌شود. در development یک Prisma client روی `globalThis` reuse می‌شود.
 4. `hooks.server.ts:handle` مقدار معتبر Cookie با نام `colorScheme` را هنگام SSR به `data-color-scheme` روی `<html>` تزریق می‌کند.
 5. `hooks.server.ts:handleError` در development خطا را log می‌کند و در صورت فعال بودن provider ایتا، خلاصهٔ خطا را به مدیر می‌فرستد.
@@ -164,7 +164,7 @@ Route group با نام `(khatm)` در URL دیده نمی‌شود. matcherها
 | `/z{id}`                             | `[zekr=zekr]/+page.server.ts`, `+page.svelte`, `ZekrActions.svelte`                  | دریافت ذکر، ثبت تعداد تقبل‌شده و نمایش سهم شخصی از IndexedDB                                                                                                            |
 | `/admin`                             | `admin/+layout.server.ts`, `+page.svelte`                                            | حفاظت تمام زیرمسیرها با Basic Auth و نمایش ورودی ابزارهای مدیریت                                                                                                        |
 | `/admin/review`                      | `admin/review/+page.svelte`                                                          | دریافت فهرست pending/approved/rejected، تغییر `reviewStatus` و انتخاب/مرتب‌سازی حداکثر شش دنبالهٔ دائمی برای ویترین شاخص                                                |
-| `/admin/app-settings`                | `admin/app-settings/+page.server.ts`, `+page.svelte`                                 | مدیریت support link، تنظیمات notification و اجرای refresh وضعیت ختم‌ها                                                                                                  |
+| `/admin/app-settings`                | `admin/app-settings/+page.server.ts`, `+page.svelte`                                 | مدیریت برندینگ، support link، notification و اجرای refresh وضعیت ختم‌ها                                                                                                  |
 | `/admin/add-zekr`                    | `admin/add-zekr/+page.server.ts`, `+page.svelte`, `sucess-result.svelte`             | ساخت ذکر و ثبت آن به‌عنوان ذکر متعلق به کاربر در IndexedDB همان مرورگر                                                                                                  |
 | `/manifest.json`                     | `manifest.json/+server.ts`                                                           | manifest پویا و base-path-aware برای PWA                                                                                                                                |
 
@@ -323,6 +323,9 @@ erDiagram
     TAppSettings {
         int id PK
         json config
+        blob heroImage
+        blob appIcon192
+        blob appIcon512
     }
     TSystemStatistics {
         int id PK
@@ -345,7 +348,7 @@ erDiagram
 - `TKhatmPart.start/end` و `TKhatm.versesRead` از عددهای unsigned مناسب دامنهٔ ۶۲۳۶ آیه استفاده می‌کنند. `TKhatm.pageProgress` درصد ۰ تا ۱۰۰ صفحه‌محور را برای خواندن مستقیم در فهرست‌ها نگه می‌دارد.
 - وزن هر آیه معکوس تعداد آیات صفحهٔ مصحف آن است. انتخاب بازه و انتخاب ترتیبی آیات، `pageProgress` را همراه `versesRead` در یک تراکنش به‌روز می‌کنند و migration داده‌های قدیمی را از partها یا بازهٔ ترتیبی backfill می‌کند.
 - `TKhatmSeries.featuredOrder` nullable است؛ مقدارهای ۱ تا ۶ ترتیب ویترین شاخص را تعیین می‌کنند و سرویس تراکنشی آن‌ها را پیوسته نگه می‌دارد.
-- `TAppSettings` عملاً singleton با `id=1` است و config ساختار support/notification دارد.
+- `TAppSettings` عملاً singleton با `id=1` است؛ config ساختار support/notification/branding و ستون‌های binary تصاویر سفارشی را نگه می‌دارد.
 - `TSystemStatistics(id=1)` و `TDailyStatistics(day)` شمارنده‌های ازپیش‌تجمیع‌شده‌اند؛ دیتابیس منبع حقیقت است و cache روی `globalThis` پس از commit به‌صورت write-through به‌روز می‌شود.
 - migrationهای timestamped در `prisma/migrations/` تاریخچهٔ افزودن بسم‌الله، app settings، ذکر، سری ختم و review status را نگه می‌دارند.
 
@@ -393,10 +396,10 @@ repositoryهای Dexie فیلدهای snapshot، از جمله `pageProgress`، 
 | `postcss.config.js` | preset-env با غیرفعال‌بودن تبدیل logical properties                        |
 | `tsconfig.json`     | strict mode، bundler resolution، JSON و type آیکون‌های Svelte 5            |
 | `prisma.config.ts`  | مسیر schema/migration و ترجیح `DIRECT_DATABASE_URL` برای CLI در صورت وجود  |
-| `src/app.html`      | shell فارسی RTL، manifest، viewport و preload داده روی hover               |
+| `src/app.html`      | shell فارسی RTL، viewport و preload داده روی hover                          |
 | `src/app.css`       | ورودی فونت و سیستم طراحی محلی؛ توکن‌ها، اجزا و layout در `src/lib/styles/` |
 | `src/app.d.ts`      | توسعهٔ `App.Error` با type دامنه‌ای `conflict-ranges`                      |
-| `static/*`          | favicon، hero، iconهای PWA و robots.txt                                    |
+| `static/*`          | fallback تصویر Hero و آیکن‌های PWA، favicon و robots.txt                   |
 
 متغیرهای محیطی مهم:
 
@@ -408,6 +411,7 @@ repositoryهای Dexie فیلدهای snapshot، از جمله `pageProgress`، 
 | `PUBLIC_FONT_PROXY`        | فعال‌سازی endpoint فونت QPC و گزینه‌های UI مرتبط                   |
 | `BASE_PATH`                | prefix استقرار از `svelte.config.js`                               |
 | `ORIGIN`                   | تنظیم origin runtime adapter/SvelteKit در استقرار                  |
+| `BODY_SIZE_LIMIT`          | سقف بدنهٔ adapter-node؛ برای آپلود برندینگ حداقل `12M`              |
 | `PRIVATE_KHATM_SECRET`     | در `config.ts` export می‌شود اما در معماری فعلی مصرف نمی‌شود       |
 
 ## ۱۴. تست‌ها و پوشش فعلی

@@ -1,6 +1,7 @@
 import { base } from '$app/paths'
 import { env } from '$env/dynamic/private'
 import { userNotification_enableEndpointFromProvider } from '$service/user-notification'
+import { appSettings_store } from '$service/appSettings'
 import { json, type RequestHandler } from '@sveltejs/kit'
 import { timingSafeEqual } from 'node:crypto'
 import { z } from 'zod'
@@ -37,7 +38,7 @@ async function sendWelcome(chatId: string) {
 		headers: { 'content-type': 'application/json' },
 		body: JSON.stringify({
 			chat_id: chatId,
-			text: 'برای ورود به سامانه ختم جمعی قرآن، برنامه را باز کنید.',
+			text: `برای ورود به ${appSettings_store.config.branding.name}، برنامه را باز کنید.`,
 			reply_markup: {
 				inline_keyboard: [[{ text: 'باز کردن برنامه', web_app: { url: appUrl } }]],
 			},

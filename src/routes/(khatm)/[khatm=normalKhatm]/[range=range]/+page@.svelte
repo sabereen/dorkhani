@@ -2,6 +2,7 @@
 	import type { PageProps } from './$types'
 	import MultipleAyah from '$lib/components/Quran/MultipleAyah.svelte'
 	import Header from '$lib/components/Header.svelte'
+	import PageTitle from '$lib/components/PageTitle.svelte'
 	import { QuranRange } from '$lib/entity/Range'
 	import { page } from '$app/state'
 	import IconNextPlan from '~icons/ic/outline-next-plan'
@@ -13,8 +14,9 @@
 	const khatmUrl = $derived(page.url.href.replace('/' + data.rangeParam, ''))
 </script>
 
+<PageTitle title={range.getTitle()} />
+
 <svelte:head>
-	<title>ختم قرآن | {range.getTitle()}</title>
 	<meta name="robots" content="noindex" />
 </svelte:head>
 

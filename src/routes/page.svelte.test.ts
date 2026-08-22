@@ -2,6 +2,7 @@ import { describe, test, expect } from 'vitest'
 import '@testing-library/jest-dom/vitest'
 import { render, screen, within } from '@testing-library/svelte'
 import Page from './+page.svelte'
+import { DEFAULT_BRANDING_CONFIG, getPublicBranding } from '$lib/entity/Branding'
 
 describe('/+page.svelte', () => {
 	const data = {
@@ -18,6 +19,7 @@ describe('/+page.svelte', () => {
 				completedRounds: index % 2,
 			})),
 		},
+		branding: getPublicBranding(DEFAULT_BRANDING_CONFIG),
 	}
 
 	test('renders the landing page and its aggregated statistics', () => {
@@ -57,5 +59,24 @@ describe('/+page.svelte', () => {
 
 		expect(screen.getByRole('heading', { name: 'ختم‌های شاخص' })).toBeInTheDocument()
 		expect(screen.getByRole('link', { name: 'ختم دائمی برای سلامتی' })).toBeInTheDocument()
+	})
+
+	test('renders configured hero branding', () => {
+		render(Page, {
+			props: {
+				data: {
+					...data,
+					branding: {
+						...data.branding,
+						heroTitle: 'عنوان سفارشی',
+						heroHighlight: 'بخش برجسته',
+						heroDescription: 'توضیح سفارشی Hero',
+					},
+				},
+			},
+		} as never)
+
+		expect(screen.getByRole('heading', { name: /عنوان سفارشی/ })).toBeInTheDocument()
+		expect(screen.getByText('توضیح سفارشی Hero')).toBeInTheDocument()
 	})
 })

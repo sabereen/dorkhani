@@ -3,6 +3,7 @@
 	import { base } from '$app/paths'
 	import { navigating, page } from '$app/state'
 	import { authClient } from '$lib/auth-client'
+	import { DEFAULT_BRANDING_CONFIG, getPublicBranding } from '$lib/entity/Branding'
 	import type { Component, Snippet } from 'svelte'
 	import IconAdd from '~icons/ic/round-add-circle-outline'
 	import IconAccount from '~icons/ic/round-account-circle'
@@ -30,6 +31,9 @@
 	}
 
 	const { title, link, end, start }: Props = $props()
+	const branding = $derived(
+		page.data.branding ?? getPublicBranding(DEFAULT_BRANDING_CONFIG, base),
+	)
 	const from = navigating.from
 	let open = $state(false)
 	let accountMenu: HTMLDetailsElement | undefined = $state()
@@ -88,14 +92,14 @@
 			class="ui-header-brand"
 			class:ui-header-brand-desktop={title}
 			href={`${base}/`}
-			aria-label="سامانه ختم جمعی قرآن"
+			aria-label={branding.name}
 		>
 			<span class="ui-header-brand-mark">
-				<img src={`${base}/hero.png`} width="48" height="48" alt="" />
+				<img src={branding.icon192Url} width="48" height="48" alt="" />
 			</span>
 			<span class="ui-header-brand-copy">
-				<small>سامانه همراهی قرآنی</small>
-				<strong>ختم جمعی قرآن</strong>
+				<small>{branding.tagline}</small>
+				<strong>{branding.name}</strong>
 			</span>
 		</a>
 

@@ -2,6 +2,7 @@ import { building } from '$app/environment'
 import { getRequestEvent } from '$app/server'
 import { env } from '$env/dynamic/private'
 import { db } from '$lib/server/db'
+import { DEFAULT_BRANDING_CONFIG } from '$lib/entity/Branding'
 import { prismaAdapter } from '@better-auth/prisma-adapter'
 import { betterAuth } from 'better-auth'
 import { sveltekitCookies } from 'better-auth/svelte-kit'
@@ -13,7 +14,7 @@ const authBaseUrl = env.BETTER_AUTH_URL || env.ORIGIN
 const isSecureOrigin = authBaseUrl?.startsWith('https://')
 
 export const auth = betterAuth({
-	appName: 'سامانه ختم جمعی قرآن',
+	appName: DEFAULT_BRANDING_CONFIG.name,
 	baseURL: authBaseUrl,
 	secret: env.BETTER_AUTH_SECRET,
 	database: prismaAdapter(db, { provider: 'mysql' }),

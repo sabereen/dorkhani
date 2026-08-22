@@ -1,4 +1,8 @@
 import { db } from '../db'
+import {
+	DEFAULT_BRANDING_CONFIG,
+	type BrandingConfig,
+} from '$lib/entity/Branding'
 
 export const DEFAULT_STALE_KHATM_RETENTION_DAYS = 30
 export const MIN_STALE_KHATM_RETENTION_DAYS = 1
@@ -11,7 +15,7 @@ export type AiKhatmReviewConfig = {
 	apiKey?: string
 }
 
-type Config = {
+export type Config = {
 	/** لینک پشتیبانی سایت */
 	readonly supportLink?: string
 	readonly staleKhatmRetentionDays: number
@@ -24,6 +28,13 @@ type Config = {
 		eitaaChatId?: string
 	}
 	readonly aiKhatmReview: AiKhatmReviewConfig
+	readonly branding: BrandingConfig
+}
+
+export type BrandingAssets = {
+	hero?: { data: Uint8Array; mimeType: 'image/png' | 'image/jpeg' }
+	icon192?: Uint8Array
+	icon512?: Uint8Array
 }
 
 type Store = { config: Config }
@@ -40,6 +51,7 @@ const store: Store = {
 			baseUrl: '',
 			model: '',
 		},
+		branding: DEFAULT_BRANDING_CONFIG,
 	},
 }
 
@@ -50,7 +62,10 @@ export async function appSettingsService_init() {
 }
 
 export async function appSettingsService_update() {
-	const result = await db.tAppSettings.findUnique({ where: { id: 1 } })
+	const result = await db.tAppSettings.findUnique({
+		where: { id: 1 },
+		select: { config: true },
+	})
 
 	if (!result) {
 		await db.tAppSettings.create({
@@ -85,6 +100,10 @@ async function apply(newConfig?: Config | null) {
 			...newConfig.aiKhatmReview,
 			enabled: newConfig.aiKhatmReview?.enabled === true,
 		},
+		branding: {
+			...DEFAULT_BRANDING_CONFIG,
+			...newConfig.branding,
+		},
 	}
 }
 
@@ -96,6 +115,24 @@ export async function appSettingsService_setKey<T extends keyof Config>(key: T, 
 	await db.tAppSettings.update({
 		where: { id: 1 },
 		data: { config: newConfig },
+	})
+	store.config = newConfig
+}
+
+export async function appSettingsService_setConfig(
+	newConfig: Config,
+	assets: BrandingAssets = {},
+) {
+	await db.tAppSettings.update({
+		where: { id: 1 },
+		data: {
+			config: newConfig,
+			...(assets.hero
+				? { heroImage: assets.hero.data, heroImageMime: assets.hero.mimeType }
+				: {}),
+			...(assets.icon192 ? { appIcon192: assets.icon192 } : {}),
+			...(assets.icon512 ? { appIcon512: assets.icon512 } : {}),
+		},
 	})
 	store.config = newConfig
 }

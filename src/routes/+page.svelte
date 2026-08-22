@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { base } from '$app/paths'
+	import { page } from '$app/state'
 	import Header from '$lib/components/Header.svelte'
 	import KhatmListCard from '$lib/components/KhatmListCard.svelte'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import { Zekr } from '$lib/entity/Zekr.svelte'
-	import { rebaseFullPath } from '$lib/utility/path'
+	import { DEFAULT_BRANDING_CONFIG, getPublicBranding } from '$lib/entity/Branding'
 	import type { PageProps } from './$types'
 	import HistoryKhatm from './history/history-khatm.svelte'
 	import HistoryPickedRange from './history/history-picked-range.svelte'
@@ -30,6 +31,9 @@
 	const showcase = $derived(Khatm.fromPlainList(data.showcase))
 	const zekrList = $derived(Zekr.fromPlainList(data.zekrList))
 	const statistics = $derived(data.statistics)
+	const branding = $derived(
+		data.branding ?? getPublicBranding(DEFAULT_BRANDING_CONFIG, base),
+	)
 	const maximumDailyAyahs = $derived(
 		Math.max(1, ...statistics.daily.map((item) => item.recitedAyahs)),
 	)
@@ -60,12 +64,15 @@
 </script>
 
 <svelte:head>
-	<title>ختم جمعی قرآن | هر آیه، یک قدم روشن</title>
+	<title>{branding.seoTitle}</title>
 	<meta
 		name="description"
-		content="ختم قرآن را با دوستان و خانواده آغاز کنید، بازه‌های قرائت را میان همراهان تقسیم کنید و پیشرفت جمع را یک‌جا ببینید."
+		content={branding.seoDescription}
 	/>
-	<meta property="og:image" content={rebaseFullPath('/hero.png')} />
+	<meta property="og:title" content={branding.seoTitle} />
+	<meta property="og:description" content={branding.seoDescription} />
+	<meta property="og:logo" content={new URL(branding.icon512Url, page.url.origin).href} />
+	<meta property="og:image" content={new URL(branding.icon512Url, page.url.origin).href} />
 </svelte:head>
 
 <Header />
@@ -80,11 +87,8 @@
 				<IconAutoAwesome class="size-5" />
 				یک قرار جمعی برای انس با قرآن
 			</span>
-			<h1 id="landing-title">هر آیه، یک قدم؛<br /><span>هر همراه، یک نور</span></h1>
-			<p>
-				یک ختم گروهی بسازید، آن را با عزیزانتان به اشتراک بگذارید و قدم‌به‌قدم تا پایان قرآن کنار هم
-				بمانید.
-			</p>
+			<h1 id="landing-title">{branding.heroTitle}<br /><span>{branding.heroHighlight}</span></h1>
+			<p>{branding.heroDescription}</p>
 			<div class="landing-hero-actions">
 				<a class="ui-btn ui-btn-xl landing-primary-action" href={`${base}/add`}>
 					<IconAdd class="size-6" />
@@ -102,9 +106,9 @@
 			</div>
 		</div>
 
-		<div class="landing-visual" aria-label="تصویری از مسیر نورانی انس با قرآن">
+		<div class="landing-visual">
 			<div class="landing-image-frame">
-				<img src={`${base}/hero.png`} width="480" height="480" alt="دروازه‌ای نورانی به سوی قرآن" />
+				<img src={branding.heroImageUrl} width="480" alt={branding.heroImageAlt} />
 			</div>
 			<div class="landing-floating-card landing-floating-top">
 				<span class="landing-floating-icon"><IconGroups /></span>
@@ -618,7 +622,11 @@
 		display: block;
 		width: 100%;
 		height: auto;
+		max-height: 28rem;
+		margin-right: auto;
+		margin-left: auto;
 		border-radius: var(--ui-radius-lg);
+		object-fit: contain;
 	}
 
 	.landing-floating-card {
@@ -1572,6 +1580,7 @@
 		}
 
 		.landing-image-frame img {
+			max-height: 20rem;
 			border-radius: 1.1rem;
 		}
 

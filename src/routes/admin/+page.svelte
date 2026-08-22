@@ -2,6 +2,8 @@
 	import { base } from '$app/paths'
 	import AdminNav from '$lib/components/AdminNav.svelte'
 	import Header from '$lib/components/Header.svelte'
+	import PageTitle from '$lib/components/PageTitle.svelte'
+	import { page } from '$app/state'
 	import IconArrow from '~icons/ic/round-arrow-back'
 	import IconDashboard from '~icons/ic/round-home'
 	import IconReview from '~icons/ic/outline-check-box'
@@ -10,11 +12,12 @@
 	import IconShowcase from '~icons/ic/baseline-storefront'
 </script>
 
+<PageTitle title="پیشخوان مدیریت" />
+
 <svelte:head>
-	<title>ختم قرآن | پیشخوان مدیریت</title>
 	<meta
 		name="description"
-		content="پیشخوان مدیریت سامانه ختم جمعی قرآن برای بررسی ختم‌ها و تنظیم سرویس‌ها"
+		content={`پیشخوان مدیریت ${page.data.branding.name} برای بررسی ختم‌ها و تنظیم سرویس‌ها`}
 	/>
 </svelte:head>
 
@@ -75,7 +78,7 @@
 				<span class="ui-admin-action-icon"><IconSettings /></span>
 				<span class="ui-admin-action-copy">
 					<strong>تنظیمات سامانه</strong>
-					<small>مدیریت نگهداری داده‌ها، پشتیبانی و اعلان‌ها</small>
+					<small>مدیریت برندینگ، نگهداری داده‌ها، پشتیبانی و اعلان‌ها</small>
 				</span>
 				<span class="ui-admin-action-arrow" aria-hidden="true"><IconArrow /></span>
 			</a>

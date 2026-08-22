@@ -1,11 +1,12 @@
 <script lang="ts">
 	import LegalPage from '$lib/components/LegalPage.svelte'
+	import { page } from '$app/state'
 </script>
 
 <LegalPage
 	title="شرایط استفاده"
 	eyebrow="همراهی آگاهانه"
-	summary="با استفاده از سامانهٔ ختم جمعی قرآن، می‌پذیرید که این شرایط را مطالعه کرده و به آن‌ها پایبند باشید."
+	summary={`با استفاده از ${page.data.branding.name}، می‌پذیرید که این شرایط را مطالعه کرده و به آن‌ها پایبند باشید.`}
 >
 	<section class="ui-legal-section" aria-labelledby="terms-acceptance">
 		<span class="ui-legal-section-number" aria-hidden="true">۱</span>

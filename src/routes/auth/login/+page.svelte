@@ -5,6 +5,7 @@
 	import { claimCreatedKhatms } from '$lib/auth/claimCreatedKhatms'
 	import { validateForm } from '$lib/actions/validateForm'
 	import AuthShell from '$lib/components/AuthShell.svelte'
+	import PageTitle from '$lib/components/PageTitle.svelte'
 	import IconEmail from '~icons/ic/round-email'
 	import IconLanguage from '~icons/ic/round-language'
 	import IconLock from '~icons/ic/round-lock'
@@ -48,9 +49,7 @@
 
 </script>
 
-<svelte:head>
-	<title>ورود | ختم قرآن</title>
-</svelte:head>
+<PageTitle title="ورود" />
 
 <AuthShell
 	title="ورود به حساب"

@@ -1,13 +1,12 @@
 <script lang="ts">
 	import Header from '$lib/components/Header.svelte'
+	import PageTitle from '$lib/components/PageTitle.svelte'
 	import { validateForm } from '$lib/actions/validateForm'
 	import SettingsAyahKhatm from './SettingsAyahKhatm.svelte'
 	import SettingsTheme from './SettingsTheme.svelte'
 </script>
 
-<svelte:head>
-	<title>ختم قرآن | تنظیمات</title>
-</svelte:head>
+<PageTitle title="تنظیمات" />
 
 <Header title="تنظیمات">
 	{#snippet end()}{/snippet}

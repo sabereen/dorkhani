@@ -2,6 +2,7 @@ import { base } from '$app/paths'
 import { env } from '$env/dynamic/private'
 import { authEmail_isConfigured, authEmail_send } from '$lib/server/auth/email'
 import { db } from '$lib/server/db'
+import { appSettings_store } from './appSettings'
 
 export type UserNotificationChannel = 'bale' | 'eitaa' | 'email'
 
@@ -71,7 +72,7 @@ function toMessage(event: UserNotificationEvent): NotificationMessage {
 				forward: {
 					url: khatmUrl,
 					text: [
-						'🌙 دعوت به یک ختم جمعی قرآن',
+						`🌙 دعوت به ${appSettings_store.config.branding.name}`,
 						'',
 						`ختم «${event.title}» آغاز شده است.`,
 						'برای همراهی در این کار خیر، از طریق لینک زیر به جمع ما بپیوندید و سهمی از تلاوت قرآن را بر عهده بگیرید:',

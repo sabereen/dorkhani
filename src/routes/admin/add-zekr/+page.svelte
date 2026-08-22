@@ -3,6 +3,7 @@
 	import { validateForm } from '$lib/actions/validateForm'
 	import AdminNav from '$lib/components/AdminNav.svelte'
 	import Header from '$lib/components/Header.svelte'
+	import PageTitle from '$lib/components/PageTitle.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { Zekr } from '$lib/entity/Zekr.svelte'
 	import type { SubmitFunction } from '@sveltejs/kit'
@@ -32,9 +33,7 @@
 	})
 </script>
 
-<svelte:head>
-	<title>ختم ذکر | ساخت ختم گروهی</title>
-</svelte:head>
+<PageTitle title="ساخت ختم ذکر گروهی" />
 
 <Header title="افزودن ختم ذکر" />
 

@@ -3,6 +3,7 @@
 	import { base } from '$app/paths'
 	import { page } from '$app/state'
 	import Header from '$lib/components/Header.svelte'
+	import { DEFAULT_BRANDING_CONFIG } from '$lib/entity/Branding'
 
 	import IconArrow from '~icons/ic/round-arrow-back'
 	import IconExplore from '~icons/ic/round-explore'
@@ -81,7 +82,7 @@
 </script>
 
 <svelte:head>
-	<title>{page.status} | {technicalType}: {technicalMessage}</title>
+	<title>{page.status} | {technicalType}: {technicalMessage} | {page.data.branding?.name || DEFAULT_BRANDING_CONFIG.name}</title>
 	<meta name="robots" content="noindex" />
 </svelte:head>
 

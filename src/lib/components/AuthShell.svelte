@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { base } from '$app/paths'
+	import { page } from '$app/state'
 	import type { Snippet } from 'svelte'
 	import Header from '$lib/components/Header.svelte'
+	import { DEFAULT_BRANDING_CONFIG, getPublicBranding } from '$lib/entity/Branding'
 	import IconAutoAwesome from '~icons/ic/round-auto-awesome'
 	import IconCheck from '~icons/ic/round-check-circle'
 	import IconGroups from '~icons/ic/round-groups'
@@ -15,6 +17,9 @@
 	}
 
 	const { title, eyebrow, description, children }: Props = $props()
+	const branding = $derived(
+		page.data.branding ?? getPublicBranding(DEFAULT_BRANDING_CONFIG, base),
+	)
 </script>
 
 <Header {title} />
@@ -23,14 +28,14 @@
 	<span class="ui-auth-orb ui-auth-orb-one" aria-hidden="true"></span>
 	<span class="ui-auth-orb ui-auth-orb-two" aria-hidden="true"></span>
 
-	<aside class="ui-auth-story" aria-label="درباره سامانه ختم جمعی قرآن">
+	<aside class="ui-auth-story" aria-label={`درباره ${branding.name}`}>
 		<a class="ui-auth-brand" href={`${base}/`}>
 			<span class="ui-auth-brand-mark">
-				<img src={`${base}/hero.png`} width="54" height="54" alt="" />
+				<img src={branding.icon192Url} width="54" height="54" alt="" />
 			</span>
 			<span>
-				<strong>ختم جمعی قرآن</strong>
-				<small>هر آیه، یک قدم روشن</small>
+				<strong>{branding.name}</strong>
+				<small>{branding.tagline}</small>
 			</span>
 		</a>
 

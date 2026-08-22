@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { LayoutProps } from './$types'
 	import Header from '$lib/components/Header.svelte'
+	import PageTitle from '$lib/components/PageTitle.svelte'
 	import IconViewWizard from '~icons/ic/twotone-view-carousel'
 	import IconViewList from '~icons/ic/outline-view-agenda'
 	import IconViewTable from '~icons/ic/round-calendar-view-month'
@@ -22,7 +23,6 @@
 	import Tab from '$lib/components/Tab.svelte'
 	import { browser } from '$app/environment'
 	import { base } from '$app/paths'
-	import { rebaseFullPath } from '$lib/utility/path'
 	import ExpandableText from '$lib/components/ExpandableText.svelte'
 	import { invalidateAll } from '$app/navigation'
 	import { idb_createdKhatm_hasClaim } from '$lib/idb/createdKhatm'
@@ -127,13 +127,14 @@
 	})
 </script>
 
+<PageTitle title={khatm.title} />
+
 <svelte:head>
-	<title>ختم قرآن | {khatm.title}</title>
 	<meta name="description" content={khatm.description} />
-	<meta property="og:title" content="ختم قرآن | {khatm.title}" />
+	<meta property="og:title" content={`${khatm.title} | ${page.data.branding.name}`} />
 	<meta property="og:description" content={khatm.description} />
-	<meta property="og:logo" content={rebaseFullPath('/hero.png')} />
-	<meta property="og:image" content={rebaseFullPath('/hero.png')} />
+	<meta property="og:logo" content={new URL(page.data.branding.icon512Url, page.url.origin).href} />
+	<meta property="og:image" content={new URL(page.data.branding.icon512Url, page.url.origin).href} />
 	<meta property="og:url" content={khatm.link} />
 	<meta property="og:type" content="website" />
 	{#if khatm.private}

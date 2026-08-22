@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation'
 	import { navigating, page } from '$app/state'
 	import Header from '$lib/components/Header.svelte'
+	import PageTitle from '$lib/components/PageTitle.svelte'
 	import KhatmListCard from '$lib/components/KhatmListCard.svelte'
 	import {
 		KHATM_DIRECTORY_RANGE_TYPES,
@@ -174,9 +175,7 @@
 	}
 </script>
 
-<svelte:head>
-	<title>ختم قرآن | ختم‌های ثبت‌شده</title>
-</svelte:head>
+<PageTitle title="ختم‌های ثبت‌شده" />
 
 <Header title="ختم‌های ثبت‌شده" />
 

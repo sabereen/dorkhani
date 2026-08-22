@@ -1,14 +1,13 @@
 <script lang="ts">
 	import Header from '$lib/components/Header.svelte'
+	import PageTitle from '$lib/components/PageTitle.svelte'
 	import IconHistory from '~icons/ic/round-history'
 	import HistoryKhatm from './history-khatm.svelte'
 	import HistoryPickedRange from './history-picked-range.svelte'
 	import HistoryZekr from './history-zekr.svelte'
 </script>
 
-<svelte:head>
-	<title>ختم قرآن | تاریخچه فعالیت‌های شما</title>
-</svelte:head>
+<PageTitle title="تاریخچه فعالیت‌های شما" />
 
 <Header title="تاریخچه فعالیت‌های شما" />
 

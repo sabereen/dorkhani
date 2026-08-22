@@ -4,6 +4,7 @@
 	import { enhance } from '$app/forms'
 	import { validateForm } from '$lib/actions/validateForm'
 	import Header from '$lib/components/Header.svelte'
+	import PageTitle from '$lib/components/PageTitle.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import SucessResult from './sucess-result.svelte'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
@@ -70,9 +71,7 @@
 	}
 </script>
 
-<svelte:head>
-	<title>ختم قرآن | ایجاد ختم گروهی جدید</title>
-</svelte:head>
+<PageTitle title="ایجاد ختم گروهی جدید" />
 
 <Header title="ایجاد ختم گروهی جدید" />
 

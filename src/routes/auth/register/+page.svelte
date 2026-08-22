@@ -3,6 +3,7 @@
 	import { authClient } from '$lib/auth-client'
 	import { validateForm } from '$lib/actions/validateForm'
 	import AuthShell from '$lib/components/AuthShell.svelte'
+	import PageTitle from '$lib/components/PageTitle.svelte'
 	import IconCheck from '~icons/ic/round-check-circle'
 	import IconEmail from '~icons/ic/round-email'
 	import IconLock from '~icons/ic/round-lock'
@@ -35,7 +36,7 @@
 	}
 </script>
 
-<svelte:head><title>ثبت‌نام | ختم قرآن</title></svelte:head>
+<PageTitle title="ثبت‌نام" />
 
 <AuthShell
 	title="ساخت حساب کاربری"

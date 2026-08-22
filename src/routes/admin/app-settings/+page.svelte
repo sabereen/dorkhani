@@ -4,10 +4,12 @@
 	import { validateForm } from '$lib/actions/validateForm'
 	import AdminNav from '$lib/components/AdminNav.svelte'
 	import Header from '$lib/components/Header.svelte'
+	import PageTitle from '$lib/components/PageTitle.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import { watch } from '$lib/hooks/watch.svelte'
 	import type { SubmitFunction } from '@sveltejs/kit'
+	import { onDestroy } from 'svelte'
 	import type { PageProps } from './$types'
 	import IconCleanup from '~icons/ic/round-delete-sweep'
 	import IconInfo from '~icons/ic/round-check-circle'
@@ -17,10 +19,11 @@
 	import IconSettings from '~icons/ic/round-settings'
 	import IconSupport from '~icons/ic/round-support-agent'
 	import IconPsychology from '~icons/ic/round-psychology'
+	import IconImage from '~icons/ic/round-image'
 
 	const { data, form }: PageProps = $props()
 
-	const { notification, supportLink, staleKhatmRetentionDays, aiKhatmReview } =
+	const { notification, supportLink, staleKhatmRetentionDays, aiKhatmReview, branding } =
 		/* svelte-ignore state_referenced_locally */ data
 
 	const formData = $state({
@@ -33,7 +36,19 @@
 		aiKhatmReviewBaseUrl: aiKhatmReview.baseUrl || '',
 		aiKhatmReviewModel: aiKhatmReview.model || '',
 		aiKhatmReviewApiKey: aiKhatmReview.apiKey || '',
+		name: branding.name,
+		tagline: branding.tagline,
+		heroTitle: branding.heroTitle,
+		heroHighlight: branding.heroHighlight,
+		heroDescription: branding.heroDescription,
+		heroImageAlt: branding.heroImageAlt,
+		seoTitle: branding.seoTitle,
+		seoDescription: branding.seoDescription,
 	})
+	let heroPreview = $state(branding.heroImageUrl)
+	let iconPreview = $state(branding.icon512Url)
+	let heroObjectUrl: string | undefined
+	let iconObjectUrl: string | undefined
 	let submitting = $state(false)
 	let aiConnectionTestLoading = $state(false)
 	let aiConnectionTest: { type: 'success' | 'error'; message: string } | null = $state(null)
@@ -50,6 +65,25 @@
 			}
 		}
 	}
+
+	function previewImage(event: Event, target: 'hero' | 'icon') {
+		const file = (event.currentTarget as HTMLInputElement).files?.[0]
+		if (!file) return
+		if (target === 'hero') {
+			if (heroObjectUrl) URL.revokeObjectURL(heroObjectUrl)
+			heroObjectUrl = URL.createObjectURL(file)
+			heroPreview = heroObjectUrl
+		} else {
+			if (iconObjectUrl) URL.revokeObjectURL(iconObjectUrl)
+			iconObjectUrl = URL.createObjectURL(file)
+			iconPreview = iconObjectUrl
+		}
+	}
+
+	onDestroy(() => {
+		if (heroObjectUrl) URL.revokeObjectURL(heroObjectUrl)
+		if (iconObjectUrl) URL.revokeObjectURL(iconObjectUrl)
+	})
 
 	async function testAiConnection() {
 		aiConnectionTestLoading = true
@@ -114,6 +148,16 @@
 			formData.aiKhatmReviewBaseUrl = form?.aiKhatmReview?.baseUrl || data.aiKhatmReview.baseUrl || ''
 			formData.aiKhatmReviewModel = form?.aiKhatmReview?.model || data.aiKhatmReview.model || ''
 			formData.aiKhatmReviewApiKey = form?.aiKhatmReview?.apiKey || ''
+			if (form?.branding) {
+				formData.name = form.branding.name
+				formData.tagline = form.branding.tagline
+				formData.heroTitle = form.branding.heroTitle
+				formData.heroHighlight = form.branding.heroHighlight
+				formData.heroDescription = form.branding.heroDescription
+				formData.heroImageAlt = form.branding.heroImageAlt
+				formData.seoTitle = form.branding.seoTitle
+				formData.seoDescription = form.branding.seoDescription
+			}
 		},
 	)
 
@@ -131,9 +175,7 @@
 	}
 </script>
 
-<svelte:head>
-	<title>ختم قرآن | تنظیمات سامانه</title>
-</svelte:head>
+<PageTitle title="تنظیمات سامانه" />
 
 <Header title="تنظیمات سامانه" />
 
@@ -145,7 +187,7 @@
 		<div>
 			<span>پیکربندی و نگهداری</span>
 			<h1 id="settings-page-title">تنظیمات عمومی سامانه</h1>
-			<p>رفتارهای اجرایی، مسیر پشتیبانی و اعلان‌های مدیریتی را از این بخش کنترل کنید.</p>
+			<p>هویت بصری، رفتارهای اجرایی، مسیر پشتیبانی و اعلان‌های مدیریتی را از این بخش کنترل کنید.</p>
 		</div>
 	</section>
 
@@ -158,7 +200,75 @@
 			aria-busy={submitting}
 			action=""
 			method="POST"
+			enctype="multipart/form-data"
 		>
+			<section class="ui-admin-settings-section" aria-labelledby="branding-settings-title">
+				<div class="ui-admin-settings-section-heading">
+					<span><IconImage /></span>
+					<div>
+						<h2 id="branding-settings-title">هویت و برندینگ</h2>
+						<p>نام، پیام اصلی و تصاویر عمومی سامانه را مدیریت کنید.</p>
+					</div>
+				</div>
+
+				<div class="ui-admin-field-grid">
+					<div class="ui-admin-field">
+						<label for="input-brand-name" class="ui-field-label">نام برنامه</label>
+						<input bind:value={formData.name} class="ui-input" type="text" name="name" id="input-brand-name" maxlength="60" data-ui-validate required />
+					</div>
+					<div class="ui-admin-field">
+						<label for="input-brand-tagline" class="ui-field-label">شعار کوتاه</label>
+						<input bind:value={formData.tagline} class="ui-input" type="text" name="tagline" id="input-brand-tagline" maxlength="100" data-ui-validate required />
+					</div>
+					<div class="ui-admin-field">
+						<label for="input-hero-title" class="ui-field-label">خط اول عنوان Hero</label>
+						<input bind:value={formData.heroTitle} class="ui-input" type="text" name="heroTitle" id="input-hero-title" maxlength="120" data-ui-validate required />
+					</div>
+					<div class="ui-admin-field">
+						<label for="input-hero-highlight" class="ui-field-label">خط برجستهٔ عنوان Hero</label>
+						<input bind:value={formData.heroHighlight} class="ui-input" type="text" name="heroHighlight" id="input-hero-highlight" maxlength="120" data-ui-validate required />
+					</div>
+				</div>
+
+				<div class="ui-admin-field">
+					<label for="input-hero-description" class="ui-field-label">توضیح Hero</label>
+					<textarea bind:value={formData.heroDescription} class="ui-textarea" name="heroDescription" id="input-hero-description" maxlength="500" rows="3" data-ui-validate required></textarea>
+				</div>
+
+				<div class="ui-admin-field-grid">
+					<div class="ui-admin-field">
+						<label for="input-seo-title" class="ui-field-label">عنوان SEO صفحهٔ اصلی</label>
+						<input bind:value={formData.seoTitle} class="ui-input" type="text" name="seoTitle" id="input-seo-title" maxlength="120" data-ui-validate required />
+					</div>
+					<div class="ui-admin-field">
+						<label for="input-seo-description" class="ui-field-label">توضیح SEO صفحهٔ اصلی</label>
+						<textarea bind:value={formData.seoDescription} class="ui-textarea" name="seoDescription" id="input-seo-description" maxlength="200" rows="3" data-ui-validate required></textarea>
+					</div>
+				</div>
+
+				<div class="ui-admin-brand-assets">
+					<div class="ui-admin-field">
+						<label for="input-hero-image" class="ui-field-label">تصویر Hero</label>
+						<div class="ui-admin-brand-preview ui-admin-brand-preview-hero"><img src={heroPreview} alt="پیش‌نمایش تصویر Hero" /></div>
+						<input class="ui-input" type="file" name="heroImage" id="input-hero-image" accept="image/png,image/jpeg" onchange={(event) => previewImage(event, 'hero')} />
+						<small class="ui-admin-field-hint">PNG یا JPEG، حداکثر ۵ مگابایت و حداقل ۴۸۰×۳۲۰ پیکسل.</small>
+					</div>
+					<div class="ui-admin-field">
+						<label for="input-app-icon" class="ui-field-label">آیکن برنامه</label>
+						<div class="ui-admin-brand-preview ui-admin-brand-preview-icon"><img src={iconPreview} alt="پیش‌نمایش آیکن برنامه" /></div>
+						<input class="ui-input" type="file" name="appIcon" id="input-app-icon" accept="image/png,image/jpeg" onchange={(event) => previewImage(event, 'icon')} />
+						<small class="ui-admin-field-hint">تصویر مربعی PNG یا JPEG، حداکثر ۵ مگابایت و حداقل ۵۱۲×۵۱۲ پیکسل.</small>
+					</div>
+				</div>
+
+				<div class="ui-admin-field">
+					<label for="input-hero-image-alt" class="ui-field-label">متن جایگزین تصویر Hero</label>
+					<input bind:value={formData.heroImageAlt} class="ui-input" type="text" name="heroImageAlt" id="input-hero-image-alt" maxlength="160" data-ui-validate required />
+				</div>
+			</section>
+
+			<div class="ui-admin-form-divider" aria-hidden="true"></div>
+
 			<section class="ui-admin-settings-section" aria-labelledby="general-settings-title">
 				<div class="ui-admin-settings-section-heading">
 					<span><IconSupport /></span>

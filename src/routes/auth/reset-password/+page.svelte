@@ -4,6 +4,7 @@
 	import { authClient } from '$lib/auth-client'
 	import { validateForm } from '$lib/actions/validateForm'
 	import AuthShell from '$lib/components/AuthShell.svelte'
+	import PageTitle from '$lib/components/PageTitle.svelte'
 	import IconCheck from '~icons/ic/round-check-circle'
 	import IconLock from '~icons/ic/round-lock'
 	import IconSave from '~icons/ic/round-save'
@@ -30,7 +31,7 @@
 	}
 </script>
 
-<svelte:head><title>رمز تازه | ختم قرآن</title></svelte:head>
+<PageTitle title="رمز تازه" />
 
 <AuthShell
 	title="انتخاب رمز تازه"

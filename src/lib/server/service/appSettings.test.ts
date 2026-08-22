@@ -15,6 +15,7 @@ import {
 	appSettingsService_update,
 	DEFAULT_STALE_KHATM_RETENTION_DAYS,
 } from './appSettings'
+import { DEFAULT_BRANDING_CONFIG } from '$lib/entity/Branding'
 
 describe('stale khatm retention setting', () => {
 	beforeEach(() => {
@@ -32,6 +33,7 @@ describe('stale khatm retention setting', () => {
 		expect(appSettings_store.config.staleKhatmRetentionDays).toBe(
 			DEFAULT_STALE_KHATM_RETENTION_DAYS,
 		)
+		expect(appSettings_store.config.branding).toEqual(DEFAULT_BRANDING_CONFIG)
 	})
 
 	it('loads a valid configured retention period', async () => {

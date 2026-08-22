@@ -289,8 +289,12 @@ model TKhatmDeletion {
 }
 
 model TAppSettings {
-  id     Int  @id @default(1)
-  config Json
+  id            Int    @id @default(1)
+  config        Json
+  heroImage     Bytes? @map("hero_image") @db.LongBlob
+  heroImageMime String? @map("hero_image_mime") @db.VarChar(32)
+  appIcon192    Bytes? @map("app_icon_192") @db.LongBlob
+  appIcon512    Bytes? @map("app_icon_512") @db.LongBlob
 
   @@map("app_settings")
 }

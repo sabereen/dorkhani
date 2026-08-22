@@ -10,6 +10,7 @@
 	import { LocalSettings } from '$lib/entity/LocalSettings.svelte'
 	import { claimCreatedKhatms } from '$lib/auth/claimCreatedKhatms'
 	import { onMount } from 'svelte'
+	import { base } from '$app/paths'
 
 	let { children, data }: LayoutProps = $props()
 
@@ -43,6 +44,14 @@
 		}
 	})
 </script>
+
+<svelte:head>
+	<title>{data.branding.name}</title>
+	<link rel="icon" type="image/png" sizes="192x192" href={data.branding.icon192Url} />
+	<link rel="apple-touch-icon" href={data.branding.icon192Url} />
+	<link rel="manifest" href={`${base}/manifest.json?v=${data.branding.revision}`} />
+	<meta property="og:site_name" content={data.branding.name} />
+</svelte:head>
 
 <MiniAppHost
 	baleEnabled={data.authProviders.bale}

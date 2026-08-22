@@ -7088,6 +7088,38 @@
 	opacity: 0.62;
 }
 
+.ui-admin-brand-assets {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	grid-gap: 0.85rem;
+}
+
+.ui-admin-brand-preview {
+	display: flex;
+	height: 12rem;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 0.65rem;
+	padding: 0.5rem;
+	border: 1px solid var(--ui-color-border);
+	border-radius: 0.9rem;
+	background: var(--ui-color-surface-muted);
+	overflow: hidden;
+}
+
+.ui-admin-brand-preview img {
+	display: block;
+	max-width: 100%;
+	max-height: 100%;
+	object-fit: contain;
+}
+
+.ui-admin-brand-preview-icon img {
+	width: 7rem;
+	height: 7rem;
+	border-radius: 1.25rem;
+}
+
 .ui-admin-settings-actions > div {
 	display: flex;
 	align-items: center;
@@ -7199,6 +7231,10 @@
 
 	.ui-admin-field-grid {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.ui-admin-brand-assets {
+		grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
 	}
 
 	.ui-admin-notification-fields .ui-admin-field {

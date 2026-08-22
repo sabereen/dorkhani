@@ -49,6 +49,7 @@ const config = {
 			base: isCapacitor ? '' : process.env.BASE_PATH || '',
 			relative: false,
 		},
+		serviceWorker: isCapacitor ? { register: false } : { register: true },
 	},
 }
 

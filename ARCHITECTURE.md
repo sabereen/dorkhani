@@ -550,6 +550,13 @@ server load/action ادمین عمداً فقط در target وب باقی مان
 `pnpm build:all` برای هر دو خروجی. هنگام افزودن Capacitor، `webDir` باید `build-capacitor` و origin
 محلی باید `https://localhost` باشد.
 
+### PWA وب و مرز کش آفلاین
+
+در target وب، `src/service-worker.ts` فایل‌های build و static را precache می‌کند و فقط branding عمومی و فونت
+قرآن را به‌صورت runtime cache نگه می‌دارد. navigation آفلاین به `static/offline.html` برمی‌گردد. HTML
+شخصی‌سازی‌شده، APIهای داده، account و URLهای دارای access token وارد Cache Storage نمی‌شوند. ثبت service
+worker در target `capacitor` غیرفعال است تا lifecycle کش وب با assetهای بسته‌بندی‌شدهٔ WebView تداخل نداشته باشد.
+
 ## ۲۰. پوستهٔ Android، App Links و میان‌بر ختم
 
 پروژه Capacitor 8 با application id برابر `ir.dorkhani.app` در `android/` و تنظیم مرکزی در

@@ -59,6 +59,13 @@ pnpm build:all
 نیز originهای مجاز نیتیو را به‌صورت comma-separated در `NATIVE_TRUSTED_ORIGINS` قرار دهید؛ مقدار
 استاندارد آیندهٔ Capacitor برابر `https://localhost` است. پنل `/admin` فقط در بیلد وب در دسترس است.
 
+## PWA وب
+
+بیلد وب service worker را خودکار ثبت می‌کند و فایل‌های versioned برنامه، assetهای ثابت، branding عمومی و
+فونت‌های قرآنی استفاده‌شده را برای اجرای آفلاین نگه می‌دارد. در navigation آفلاین، `offline.html` نمایش داده
+می‌شود. پاسخ‌های HTML، حساب کاربری، APIهای داده و لینک‌های خصوصی ختم عمداً cache نمی‌شوند؛ بنابراین مشاهدهٔ
+اطلاعات به‌روز و انجام عملیات ختم همچنان به اینترنت نیاز دارد. در بیلد Capacitor ثبت service worker غیرفعال است.
+
 ## Android با Capacitor
 
 Capacitor 8 به Node 22 و Android Studio 2025.2.1 یا جدیدتر نیاز دارد. پروژه native با شناسه

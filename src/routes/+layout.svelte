@@ -69,9 +69,18 @@
 <svelte:head>
 	<title>{data.branding.name}</title>
 	<link rel="icon" type="image/png" sizes="192x192" href={data.branding.icon192Url} />
-	<link rel="apple-touch-icon" href={data.branding.icon192Url} />
+	<link rel="apple-touch-icon" sizes="192x192" href={data.branding.icon192Url} />
 	{#if !isCapacitorBuild}
-		<link rel="manifest" href={`${base}/manifest.json?v=${data.branding.revision}`} />
+		<link
+			rel="manifest"
+			href={`${base}/manifest.json?v=${data.branding.revision}`}
+			crossorigin="use-credentials"
+		/>
+		<meta name="application-name" content={data.branding.name} />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content={data.branding.name} />
+		<meta name="apple-mobile-web-app-status-bar-style" content="default" />
 	{/if}
 	<meta property="og:site_name" content={data.branding.name} />
 </svelte:head>

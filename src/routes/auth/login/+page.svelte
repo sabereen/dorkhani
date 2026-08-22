@@ -5,8 +5,6 @@
 	import { claimCreatedKhatms } from '$lib/auth/claimCreatedKhatms'
 	import { validateForm } from '$lib/actions/validateForm'
 	import AuthShell from '$lib/components/AuthShell.svelte'
-	import { onMount } from 'svelte'
-	import IconChat from '~icons/ic/round-chat'
 	import IconEmail from '~icons/ic/round-email'
 	import IconLanguage from '~icons/ic/round-language'
 	import IconLock from '~icons/ic/round-lock'
@@ -20,17 +18,7 @@
 	let password = $state('')
 	let loading = $state(false)
 	let errorMessage = $state('')
-	let eitaaAvailable = $state(false)
 	let showPassword = $state(false)
-
-	onMount(() => {
-		const check = () =>
-			(eitaaAvailable = Boolean(data.authProviders.eitaa && window.Eitaa?.WebApp?.initData))
-		check()
-		const timer = window.setInterval(check, 250)
-		window.setTimeout(() => window.clearInterval(timer), 5000)
-		return () => window.clearInterval(timer)
-	})
 
 	async function finishLogin() {
 		await claimCreatedKhatms()
@@ -58,29 +46,10 @@
 		loading = false
 	}
 
-	async function signInEitaa() {
-		const initData = window.Eitaa?.WebApp?.initData
-		if (!initData) return
-		loading = true
-		errorMessage = ''
-		const response = await fetch(`${base}/api/auth/sign-in/eitaa`, {
-			method: 'POST',
-			headers: { 'content-type': 'application/json' },
-			body: JSON.stringify({ initData }),
-		})
-		loading = false
-		if (!response.ok) {
-			const result = await response.json().catch(() => null)
-			errorMessage = result?.message || 'ورود با ایتا ناموفق بود.'
-			return
-		}
-		await finishLogin()
-	}
 </script>
 
 <svelte:head>
 	<title>ورود | ختم قرآن</title>
-	<script src="https://developer.eitaa.com/eitaa-web-app.js"></script>
 </svelte:head>
 
 <AuthShell
@@ -144,7 +113,7 @@
 		</button>
 	</form>
 
-	{#if data.authProviders.google || eitaaAvailable}
+	{#if data.authProviders.google}
 		<div class="ui-auth-divider"><span>یا ادامه با</span></div>
 		<div class="ui-auth-socials">
 			{#if data.authProviders.google}
@@ -156,17 +125,6 @@
 				>
 					<IconLanguage />
 					<span>گوگل</span>
-				</button>
-			{/if}
-			{#if eitaaAvailable}
-				<button
-					class="ui-btn ui-btn-outline"
-					type="button"
-					onclick={signInEitaa}
-					disabled={loading}
-				>
-					<IconChat />
-					<span>ایتا</span>
 				</button>
 			{/if}
 		</div>

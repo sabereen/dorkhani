@@ -1,13 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import sharp from 'sharp'
+import { Jimp, JimpMime } from 'jimp'
 import { BrandingImageError, processBrandingImages } from './brandingAssets'
 
 async function imageBlob(width: number, height: number) {
-	const buffer = await sharp({
-		create: { width, height, channels: 4, background: '#0b6b4f' },
-	})
-		.png()
-		.toBuffer()
+	const buffer = await new Jimp({ width, height, color: '#0b6b4fff' }).getBuffer(JimpMime.png)
 	return new Blob([new Uint8Array(buffer)], { type: 'image/png' })
 }
 
@@ -20,8 +16,8 @@ describe('branding image processing', () => {
 		const assets = await processBrandingImages(form)
 
 		expect(assets.hero?.mimeType).toBe('image/png')
-		expect((await sharp(assets.icon192!).metadata()).width).toBe(192)
-		expect((await sharp(assets.icon512!).metadata()).width).toBe(512)
+		expect((await Jimp.read(assets.icon192!)).width).toBe(192)
+		expect((await Jimp.read(assets.icon512!)).width).toBe(512)
 	})
 
 	it('rejects a non-square application icon', async () => {

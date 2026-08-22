@@ -2,10 +2,11 @@
 
 import 'core-js/modules/es.global-this'
 import 'core-js/modules/es.object.from-entries'
+import 'core-js/modules/es.object.has-own'
 import 'core-js/modules/es.promise.all-settled'
 
 import 'core-js/modules/web.queue-microtask'
 
 window.AbortController ||= class {
-	abort() {}
+	abort() { }
 } as any

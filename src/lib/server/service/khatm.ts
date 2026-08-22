@@ -12,6 +12,7 @@ import type {
 } from '$lib/entity/KhatmDirectory'
 import { statisticsService_applyCommitted, statisticsService_increment } from './statistics'
 import { userNotification_notify } from './user-notification'
+import { Khatm } from '$lib/entity/Khatm.svelte'
 
 type SecretKhatmFields = {
 	ownerId?: string | null
@@ -23,12 +24,12 @@ export type PublicKhatm = KhatmData
 
 export type KhatmManagementActor = { kind: 'owner'; ownerId: string } | { kind: 'admin' }
 
-export class KhatmOwnershipError extends Error {}
-export class KhatmRangeLockedError extends Error {}
-export class KhatmHistoricalRoundError extends Error {}
-export class KhatmFeaturedEligibilityError extends Error {}
-export class KhatmFeaturedLimitError extends Error {}
-export class KhatmFeaturedOrderError extends Error {}
+export class KhatmOwnershipError extends Error { }
+export class KhatmRangeLockedError extends Error { }
+export class KhatmHistoricalRoundError extends Error { }
+export class KhatmFeaturedEligibilityError extends Error { }
+export class KhatmFeaturedLimitError extends Error { }
+export class KhatmFeaturedOrderError extends Error { }
 
 type KhatmWithSeries = TKhatm & { series: TKhatmSeries | null }
 
@@ -53,10 +54,10 @@ function hashClaimToken(token: string) {
 function khatmService_canFeature(khatm: KhatmWithSeries) {
 	return Boolean(
 		!khatm.private &&
-			khatm.reviewStatus === 'approved' &&
-			khatm.status === 'inProgress' &&
-			khatm.series &&
-			khatm.series.maxRounds == null,
+		khatm.reviewStatus === 'approved' &&
+		khatm.status === 'inProgress' &&
+		khatm.series &&
+		khatm.series.maxRounds == null,
 	)
 }
 
@@ -267,12 +268,14 @@ export async function khatmService_create(body: CreatingKhatm, ownerId?: string 
 		await statisticsService_increment(tx, { createdKhatms: 1 }, createdAt)
 		return created
 	})
+	const khatmInstance = Khatm.fromPlain(khatm)
 	statisticsService_applyCommitted({ createdKhatms: 1 }, createdAt)
 	userNotification_notify(ownerId, {
 		type: 'khatmCreated',
 		khatmId: khatm.id,
 		title: khatm.title,
 		private: khatm.private,
+		khatmPath: khatmInstance.link,
 	})
 
 	return { khatm: khatmService_toPublic(khatm), guestClaimToken }
@@ -334,8 +337,8 @@ export async function khatmService_getDirectoryList(
 		...(query.rangeType ? { rangeType: query.rangeType } : {}),
 		...(query.q
 			? {
-					OR: [{ title: { contains: query.q } }, { description: { contains: query.q } }],
-				}
+				OR: [{ title: { contains: query.q } }, { description: { contains: query.q } }],
+			}
 			: {}),
 	}
 
@@ -426,9 +429,9 @@ export async function khatmService_getAdminList(
 		featuredOrder: khatm.status === 'inProgress' ? (khatm.series?.featuredOrder ?? null) : null,
 		canFeature: Boolean(
 			!khatm.private &&
-				khatm.status === 'inProgress' &&
-				khatm.series &&
-				khatm.series.maxRounds == null,
+			khatm.status === 'inProgress' &&
+			khatm.series &&
+			khatm.series.maxRounds == null,
 		),
 	}))
 }

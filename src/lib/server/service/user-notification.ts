@@ -11,6 +11,7 @@ export type UserNotificationEvent =
 			khatmId: number
 			title: string
 			private: boolean
+			khatmPath: string
 	  }
 	| {
 			type: 'participationPicked'
@@ -36,6 +37,10 @@ type NotificationMessage = {
 	subject: string
 	text: string
 	url: string
+	forward?: {
+		text: string
+		url: string
+	}
 }
 
 type NotificationSettingsInput = {
@@ -57,12 +62,27 @@ function fullUrl(path: string) {
 
 function toMessage(event: UserNotificationEvent): NotificationMessage {
 	switch (event.type) {
-		case 'khatmCreated':
+		case 'khatmCreated': {
+			const khatmUrl = fullUrl(event.khatmPath)
 			return {
 				subject: 'ختم شما ایجاد شد',
 				text: `ختم «${event.title}» با موفقیت ایجاد شد.${event.private ? ' این ختم خصوصی است.' : ''}`,
 				url: fullUrl(`/account/khatms/${event.khatmId}/edit`),
+				forward: {
+					url: khatmUrl,
+					text: [
+						'🌙 دعوت به یک ختم جمعی قرآن',
+						'',
+						`ختم «${event.title}» آغاز شده است.`,
+						'برای همراهی در این کار خیر، از طریق لینک زیر به جمع ما بپیوندید و سهمی از تلاوت قرآن را بر عهده بگیرید:',
+						'',
+						`🔗 لینک پیوستن به ختم:\n${khatmUrl}`,
+						'',
+						'این پیام را برای دوستان و عزیزانتان فوروارد کنید تا در این ثواب جمعی همراه شوند. 🤍',
+					].join('\n'),
+				},
 			}
+		}
 		case 'participationPicked':
 			return {
 				subject: 'سهم شما ثبت شد',
@@ -111,6 +131,20 @@ async function sendBale(address: string, message: NotificationMessage) {
 			inline_keyboard: [[{ text: 'باز کردن برنامه', web_app: { url: message.url } }]],
 		},
 	})
+
+	if (message.forward) {
+		try {
+			await requestJson(`https://tapi.bale.ai/bot${env.BALE_BOT_TOKEN}/sendMessage`, {
+				chat_id: address,
+				text: message.forward.text,
+				reply_markup: {
+					inline_keyboard: [[{ text: 'پیوستن به ختم', url: message.forward.url }]],
+				},
+			})
+		} catch (error) {
+			console.error('Failed to send Bale khatm forwarding message.', error)
+		}
+	}
 }
 
 async function sendEitaa(address: string, message: NotificationMessage) {
@@ -119,6 +153,17 @@ async function sendEitaa(address: string, message: NotificationMessage) {
 		chat_id: address,
 		text: `${message.subject}\n\n${message.text}\n\n${message.url}`,
 	})
+
+	if (message.forward) {
+		try {
+			await requestJson(`https://eitaayar.ir/api/${env.EITAA_APP_TOKEN}/sendMessage`, {
+				chat_id: address,
+				text: message.forward.text,
+			})
+		} catch (error) {
+			console.error('Failed to send Eitaa khatm forwarding message.', error)
+		}
+	}
 }
 
 function getChannelPriority(preferredChannel: UserNotificationChannel | null) {

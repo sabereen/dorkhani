@@ -8,6 +8,7 @@
 	import { onMount, type Snippet } from 'svelte'
 	import { slide } from 'svelte/transition'
 	import IconArrow from '~icons/ic/round-arrow-back'
+	import * as m from '$lib/paraglide/messages.js'
 	import IconAutoAwesome from '~icons/ic/round-auto-awesome'
 
 	type Props = {
@@ -44,8 +45,8 @@
 			<header class="ui-activity-header">
 				<span class="ui-activity-header-icon"><IconAutoAwesome /></span>
 				<div class="ui-activity-heading">
-					<h2>{props.title || 'ختم‌های ذکر شما'}</h2>
-					<p>حلقه‌های ذکری که همراهی کرده‌اید</p>
+					<h2>{props.title || m.history_zekr()}</h2>
+					<p>{m.history_zekr_description()}</p>
 				</div>
 				<span class="ui-activity-count">{history.length.toLocaleString(localeTag())}</span>
 			</header>
@@ -62,7 +63,7 @@
 									<span>{zekr.plain.created.toLocaleDateString('fa-IR')}</span>
 									{#if zekr.isFinite}
 										<span class="ui-badge ui-badge-xs ui-badge-info"
-											>{zekr.targetCount.toLocaleString(localeTag())} تایی</span
+										>{m.history_count_target({ count: zekr.targetCount.toLocaleString(localeTag()) })}</span
 										>
 									{/if}
 								</span>
@@ -76,7 +77,7 @@
 			{#if hasMore}
 				<div class="ui-activity-footer">
 					<a class="ui-btn ui-btn-ghost ui-btn-sm" href={localizeHref(`${base}/history`)}>
-						دیدن همه
+						{m.history_view_all()}
 						<IconArrow />
 					</a>
 				</div>

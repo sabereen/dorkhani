@@ -8,6 +8,7 @@
 	import { slide } from 'svelte/transition'
 	import IconMenuBook from '~icons/ic/round-menu-book'
 	import IconArrow from '~icons/ic/round-arrow-back'
+	import * as m from '$lib/paraglide/messages.js'
 
 	type Props = {
 		/** حداکثر چند آیتم رندر شود؟ */
@@ -43,8 +44,8 @@
 			<header class="ui-activity-header">
 				<span class="ui-activity-header-icon"><IconMenuBook /></span>
 				<div class="ui-activity-heading">
-					<h2>{props.title || 'ختم‌های ساخته‌شده'}</h2>
-					<p>جمع‌هایی که آغاز کرده‌اید</p>
+					<h2>{props.title || m.history_created()}</h2>
+					<p>{m.history_started_groups()}</p>
 				</div>
 				<span class="ui-activity-count">{history.length.toLocaleString(localeTag())}</span>
 			</header>
@@ -54,7 +55,7 @@
 					<li>
 						<KhatmListCard
 							khatm={item.khatm}
-							meta={`ایجادشده در ${item.khatm.plain.created.toLocaleDateString('fa-IR')}`}
+							meta={m.history_created_at({ date: item.khatm.plain.created.toLocaleDateString() })}
 						/>
 					</li>
 				{/each}
@@ -63,7 +64,7 @@
 			{#if hasMore}
 				<div class="ui-activity-footer">
 					<a class="ui-btn ui-btn-ghost ui-btn-sm" href={localizeHref(`${base}/history`)}>
-						دیدن همه
+						{m.history_view_all()}
 						<IconArrow />
 					</a>
 				</div>

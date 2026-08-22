@@ -14,6 +14,7 @@
 	import LocaleChooser from '$lib/components/LocaleChooser.svelte'
 	import { isCapacitorBuild } from '$lib/config/runtime'
 	import { localeDirection } from '$lib/i18n/locale'
+	import { initializeNativeAppLinks } from '$lib/native/app-links'
 
 	let { children, data }: LayoutProps = $props()
 
@@ -21,9 +22,21 @@
 	const localSettings = LocalSettings.use()
 
 	onMount(() => {
+		let removeAppLinkListener: (() => void) | undefined
+		let mounted = true
+		void initializeNativeAppLinks()
+			.then((remove) => {
+				if (mounted) removeAppLinkListener = remove
+				else remove()
+			})
+			.catch(() => undefined)
 		if (data.user) void claimCreatedKhatms()
 		if (!data.needsLocaleChoice) {
 			localSettings.update({ locale: data.locale }, { bypassLocalStore: false })
+		}
+		return () => {
+			mounted = false
+			removeAppLinkListener?.()
 		}
 	})
 

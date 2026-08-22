@@ -3,6 +3,9 @@
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",
+	"engines": {
+		"node": ">=22"
+	},
 	"browserslist": "edge>=79, firefox>=67, chrome>=64, safari>=12",
 	"scripts": {
 		"start": "node build/index",
@@ -14,6 +17,11 @@
 		"prebuild:csr": "cross-env PUBLIC_BUILD_TARGET=capacitor pnpm prisma:generate",
 		"build:csr": "cross-env PUBLIC_BUILD_TARGET=capacitor vite build",
 		"build:all": "pnpm build:web && pnpm build:csr",
+		"android:sync": "pnpm build:csr && cap sync android",
+		"android:open": "cap open android",
+		"android:run": "pnpm android:sync && cap run android",
+		"android:build": "pnpm android:sync && cap build android --androidreleasetype AAB",
+		"android:assets": "capacitor-assets generate --android --iconBackgroundColor \"#07110f\" --splashBackgroundColor \"#f7f5ef\" --splashBackgroundColorDark \"#07110f\"",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -28,6 +36,8 @@
 	},
 	"devDependencies": {
 		"@bprogress/core": "^1.3.4",
+		"@capacitor/assets": "3",
+		"@capacitor/cli": "8",
 		"@eslint/compat": "^1.2.5",
 		"@eslint/js": "^9.18.0",
 		"@iconify-json/ic": "^1.2.2",
@@ -62,7 +72,11 @@
 	},
 	"dependencies": {
 		"@ai-sdk/openai-compatible": "^3.0.33",
+		"@aparajita/capacitor-secure-storage": "8",
 		"@better-auth/prisma-adapter": "^1.6.26",
+		"@capacitor/android": "8",
+		"@capacitor/app": "8",
+		"@capacitor/core": "8",
 		"@ghoran/entity": "^0.2.1",
 		"@ghoran/metadata": "^0.0.7",
 		"@ghoran/text": "^0.0.8",
@@ -86,5 +100,15 @@
 		"vazirmatn": "^33.0.3",
 		"zod": "^4.4.3"
 	},
-	"packageManager": "pnpm@10.8.0+sha512.0e82714d1b5b43c74610193cb20734897c1d00de89d0e18420aebc5977fa13d780a9cb05734624e81ebd81cc876cd464794850641c48b9544326b5622ca29971"
+	"packageManager": "pnpm@10.8.0+sha512.0e82714d1b5b43c74610193cb20734897c1d00de89d0e18420aebc5977fa13d780a9cb05734624e81ebd81cc876cd464794850641c48b9544326b5622ca29971",
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"@prisma/client",
+			"@prisma/engines",
+			"core-js",
+			"esbuild",
+			"prisma",
+			"sharp"
+		]
+	}
 }

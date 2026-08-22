@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="false"
+        android:theme="@style/AppTheme">
+        <activity
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation|density"
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBarLaunch"
+            android:launchMode="singleTask"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" />
+                <data android:host="dorkhani.ir" />
+
+                <data android:path="/" />
+                <data android:pathPrefix="/k" />
+                <data android:pathPrefix="/z" />
+                <data android:pathPrefix="/as0" />
+                <data android:pathPrefix="/as1" />
+                <data android:pathPrefix="/as2" />
+                <data android:pathPrefix="/as3" />
+                <data android:pathPrefix="/as4" />
+                <data android:pathPrefix="/as5" />
+                <data android:pathPrefix="/as6" />
+                <data android:pathPrefix="/as7" />
+                <data android:pathPrefix="/as8" />
+                <data android:pathPrefix="/as9" />
+                <data android:pathPrefix="/a0" />
+                <data android:pathPrefix="/a1" />
+                <data android:pathPrefix="/a2" />
+                <data android:pathPrefix="/a3" />
+                <data android:pathPrefix="/a4" />
+                <data android:pathPrefix="/a5" />
+                <data android:pathPrefix="/a6" />
+                <data android:pathPrefix="/a7" />
+                <data android:pathPrefix="/a8" />
+                <data android:pathPrefix="/a9" />
+                <data android:pathPrefix="/list" />
+                <data android:pathPrefix="/add" />
+                <data android:pathPrefix="/account" />
+                <data android:pathPrefix="/auth" />
+                <data android:pathPrefix="/history" />
+                <data android:pathPrefix="/settings" />
+
+                <data android:path="/ar" />
+                <data android:pathPrefix="/ar/k" />
+                <data android:pathPrefix="/ar/z" />
+                <data android:pathPrefix="/ar/as0" />
+                <data android:pathPrefix="/ar/as1" />
+                <data android:pathPrefix="/ar/as2" />
+                <data android:pathPrefix="/ar/as3" />
+                <data android:pathPrefix="/ar/as4" />
+                <data android:pathPrefix="/ar/as5" />
+                <data android:pathPrefix="/ar/as6" />
+                <data android:pathPrefix="/ar/as7" />
+                <data android:pathPrefix="/ar/as8" />
+                <data android:pathPrefix="/ar/as9" />
+                <data android:pathPrefix="/ar/a0" />
+                <data android:pathPrefix="/ar/a1" />
+                <data android:pathPrefix="/ar/a2" />
+                <data android:pathPrefix="/ar/a3" />
+                <data android:pathPrefix="/ar/a4" />
+                <data android:pathPrefix="/ar/a5" />
+                <data android:pathPrefix="/ar/a6" />
+                <data android:pathPrefix="/ar/a7" />
+                <data android:pathPrefix="/ar/a8" />
+                <data android:pathPrefix="/ar/a9" />
+                <data android:pathPrefix="/ar/list" />
+                <data android:pathPrefix="/ar/add" />
+                <data android:pathPrefix="/ar/account" />
+                <data android:pathPrefix="/ar/auth" />
+                <data android:pathPrefix="/ar/history" />
+                <data android:pathPrefix="/ar/settings" />
+
+                <data android:path="/en" />
+                <data android:pathPrefix="/en/k" />
+                <data android:pathPrefix="/en/z" />
+                <data android:pathPrefix="/en/as0" />
+                <data android:pathPrefix="/en/as1" />
+                <data android:pathPrefix="/en/as2" />
+                <data android:pathPrefix="/en/as3" />
+                <data android:pathPrefix="/en/as4" />
+                <data android:pathPrefix="/en/as5" />
+                <data android:pathPrefix="/en/as6" />
+                <data android:pathPrefix="/en/as7" />
+                <data android:pathPrefix="/en/as8" />
+                <data android:pathPrefix="/en/as9" />
+                <data android:pathPrefix="/en/a0" />
+                <data android:pathPrefix="/en/a1" />
+                <data android:pathPrefix="/en/a2" />
+                <data android:pathPrefix="/en/a3" />
+                <data android:pathPrefix="/en/a4" />
+                <data android:pathPrefix="/en/a5" />
+                <data android:pathPrefix="/en/a6" />
+                <data android:pathPrefix="/en/a7" />
+                <data android:pathPrefix="/en/a8" />
+                <data android:pathPrefix="/en/a9" />
+                <data android:pathPrefix="/en/list" />
+                <data android:pathPrefix="/en/add" />
+                <data android:pathPrefix="/en/account" />
+                <data android:pathPrefix="/en/auth" />
+                <data android:pathPrefix="/en/history" />
+                <data android:pathPrefix="/en/settings" />
+            </intent-filter>
+        </activity>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
+        </provider>
+    </application>
+
+    <!-- Permissions -->
+
+    <uses-permission android:name="android.permission.INTERNET" />
+</manifest>

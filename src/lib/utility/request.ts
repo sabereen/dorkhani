@@ -31,6 +31,7 @@ export async function apiRequest<T>(
 	const url = new URL(apiUrl(path, options.origin), options.origin ?? 'http://localhost')
 	const headers = new Headers(options.headers)
 	const tokenStore = options.tokenStore ?? authTokenStore
+	await tokenStore.ready()
 	const token = tokenStore.get()
 	if (token) headers.set('authorization', `Bearer ${token}`)
 	if (typeof localStorage !== 'undefined') {
@@ -69,7 +70,7 @@ export async function apiRequest<T>(
 	}
 	if (!response) throw new Error('Network request failed.')
 	if (!response.ok) {
-		if (response.status === 401 && token) tokenStore.clear()
+		if (response.status === 401 && token) await tokenStore.clear()
 		const body = await response.json().catch(() => null)
 		const message =
 			body && typeof body === 'object' && 'message' in body && typeof body.message === 'string'
@@ -78,7 +79,7 @@ export async function apiRequest<T>(
 		throw new ApiError(response.status, body, message)
 	}
 	const refreshedToken = response.headers.get('set-auth-token')
-	if (refreshedToken) tokenStore.set(refreshedToken)
+	if (refreshedToken) await tokenStore.set(refreshedToken)
 	if (response.status === 204) return undefined as T
 	return response.json() as Promise<T>
 }

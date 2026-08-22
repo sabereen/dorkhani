@@ -18,7 +18,7 @@
 
 	async function signOut() {
 		await authClient.signOut().catch(() => undefined)
-		clearAuthToken()
+		await clearAuthToken()
 		await invalidateAll()
 		await goto(localizeHref(`${base}/`))
 	}

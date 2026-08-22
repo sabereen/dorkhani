@@ -14,12 +14,14 @@ if (isCapacitor) {
 	try {
 		const url = new URL(serverOrigin || '')
 		isValidServerOrigin =
-			url.protocol === 'https:' && url.origin === serverOrigin?.replace(/\/$/, '')
+			url.protocol === 'https:' &&
+			url.origin === serverOrigin?.replace(/\/$/, '') &&
+			url.origin === 'https://dorkhani.ir'
 	} catch {
 		isValidServerOrigin = false
 	}
 	if (!isValidServerOrigin) {
-		throw new Error('PUBLIC_SERVER_ORIGIN must be an absolute HTTPS URL for capacitor builds.')
+		throw new Error('PUBLIC_SERVER_ORIGIN must be https://dorkhani.ir for capacitor builds.')
 	}
 }
 

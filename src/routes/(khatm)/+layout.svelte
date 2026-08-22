@@ -16,6 +16,7 @@
 	import IconManageAccounts from '~icons/ic/round-manage-accounts'
 	import IconClose from '~icons/ic/round-close'
 	import IconStop from '~icons/ic/round-stop-circle'
+	import IconAddToHome from '~icons/ic/outline-add-to-home-screen'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import Modal from '$lib/components/Modal.svelte'
@@ -32,6 +33,8 @@
 	import KhatmReviewBar from './KhatmReviewBar.svelte'
 	import RangeTypeIcon from '$lib/components/RangeTypeIcon.svelte'
 	import { apiRequest } from '$lib/utility/request'
+	import { onMount } from 'svelte'
+	import { isKhatmShortcutSupported, pinKhatmShortcut } from '$lib/native/khatm-shortcuts'
 
 	const { data, children }: LayoutProps = $props()
 
@@ -97,12 +100,48 @@
 	)
 	let showAuthPrompt = $state(false)
 	let showStopPrompt = $state(false)
+	let showPrivateShortcutPrompt = $state(false)
 	let stoppingSeries = $state(false)
+	let pinningShortcut = $state(false)
+	let shortcutSupported = $state(false)
 	let canManageAsGuest = $state(false)
 	const canRequestSeriesStop = $derived(data.canStopSeries && (data.isOwner || canManageAsGuest))
 	const hasNextRound = $derived(
 		khatm.isSerial && (data.seriesMaxRounds == null || khatm.roundNumber < data.seriesMaxRounds),
 	)
+
+	onMount(() => {
+		let active = true
+		void isKhatmShortcutSupported()
+			.then((supported) => {
+				if (active) shortcutSupported = supported
+			})
+			.catch(() => {
+				if (active) shortcutSupported = false
+			})
+		return () => {
+			active = false
+		}
+	})
+
+	function requestShortcut() {
+		if (khatm.private) showPrivateShortcutPrompt = true
+		else void pinShortcut()
+	}
+
+	async function pinShortcut() {
+		showPrivateShortcutPrompt = false
+		pinningShortcut = true
+		try {
+			const { requested } = await pinKhatmShortcut(khatm)
+			if (requested) toast('info', 'درخواست افزودن میان‌بر به صفحه اصلی نمایش داده شد.')
+			else toast('error', 'لانچر گوشی از افزودن میان‌بر پشتیبانی نمی‌کند.')
+		} catch {
+			toast('error', 'افزودن میان‌بر ختم ناموفق بود.')
+		} finally {
+			pinningShortcut = false
+		}
+	}
 
 	function requestSeriesStop() {
 		if (data.isOwner) showStopPrompt = true
@@ -165,6 +204,22 @@
 
 <Header title={khatm.title}>
 	{#snippet end()}
+		{#if shortcutSupported}
+			<button
+				type="button"
+				class="ui-header-page-action"
+				onclick={requestShortcut}
+				disabled={pinningShortcut}
+				aria-label="افزودن ختم به صفحه اصلی"
+			>
+				{#if pinningShortcut}
+					<span class="ui-spinner"></span>
+				{:else}
+					<IconAddToHome class="size-5" />
+				{/if}
+				<span>صفحه اصلی</span>
+			</button>
+		{/if}
 		{#if data.canEdit}
 			<a href={editHref} class="ui-header-page-action" aria-label="ویرایش ختم">
 				<IconEdit class="size-5" />
@@ -362,6 +417,28 @@
 			onclick={() => (showStopPrompt = false)}
 		>
 			ادامهٔ دورهای ختم
+		</button>
+	</div>
+</Modal>
+
+<Modal bind:open={showPrivateShortcutPrompt} contentClass="ui-khatm-auth-dialog">
+	<div class="ui-khatm-auth-icon" aria-hidden="true"><IconAddToHome /></div>
+	<p class="ui-khatm-auth-eyebrow">میان‌بر ختم خصوصی</p>
+	<h2>این میان‌بر دسترسی مستقیم دارد</h2>
+	<p class="ui-khatm-auth-description">
+		لینک خصوصی ختم داخل میان‌بر ذخیره می‌شود. اگر گوشی مشترک است، میان‌بر را نسازید.
+	</p>
+	<div class="ui-khatm-auth-actions">
+		<button class="ui-btn ui-btn-primary ui-btn-lg" type="button" onclick={pinShortcut}>
+			<IconAddToHome class="size-5" />
+			افزودن به صفحه اصلی
+		</button>
+		<button
+			class="ui-btn ui-btn-ghost ui-btn-lg"
+			type="button"
+			onclick={() => (showPrivateShortcutPrompt = false)}
+		>
+			انصراف
 		</button>
 	</div>
 </Modal>

@@ -60,7 +60,7 @@
 
 	async function signOut() {
 		await authClient.signOut().catch(() => undefined)
-		clearAuthToken()
+		await clearAuthToken()
 		open = false
 		accountMenu?.removeAttribute('open')
 		await invalidateAll()

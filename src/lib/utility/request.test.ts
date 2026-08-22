@@ -31,9 +31,10 @@ describe('ApiClient retries', () => {
 
 	it('clears an expired bearer token after a 401 response', async () => {
 		const tokenStore = {
+			ready: vi.fn(async () => {}),
 			get: vi.fn(() => 'expired-token'),
-			set: vi.fn(),
-			clear: vi.fn(),
+			set: vi.fn(async () => {}),
+			clear: vi.fn(async () => {}),
 		}
 		const fetcher = vi.fn<typeof fetch>().mockResolvedValue(
 			Response.json({ message: 'Unauthorized' }, { status: 401 }),

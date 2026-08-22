@@ -13,13 +13,13 @@ export const authClient = createAuthClient({
 					},
 				}
 			: {}),
-		onSuccess: (context) => {
+		onSuccess: async (context) => {
 			const token = context.response.headers.get('set-auth-token')
-			if (token) authTokenStore.set(token)
+			if (token) await authTokenStore.set(token)
 		},
 	},
 })
 
-export function clearAuthToken() {
-	authTokenStore.clear()
+export async function clearAuthToken() {
+	await authTokenStore.clear()
 }

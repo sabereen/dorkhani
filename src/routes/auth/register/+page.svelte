@@ -13,6 +13,7 @@
 	import IconVisibilityOff from '~icons/ic/round-visibility-off'
 	import { localizeHref } from '$lib/paraglide/runtime.js'
 	import * as m from '$lib/paraglide/messages.js'
+	import { publicWebUrl } from '$lib/config/runtime'
 
 	let name = $state('')
 	let email = $state('')
@@ -30,7 +31,7 @@
 			name,
 			email,
 			password,
-			callbackURL: localizeHref(`${base}/account`),
+			callbackURL: publicWebUrl(localizeHref(`${base}/account`)),
 		})
 		loading = false
 		if (result.error) errorMessage = result.error.message || m.auth_register_failed()

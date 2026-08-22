@@ -52,6 +52,7 @@ export const handle: Handle = async ({ resolve, event }) => {
 	}
 
 	if (publicEnv.PUBLIC_BUILD_TARGET === 'capacitor') return resolve(event)
+	if (withoutBase(event.url.pathname) === '/.well-known/assetlinks.json') return resolve(event)
 
 	const [{ auth }, { db }] = await Promise.all([
 		import('$lib/server/auth'),

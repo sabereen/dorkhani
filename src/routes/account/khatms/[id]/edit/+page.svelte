@@ -9,6 +9,7 @@
 	import { localizeHref } from '$lib/paraglide/runtime.js'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import type { KhatmData } from '$lib/contracts/domain'
+	import { disableKhatmShortcut, khatmShortcutRoute } from '$lib/native/khatm-shortcuts'
 
 	const { data }: PageProps = $props()
 	let errorMessage = $state('')
@@ -54,6 +55,8 @@
 		errorMessage = ''
 		try {
 			await apiRequest('DELETE', apiPath, { origin: location.origin })
+			const deletedKhatm = Khatm.fromPlain(data.khatm)
+			await disableKhatmShortcut(khatmShortcutRoute(deletedKhatm)).catch(() => undefined)
 			await goto(data.isAdmin ? `${base}/admin/review` : localizeHref(`${base}/account`))
 		} catch (cause) {
 			errorMessage = cause instanceof Error ? cause.message : 'حذف ختم ناموفق بود.'

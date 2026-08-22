@@ -413,6 +413,11 @@ repositoryهای Dexie فیلدهای snapshot، از جمله `pageProgress`، 
 | `ORIGIN`                   | تنظیم origin runtime adapter/SvelteKit در استقرار                  |
 | `BODY_SIZE_LIMIT`          | سقف بدنهٔ adapter-node؛ برای آپلود برندینگ حداقل `12M`              |
 | `PRIVATE_KHATM_SECRET`     | در `config.ts` export می‌شود اما در معماری فعلی مصرف نمی‌شود       |
+| `PUBLIC_BUILD_TARGET`      | انتخاب خروجی `web` یا `capacitor`                                  |
+| `PUBLIC_SERVER_ORIGIN`     | origin رسمی API و App Links در خروجی نیتیو                          |
+| `NATIVE_TRUSTED_ORIGINS`   | allowlist دقیق CORS و Better Auth برای originهای نیتیو              |
+| `ANDROID_SHA256_CERT_FINGERPRINTS` | fingerprintهای debug/release/Play برای `assetlinks.json`    |
+| `ANDROID_KEYSTORE_*`       | اطلاعات خصوصی امضای AAB؛ فقط هنگام `android:build`                   |
 
 ## ۱۴. تست‌ها و پوشش فعلی
 
@@ -530,8 +535,8 @@ endpointهای JSON زیر `/api` می‌آید؛ endpointها منطق و Prism
 | `capacitor` | `adapter-static` با `index.html` fallback | غیرفعال | `build-capacitor/` |
 
 بیلد CSR به `PUBLIC_SERVER_ORIGIN` مطلق و HTTPS نیاز دارد. `ApiClient` در وب URL نسبی و cookie، و
-در نیتیو URL مطلق و bearer token را استفاده می‌کند. `AuthTokenStore` فعلاً adapter مرورگر دارد و
-مرز جایگزینی آن با secure storage در مرحلهٔ Capacitor است. Better Auth هم‌زمان session cookie و
+در نیتیو URL مطلق و bearer token را استفاده می‌کند. `AuthTokenStore` پیش از bootstrap از secure
+storage مبتنی بر Android Keystore hydrate می‌شود و token قدیمی localStorage را یک‌بار مهاجرت می‌دهد. Better Auth هم‌زمان session cookie و
 bearer را می‌پذیرد. CORS فقط originهای دقیق `NATIVE_TRUSTED_ORIGINS` را قبول می‌کند و preflight را
 پیش از auth و database پاسخ می‌دهد. CSRF/origin validation غیرفعال نشده و همان originها در
 `trustedOrigins` نیز ثبت می‌شوند.
@@ -544,3 +549,16 @@ server load/action ادمین عمداً فقط در target وب باقی مان
 فرمان‌ها: `pnpm build` و `pnpm build:web` برای Node SSR، `pnpm build:csr` برای خروجی استاتیک، و
 `pnpm build:all` برای هر دو خروجی. هنگام افزودن Capacitor، `webDir` باید `build-capacitor` و origin
 محلی باید `https://localhost` باشد.
+
+## ۲۰. پوستهٔ Android، App Links و میان‌بر ختم
+
+پروژه Capacitor 8 با application id برابر `ir.dorkhani.app` در `android/` و تنظیم مرکزی در
+`capacitor.config.ts` نگهداری می‌شود. `@capacitor/app` لینک شروع سرد و `appUrlOpen` را به resolver
+مشترک می‌دهد؛ resolver فقط URLهای HTTPS دامنه `dorkhani.ir` و routeهای user-facing را به navigation
+داخلی می‌فرستد و `/api` و `/admin` را رد می‌کند. association دامنه از endpoint مستقل
+`/.well-known/assetlinks.json` و fingerprintهای `ANDROID_SHA256_CERT_FINGERPRINTS` تأمین می‌شود.
+
+`KhatmShortcuts` یک plugin محلی Android است که pinned shortcut را با شناسه پایدار نوع ختم و
+`id/seriesId` می‌سازد. Intent همان `publicLink` را باز می‌کند؛ در ختم خصوصی این URL شامل access token
+است. UI این قابلیت را فقط روی Android و launcher پشتیبانی‌شده نشان می‌دهد و میان‌بر حذف‌شده یا مقصد
+قطعی 404/410 را disable می‌کند. ورود Google در target نیتیو غیرفعال و auth ایمیلی فعال است.

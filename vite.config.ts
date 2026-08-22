@@ -12,6 +12,7 @@ export default defineConfig({
 		paraglideVitePlugin({
 			project: './project.inlang',
 			outdir: './src/lib/paraglide',
+			outputStructure: 'message-modules',
 			emitTsDeclarations: true,
 			strategy: ['cookie', 'custom-preference', 'url', 'baseLocale'],
 			trailingSlash: 'never',

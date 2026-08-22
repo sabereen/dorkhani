@@ -10,13 +10,15 @@ import { setSessionCookie } from 'better-auth/cookies'
 import type { BetterAuthPlugin } from 'better-auth'
 import { z } from 'zod'
 
+const EITAA_INIT_DATA_MAX_AGE_SECONDS = 300
+
 const eitaaUserSchema = z.object({
 	id: z.union([z.number(), z.string()]),
 	first_name: z.string().min(1),
-	last_name: z.string().optional(),
-	username: z.string().optional(),
-	photo_url: z.string().url().optional(),
-	allows_write_to_pm: z.boolean().optional(),
+	last_name: z.string().nullish(),
+	username: z.string().nullish(),
+	photo_url: z.string().url().nullish(),
+	allows_write_to_pm: z.boolean().nullish(),
 })
 
 export function eitaaAuth_verifyInitData(
@@ -29,7 +31,12 @@ export function eitaaAuth_verifyInitData(
 	const authDate = Number(params.get('auth_date'))
 
 	if (!receivedHash || !/^[a-f\d]{64}$/i.test(receivedHash) || !appToken) return null
-	if (!Number.isSafeInteger(authDate) || authDate > now + 5 || now - authDate > 60) return null
+	if (
+		!Number.isSafeInteger(authDate) ||
+		authDate > now + 5 ||
+		now - authDate > EITAA_INIT_DATA_MAX_AGE_SECONDS
+	)
+		return null
 
 	params.delete('hash')
 	const dataCheckString = [...params.entries()]
@@ -113,7 +120,7 @@ export function eitaaAuthPlugin() {
 							name: [profile.first_name, profile.last_name].filter(Boolean).join(' '),
 							email: `eitaa-${accountId}@users.invalid`,
 							emailVerified: false,
-							image: profile.photo_url,
+							image: profile.photo_url ?? undefined,
 							createdAt: new Date(),
 							updatedAt: new Date(),
 						})
@@ -134,7 +141,7 @@ export function eitaaAuthPlugin() {
 						user.id,
 						'eitaa',
 						accountId,
-						profile.allows_write_to_pm,
+						profile.allows_write_to_pm ?? undefined,
 					)
 
 					if (currentSession?.user.id === user.id) {

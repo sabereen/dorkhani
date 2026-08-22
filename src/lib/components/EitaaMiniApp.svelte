@@ -63,6 +63,8 @@
 	})
 
 	async function authenticate(intent: 'auto' | 'link-current' | 'use-eitaa') {
+		const currentInitData = window.Eitaa?.WebApp?.initData
+		if (currentInitData) initData = currentInitData
 		if (!initData || loading) return
 		loading = true
 		errorMessage = ''

@@ -23,8 +23,8 @@ describe('eitaaAuth_verifyInitData', () => {
 		expect(eitaaAuth_verifyInitData(officialInitData, 1709144340, 'wrong-token')).toBeNull()
 	})
 
-	it('rejects init data older than sixty seconds', () => {
-		expect(eitaaAuth_verifyInitData(officialInitData, 1709144401, officialToken)).toBeNull()
+	it('rejects init data older than five minutes', () => {
+		expect(eitaaAuth_verifyInitData(officialInitData, 1709144641, officialToken)).toBeNull()
 	})
 
 	it('rejects missing init data', () => {

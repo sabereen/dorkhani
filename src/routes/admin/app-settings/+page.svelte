@@ -37,6 +37,8 @@
 	let submitting = $state(false)
 	let aiConnectionTestLoading = $state(false)
 	let aiConnectionTest: { type: 'success' | 'error'; message: string } | null = $state(null)
+	let baleWebhookLoading = $state(false)
+	let baleWebhookResult: { type: 'success' | 'error'; message: string } | null = $state(null)
 
 	const enhanceForm: SubmitFunction = () => {
 		submitting = true
@@ -72,6 +74,24 @@
 			}
 		} finally {
 			aiConnectionTestLoading = false
+		}
+	}
+
+	async function setBaleWebhook() {
+		baleWebhookLoading = true
+		baleWebhookResult = null
+		try {
+			const response = await fetch('/api/admin/bale/webhook', { method: 'POST' })
+			const result = await response.json().catch(() => ({}))
+			if (!response.ok) throw new Error(result.message || 'تنظیم وب‌هوک بله ناموفق بود.')
+			baleWebhookResult = { type: 'success', message: result.message }
+		} catch (error) {
+			baleWebhookResult = {
+				type: 'error',
+				message: error instanceof Error ? error.message : 'تنظیم وب‌هوک بله ناموفق بود.',
+			}
+		} finally {
+			baleWebhookLoading = false
 		}
 	}
 
@@ -254,8 +274,8 @@
 				<div class="ui-admin-settings-section-heading">
 					<span class="ui-admin-settings-icon-warm"><IconNotification /></span>
 					<div>
-						<h2 id="notification-settings-title">اعلان‌های ایتا</h2>
-						<p>رویدادهای مهم و خطاهای پیش‌بینی‌نشده را در ایتا دریافت کنید.</p>
+						<h2 id="notification-settings-title">اعلان‌های پیام‌رسانی</h2>
+						<p>دریافت اعلان‌ها در پیام‌رسان‌ها و آماده‌سازی وب‌هوک بله را مدیریت کنید.</p>
 					</div>
 				</div>
 
@@ -312,6 +332,29 @@
 							کانال یا گروه را در پنل ایتایار تعریف کنید تا شناسه در اختیارتان قرار گیرد.
 						</small>
 					</div>
+				</div>
+
+				<div class="ui-admin-field">
+					<button
+						class="ui-btn ui-btn-outline"
+						type="button"
+						onclick={setBaleWebhook}
+						disabled={baleWebhookLoading}
+					>
+						{#if baleWebhookLoading}<span class="ui-spinner"></span>{:else}<IconRefresh />{/if}
+						{baleWebhookLoading ? 'در حال بررسی و تنظیم…' : 'بررسی و تنظیم وب‌هوک بله'}
+					</button>
+					<small class="ui-admin-field-hint">
+						وب‌هوک با توکن و secret تنظیم‌شده در متغیرهای محیطی سامانه ثبت می‌شود.
+					</small>
+					{#if baleWebhookResult}
+						<div
+							class={`ui-alert ${baleWebhookResult.type === 'success' ? 'ui-alert-success' : 'ui-alert-error'} mt-3`}
+							role={baleWebhookResult.type === 'success' ? 'status' : 'alert'}
+						>
+							{baleWebhookResult.message}
+						</div>
+					{/if}
 				</div>
 			</section>
 

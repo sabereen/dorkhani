@@ -12,7 +12,6 @@ import type {
 } from '$lib/entity/KhatmDirectory'
 import { statisticsService_applyCommitted, statisticsService_increment } from './statistics'
 import { userNotification_notify } from './user-notification'
-import { Khatm } from '$lib/entity/Khatm.svelte'
 
 type SecretKhatmFields = {
 	ownerId?: string | null
@@ -49,6 +48,13 @@ export function khatmService_toPublic<T extends TKhatm & SecretKhatmFields>(khat
 
 function hashClaimToken(token: string) {
 	return createHash('sha256').update(token).digest('hex')
+}
+
+function khatmService_getPath(khatm: Pick<TKhatm, 'id' | 'rangeType' | 'seriesId' | 'accessToken'>) {
+	let prefix = khatm.rangeType === 'ayah' ? 'a' : 'k'
+	if (khatm.seriesId != null) prefix += 's'
+	const id = khatm.seriesId ?? khatm.id
+	return `/${prefix}${id}${khatm.accessToken ? `?t=${khatm.accessToken}` : ''}`
 }
 
 function khatmService_canFeature(khatm: KhatmWithSeries) {
@@ -268,14 +274,13 @@ export async function khatmService_create(body: CreatingKhatm, ownerId?: string 
 		await statisticsService_increment(tx, { createdKhatms: 1 }, createdAt)
 		return created
 	})
-	const khatmInstance = Khatm.fromPlain(khatm)
 	statisticsService_applyCommitted({ createdKhatms: 1 }, createdAt)
 	userNotification_notify(ownerId, {
 		type: 'khatmCreated',
 		khatmId: khatm.id,
 		title: khatm.title,
 		private: khatm.private,
-		khatmPath: khatmInstance.link,
+		khatmPath: khatmService_getPath(khatm),
 	})
 
 	return { khatm: khatmService_toPublic(khatm), guestClaimToken }

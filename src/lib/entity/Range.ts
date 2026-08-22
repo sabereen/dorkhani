@@ -8,6 +8,9 @@ import { hizbQuarter_toRange } from './HizbQuarter'
 import { ayah_getExternalLink } from './Ayah'
 import type { RangeType } from '@prisma-client'
 import type { Khatm } from './Khatm.svelte'
+import { roundPercent } from '$lib/utility/percent'
+import { formatNumber } from '$lib/i18n/format'
+import * as m from '$lib/paraglide/messages.js'
 
 export class QuranRange {
 	start: number
@@ -116,6 +119,8 @@ export class QuranRange {
 	}
 
 	getPageCount() {
+		if (this.end <= this.start) return 0
+
 		const startPage = this.startAyah.page
 		const lastPage = this.lastAyah.page
 		const betweenPagesCount = lastPage.index - startPage.index - 1
@@ -177,11 +182,14 @@ export class QuranRange {
 	}
 
 	getFillPercent(parts: KhatmPart[]) {
+		if (this.length <= 0) return 0
+
 		const subranges = this.divideByKahtmParts(parts).filter((p) => p.khatmPart)
-		const fillCount = subranges.map(({ range }) => range.length).reduce((a, b) => a + b, 0)
+		const fillCount = subranges.reduce((sum, { range }) => sum + range.length, 0)
 		if (fillCount === this.length) return 100
-		const percent = +(100 * (fillCount / this.length)).toFixed(0)
-		return Math.min(99, percent)
+
+		const filledPageCount = subranges.reduce((sum, { range }) => sum + range.getPageCount(), 0)
+		return roundPercent((100 * filledPageCount) / this.getPageCount(), false)
 	}
 
 	getTitle() {
@@ -193,18 +201,18 @@ export class QuranRange {
 			this.lastAyah.isLastOfSurah &&
 			startSurahName === lastSurahName
 		) {
-			return `سوره‌ی ${startSurahName}`
+			return m.range_surah_title({ surah: startSurahName })
 		}
 
 		const from = this.startAyah.isFirstOfSurah
-			? `ابتدای ${startSurahName}`
-			: `${this.startAyah.number} ${startSurahName}`
+			? m.range_start_surah({ surah: startSurahName })
+			: m.range_ayah_in_surah({ ayah: formatNumber(this.startAyah.number), surah: startSurahName })
 
 		const to = this.lastAyah.isLastOfSurah
-			? `انتهای ${lastSurahName}`
-			: `${this.endAyah.number} ${lastSurahName}`
+			? m.range_end_surah({ surah: lastSurahName })
+			: m.range_ayah_in_surah({ ayah: formatNumber(this.lastAyah.number), surah: lastSurahName })
 
-		return `از ${from} تا ${to}`
+		return m.range_from_to({ from, to })
 	}
 
 	getTitleSurahOrinted() {
@@ -212,11 +220,15 @@ export class QuranRange {
 		const surahName = surah_getName(this.startAyah.surah)
 
 		if (!this.startAyah.isFirstOfSurah && !this.lastAyah.isLastOfSurah) {
-			return `${surahName} (از آیه ${this.startAyah.number} تا ${this.endAyah.number})`
+			return m.range_surah_between({
+				surah: surahName,
+				start: formatNumber(this.startAyah.number),
+				end: formatNumber(this.lastAyah.number),
+			})
 		} else if (!this.startAyah.isFirstOfSurah) {
-			return `${surahName} (از آیه ${this.startAyah.number})`
+			return m.range_surah_from({ surah: surahName, start: formatNumber(this.startAyah.number) })
 		} else if (!this.lastAyah.isLastOfSurah) {
-			return `${surahName} (تا آیه ${this.endAyah.number})`
+			return m.range_surah_to({ surah: surahName, end: formatNumber(this.lastAyah.number) })
 		} else {
 			return surahName
 		}

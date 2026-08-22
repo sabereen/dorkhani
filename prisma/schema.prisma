@@ -33,11 +33,33 @@ enum ReviewStatus {
   rejected
 }
 
-model TKhatmSeries {
-  id        Int      @id
-  maxRounds Int?     @map("max_rounds") @db.UnsignedSmallInt()
-  khatms    TKhatm[]
+enum AiReviewStatus {
+  pending
+  clear
+  warning
+  unavailable
+  disabled
+}
 
+enum KhatmDeletionReason {
+  owner
+  admin
+  expiredUnstarted
+}
+
+enum NotificationChannel {
+  bale
+  eitaa
+  email
+}
+
+model TKhatmSeries {
+  id            Int      @id
+  maxRounds     Int?     @map("max_rounds") @db.UnsignedSmallInt()
+  featuredOrder Int?     @map("featured_order") @db.UnsignedTinyInt()
+  khatms        TKhatm[]
+
+  @@index([featuredOrder])
   @@map("khatm_series")
 }
 
@@ -51,6 +73,8 @@ model TKhatm {
   rangeType    RangeType     @default(free) @map("range_type")
   // تعداد کل آیات خوانده شده از ختم را نگهداری می‌کند
   versesRead   Int           @default(0) @map("verses_read") @db.UnsignedSmallInt()
+  // Page-weighted completion percentage in the 0..100 range.
+  pageProgress Float         @default(0) @map("page_progress")
   // ختم خصوصی فقط با داشتن اکسس‌توکن مربوطه نمایش داده می‌شود و در صفحه اصلی نمایش داده نمی‌شود
   private      Boolean       @default(false)
   // توکن مربوط به ختم‌های خصوصی
@@ -63,15 +87,43 @@ model TKhatm {
   status       KhatmStatus   @default(inProgress)
   // وضعیت تأیید ختم توسط مدیر
   reviewStatus ReviewStatus  @default(pending) @map("review_status")
+  aiReviewStatus AiReviewStatus @default(disabled) @map("ai_review_status")
+  aiReviewReason String? @map("ai_review_reason") @db.VarChar(500)
   // شماره دور جاری در دنباله
   roundNumber  Int           @default(1) @map("round_number") @db.UnsignedSmallInt()
   // شناسه دنباله
   seriesId     Int?          @map("series_id")
   series       TKhatmSeries? @relation(fields: [seriesId], references: [id])
+  ownerId      String?       @map("owner_id")
+  owner        User?         @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  guestClaimTokenHash String? @map("guest_claim_token_hash") @db.Char(64)
   parts        TKhatmPart[]
+  recitations  TKhatmRecitation[]
+  aiReview     TAiKhatmReview?
 
   @@index([reviewStatus])
+  @@index([ownerId])
+  @@index([created])
+  @@index([status, endDate])
+  @@index([private, reviewStatus, status, roundNumber])
+  @@index([private, reviewStatus, status, pageProgress, id])
   @@map("khatm")
+}
+
+model TAiKhatmReview {
+  id          String         @id @default(uuid()) @db.VarChar(191)
+  khatmId     Int?           @unique @map("khatm_id")
+  khatm       TKhatm?        @relation(fields: [khatmId], references: [id], onDelete: Cascade)
+  contentHash String         @map("content_hash") @db.Char(64)
+  status      AiReviewStatus @default(pending)
+  reason      String?        @db.VarChar(500)
+  created     DateTime       @default(now())
+  deadline    DateTime?
+  expiresAt   DateTime?      @map("expires_at")
+
+  @@index([status, deadline])
+  @@index([expiresAt])
+  @@map("ai_khatm_review")
 }
 
 model TZekr {
@@ -94,7 +146,7 @@ model TZekr {
 
 model TKhatmPart {
   id      Int      @id @default(autoincrement())
-  khatm   TKhatm   @relation(fields: [khatmId], references: [id])
+  khatm   TKhatm   @relation(fields: [khatmId], references: [id], onDelete: Cascade)
   khatmId Int      @map("khatm_id")
   start   Int      @db.UnsignedSmallInt()
   end     Int      @db.UnsignedSmallInt()
@@ -103,9 +155,147 @@ model TKhatmPart {
   @@map("khatm_part")
 }
 
+model TKhatmRecitation {
+  id         BigInt   @id @default(autoincrement()) @db.UnsignedBigInt()
+  khatm      TKhatm   @relation(fields: [khatmId], references: [id], onDelete: Cascade)
+  khatmId    Int      @map("khatm_id")
+  verseCount Int      @map("verse_count") @db.UnsignedSmallInt()
+  created    DateTime @default(now())
+
+  @@index([created])
+  @@index([khatmId, created])
+  @@map("khatm_recitation")
+}
+
+model TSystemStatistics {
+  id                   Int    @id @default(1) @db.UnsignedTinyInt()
+  totalRecitedAyahs    BigInt @default(0) @map("total_recited_ayahs") @db.UnsignedBigInt()
+  totalCompletedRounds BigInt @default(0) @map("total_completed_rounds") @db.UnsignedBigInt()
+
+  @@map("system_statistics")
+}
+
+model TDailyStatistics {
+  day             DateTime @id @db.Date
+  recitedAyahs    BigInt   @default(0) @map("recited_ayahs") @db.UnsignedBigInt()
+  createdKhatms   BigInt   @default(0) @map("created_khatms") @db.UnsignedBigInt()
+  completedRounds BigInt   @default(0) @map("completed_rounds") @db.UnsignedBigInt()
+
+  @@map("daily_statistics")
+}
+
+model User {
+  id            String    @id @db.VarChar(191)
+  name          String    @db.VarChar(191)
+  email         String    @unique @db.VarChar(191)
+  locale        String    @default("fa") @db.VarChar(5)
+  emailVerified Boolean   @default(false) @map("email_verified")
+  image         String?   @db.Text()
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  sessions      Session[]
+  accounts      Account[]
+  khatms        TKhatm[]
+  notificationPreference NotificationPreference?
+  notificationEndpoints  NotificationEndpoint[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @db.VarChar(191)
+  expiresAt DateTime @map("expires_at")
+  token     String   @unique @db.VarChar(191)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  ipAddress String?  @map("ip_address") @db.VarChar(191)
+  userAgent String?  @map("user_agent") @db.Text()
+  userId    String   @map("user_id") @db.VarChar(191)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @db.VarChar(191)
+  accountId             String    @map("account_id") @db.VarChar(191)
+  providerId            String    @map("provider_id") @db.VarChar(191)
+  userId                String    @map("user_id") @db.VarChar(191)
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?   @map("access_token") @db.Text()
+  refreshToken          String?   @map("refresh_token") @db.Text()
+  idToken               String?   @map("id_token") @db.Text()
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at")
+  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at")
+  scope                 String?   @db.Text()
+  password              String?   @db.Text()
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @db.VarChar(191)
+  identifier String   @db.VarChar(191)
+  value      String   @db.Text()
+  expiresAt  DateTime @map("expires_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model NotificationPreference {
+  userId           String               @id @map("user_id") @db.VarChar(191)
+  user             User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  enabled          Boolean              @default(true)
+  preferredChannel NotificationChannel? @map("preferred_channel")
+  baleEnabled      Boolean              @default(true) @map("bale_enabled")
+  eitaaEnabled     Boolean              @default(true) @map("eitaa_enabled")
+  emailEnabled     Boolean              @default(true) @map("email_enabled")
+  createdAt        DateTime             @default(now()) @map("created_at")
+  updatedAt        DateTime             @updatedAt @map("updated_at")
+
+  @@map("notification_preference")
+}
+
+model NotificationEndpoint {
+  id        Int                 @id @default(autoincrement())
+  userId    String              @map("user_id") @db.VarChar(191)
+  user      User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  channel   NotificationChannel
+  address   String              @db.VarChar(191)
+  canSend   Boolean             @default(false) @map("can_send")
+  createdAt DateTime            @default(now()) @map("created_at")
+  updatedAt DateTime            @updatedAt @map("updated_at")
+
+  @@unique([userId, channel])
+  @@index([channel, address])
+  @@map("notification_endpoint")
+}
+
+model TKhatmDeletion {
+  khatmId   Int                 @id @map("khatm_id")
+  seriesId  Int?                @map("series_id")
+  reason    KhatmDeletionReason @default(owner)
+  deletedAt DateTime            @default(now()) @map("deleted_at")
+
+  @@index([seriesId])
+  @@map("khatm_deletion")
+}
+
 model TAppSettings {
-  id     Int  @id @default(1)
-  config Json
+  id            Int    @id @default(1)
+  config        Json
+  heroImage     Bytes? @map("hero_image") @db.LongBlob
+  heroImageMime String? @map("hero_image_mime") @db.VarChar(32)
+  appIcon192    Bytes? @map("app_icon_192") @db.LongBlob
+  appIcon512    Bytes? @map("app_icon_512") @db.LongBlob
 
   @@map("app_settings")
 }

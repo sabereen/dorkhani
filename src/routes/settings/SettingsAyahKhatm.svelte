@@ -1,54 +1,111 @@
 <script lang="ts">
 	import { SettingsEditor } from '$lib/entity/LocalSettings.svelte'
 	import { PUBLIC_FONT_PROXY } from '$env/static/public'
+	import IconBook from '~icons/ic/round-menu-book'
+	import IconFont from '~icons/ic/round-font-download'
+	import IconSave from '~icons/ic/round-save'
+	import IconTranslate from '~icons/ic/round-translate'
+	import IconVoice from '~icons/ic/round-record-voice-over'
+	import { quranTranslationRegistry } from '$lib/entity/QuranTranslation'
+	import * as m from '$lib/paraglide/messages.js'
 
 	const editor = SettingsEditor.use()
 
 	const fontProxy = PUBLIC_FONT_PROXY === '1'
 
 	const { class: className = undefined, legend = '' } = $props()
-
-	function handleSubmit(event: Event) {
-		event.preventDefault()
-		editor.commit()
-	}
 </script>
 
-<form action="" onsubmit={handleSubmit}>
-	<fieldset
-		class={['fieldset bg-base-200 border-base-300 rounded-box w-xs border px-4 !pb-4', className]}
-	>
-		<legend class="fieldset-legend">{legend}</legend>
+<fieldset class={['ui-fieldset', 'ui-settings-card', 'ui-settings-reading-card', className]}>
+	<legend class="ui-fieldset-legend ui-settings-legend">
+		<span class="ui-settings-legend-icon" aria-hidden="true"><IconBook /></span>
+		<span>{legend}</span>
+	</legend>
 
-		<label for="input-translation" class="fieldset-label mt-2">ترجمه</label>
-		<select
-			id="input-translation"
-			class="select"
-			name="translation"
-			bind:value={editor.config.translation}
-		>
-			<option value="ansarian">انصاریان</option>
-			<option value="makarem">مکارم شیرازی</option>
-			<option value="gharaati">قرائتی</option>
-		</select>
+	<div class="ui-settings-intro">
+		<div>
+			<h2>{m.settings_reading_title()}</h2>
+			<p>{m.settings_reading_description()}</p>
+		</div>
+		{#if editor.dirty}
+			<span class="ui-badge ui-badge-accent">{m.settings_unsaved()}</span>
+		{:else}
+			<span class="ui-badge ui-badge-success">{m.settings_saved()}</span>
+		{/if}
+	</div>
+
+	<div class="ui-settings-fields">
+		<div class="ui-settings-field">
+			<div class="ui-settings-field-heading">
+				<span class="ui-settings-field-icon" aria-hidden="true"><IconTranslate /></span>
+				<div>
+					<label for="input-translation" class="ui-field-label">{m.translation_label()}</label>
+					<span>{m.settings_translation_hint()}</span>
+				</div>
+			</div>
+			<select
+				id="input-translation"
+				class="ui-select"
+				name="translation"
+				bind:value={editor.config.translation}
+			>
+				{#each quranTranslationRegistry as translation}
+					<option value={translation.id}>{translation.label()}</option>
+				{/each}
+			</select>
+		</div>
 
 		{#if fontProxy}
-			<label for="input-font" class="fieldset-label mt-2">فونت</label>
-			<select id="input-font" class="select" name="font" bind:value={editor.config.quranFont}>
-				<option value="hafs">پیش‌فرض</option>
-				<option value="qpc1">مصحف مدینه ۱</option>
-				<option value="qpc2">مصحف مدینه ۲</option>
-			</select>
+			<div class="ui-settings-field">
+				<div class="ui-settings-field-heading">
+					<span class="ui-settings-field-icon" aria-hidden="true"><IconFont /></span>
+					<div>
+						<label for="input-font" class="ui-field-label">{m.settings_quran_font()}</label>
+						<span>{m.settings_quran_font_hint()}</span>
+					</div>
+				</div>
+				<select id="input-font" class="ui-select" name="font" bind:value={editor.config.quranFont}>
+					<option value="hafs">پیش‌فرض</option>
+					<option value="qpc1">مصحف مدینه ۱</option>
+					<option value="qpc2">مصحف مدینه ۲</option>
+				</select>
+			</div>
 		{/if}
 
-		<label for="input-reciter" class="fieldset-label mt-2">قاری</label>
-		<select id="input-reciter" class="select" name="reciter" bind:value={editor.config.reciter}>
-			<option value="parhizgar">پرهیزگار</option>
-			<option value="minshawi">منشاوی</option>
-			<option value="husari">خلیل الحصری</option>
-			<option value="abdulbasit">عبد الباسط</option>
-		</select>
+		<div class="ui-settings-field">
+			<div class="ui-settings-field-heading">
+				<span class="ui-settings-field-icon" aria-hidden="true"><IconVoice /></span>
+				<div>
+					<label for="input-reciter" class="ui-field-label">{m.settings_reciter()}</label>
+					<span>{m.settings_reciter_hint()}</span>
+				</div>
+			</div>
+			<select
+				id="input-reciter"
+				class="ui-select"
+				name="reciter"
+				bind:value={editor.config.reciter}
+			>
+				<option value="parhizgar">پرهیزگار</option>
+				<option value="minshawi">منشاوی</option>
+				<option value="husari">خلیل الحصری</option>
+				<option value="abdulbasit">عبد الباسط</option>
+			</select>
+		</div>
+	</div>
 
-		<input disabled={!editor.dirty} class="btn btn-primary mt-3" type="submit" value="ذخیره" />
-	</fieldset>
-</form>
+	<div class="ui-settings-actions">
+		<p aria-live="polite">
+			{editor.dirty ? m.settings_unsaved_status() : m.settings_saved_status()}
+		</p>
+		<button
+			disabled={!editor.dirty}
+			class="ui-btn ui-btn-primary"
+			type="button"
+			onclick={() => editor.commit()}
+		>
+			<IconSave aria-hidden="true" />
+			{editor.dirty ? m.settings_save_changes() : m.settings_saved()}
+		</button>
+	</div>
+</fieldset>

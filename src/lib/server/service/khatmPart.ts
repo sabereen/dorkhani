@@ -3,7 +3,8 @@ import { db } from '../db'
 import { error } from '@sveltejs/kit'
 import { QuranRange } from '$lib/entity/Range'
 import { Prisma } from '@prisma-client'
-import { khatmService_setAsCompleted } from './khatm'
+import { khatmService_setAsCompleted, khatmService_toPublic } from './khatm'
+import { statisticsService_applyCommitted, statisticsService_increment } from './statistics'
 
 type CreatingKhatmPart = {
 	khatmId: number
@@ -32,34 +33,55 @@ export async function khatmPartService_pickRange(body: CreatingKhatmPart) {
 	}
 
 	try {
-		const result = await db.tKhatm.update({
-			where: {
-				id: body.khatmId,
-				accessToken: { equals: body.accessToken || null },
-				parts: {
-					every: {
-						OR: [{ end: { lte: body.start } }, { start: { gte: body.end } }],
+		const pickedAt = new Date()
+		const pageProgressIncrement =
+			body.end > body.start ? new QuranRange(body.start, body.end).getCoveragePercent() * 100 : 0
+		const result = await db.$transaction(async (tx) => {
+			const updated = await tx.tKhatm.update({
+				where: {
+					id: body.khatmId,
+					accessToken: { equals: body.accessToken || null },
+					parts: {
+						every: {
+							OR: [{ end: { lte: body.start } }, { start: { gte: body.end } }],
+						},
 					},
 				},
-			},
-			data: {
-				versesRead: {
-					increment: body.end - body.start,
-				},
-				parts: {
-					create: {
-						start: body.start,
-						end: body.end,
+				data: {
+					versesRead: {
+						increment: body.end - body.start,
+					},
+					pageProgress: {
+						increment: pageProgressIncrement,
+					},
+					parts: {
+						create: {
+							start: body.start,
+							end: body.end,
+						},
 					},
 				},
-			},
-		})
+			})
 
-		if (result.versesRead >= COUNT_OF_AYAHS) {
-			khatmService_setAsCompleted(result.id)
+			const verseCount = body.end - body.start
+			if (verseCount > 0) {
+				await tx.tKhatmRecitation.create({
+					data: { khatmId: body.khatmId, verseCount, created: pickedAt },
+				})
+				await statisticsService_increment(tx, { recitedAyahs: verseCount }, pickedAt)
+			}
+
+			return updated
+		})
+		if (body.end > body.start) {
+			statisticsService_applyCommitted({ recitedAyahs: body.end - body.start }, pickedAt)
 		}
 
-		return result
+		if (result.versesRead >= COUNT_OF_AYAHS) {
+			await khatmService_setAsCompleted(result.id)
+		}
+
+		return khatmService_toPublic(result)
 	} catch (err) {
 		const prismaKnownError = err as Prisma.PrismaClientKnownRequestError
 		if (prismaKnownError?.name === 'PrismaClientKnownRequestError') {
@@ -97,23 +119,45 @@ export async function khatmPartService_pickNextAyat(body: PickNextAyatInput) {
 	}
 
 	const count = Math.min(body.count, COUNT_OF_AYAHS - khatm.versesRead)
+	const pickedAt = new Date()
 
-	const updated = await db.tKhatm.update({
-		where: {
-			id: body.khatmId,
-			versesRead: { lt: COUNT_OF_AYAHS - count + 1 },
-		},
-		data: {
-			versesRead: { increment: count },
-		},
+	const updated = await db.$transaction(async (tx) => {
+		const progressUpdated = await tx.tKhatm.update({
+			where: {
+				id: body.khatmId,
+				versesRead: { lt: COUNT_OF_AYAHS - count + 1 },
+			},
+			data: {
+				versesRead: { increment: count },
+			},
+		})
+		const result = await tx.tKhatm.update({
+			where: { id: progressUpdated.id },
+			data: {
+				pageProgress:
+					progressUpdated.versesRead > 0
+						? new QuranRange(0, progressUpdated.versesRead).getCoveragePercent() * 100
+						: 0,
+			},
+		})
+
+		if (count > 0) {
+			await tx.tKhatmRecitation.create({
+				data: { khatmId: body.khatmId, verseCount: count, created: pickedAt },
+			})
+			await statisticsService_increment(tx, { recitedAyahs: count }, pickedAt)
+		}
+
+		return result
 	})
+	if (count > 0) statisticsService_applyCommitted({ recitedAyahs: count }, pickedAt)
 
 	if (updated.versesRead >= COUNT_OF_AYAHS) {
-		khatmService_setAsCompleted(updated.id)
+		await khatmService_setAsCompleted(updated.id)
 	}
 
 	return {
-		khatm: updated,
+		khatm: khatmService_toPublic(updated),
 		count,
 	}
 }

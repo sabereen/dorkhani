@@ -5,17 +5,17 @@
 	import type { Zekr } from '$lib/entity/Zekr.svelte'
 	import { idb_localZekr_add } from '$lib/idb/localZekr'
 	import { onMount } from 'svelte'
+	import IconCheck from '~icons/ic/round-check-circle'
 	import IconCopy from '~icons/ic/outline-copy-all'
-	import IconShare from '~icons/ic/outline-share'
 	import IconOpen from '~icons/ic/round-open-in-new'
+	import IconShare from '~icons/ic/outline-share'
 
 	type Props = {
 		zekr: Zekr
 	}
 
 	const { zekr }: Props = $props()
-
-	const canShare = !browser || navigator.share
+	const canShare = !browser || Boolean(navigator.share)
 
 	async function copy() {
 		try {
@@ -23,7 +23,7 @@
 			toast('info', 'لینک ختم ذکر شما کپی شد.')
 		} catch (err) {
 			console.error(err)
-			toast('error', 'خطا در کپی.')
+			toast('error', 'خطا در کپی لینک. دوباره تلاش کنید.')
 		}
 	}
 
@@ -45,37 +45,49 @@
 	})
 </script>
 
-<div class="alert alert-success">
-	ختم ذکر «{zekr.title}» ایجاد شد.
-</div>
-<div class="card card-xl bg-base-200 mt-4 shadow-sm">
-	<div class="card-body">
-		<h2 class="card-title">{zekr.title}</h2>
+<section class="ui-admin-success" aria-labelledby="zekr-success-title">
+	<div class="ui-admin-success-mark" aria-hidden="true"><IconCheck /></div>
+	<span class="ui-admin-eyebrow">ساخت با موفقیت انجام شد</span>
+	<h1 id="zekr-success-title">ختم «{zekr.title}» آماده است</h1>
+	<p>اکنون می‌توانید لینک زیر را باز کنید یا برای مشارکت دیگران به اشتراک بگذارید.</p>
+
+	<div class="ui-admin-success-card">
+		<div class="ui-admin-success-card-heading">
+			<div>
+				<span>ختم ذکر ایجادشده</span>
+				<h2>{zekr.title}</h2>
+			</div>
+			<span class="ui-badge ui-badge-success">فعال</span>
+		</div>
+
 		{#if zekr.description}
-			<div dir="auto" class="whitespace-pre-wrap break-words">
+			<div dir="auto" class="ui-admin-success-description whitespace-pre-wrap break-words">
 				<ExpandableText text={zekr.description} maxLength={250} />
 			</div>
 		{/if}
-		<p class="text-sm" dir="ltr">
-			<a href={zekr.link} class="link font-sans" target="_blank">
+
+		<div class="ui-admin-link-box">
+			<span>لینک اختصاصی</span>
+			<a href={zekr.link} class="ui-link" target="_blank" rel="noreferrer" dir="ltr">
 				{zekr.link}
 			</a>
-			<a href={zekr.link} class="btn !btn-outline btn-xs vertical-middle" dir="auto">
-				<IconOpen class="size-4" />
-				باز کردن
+		</div>
+
+		<div class="ui-admin-success-actions">
+			<a href={zekr.link} class="ui-btn ui-btn-outline" target="_blank" rel="noreferrer">
+				<IconOpen />
+				باز کردن ختم
 			</a>
-		</p>
-		<div class="card-actions">
-			{#if canShare}
-				<button class="btn btn-primary" onclick={share}>
-					<IconShare class="size-5" />
-					اشتراک گذاری
-				</button>
-			{/if}
-			<button class="btn btn-outline" onclick={copy}>
-				<IconCopy class="size-5" />
+			<button class="ui-btn ui-btn-soft" type="button" onclick={copy}>
+				<IconCopy />
 				کپی لینک
 			</button>
+			{#if canShare}
+				<button class="ui-btn ui-btn-primary" type="button" onclick={share}>
+					<IconShare />
+					اشتراک‌گذاری
+				</button>
+			{/if}
 		</div>
 	</div>
-</div>
+</section>

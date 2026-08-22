@@ -4,9 +4,31 @@ import icons from 'unplugin-icons/vite'
 import UnoCSS from 'unocss/vite'
 import packageJson from './package.json'
 import { defineConfig } from 'vite'
+import { paraglideVitePlugin } from '@inlang/paraglide-js'
 
 export default defineConfig({
-	plugins: [sveltekit(), UnoCSS(), icons({ autoInstall: true, compiler: 'svelte' })],
+	plugins: [
+		sveltekit(),
+		paraglideVitePlugin({
+			project: './project.inlang',
+			outdir: './src/lib/paraglide',
+			emitTsDeclarations: true,
+			strategy: ['cookie', 'custom-preference', 'url', 'baseLocale'],
+			trailingSlash: 'never',
+			routeStrategies: [
+				{ match: '/admin', strategy: ['baseLocale'] },
+				{ match: '/admin/:path(.*)?', strategy: ['baseLocale'] },
+				{ match: '/api/admin', strategy: ['baseLocale'] },
+				{ match: '/api/admin/:path(.*)?', strategy: ['baseLocale'] },
+				{
+					match: '/api/:path(.*)?',
+					strategy: ['cookie', 'custom-preference', 'baseLocale'],
+				},
+			],
+		}),
+		UnoCSS(),
+		icons({ autoInstall: true, compiler: 'svelte' }),
+	],
 
 	build: {
 		target: packageJson.browserslist.split(', ').map((b) => b.replaceAll('>=', '')),

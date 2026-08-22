@@ -1,6 +1,9 @@
 import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { khatmPartService_pickRange } from '$service/khatmPart'
+import { userNotification_notify } from '$service/user-notification'
+import { QuranRange } from '$lib/entity/Range'
+import * as m from '$lib/paraglide/messages.js'
 
 type BodyType = {
 	khatmId: number
@@ -13,11 +16,11 @@ export const POST: RequestHandler = async (event) => {
 	const body: BodyType = await event.request.json()
 
 	if (typeof body.start !== 'number' || typeof body.end !== 'number') {
-		throw error(400, 'ورودی معتبر نیست')
+		throw error(400, { message: m.error_invalid_input(), code: 'invalid_input' })
 	}
 
 	if (body.start < 0 || body.start > 6236 || body.end < body.start || body.end > 6236) {
-		throw error(400, 'ورودی معتبر نیست.')
+		throw error(400, { message: m.error_invalid_input(), code: 'invalid_range' })
 	}
 
 	const khatmId = parseInt(body.khatmId as unknown as string)
@@ -28,6 +31,15 @@ export const POST: RequestHandler = async (event) => {
 		start: body.start,
 		end: body.end,
 	})
+	if (body.end > body.start) {
+		const range = new QuranRange(body.start, body.end)
+		userNotification_notify(event.locals.user?.id, {
+			type: 'participationPicked',
+			title: result.title,
+			description: m.range_from_to({ from: range.startAyah.key, to: range.lastAyah.key }),
+			targetPath: `/${range.toRangeParam()}`,
+		})
+	}
 
 	return json(result)
 }

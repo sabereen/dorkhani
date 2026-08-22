@@ -1,7 +1,7 @@
 import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
-import type { TKhatm, RangeType, TKhatmPart, ReviewStatus } from '@prisma-client'
+import type { RangeType, TKhatmPart, ReviewStatus } from '@prisma-client'
+import type { KhatmData } from './KhatmData'
 import type { PickAyahResult } from '$api/khatmPart/pickNext/+server'
-import { PickedKhatmPart } from './PickedKhatmPart'
 import { QuranRange } from './Range'
 import { untrack } from 'svelte'
 import { KhatmPart } from './KhatmPart'
@@ -10,25 +10,50 @@ import copy from 'clipboard-copy'
 import { rebaseFullPath } from '$lib/utility/path'
 import { browser } from '$app/environment'
 import type { Translation } from './LocalSettings.svelte'
+import type { KhatmDirectoryQuery, KhatmDirectoryResult } from './KhatmDirectory'
+import { KhatmParticipation } from './KhatmParticipation.svelte'
+import { roundPercent } from '$lib/utility/percent'
+import type { AdminKhatmListItem } from './KhatmFeatured'
+import { formatNumber } from '$lib/i18n/format'
+import * as m from '$lib/paraglide/messages.js'
 
 const cache = new Map<number, Khatm>()
 
 export class Khatm {
-	plain = $state() as TKhatm
+	plain = $state() as KhatmData
 	plainParts = $state([]) as TKhatmPart[]
+	participation: KhatmParticipation
 
-	private constructor(plain: TKhatm & { parts?: TKhatmPart[] }) {
-		this.plain = plain
+	private constructor(plain: KhatmData & { parts?: TKhatmPart[] }) {
+		this.plain = Khatm.normalizePlain(plain)
 		this.plainParts = plain.parts || []
+		this.participation = new KhatmParticipation(() => this.plain)
 	}
 
-	static fromPlain(plain: TKhatm & { parts?: TKhatmPart[] }) {
+	private static normalizePlain(
+		plain: KhatmData & { parts?: TKhatmPart[] },
+	): KhatmData & { parts?: TKhatmPart[] } {
+		if (Number.isFinite(plain.pageProgress) && plain.aiReviewStatus) return plain
+		return {
+			...plain,
+			pageProgress: Number.isFinite(plain.pageProgress) ? plain.pageProgress : 0,
+			aiReviewStatus: plain.aiReviewStatus || 'disabled',
+			aiReviewReason: plain.aiReviewReason || null,
+		}
+	}
+
+	static fromPlain(plain: KhatmData & { parts?: TKhatmPart[] }) {
+		plain = this.normalizePlain(plain)
 		if (!browser) return new this(plain)
 
 		let khatm = cache.get(plain.id)
 		if (khatm) {
 			untrack(() => {
-				const isNewer = plain.versesRead > khatm!.versesRead
+				const isNewer =
+					plain.versesRead > khatm!.versesRead ||
+					(plain.versesRead === khatm!.versesRead &&
+						(plain.pageProgress > khatm!.pageProgress ||
+							(plain.status === 'completed' && khatm!.status !== 'completed')))
 				if (isNewer) {
 					khatm!.plain = plain
 				}
@@ -45,7 +70,7 @@ export class Khatm {
 		return khatm!
 	}
 
-	static fromPlainList(plainList: TKhatm[]) {
+	static fromPlainList(plainList: KhatmData[]) {
 		return plainList.map((plain) => this.fromPlain(plain))
 	}
 
@@ -56,12 +81,36 @@ export class Khatm {
 		pageID?: number
 		reviewStatus?: ReviewStatus
 	}) {
-		const { list } = await request<{ list: TKhatm[] }>('get', '/khatm/list', {
+		const { list } = await request<{ list: KhatmData[] }>('get', '/khatm/list', {
 			pageID,
 			reviewStatus,
 		})
 
 		return Khatm.fromPlainList(list)
+	}
+
+	static async getAdminList({
+		pageID,
+		reviewStatus,
+	}: {
+		pageID?: number
+		reviewStatus: ReviewStatus
+	}) {
+		const { list } = await request<{ list: AdminKhatmListItem[] }>('get', '/khatm/list', {
+			pageID,
+			reviewStatus,
+			admin: 1,
+		})
+
+		return list.map((item) => ({ ...item, khatm: Khatm.fromPlain(item.khatm) }))
+	}
+
+	static async getDirectoryList(query: KhatmDirectoryQuery) {
+		const result = await request<KhatmDirectoryResult>('get', '/khatm/directory', query)
+		return {
+			list: Khatm.fromPlainList(result.list),
+			nextCursor: result.nextCursor,
+		}
 	}
 
 	/**
@@ -75,23 +124,23 @@ export class Khatm {
 
 	static getRangeTypeTitle(rangeType: RangeType) {
 		return {
-			ayah: 'آیه به آیه',
-			surah: 'سوره به سوره',
-			juz: 'جزء به جزء',
-			hizbQuarter: 'حزب به حزب',
-			page: 'صفحه به صفحه',
-			free: 'آزاد',
+			ayah: m.range_ayah(),
+			surah: m.range_surah(),
+			juz: m.range_juz(),
+			hizbQuarter: m.range_hizb(),
+			page: m.range_page(),
+			free: m.range_free(),
 		}[rangeType]
 	}
 
 	static getOneItemFromRangeTitle(rangeType: RangeType) {
 		return {
-			ayah: 'یک آیه',
-			surah: 'یک سوره',
-			juz: 'یک جزء',
-			hizbQuarter: 'یک چهارم حزب',
-			page: 'یک صفحه',
-			free: 'یک بازه‌ی آزاد',
+			ayah: m.range_one_ayah(),
+			surah: m.range_one_surah(),
+			juz: m.range_one_juz(),
+			hizbQuarter: m.range_one_hizb(),
+			page: m.range_one_page(),
+			free: m.range_one_free(),
 		}[rangeType]
 	}
 
@@ -107,25 +156,16 @@ export class Khatm {
 		return this.plain.description
 	}
 
-	getProgressByPage() {
-		if (this.versesRead === 0) return 0
-		if (this.rangeType === 'ayah') {
-			return new QuranRange(0, this.versesRead).getCoveragePercent()
-		}
-		if (!this.plainParts) return null
-		let progress = 0
-		for (const part of this.plainParts) {
-			progress += new QuranRange(part.start, part.end).getCoveragePercent()
-		}
-		return progress
+	get pageProgress() {
+		return Math.min(100, Math.max(0, this.plain.pageProgress))
 	}
 
 	get progress() {
-		return this.versesRead / COUNT_OF_AYAHS
+		return this.pageProgress / 100
 	}
 
 	get percent() {
-		return Math.floor(100_00 * this.progress) / 100
+		return roundPercent(this.pageProgress, this.finished || this.versesRead >= COUNT_OF_AYAHS)
 	}
 
 	get isSerial() {
@@ -164,6 +204,14 @@ export class Khatm {
 		return this.plain.reviewStatus
 	}
 
+	get aiReviewStatus() {
+		return this.plain.aiReviewStatus || 'disabled'
+	}
+
+	get aiReviewReason() {
+		return this.plain.aiReviewReason || null
+	}
+
 	get accessToken() {
 		return this.plain.accessToken || null
 	}
@@ -186,9 +234,9 @@ export class Khatm {
 
 	getRoundTitle() {
 		if (!this.isSerial) return ''
-		if (this.roundNumber === 1) return 'دور اوّل'
-		if (this.roundNumber === 2) return 'دور دوم'
-		return 'دور ' + this.roundNumber.toLocaleString('fa')
+		if (this.roundNumber === 1) return m.round_first()
+		if (this.roundNumber === 2) return m.round_second()
+		return m.round_number({ number: formatNumber(this.roundNumber) })
 	}
 
 	getLink(layout: 'wizard' | 'grid' | 'list' = 'wizard') {
@@ -205,8 +253,9 @@ export class Khatm {
 		return this.getLink()
 	}
 
-	getKhatmParts() {
-		return KhatmPart.fromList(this.plainParts)
+	getKhatmParts(merge = true) {
+		if (merge) return KhatmPart.fromList(this.plainParts)
+		return this.plainParts.map((part) => new KhatmPart(part)).sort((a, b) => a.start - b.start)
 	}
 
 	async pickNextAyat({ count = 1, translation }: { count: number; translation: Translation }) {
@@ -216,6 +265,12 @@ export class Khatm {
 			accessToken: this.accessToken,
 			translation,
 		})
+		const firstAyah = result.ayat[0]
+		const lastAyah = result.ayat[result.ayat.length - 1]
+		this.plain = result.khatm
+		if (firstAyah && lastAyah) {
+			this.participation.add(new QuranRange(firstAyah.index, lastAyah.index + 1), result.khatm)
+		}
 
 		return result
 	}
@@ -224,7 +279,7 @@ export class Khatm {
 		try {
 			await navigator.share({
 				url: this.link,
-				text: `سامانه ختم قرآن گروهی | ${this.title}\n` + this.description + '\n',
+				text: m.share_khatm({ title: this.title, description: this.description }),
 			})
 		} catch (err) {
 			console.error(err)
@@ -242,7 +297,7 @@ export class Khatm {
 	}
 
 	async refresh() {
-		const result = await request<{ khatm: TKhatm & { parts?: TKhatmPart[] } }>('get', '/khatm', {
+		const result = await request<{ khatm: KhatmData & { parts?: TKhatmPart[] } }>('get', '/khatm', {
 			khatmId: this.id,
 			accessToken: this.accessToken || '',
 		})
@@ -250,8 +305,8 @@ export class Khatm {
 		this.plainParts = result.khatm.parts || []
 	}
 
-	async update({ reviewStatus }: Pick<TKhatm, 'reviewStatus'>) {
-		const { khatm } = await request<{ khatm: TKhatm }>('post', '/khatm/update', {
+	async update({ reviewStatus }: Pick<KhatmData, 'reviewStatus'>) {
+		const { khatm } = await request<{ khatm: KhatmData }>('post', '/khatm/update', {
 			id: this.id,
 			reviewStatus,
 		})
@@ -259,20 +314,14 @@ export class Khatm {
 	}
 
 	async pickRange(range: QuranRange) {
-		await request('post', '/khatmPart/pickRange', {
+		const updated = await request<KhatmData>('post', '/khatmPart/pickRange', {
 			start: range.start,
 			end: range.end,
 			khatmId: this.id,
 			accessToken: this.accessToken,
 		})
 
-		new PickedKhatmPart({
-			id: undefined as unknown as number,
-			date: new Date(),
-			start: range.start,
-			end: range.end,
-			khatm: this.plain,
-			hash: this.accessToken,
-		}).save()
+		this.plain = updated
+		this.participation.add(range, updated)
 	}
 }

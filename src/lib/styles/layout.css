@@ -1,0 +1,87 @@
+.app {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+.ui-main {
+	position: relative;
+	width: 100%;
+	flex: 1 0 auto;
+}
+
+.ui-container,
+.ui-container-reading {
+	width: 100%;
+	margin-inline-start: auto;
+	margin-inline-end: auto;
+	padding-inline-start: 1rem;
+	padding-inline-end: 1rem;
+}
+
+.ui-container {
+	max-width: var(--ui-container);
+}
+
+.ui-container-reading {
+	max-width: var(--ui-reading);
+}
+
+.ui-page {
+	padding-top: 1.5rem;
+	padding-bottom: 3rem;
+}
+
+.ui-page-grid {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	grid-gap: 1rem;
+}
+
+.ui-hero {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 2rem 1rem;
+	text-align: center;
+}
+
+.ui-hero > * + * {
+	margin-top: 1.5rem;
+}
+
+@media (min-width: 768px) {
+	.ui-container,
+	.ui-container-reading {
+		padding-inline-start: 3rem;
+		padding-inline-end: 3rem;
+	}
+
+	.ui-page {
+		padding-top: 2.25rem;
+		padding-bottom: 4.5rem;
+	}
+
+	.ui-page-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		grid-gap: 1.25rem;
+	}
+
+	.ui-hero {
+		min-height: 22rem;
+		flex-direction: row;
+		text-align: start;
+	}
+
+	.ui-hero > * + * {
+		margin-top: 0;
+		margin-inline-start: 3rem;
+	}
+}
+
+@media (min-width: 1200px) {
+	.ui-page-grid-three {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}

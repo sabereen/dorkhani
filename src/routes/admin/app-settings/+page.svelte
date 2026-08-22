@@ -1,31 +1,158 @@
 <script lang="ts">
 	/* eslint-disable svelte/no-unused-svelte-ignore */
 	import { enhance } from '$app/forms'
+	import { validateForm } from '$lib/actions/validateForm'
+	import AdminNav from '$lib/components/AdminNav.svelte'
 	import Header from '$lib/components/Header.svelte'
+	import PageTitle from '$lib/components/PageTitle.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import { watch } from '$lib/hooks/watch.svelte'
+	import type { SubmitFunction } from '@sveltejs/kit'
+	import { onDestroy } from 'svelte'
 	import type { PageProps } from './$types'
+	import IconCleanup from '~icons/ic/round-delete-sweep'
+	import IconInfo from '~icons/ic/round-check-circle'
+	import IconNotification from '~icons/ic/round-notifications-active'
+	import IconRefresh from '~icons/ic/round-refresh'
+	import IconSave from '~icons/ic/round-save'
+	import IconSettings from '~icons/ic/round-settings'
+	import IconSupport from '~icons/ic/round-support-agent'
+	import IconPsychology from '~icons/ic/round-psychology'
+	import IconImage from '~icons/ic/round-image'
 
 	const { data, form }: PageProps = $props()
 
-	const { notification, supportLink } = /* svelte-ignore state_referenced_locally */ data
+	const { notification, supportLink, staleKhatmRetentionDays, aiKhatmReview, branding, brandingAssets } =
+		/* svelte-ignore state_referenced_locally */ data
+	const brandingLocales = [
+		{ locale: 'fa', label: 'فارسی', dir: 'rtl' },
+		{ locale: 'ar', label: 'عربی', dir: 'rtl' },
+		{ locale: 'en', label: 'انگلیسی', dir: 'ltr' },
+	] as const
+	let activeBrandingLocale: 'fa' | 'ar' | 'en' = $state('fa')
+	function copyBrandingTexts(texts: typeof branding.texts) {
+		return { fa: { ...texts.fa }, ar: { ...texts.ar }, en: { ...texts.en } }
+	}
 
 	const formData = $state({
-		supportLink: supportLink,
+		supportLink,
+		staleKhatmRetentionDays,
 		eitaa: notification.eitaa,
 		eitaaToken: notification.eitaaToken || '',
 		eitaaChatId: notification.eitaaChatId || '',
+		aiKhatmReviewEnabled: aiKhatmReview.enabled,
+		aiKhatmReviewBaseUrl: aiKhatmReview.baseUrl || '',
+		aiKhatmReviewModel: aiKhatmReview.model || '',
+		aiKhatmReviewApiKey: aiKhatmReview.apiKey || '',
+		branding: copyBrandingTexts(branding.texts),
 	})
+	let heroPreview = $state(brandingAssets.heroImageUrl)
+	let iconPreview = $state(brandingAssets.icon512Url)
+	let heroObjectUrl: string | undefined
+	let iconObjectUrl: string | undefined
+	let submitting = $state(false)
+	let aiConnectionTestLoading = $state(false)
+	let aiConnectionTest: { type: 'success' | 'error'; message: string } | null = $state(null)
+	let baleWebhookLoading = $state(false)
+	let baleWebhookResult: { type: 'success' | 'error'; message: string } | null = $state(null)
+
+	const enhanceForm: SubmitFunction = () => {
+		submitting = true
+		return async ({ update }) => {
+			try {
+				await update()
+			} finally {
+				submitting = false
+			}
+		}
+	}
+
+	function previewImage(event: Event, target: 'hero' | 'icon') {
+		const file = (event.currentTarget as HTMLInputElement).files?.[0]
+		if (!file) return
+		if (target === 'hero') {
+			if (heroObjectUrl) URL.revokeObjectURL(heroObjectUrl)
+			heroObjectUrl = URL.createObjectURL(file)
+			heroPreview = heroObjectUrl
+		} else {
+			if (iconObjectUrl) URL.revokeObjectURL(iconObjectUrl)
+			iconObjectUrl = URL.createObjectURL(file)
+			iconPreview = iconObjectUrl
+		}
+	}
+
+	onDestroy(() => {
+		if (heroObjectUrl) URL.revokeObjectURL(heroObjectUrl)
+		if (iconObjectUrl) URL.revokeObjectURL(iconObjectUrl)
+	})
+
+	async function testAiConnection() {
+		aiConnectionTestLoading = true
+		aiConnectionTest = null
+		try {
+			const response = await fetch('/api/admin/ai/test', {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({
+					baseUrl: formData.aiKhatmReviewBaseUrl,
+					model: formData.aiKhatmReviewModel,
+					apiKey: formData.aiKhatmReviewApiKey,
+				}),
+			})
+			const result = await response.json().catch(() => ({}))
+			if (!response.ok) throw new Error(result.message || 'تست اتصال ناموفق بود.')
+			aiConnectionTest = { type: 'success', message: result.message }
+		} catch (error) {
+			aiConnectionTest = {
+				type: 'error',
+				message: error instanceof Error ? error.message : 'تست اتصال ناموفق بود.',
+			}
+		} finally {
+			aiConnectionTestLoading = false
+		}
+	}
+
+	async function setBaleWebhook() {
+		baleWebhookLoading = true
+		baleWebhookResult = null
+		try {
+			const response = await fetch('/api/admin/bale/webhook', { method: 'POST' })
+			const result = await response.json().catch(() => ({}))
+			if (!response.ok) throw new Error(result.message || 'تنظیم وب‌هوک بله ناموفق بود.')
+			baleWebhookResult = { type: 'success', message: result.message }
+		} catch (error) {
+			baleWebhookResult = {
+				type: 'error',
+				message: error instanceof Error ? error.message : 'تنظیم وب‌هوک بله ناموفق بود.',
+			}
+		} finally {
+			baleWebhookLoading = false
+		}
+	}
 
 	watch(
 		() => form,
 		() => {
-			toast('info', 'تنظیمات ذخیره شد.')
+			if (form?.errorMessage) {
+				toast('error', form.errorMessage)
+				return
+			}
+
+			toast('info', 'تنظیمات با موفقیت ذخیره شد.')
 			formData.supportLink = form?.supportLink || ''
+			formData.staleKhatmRetentionDays =
+				form?.staleKhatmRetentionDays || data.staleKhatmRetentionDays
 			formData.eitaa = form?.eitaa
 			formData.eitaaToken = form?.eitaaToken || ''
 			formData.eitaaChatId = form?.eitaaChatId || ''
+			formData.aiKhatmReviewEnabled = form?.aiKhatmReview?.enabled ?? data.aiKhatmReview.enabled
+			formData.aiKhatmReviewBaseUrl = form?.aiKhatmReview?.baseUrl || data.aiKhatmReview.baseUrl || ''
+			formData.aiKhatmReviewModel = form?.aiKhatmReview?.model || data.aiKhatmReview.model || ''
+			formData.aiKhatmReviewApiKey = form?.aiKhatmReview?.apiKey || ''
+			if (form?.branding) {
+				formData.branding = copyBrandingTexts(form.branding.texts)
+			}
 		},
 	)
 
@@ -34,7 +161,7 @@
 		try {
 			refreshKhatmStatusLoading = true
 			await Khatm.refreshStatusList()
-			toast('info', 'تازه سازی انجام شد.')
+			toast('info', 'وضعیت همه ختم‌ها با موفقیت تازه‌سازی شد.')
 		} catch (err) {
 			toast('error', String(err))
 		} finally {
@@ -43,76 +170,347 @@
 	}
 </script>
 
-<svelte:head>
-	<title>ختم قرآن | تنظیمات کلی سایت</title>
-</svelte:head>
+<PageTitle title="تنظیمات سامانه" />
 
-<Header title="مدیریت تنظیمات کلی" />
+<Header title="تنظیمات سامانه" />
 
-<div class="mt-4 text-center">
-	<button
-		disabled={refreshKhatmStatusLoading}
-		class="btn btn-primary !btn-outline"
-		onclick={refreshKhatmsStatus}
-	>
-		تازه‌سازی وضعیت تمام ختم‌ها
-	</button>
+<div class="ui-admin-shell">
+	<AdminNav />
+
+	<section class="ui-admin-page-heading" aria-labelledby="settings-page-title">
+		<span class="ui-admin-page-icon"><IconSettings /></span>
+		<div>
+			<span>پیکربندی و نگهداری</span>
+			<h1 id="settings-page-title">تنظیمات عمومی سامانه</h1>
+			<p>هویت بصری، رفتارهای اجرایی، مسیر پشتیبانی و اعلان‌های مدیریتی را از این بخش کنترل کنید.</p>
+		</div>
+	</section>
+
+	<div class="ui-admin-settings-layout">
+		<form
+			use:validateForm
+			use:enhance={enhanceForm}
+			novalidate
+			class="ui-admin-settings-form"
+			aria-busy={submitting}
+			action=""
+			method="POST"
+			enctype="multipart/form-data"
+		>
+			<section class="ui-admin-settings-section" aria-labelledby="branding-settings-title">
+				<div class="ui-admin-settings-section-heading">
+					<span><IconImage /></span>
+					<div>
+						<h2 id="branding-settings-title">هویت و برندینگ</h2>
+						<p>نام، پیام اصلی و تصاویر عمومی سامانه را مدیریت کنید.</p>
+					</div>
+				</div>
+
+				<div class="ui-tabs" role="tablist" aria-label="زبان متن‌های برندینگ">
+					{#each brandingLocales as item}
+						<button
+							type="button"
+							class="ui-tab"
+							class:ui-tab-active={activeBrandingLocale === item.locale}
+							role="tab"
+							aria-selected={activeBrandingLocale === item.locale}
+							onclick={() => (activeBrandingLocale = item.locale)}
+						>{item.label}</button>
+					{/each}
+				</div>
+
+				{#each brandingLocales as item}
+					<div hidden={activeBrandingLocale !== item.locale} dir={item.dir} lang={item.locale}>
+						<div class="ui-admin-field-grid">
+							<div class="ui-admin-field">
+								<label for={`input-brand-${item.locale}-name`} class="ui-field-label">نام برنامه</label>
+								<input bind:value={formData.branding[item.locale].name} class="ui-input" type="text" name={`branding_${item.locale}_name`} id={`input-brand-${item.locale}-name`} maxlength="60" data-ui-validate required />
+							</div>
+							<div class="ui-admin-field">
+								<label for={`input-brand-${item.locale}-tagline`} class="ui-field-label">شعار کوتاه</label>
+								<input bind:value={formData.branding[item.locale].tagline} class="ui-input" type="text" name={`branding_${item.locale}_tagline`} id={`input-brand-${item.locale}-tagline`} maxlength="100" data-ui-validate required />
+							</div>
+							<div class="ui-admin-field">
+								<label for={`input-brand-${item.locale}-hero-title`} class="ui-field-label">خط اول عنوان Hero</label>
+								<input bind:value={formData.branding[item.locale].heroTitle} class="ui-input" type="text" name={`branding_${item.locale}_heroTitle`} id={`input-brand-${item.locale}-hero-title`} maxlength="120" data-ui-validate required />
+							</div>
+							<div class="ui-admin-field">
+								<label for={`input-brand-${item.locale}-hero-highlight`} class="ui-field-label">خط برجستهٔ عنوان Hero</label>
+								<input bind:value={formData.branding[item.locale].heroHighlight} class="ui-input" type="text" name={`branding_${item.locale}_heroHighlight`} id={`input-brand-${item.locale}-hero-highlight`} maxlength="120" data-ui-validate required />
+							</div>
+						</div>
+
+						<div class="ui-admin-field">
+							<label for={`input-brand-${item.locale}-hero-description`} class="ui-field-label">توضیح Hero</label>
+							<textarea bind:value={formData.branding[item.locale].heroDescription} class="ui-textarea" name={`branding_${item.locale}_heroDescription`} id={`input-brand-${item.locale}-hero-description`} maxlength="500" rows="3" data-ui-validate required></textarea>
+						</div>
+
+						<div class="ui-admin-field-grid">
+							<div class="ui-admin-field">
+								<label for={`input-brand-${item.locale}-seo-title`} class="ui-field-label">عنوان SEO صفحهٔ اصلی</label>
+								<input bind:value={formData.branding[item.locale].seoTitle} class="ui-input" type="text" name={`branding_${item.locale}_seoTitle`} id={`input-brand-${item.locale}-seo-title`} maxlength="120" data-ui-validate required />
+							</div>
+							<div class="ui-admin-field">
+								<label for={`input-brand-${item.locale}-seo-description`} class="ui-field-label">توضیح SEO صفحهٔ اصلی</label>
+								<textarea bind:value={formData.branding[item.locale].seoDescription} class="ui-textarea" name={`branding_${item.locale}_seoDescription`} id={`input-brand-${item.locale}-seo-description`} maxlength="200" rows="3" data-ui-validate required></textarea>
+							</div>
+						</div>
+
+						<div class="ui-admin-field">
+							<label for={`input-brand-${item.locale}-hero-image-alt`} class="ui-field-label">متن جایگزین تصویر Hero</label>
+							<input bind:value={formData.branding[item.locale].heroImageAlt} class="ui-input" type="text" name={`branding_${item.locale}_heroImageAlt`} id={`input-brand-${item.locale}-hero-image-alt`} maxlength="160" data-ui-validate required />
+						</div>
+					</div>
+				{/each}
+
+				<div class="ui-admin-brand-assets">
+					<div class="ui-admin-field">
+						<label for="input-hero-image" class="ui-field-label">تصویر Hero</label>
+						<div class="ui-admin-brand-preview ui-admin-brand-preview-hero"><img src={heroPreview} alt="پیش‌نمایش تصویر Hero" /></div>
+						<input class="ui-input" type="file" name="heroImage" id="input-hero-image" accept="image/png,image/jpeg" onchange={(event) => previewImage(event, 'hero')} />
+						<small class="ui-admin-field-hint">PNG یا JPEG، حداکثر ۵ مگابایت و حداقل ۴۸۰×۳۲۰ پیکسل.</small>
+					</div>
+					<div class="ui-admin-field">
+						<label for="input-app-icon" class="ui-field-label">آیکن برنامه</label>
+						<div class="ui-admin-brand-preview ui-admin-brand-preview-icon"><img src={iconPreview} alt="پیش‌نمایش آیکن برنامه" /></div>
+						<input class="ui-input" type="file" name="appIcon" id="input-app-icon" accept="image/png,image/jpeg" onchange={(event) => previewImage(event, 'icon')} />
+						<small class="ui-admin-field-hint">تصویر مربعی PNG یا JPEG، حداکثر ۵ مگابایت و حداقل ۵۱۲×۵۱۲ پیکسل.</small>
+					</div>
+				</div>
+			</section>
+
+			<div class="ui-admin-form-divider" aria-hidden="true"></div>
+
+			<section class="ui-admin-settings-section" aria-labelledby="general-settings-title">
+				<div class="ui-admin-settings-section-heading">
+					<span><IconSupport /></span>
+					<div>
+						<h2 id="general-settings-title">ارتباط و نگهداری داده</h2>
+						<p>نشانی پشتیبانی و بازهٔ نگهداری ختم‌های بدون فعالیت را مشخص کنید.</p>
+					</div>
+				</div>
+
+				<div class="ui-admin-field">
+					<label for="input-support-link" class="ui-field-label">لینک پشتیبانی</label>
+					<input
+						bind:value={formData.supportLink}
+						class="ui-input"
+						type="url"
+						name="supportLink"
+						dir="ltr"
+						id="input-support-link"
+						placeholder="https://example.com/support"
+						aria-describedby="support-link-hint"
+					/>
+					<small id="support-link-hint" class="ui-admin-field-hint">
+						این نشانی در بخش‌های پشتیبانی سامانه به کاربران نمایش داده می‌شود.
+					</small>
+				</div>
+
+				<div class="ui-admin-field">
+					<label for="input-stale-khatm-retention-days" class="ui-field-label">
+						مهلت حذف ختم‌های آغازنشده <span class="ui-admin-required">ضروری</span>
+					</label>
+					<div class="ui-admin-number-field">
+						<input
+							bind:value={formData.staleKhatmRetentionDays}
+							class="ui-input"
+							type="number"
+							name="staleKhatmRetentionDays"
+							min="1"
+							max="3650"
+							step="1"
+							id="input-stale-khatm-retention-days"
+							data-ui-validate
+							aria-describedby="retention-days-hint"
+							required
+						/>
+						<span>روز</span>
+					</div>
+					<small id="retention-days-hint" class="ui-admin-field-hint">
+						ختم مستقلی که در این بازه هیچ آیه‌ای از آن خوانده نشود، خودکار حذف خواهد شد.
+					</small>
+				</div>
+			</section>
+
+			<div class="ui-admin-form-divider" aria-hidden="true"></div>
+
+			<section class="ui-admin-settings-section" aria-labelledby="ai-review-settings-title">
+				<div class="ui-admin-settings-section-heading">
+					<span class="ui-admin-settings-icon-warm"><IconPsychology /></span>
+					<div>
+						<h2 id="ai-review-settings-title">بررسی AI ختم‌ها</h2>
+						<p>عنوان و توضیح ختم‌ها را برای راهنمایی کاربر و تأیید خودکار ختم‌های عمومی بررسی کنید.</p>
+					</div>
+				</div>
+
+				<label class="ui-admin-toggle-card">
+					<input class="ui-checkbox" type="checkbox" name="aiKhatmReviewEnabled" bind:checked={formData.aiKhatmReviewEnabled} />
+					<span class="ui-admin-toggle-copy">
+						<strong>بررسی AI فعال باشد</strong>
+						<small>در صورت کندی یا خطای سرویس، ثبت ختم متوقف نمی‌شود.</small>
+					</span>
+					<span class="ui-admin-toggle-status">{formData.aiKhatmReviewEnabled ? 'فعال' : 'غیرفعال'}</span>
+				</label>
+
+				<div class="ui-admin-field-grid" class:ui-admin-fields-muted={!formData.aiKhatmReviewEnabled}>
+					<div class="ui-admin-field">
+						<label for="input-ai-review-base-url" class="ui-field-label">نشانی پایهٔ OpenAI-compatible</label>
+						<input bind:value={formData.aiKhatmReviewBaseUrl} class="ui-input" type="url" name="aiKhatmReviewBaseUrl" dir="ltr" id="input-ai-review-base-url" placeholder="https://api.example.com/v1" required={formData.aiKhatmReviewEnabled} />
+					</div>
+					<div class="ui-admin-field">
+						<label for="input-ai-review-model" class="ui-field-label">نام مدل</label>
+						<input bind:value={formData.aiKhatmReviewModel} class="ui-input" type="text" name="aiKhatmReviewModel" dir="ltr" id="input-ai-review-model" placeholder="gpt-4o-mini" required={formData.aiKhatmReviewEnabled} />
+					</div>
+					<div class="ui-admin-field">
+						<label for="input-ai-review-api-key" class="ui-field-label">کلید API</label>
+						<input bind:value={formData.aiKhatmReviewApiKey} class="ui-input" type="password" name="aiKhatmReviewApiKey" autocomplete="off" dir="ltr" id="input-ai-review-api-key" required={formData.aiKhatmReviewEnabled} />
+						<small class="ui-admin-field-hint">برای حفظ کلید فعلی، این مقدار را تغییر ندهید.</small>
+					</div>
+				</div>
+
+				<div class="ui-admin-field">
+					<button
+						class="ui-btn ui-btn-outline"
+						type="button"
+						onclick={testAiConnection}
+						disabled={aiConnectionTestLoading}
+					>
+						{#if aiConnectionTestLoading}<span class="ui-spinner"></span>{:else}<IconRefresh />{/if}
+						{aiConnectionTestLoading ? 'در حال تست اتصال…' : 'تست اتصال AI'}
+					</button>
+					{#if aiConnectionTest}
+						<div
+							class={`ui-alert ${aiConnectionTest.type === 'success' ? 'ui-alert-success' : 'ui-alert-error'} mt-3`}
+							role={aiConnectionTest.type === 'success' ? 'status' : 'alert'}
+						>
+							{aiConnectionTest.message}
+						</div>
+					{/if}
+				</div>
+			</section>
+
+			<div class="ui-admin-form-divider" aria-hidden="true"></div>
+
+			<section class="ui-admin-settings-section" aria-labelledby="notification-settings-title">
+				<div class="ui-admin-settings-section-heading">
+					<span class="ui-admin-settings-icon-warm"><IconNotification /></span>
+					<div>
+						<h2 id="notification-settings-title">اعلان‌های پیام‌رسانی</h2>
+						<p>دریافت اعلان‌ها در پیام‌رسان‌ها و آماده‌سازی وب‌هوک بله را مدیریت کنید.</p>
+					</div>
+				</div>
+
+				<label class="ui-admin-toggle-card">
+					<input class="ui-checkbox" type="checkbox" name="eitaa" bind:checked={formData.eitaa} />
+					<span class="ui-admin-toggle-copy">
+						<strong>ارسال اعلان فعال باشد</strong>
+						<small>برای ختم تازه یا خطای غیرمنتظره، پیام مدیریتی ارسال شود.</small>
+					</span>
+					<span class="ui-admin-toggle-status">{formData.eitaa ? 'فعال' : 'غیرفعال'}</span>
+				</label>
+
+				<div
+					class="ui-admin-field-grid ui-admin-notification-fields"
+					class:ui-admin-fields-muted={!formData.eitaa}
+				>
+					<div class="ui-admin-field">
+						<label for="input-eitaa-token" class="ui-field-label">توکن ایتا (API Key)</label>
+						<input
+							bind:value={formData.eitaaToken}
+							class="ui-input"
+							type="password"
+							autocomplete="off"
+							name="eitaaToken"
+							dir="ltr"
+							id="input-eitaa-token"
+							data-ui-validate
+							required={formData.eitaa}
+						/>
+						<small class="ui-admin-field-hint">
+							توکن را از منوی API در
+							<a class="ui-link" href="https://eitaayar.ir" target="_blank" rel="noreferrer"
+								>ایتایار</a
+							>
+							دریافت کنید.
+						</small>
+					</div>
+
+					<div class="ui-admin-field">
+						<label for="input-eitaa-chat-id" class="ui-field-label">شناسه گفتگو (Chat ID)</label>
+						<input
+							bind:value={formData.eitaaChatId}
+							class="ui-input"
+							type="text"
+							autocomplete="off"
+							name="eitaaChatId"
+							inputmode="numeric"
+							dir="ltr"
+							id="input-eitaa-chat-id"
+							data-ui-validate
+							required={formData.eitaa}
+						/>
+						<small class="ui-admin-field-hint">
+							کانال یا گروه را در پنل ایتایار تعریف کنید تا شناسه در اختیارتان قرار گیرد.
+						</small>
+					</div>
+				</div>
+
+				<div class="ui-admin-field">
+					<button
+						class="ui-btn ui-btn-outline"
+						type="button"
+						onclick={setBaleWebhook}
+						disabled={baleWebhookLoading}
+					>
+						{#if baleWebhookLoading}<span class="ui-spinner"></span>{:else}<IconRefresh />{/if}
+						{baleWebhookLoading ? 'در حال بررسی و تنظیم…' : 'بررسی و تنظیم وب‌هوک بله'}
+					</button>
+					<small class="ui-admin-field-hint">
+						وب‌هوک با توکن و secret تنظیم‌شده در متغیرهای محیطی سامانه ثبت می‌شود.
+					</small>
+					{#if baleWebhookResult}
+						<div
+							class={`ui-alert ${baleWebhookResult.type === 'success' ? 'ui-alert-success' : 'ui-alert-error'} mt-3`}
+							role={baleWebhookResult.type === 'success' ? 'status' : 'alert'}
+						>
+							{baleWebhookResult.message}
+						</div>
+					{/if}
+				</div>
+			</section>
+
+			<div class="ui-admin-settings-actions">
+				<div>
+					<IconInfo />
+					<span>تغییرات پس از ذخیره روی سامانه اعمال می‌شوند.</span>
+				</div>
+				<button type="submit" class="ui-btn ui-btn-primary ui-btn-lg" disabled={submitting}>
+					{#if submitting}<span class="ui-spinner"></span>{:else}<IconSave />{/if}
+					{submitting ? 'در حال ذخیره…' : 'ذخیره تنظیمات'}
+				</button>
+			</div>
+		</form>
+
+		<aside class="ui-admin-maintenance-card">
+			<span class="ui-admin-maintenance-icon"><IconCleanup /></span>
+			<span class="ui-admin-eyebrow">ابزار نگهداری</span>
+			<h2>تازه‌سازی وضعیت ختم‌ها</h2>
+			<p>
+				وضعیت همه ختم‌ها دوباره محاسبه می‌شود و موارد کامل‌شده‌ای که ثبت نشده‌اند، اصلاح خواهند شد.
+			</p>
+			<div class="ui-admin-maintenance-warning">
+				این عملیات ممکن است کمی زمان ببرد. تا پایان پردازش، صفحه را نبندید.
+			</div>
+			<button
+				disabled={refreshKhatmStatusLoading}
+				class="ui-btn ui-btn-outline ui-btn-block"
+				type="button"
+				onclick={refreshKhatmsStatus}
+			>
+				{#if refreshKhatmStatusLoading}<span class="ui-spinner"></span>{:else}<IconRefresh />{/if}
+				{refreshKhatmStatusLoading ? 'در حال تازه‌سازی…' : 'تازه‌سازی همه ختم‌ها'}
+			</button>
+		</aside>
+	</div>
 </div>
-
-<form use:enhance class="mt-4 flex justify-center p-2" action="" method="POST">
-	<fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border px-4 !pb-4">
-		<label for="input-support-link" class="fieldset-label mt-2">لینک پشتیبانی</label>
-		<input
-			bind:value={formData.supportLink}
-			class="input"
-			type="url"
-			name="supportLink"
-			dir="ltr"
-			id="input-support-link"
-		/>
-
-		<label class="bg-base-100 mt-2 flex cursor-pointer items-center rounded-lg px-2 py-1 py-2">
-			<input class="checkbox" type="checkbox" name="eitaa" bind:checked={formData.eitaa} />
-			<span class="ms-2 flex min-w-0 grow basis-0 flex-col">
-				<span class="text-[.9rem] font-bold">نوتیفیکشن ایتا</span>
-				<p class="text-xs">
-					هرگاه خطایی غیر منتظره در سیستم رخ دهد یا اینکه ختم جدیدی ایجاد شود نوتیفیکیشن به ایتا
-					ارسال شود.
-				</p>
-			</span>
-		</label>
-
-		<label for="input-eitaa-token" class="fieldset-label mt-2">توکن ایتا (API Key)</label>
-		<input
-			bind:value={formData.eitaaToken}
-			class="input"
-			type="password"
-			autocomplete="off"
-			name="eitaaToken"
-			dir="ltr"
-			id="input-eitaa-token"
-		/>
-		<p class="text-xs">
-			در پنل <a class="link" href="https://eitaayar.ir" target="_blank">eitaayar.ir</a>
-			از منوی API توکن را دریافت کنید.
-		</p>
-
-		<label for="input-eitaa-chat-id" class="fieldset-label mt-2">شناسه گفتگوی ایتا (Chat ID)</label>
-		<input
-			bind:value={formData.eitaaChatId}
-			class="input"
-			type="text"
-			autocomplete="off"
-			name="eitaaChatId"
-			inputmode="numeric"
-			dir="ltr"
-			id="input-eitaa-chat-id"
-		/>
-		<p class="text-xs">
-			کانال یا گروه مورد نظر را در قسمت «کانال‌ها» و «افزودن کانال جدید» در پنل ایتایار تعریف کنید
-			تا شناسه را در اختیارتان قرار دهد.
-		</p>
-
-		<button type="submit" class="btn btn-primary mt-3">ذخیره</button>
-	</fieldset>
-</form>

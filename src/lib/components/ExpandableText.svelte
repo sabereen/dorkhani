@@ -17,7 +17,7 @@
 <span class="whitespace-pre-wrap">{open || !secondPart ? text : `${firstPart}...`}</span>
 {#if secondPart}
 	<details bind:open class="inline">
-		<summary class="link text-primary inline-block text-sm">
+		<summary class="ui-link inline-block text-sm">
 			{#if open}
 				کمتر
 			{:else}

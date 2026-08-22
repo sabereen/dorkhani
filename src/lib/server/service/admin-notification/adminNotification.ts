@@ -1,7 +1,7 @@
-import type { TKhatm } from '@prisma-client'
+import type { KhatmData } from '$lib/entity/KhatmData'
 
 export interface AdminNotification {
 	send(text: string): Promise<void>
-	sendNewKhatm(khatm: TKhatm, origin: string): Promise<void>
+	sendNewKhatm(khatm: KhatmData, origin: string): Promise<void>
 	sendError(message: string, meta?: unknown): Promise<void>
 }

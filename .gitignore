@@ -28,3 +28,5 @@ prisma/dev2.db
 
 # Generated Prisma Client
 src/lib/server/generated/prisma
+
+.pnpm-store

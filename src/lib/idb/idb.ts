@@ -1,5 +1,6 @@
 // db.ts
-import type { TKhatm, TZekr } from '@prisma-client'
+import type { TZekr } from '@prisma-client'
+import type { KhatmData } from '$lib/entity/KhatmData'
 import Dexie, { type EntityTable } from 'dexie'
 
 /** بازه‌ی انتخاب شده برای ختم */
@@ -12,14 +13,16 @@ export interface PickedKhatmPart {
 	/** پایان بازه انتخاب شده */
 	end: number
 	/** خود آبجکت ختم مورد نظر */
-	khatm: TKhatm
+	khatm: KhatmData
 	hash?: string | null
 }
 
 export interface CreatedKhatm {
 	id?: number
 	/** ختم ساخته شده */
-	khatm: TKhatm
+	khatm: KhatmData
+	/** راز یک‌بارمصرف برای انتقال امن ختم مهمان به حساب کاربری */
+	claimToken?: string
 }
 
 export interface LocalZekr {
@@ -39,8 +42,14 @@ const db = new Dexie('Khatm') as Dexie & {
 }
 
 // Schema declaration:
-db.version(4).stores({
+db.version(5).stores({
 	pickedKhatmParts: '++id, date',
+	createdKhatms: 'id, khatm.created',
+	localZekr: 'id, isMine, zekr.created',
+})
+
+db.version(6).stores({
+	pickedKhatmParts: '++id, date, khatm.id, khatm.seriesId',
 	createdKhatms: 'id, khatm.created',
 	localZekr: 'id, isMine, zekr.created',
 })

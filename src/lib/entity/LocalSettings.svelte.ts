@@ -3,10 +3,13 @@ import { isEmptyObject } from '$lib/utility/isEmptyObject'
 import { localStore } from '$lib/utility/localStore'
 import { setCookie } from '$lib/utility/setCookie'
 import { getContext, setContext } from 'svelte'
-import type { DaisyThemeSlug } from './Theme'
+import type { ColorScheme } from './Theme'
+import { isLocale } from '$lib/i18n/locale'
+import type { Locale } from '$lib/paraglide/runtime.js'
+import type { QuranTranslationId } from './QuranTranslation'
 
 export type QuranFont = 'hafs' | 'qpc1' | 'qpc2'
-export type Translation = 'ansarian' | 'makarem' | 'gharaati'
+export type Translation = QuranTranslationId
 export type Reciter = 'minshawi' | 'parhizgar' | 'husari' | 'abdulbasit'
 
 export interface ILocalSettings {
@@ -15,8 +18,8 @@ export interface ILocalSettings {
 	reciter: Reciter
 	readedRangesVisibility: 'visible' | 'invisible' | 'auto'
 	externalQuranProvider: 'ketabmobin' | 'quran-com' | 'quran-projector'
-	daisyTheme: DaisyThemeSlug | null
-	pageBasedProgress: boolean
+	colorScheme: ColorScheme
+	locale: Locale
 }
 
 export type SettingKey = keyof ILocalSettings
@@ -27,8 +30,8 @@ const defaultSettings = {
 	reciter: 'minshawi',
 	translation: 'ansarian',
 	externalQuranProvider: 'quran-com',
-	daisyTheme: null,
-	pageBasedProgress: false,
+	colorScheme: 'system',
+	locale: 'fa',
 } as const satisfies ILocalSettings
 
 const localStoreKey = 'localSettings'
@@ -69,8 +72,12 @@ export class LocalSettings {
 	 */
 	private updateCookies(config: Partial<ILocalSettings>) {
 		const ONE_YEAR = 365 * 24 * 3600
-		if (config.daisyTheme) {
-			setCookie('daisyTheme', config.daisyTheme, ONE_YEAR)
+		if (config.colorScheme != null) {
+			if (config.colorScheme === 'system') {
+				setCookie('colorScheme', '', 0)
+			} else {
+				setCookie('colorScheme', config.colorScheme, ONE_YEAR)
+			}
 		}
 		if (config.translation != null) {
 			setCookie('translation', config.translation, ONE_YEAR)
@@ -79,7 +86,7 @@ export class LocalSettings {
 
 	updateByLocalStore() {
 		if (!browser) return
-		const storedSettings = localStore.getOrDefault(localStoreKey, {})
+		const storedSettings = normalizeSettings(localStore.getOrDefault(localStoreKey, {}))
 		this.update(storedSettings, { bypassLocalStore: true })
 	}
 
@@ -97,6 +104,54 @@ export class LocalSettings {
 			}
 		})
 	}
+}
+
+export function normalizeSettings(value: unknown): Partial<ILocalSettings> {
+	if (!value || typeof value !== 'object') return {}
+	const stored = value as Record<string, unknown>
+	const result: Partial<ILocalSettings> = {}
+
+	if (stored.quranFont === 'hafs' || stored.quranFont === 'qpc1' || stored.quranFont === 'qpc2') {
+		result.quranFont = stored.quranFont
+	}
+	if (
+		stored.translation === 'ansarian' ||
+		stored.translation === 'makarem' ||
+		stored.translation === 'gharaati'
+	) {
+		result.translation = stored.translation
+	}
+	if (
+		stored.reciter === 'minshawi' ||
+		stored.reciter === 'parhizgar' ||
+		stored.reciter === 'husari' ||
+		stored.reciter === 'abdulbasit'
+	) {
+		result.reciter = stored.reciter
+	}
+	if (
+		stored.readedRangesVisibility === 'visible' ||
+		stored.readedRangesVisibility === 'invisible' ||
+		stored.readedRangesVisibility === 'auto'
+	) {
+		result.readedRangesVisibility = stored.readedRangesVisibility
+	}
+	if (
+		stored.externalQuranProvider === 'ketabmobin' ||
+		stored.externalQuranProvider === 'quran-com' ||
+		stored.externalQuranProvider === 'quran-projector'
+	) {
+		result.externalQuranProvider = stored.externalQuranProvider
+	}
+	if (
+		stored.colorScheme === 'system' ||
+		stored.colorScheme === 'light' ||
+		stored.colorScheme === 'dark'
+	) {
+		result.colorScheme = stored.colorScheme
+	}
+	if (isLocale(stored.locale)) result.locale = stored.locale
+	return result
 }
 
 export class SettingsEditor {

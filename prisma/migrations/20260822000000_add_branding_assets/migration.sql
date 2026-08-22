@@ -1,0 +1,5 @@
+ALTER TABLE `app_settings`
+	ADD COLUMN `hero_image` LONGBLOB NULL,
+	ADD COLUMN `hero_image_mime` VARCHAR(32) NULL,
+	ADD COLUMN `app_icon_192` LONGBLOB NULL,
+	ADD COLUMN `app_icon_512` LONGBLOB NULL;

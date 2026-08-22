@@ -1,15 +1,25 @@
-import type { TKhatm } from '@prisma-client'
 import { db } from '../db'
-import { khatmService_getBulk } from './khatm'
+import {
+	DEFAULT_BRANDING_CONFIG,
+	normalizeBrandingConfig,
+	type BrandingConfig,
+} from '$lib/entity/Branding'
 
-type Config = {
+export const DEFAULT_STALE_KHATM_RETENTION_DAYS = 30
+export const MIN_STALE_KHATM_RETENTION_DAYS = 1
+export const MAX_STALE_KHATM_RETENTION_DAYS = 3650
+
+export type AiKhatmReviewConfig = {
+	enabled: boolean
+	baseUrl?: string
+	model?: string
+	apiKey?: string
+}
+
+export type Config = {
 	/** لینک پشتیبانی سایت */
 	readonly supportLink?: string
-	/**
-	 * ختم‌های صفحه اصلی
-	 * اگر automaticShowcase فعال باشد این فیلد کاربردی ندارد.
-	 */
-	readonly showcase: ReadonlyArray<number>
+	readonly staleKhatmRetentionDays: number
 	/**
 	 * تنظیمات مربوط به نوتیفیکیشن
 	 */
@@ -18,22 +28,32 @@ type Config = {
 		eitaaToken?: string
 		eitaaChatId?: string
 	}
+	readonly aiKhatmReview: AiKhatmReviewConfig
+	readonly branding: BrandingConfig
 }
 
-type Store = {
-	config: Config
-	showcaseKhatms: TKhatm[]
+export type BrandingAssets = {
+	hero?: { data: Uint8Array; mimeType: 'image/png' | 'image/jpeg' }
+	icon192?: Uint8Array
+	icon512?: Uint8Array
 }
+
+type Store = { config: Config }
 
 const store: Store = {
 	config: {
-		showcase: [],
 		supportLink: '',
+		staleKhatmRetentionDays: DEFAULT_STALE_KHATM_RETENTION_DAYS,
 		notification: {
 			eitaa: false,
 		},
+		aiKhatmReview: {
+			enabled: false,
+			baseUrl: '',
+			model: '',
+		},
+		branding: DEFAULT_BRANDING_CONFIG,
 	},
-	showcaseKhatms: [],
 }
 
 export const appSettings_store = store
@@ -43,7 +63,10 @@ export async function appSettingsService_init() {
 }
 
 export async function appSettingsService_update() {
-	const result = await db.tAppSettings.findUnique({ where: { id: 1 } })
+	const result = await db.tAppSettings.findUnique({
+		where: { id: 1 },
+		select: { config: true },
+	})
 
 	if (!result) {
 		await db.tAppSettings.create({
@@ -60,38 +83,26 @@ export async function appSettingsService_update() {
 async function apply(newConfig?: Config | null) {
 	if (!newConfig) return
 
+	const staleKhatmRetentionDays = Number(newConfig.staleKhatmRetentionDays)
 	store.config = {
-		...store.config,
-		...newConfig,
-	}
-	const result = await khatmService_getBulk(newConfig.showcase)
-	store.showcaseKhatms = result
-}
-
-export function appSettingsService_getStaleShowcaseWhileRevalidate() {
-	const currentShowcase = store.config.showcase
-	khatmService_getBulk(currentShowcase).then((result) => {
-		if (currentShowcase === store.config.showcase) {
-			store.showcaseKhatms = result
-		}
-	})
-	return store.showcaseKhatms
-}
-
-export async function appSettingsService_setShowcase(showcase: number[]) {
-	const newConfig = {
-		...store.config,
-		showcase: showcase,
-	}
-
-	const result = await db.tAppSettings.update({
-		where: { id: 1 },
-		data: {
-			config: newConfig,
+		supportLink: newConfig.supportLink,
+		staleKhatmRetentionDays:
+			Number.isInteger(staleKhatmRetentionDays) &&
+			staleKhatmRetentionDays >= MIN_STALE_KHATM_RETENTION_DAYS &&
+			staleKhatmRetentionDays <= MAX_STALE_KHATM_RETENTION_DAYS
+				? staleKhatmRetentionDays
+				: DEFAULT_STALE_KHATM_RETENTION_DAYS,
+		notification: {
+			...store.config.notification,
+			...newConfig.notification,
 		},
-	})
-
-	await apply(result.config as unknown as Config)
+		aiKhatmReview: {
+			...store.config.aiKhatmReview,
+			...newConfig.aiKhatmReview,
+			enabled: newConfig.aiKhatmReview?.enabled === true,
+		},
+		branding: normalizeBrandingConfig(newConfig.branding),
+	}
 }
 
 export async function appSettingsService_setKey<T extends keyof Config>(key: T, value: Config[T]) {
@@ -102,6 +113,24 @@ export async function appSettingsService_setKey<T extends keyof Config>(key: T, 
 	await db.tAppSettings.update({
 		where: { id: 1 },
 		data: { config: newConfig },
+	})
+	store.config = newConfig
+}
+
+export async function appSettingsService_setConfig(
+	newConfig: Config,
+	assets: BrandingAssets = {},
+) {
+	await db.tAppSettings.update({
+		where: { id: 1 },
+		data: {
+			config: newConfig,
+			...(assets.hero
+				? { heroImage: assets.hero.data, heroImageMime: assets.hero.mimeType }
+				: {}),
+			...(assets.icon192 ? { appIcon192: assets.icon192 } : {}),
+			...(assets.icon512 ? { appIcon512: assets.icon512 } : {}),
+		},
 	})
 	store.config = newConfig
 }

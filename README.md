@@ -26,6 +26,7 @@ ADMIN_USER = "admin"
 ADMIN_PASS = "123456"
 BASE_PATH = ''
 PUBLIC_FONT_PROXY=1
+BODY_SIZE_LIMIT = '12M'
 ```
 
 برای بیلد پروژه به ترتیب دستورات زیر را وارد نمایید (باید node.js و pnpm از قبل نصب باشد)
@@ -41,3 +42,27 @@ pnpm run build
 ```bash
 node build/index.js
 ```
+
+## مینی‌اپ و بازوی بله
+
+برای اجرای پروژه در بله، یک بازو با `@botfather` بسازید و آدرس HTTPS برنامه را به‌عنوان مینی‌اپ
+اصلی و دکمه منو تنظیم کنید. متغیرهای زیر نیز باید در محیط production وجود داشته باشند:
+
+```dotenv
+BALE_BOT_TOKEN="token-issued-by-botfather"
+BALE_BOT_USERNAME="bot_username"
+BALE_WEBHOOK_SECRET="a-long-random-url-secret"
+EITAA_BOT_USERNAME="eitaa_bot_username"
+```
+
+وب‌هوک بله را یک بار با متد `setWebhook` روی آدرس زیر ثبت کنید. در صورت استفاده از `BASE_PATH`،
+آن را نیز پیش از `/api` قرار دهید:
+
+```text
+https://example.com/api/bale/webhook/<BALE_WEBHOOK_SECRET>
+```
+
+در reverse proxy نباید هدر `X-Frame-Options` مسدودکننده اضافه شود و CSP باید embedding از
+`https://*.bale.ai` را مجاز بداند. ورود و کوکی iframe فقط روی HTTPS پشتیبانی می‌شود. همان
+`EITAA_APP_TOKEN` ورود ایتا برای اعلان خصوصی کاربر نیز استفاده می‌شود؛ بنابراین بازوی ایتا باید
+اجازه ارسال پیام به کاربری را داشته باشد که مینی‌اپ را باز می‌کند.

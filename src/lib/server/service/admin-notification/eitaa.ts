@@ -1,8 +1,8 @@
-import type { TKhatm } from '@prisma-client'
 import { rebaseFullPath } from '$lib/utility/path'
 import { appSettings_store } from '$service/appSettings'
 import type { AdminNotification } from './adminNotification'
 import { base } from '$app/paths'
+import type { KhatmData } from '$lib/entity/KhatmData'
 
 type SendMessageBody = {
 	chat_id: string | number
@@ -47,13 +47,13 @@ export class EitaaAdminNotification implements AdminNotification {
 		})
 	}
 
-	async sendNewKhatm(khatm: TKhatm, origin: string) {
+	async sendNewKhatm(khatm: KhatmData, origin: string) {
 		const message = [
 			`ختم جدید در ${origin}${base}`,
 			`عنوان: ${khatm.title} (${khatm.rangeType})`,
 			`شرح: ${khatm.description}`,
 			'',
-			`${rebaseFullPath('/admin/showcase', origin)}`,
+			`${rebaseFullPath('/admin/review', origin)}`,
 		].join('\n')
 
 		await this.send(message)

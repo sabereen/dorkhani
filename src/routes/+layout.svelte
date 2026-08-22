@@ -12,6 +12,9 @@
 	import { onMount } from 'svelte'
 	import { base } from '$app/paths'
 	import LocaleChooser from '$lib/components/LocaleChooser.svelte'
+	import { isCapacitorBuild } from '$lib/config/runtime'
+	import { localeDirection } from '$lib/i18n/locale'
+	import { initializeNativeAppLinks } from '$lib/native/app-links'
 
 	let { children, data }: LayoutProps = $props()
 
@@ -19,13 +22,27 @@
 	const localSettings = LocalSettings.use()
 
 	onMount(() => {
+		let removeAppLinkListener: (() => void) | undefined
+		let mounted = true
+		void initializeNativeAppLinks()
+			.then((remove) => {
+				if (mounted) removeAppLinkListener = remove
+				else remove()
+			})
+			.catch(() => undefined)
 		if (data.user) void claimCreatedKhatms()
 		if (!data.needsLocaleChoice) {
 			localSettings.update({ locale: data.locale }, { bypassLocalStore: false })
 		}
+		return () => {
+			mounted = false
+			removeAppLinkListener?.()
+		}
 	})
 
 	$effect(() => {
+		document.documentElement.lang = data.locale
+		document.documentElement.dir = localeDirection(data.locale)
 		const colorScheme = localSettings.config.colorScheme
 		if (colorScheme === 'system') {
 			delete document.documentElement.dataset.colorScheme
@@ -52,8 +69,19 @@
 <svelte:head>
 	<title>{data.branding.name}</title>
 	<link rel="icon" type="image/png" sizes="192x192" href={data.branding.icon192Url} />
-	<link rel="apple-touch-icon" href={data.branding.icon192Url} />
-	<link rel="manifest" href={`${base}/manifest.json?v=${data.branding.revision}`} />
+	<link rel="apple-touch-icon" sizes="192x192" href={data.branding.icon192Url} />
+	{#if !isCapacitorBuild}
+		<link
+			rel="manifest"
+			href={`${base}/manifest.json?v=${data.branding.revision}`}
+			crossorigin="use-credentials"
+		/>
+		<meta name="application-name" content={data.branding.name} />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content={data.branding.name} />
+		<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+	{/if}
 	<meta property="og:site_name" content={data.branding.name} />
 </svelte:head>
 

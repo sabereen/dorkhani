@@ -3,7 +3,7 @@ import { createHash, randomBytes } from 'node:crypto'
 import { v4 as uuid } from 'uuid'
 import { db } from '$lib/server/db'
 import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
-import type { KhatmData } from '$lib/entity/KhatmData'
+import type { KhatmData } from '$lib/contracts/domain'
 import type { AdminKhatmListItem, FeaturedKhatmItem } from '$lib/entity/KhatmFeatured'
 import type {
 	KhatmDirectoryQuery,

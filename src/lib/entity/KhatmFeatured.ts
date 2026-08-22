@@ -1,4 +1,4 @@
-import type { KhatmData } from './KhatmData'
+import type { KhatmData } from '$lib/contracts/domain'
 import { request } from '$lib/utility/request'
 
 export type FeaturedKhatmItem = {

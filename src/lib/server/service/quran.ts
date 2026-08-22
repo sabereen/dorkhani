@@ -6,14 +6,9 @@ import quranTextQPC1 from '@ghoran/text/json/quran-text-qpc-v1.json'
 import quranTextQPC2 from '@ghoran/text/json/quran-text-qpc-v2.json'
 import quranTextHafs from '@ghoran/text/json/quran-text-hafs.json'
 import type { QuranTranslationId } from '$lib/entity/QuranTranslation'
+import type { AyahInfo } from '$lib/contracts/domain'
 
-export type AyahInfo = {
-	index: number
-	textQPC1: string
-	textQPC2: string
-	textHafs: string
-	translation: string
-}
+export type { AyahInfo } from '$lib/contracts/domain'
 
 const translationMap = {
 	ansarian: translationAnsarian,

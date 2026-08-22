@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { localeTag } from '$lib/i18n/format'
 	/* eslint-disable svelte/no-unused-svelte-ignore */
-	import type { ReviewStatus } from '@prisma-client'
+	import type { ReviewStatus } from '$lib/contracts/domain'
 	import type { Khatm } from '$lib/entity/Khatm.svelte'
 	import { featuredKhatm_set } from '$lib/entity/KhatmFeatured'
 	import { toast } from '$lib/components/TheToast.svelte'

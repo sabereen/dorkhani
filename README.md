@@ -43,6 +43,53 @@ pnpm run build
 node build/index.js
 ```
 
+## بیلد وب و CSR نیتیو
+
+بیلد پیش‌فرض و `build:web` خروجی Node SSR را در `build/` می‌سازند. برای خروجی استاتیک آمادهٔ
+Capacitor، آدرس HTTPS سرور فعلی را مشخص کنید:
+
+```bash
+pnpm build:web
+PUBLIC_SERVER_ORIGIN=https://dorkhani.ir pnpm build:csr
+pnpm build:all
+```
+
+در ویندوز، `PUBLIC_SERVER_ORIGIN` را در env یا فایل `.env` قرار دهید. خروجی CSR در
+`build-capacitor/` ساخته می‌شود و برای داده، auth و branding به همان backend متصل است. روی backend
+نیز originهای مجاز نیتیو را به‌صورت comma-separated در `NATIVE_TRUSTED_ORIGINS` قرار دهید؛ مقدار
+استاندارد آیندهٔ Capacitor برابر `https://localhost` است. پنل `/admin` فقط در بیلد وب در دسترس است.
+
+## PWA وب
+
+بیلد وب service worker را خودکار ثبت می‌کند و فایل‌های versioned برنامه، assetهای ثابت، branding عمومی و
+فونت‌های قرآنی استفاده‌شده را برای اجرای آفلاین نگه می‌دارد. در navigation آفلاین، `offline.html` نمایش داده
+می‌شود. پاسخ‌های HTML، حساب کاربری، APIهای داده و لینک‌های خصوصی ختم عمداً cache نمی‌شوند؛ بنابراین مشاهدهٔ
+اطلاعات به‌روز و انجام عملیات ختم همچنان به اینترنت نیاز دارد. در بیلد Capacitor ثبت service worker غیرفعال است.
+
+## Android با Capacitor
+
+Capacitor 8 به Node 22 و Android Studio 2025.2.1 یا جدیدتر نیاز دارد. پروژه native با شناسه
+`ir.dorkhani.app` در `android/` نگهداری می‌شود:
+
+```bash
+pnpm android:assets
+pnpm android:sync
+pnpm android:open
+pnpm android:run
+```
+
+`android:sync` ابتدا CSR را می‌سازد و سپس assetها و pluginها را sync می‌کند. برای AAB امضاشده،
+`ANDROID_KEYSTORE_PATH`، `ANDROID_KEYSTORE_PASSWORD`، `ANDROID_KEY_ALIAS` و
+`ANDROID_KEY_PASSWORD` را خارج از repository تنظیم و `pnpm android:build` را اجرا کنید.
+
+برای فعال‌شدن App Links، fingerprintهای SHA-256 گواهی debug، release و Google Play App Signing را
+به‌صورت comma-separated در `ANDROID_SHA256_CERT_FINGERPRINTS` سرور قرار دهید. فایل association در
+`https://dorkhani.ir/.well-known/assetlinks.json` ارائه می‌شود. ورود Google در Android فعلاً نمایش
+داده نمی‌شود؛ ورود و بازیابی ایمیلی از bearer token ذخیره‌شده در Android Keystore استفاده می‌کنند.
+
+در صفحهٔ جزئیات ختم، لانچرهای پشتیبانی‌شده می‌توانند برای همان ختم pinned shortcut بسازند. URL ختم
+خصوصی شامل access token است؛ بنابراین میان‌بر خصوصی فقط باید روی دستگاه قابل‌اعتماد ساخته شود.
+
 ## مینی‌اپ و بازوی بله
 
 برای اجرای پروژه در بله، یک بازو با `@botfather` بسازید و آدرس HTTPS برنامه را به‌عنوان مینی‌اپ

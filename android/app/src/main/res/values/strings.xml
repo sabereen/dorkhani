@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">دورخوانی</string>
+    <string name="title_activity_main">دورخوانی</string>
+    <string name="package_name">ir.dorkhani.app</string>
+    <string name="custom_url_scheme">ir.dorkhani.app</string>
+</resources>

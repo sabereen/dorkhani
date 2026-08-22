@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto, invalidateAll } from '$app/navigation'
 	import { page } from '$app/state'
-	import { base } from '$app/paths'
+	import { serverUrl } from '$lib/config/runtime'
 	import { claimCreatedKhatms } from '$lib/auth/claimCreatedKhatms'
 	import { localizeHref } from '$lib/paraglide/runtime.js'
 	import Modal from './Modal.svelte'
@@ -72,7 +72,7 @@
 		loading = true
 		errorMessage = ''
 		try {
-			const response = await fetch(`${base}/api/auth/sign-in/eitaa`, {
+			const response = await fetch(serverUrl('/api/auth/sign-in/eitaa', location.origin), {
 				method: 'POST',
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({ initData, intent }),

@@ -1,15 +1,11 @@
 import '@inlang/paraglide-js/urlpattern-polyfill'
 import { building } from '$app/environment'
-import { getNotificationProvider } from '$service/admin-notification'
-import { appSettingsService_init } from '$service/appSettings'
-import { khatmCleanup_startScheduler } from '$service/khatmCleanup'
-import { aiKhatmReview_startScheduler } from '$service/aiKhatmReview'
+import { env as privateEnv } from '$env/dynamic/private'
+import { env as publicEnv } from '$env/dynamic/public'
 import type { ServerInit, HandleServerError, Handle } from '@sveltejs/kit'
 import { isManualColorScheme } from '$lib/entity/Theme'
-import { auth } from '$lib/server/auth'
 import { svelteKitHandler } from 'better-auth/svelte-kit'
 import { base } from '$app/paths'
-import { db } from '$lib/server/db'
 import {
 	INTERNAL_LOCALE_HEADER,
 	PARAGLIDE_LOCALE_COOKIE,
@@ -19,20 +15,49 @@ import {
 } from '$lib/i18n/locale'
 import { defineCustomServerStrategy } from '$lib/paraglide/runtime.js'
 import { paraglideMiddleware } from '$lib/paraglide/server.js'
+import {
+	createCorsHeaders,
+	getAllowedCorsOrigin,
+	isSameOrigin,
+	parseTrustedOrigins,
+} from '$lib/server/cors'
 
 defineCustomServerStrategy('custom-preference', {
 	getLocale: (request) => request?.headers.get(INTERNAL_LOCALE_HEADER) ?? undefined,
 })
 
 export const init: ServerInit = async () => {
+	if (publicEnv.PUBLIC_BUILD_TARGET === 'capacitor') return
+	const { appSettingsService_init } = await import('$service/appSettings')
 	await appSettingsService_init()
 	if (!building) {
+		const [{ khatmCleanup_startScheduler }, { aiKhatmReview_startScheduler }] = await Promise.all([
+			import('$service/khatmCleanup'),
+			import('$service/aiKhatmReview'),
+		])
 		khatmCleanup_startScheduler()
 		aiKhatmReview_startScheduler()
 	}
 }
 
 export const handle: Handle = async ({ resolve, event }) => {
+	const requestOrigin = event.request.headers.get('origin')
+	const trustedOrigins = parseTrustedOrigins(privateEnv.NATIVE_TRUSTED_ORIGINS)
+	const corsOrigin = getAllowedCorsOrigin(requestOrigin, trustedOrigins)
+	if (event.request.method === 'OPTIONS' && corsOrigin) {
+		return new Response(null, { status: 204, headers: createCorsHeaders(corsOrigin) })
+	}
+	if (requestOrigin && !corsOrigin && !isSameOrigin(requestOrigin, event.url)) {
+		return new Response(null, { status: 403 })
+	}
+
+	if (publicEnv.PUBLIC_BUILD_TARGET === 'capacitor') return resolve(event)
+	if (withoutBase(event.url.pathname) === '/.well-known/assetlinks.json') return resolve(event)
+
+	const [{ auth }, { db }] = await Promise.all([
+		import('$lib/server/auth'),
+		import('$lib/server/db'),
+	])
 	const canonicalAdmin = canonicalAdminUrl(event.url)
 	if (canonicalAdmin) return Response.redirect(canonicalAdmin, 307)
 
@@ -41,10 +66,12 @@ export const handle: Handle = async ({ resolve, event }) => {
 	event.locals.user = authSession?.user ?? null
 
 	const cookieLocale = event.cookies.get(PARAGLIDE_LOCALE_COOKIE)
+	const clientLocale = event.request.headers.get('x-app-locale')
 	const accountLocale = authSession?.user?.locale
 	const localeResolution = resolveRequestLocale({
 		pathname: withoutBase(event.url.pathname),
 		cookieLocale,
+		clientLocale,
 		accountLocale,
 		acceptLanguage: event.request.headers.get('accept-language'),
 	})
@@ -81,9 +108,10 @@ export const handle: Handle = async ({ resolve, event }) => {
 			resolve: (currentEvent) =>
 				resolve(currentEvent, {
 					transformPageChunk(input) {
-						let html = input.html
-							.replace('%lang%', locale)
-							.replace('%dir%', localeDirection(locale))
+						let html = input.html.replace(
+							'<html lang="fa" dir="rtl"',
+							`<html lang="${locale}" dir="${localeDirection(locale)}"`,
+						)
 						const colorScheme = currentEvent.cookies.get('colorScheme')
 						if (isManualColorScheme(colorScheme)) {
 							html = html.replace('<html', `<html data-color-scheme="${colorScheme}"`)
@@ -99,6 +127,18 @@ export const handle: Handle = async ({ resolve, event }) => {
 			'content-security-policy',
 			"frame-ancestors 'self' https://*.bale.ai; frame-src 'self' https://*.bale.ai",
 		)
+	}
+	if (corsOrigin) {
+		const previousVary = response.headers.get('vary')
+		for (const [name, value] of createCorsHeaders(corsOrigin)) response.headers.set(name, value)
+		const varyIncludesOrigin = previousVary
+			?.toLowerCase()
+			.split(',')
+			.map((value) => value.trim())
+			.includes('origin')
+		if (previousVary && !varyIncludesOrigin) {
+			response.headers.set('vary', `${previousVary}, Origin`)
+		}
 	}
 	return response
 }
@@ -133,9 +173,15 @@ export const handleError: HandleServerError = async ({ error, event, status, mes
 	// so the deployment log is the source of truth for unexpected request failures.
 	console.error('Unhandled SvelteKit request error:', report)
 
-	getNotificationProvider().sendError(`${status} ${report.message}`, report).catch((notificationError) => {
-		console.error('Failed to send unexpected-error notification:', notificationError)
-	})
+	if (publicEnv.PUBLIC_BUILD_TARGET !== 'capacitor') {
+		void import('$service/admin-notification').then(({ getNotificationProvider }) => {
+			getNotificationProvider()
+				.sendError(`${status} ${report.message}`, report)
+				.catch((notificationError) => {
+					console.error('Failed to send unexpected-error notification:', notificationError)
+				})
+		})
+	}
 
 	return {
 		status,

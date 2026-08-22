@@ -1,4 +1,4 @@
-import type { TZekr } from '@prisma-client'
+import type { ZekrRecord } from '$lib/contracts/domain'
 import { untrack } from 'svelte'
 import copy from 'clipboard-copy'
 import { rebaseFullPath } from '$lib/utility/path'
@@ -6,17 +6,18 @@ import { browser } from '$app/environment'
 import { request } from '$lib/utility/request'
 import { idb_localZekr_increaseMyCount } from '$lib/idb/localZekr'
 import * as m from '$lib/paraglide/messages.js'
+import { publicWebUrl } from '$lib/config/runtime'
 
 const cache = new Map<number, Zekr>()
 
 export class Zekr {
-	plain = $state() as TZekr
+	plain = $state() as ZekrRecord
 
-	private constructor(plain: TZekr) {
+	private constructor(plain: ZekrRecord) {
 		this.plain = plain
 	}
 
-	static fromPlain(plain: TZekr) {
+	static fromPlain(plain: ZekrRecord) {
 		if (!browser) return new this(plain)
 
 		let zekr = cache.get(plain.id)
@@ -36,7 +37,7 @@ export class Zekr {
 		return zekr!
 	}
 
-	static fromPlainList(plainList: TZekr[]) {
+	static fromPlainList(plainList: ZekrRecord[]) {
 		return plainList.map((plain) => this.fromPlain(plain))
 	}
 
@@ -88,6 +89,11 @@ export class Zekr {
 		return this.getLink()
 	}
 
+	get publicLink() {
+		const localUrl = new URL(this.link)
+		return publicWebUrl(`${localUrl.pathname}${localUrl.search}`, localUrl.origin)
+	}
+
 	async pick({ count = 1 }: { count: number }) {
 		await request('post', '/zekr/pick', {
 			zekrId: this.id,
@@ -100,21 +106,21 @@ export class Zekr {
 	async share() {
 		try {
 			await navigator.share({
-				url: this.link,
+				url: this.publicLink,
 				text: m.share_zekr({ title: this.title, description: this.description }),
 			})
 		} catch (err) {
 			console.error(err)
-			await copy(this.link)
+			await copy(this.publicLink)
 		}
 	}
 
 	async copy() {
 		try {
-			await navigator.clipboard.writeText(this.link)
+			await navigator.clipboard.writeText(this.publicLink)
 		} catch (err) {
 			console.error(err)
-			await copy(this.link)
+			await copy(this.publicLink)
 		}
 	}
 

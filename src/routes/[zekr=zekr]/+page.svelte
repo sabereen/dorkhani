@@ -57,7 +57,7 @@
 	<meta property="og:description" content={zekr.description} />
 	<meta property="og:logo" content={new URL(page.data.branding.icon512Url, page.url.origin).href} />
 	<meta property="og:image" content={new URL(page.data.branding.icon512Url, page.url.origin).href} />
-	<meta property="og:url" content={zekr.link} />
+	<meta property="og:url" content={zekr.publicLink} />
 	<meta property="og:type" content="website" />
 </svelte:head>
 

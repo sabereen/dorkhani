@@ -413,6 +413,11 @@ repositoryهای Dexie فیلدهای snapshot، از جمله `pageProgress`، 
 | `ORIGIN`                   | تنظیم origin runtime adapter/SvelteKit در استقرار                  |
 | `BODY_SIZE_LIMIT`          | سقف بدنهٔ adapter-node؛ برای آپلود برندینگ حداقل `12M`              |
 | `PRIVATE_KHATM_SECRET`     | در `config.ts` export می‌شود اما در معماری فعلی مصرف نمی‌شود       |
+| `PUBLIC_BUILD_TARGET`      | انتخاب خروجی `web` یا `capacitor`                                  |
+| `PUBLIC_SERVER_ORIGIN`     | origin رسمی API و App Links در خروجی نیتیو                          |
+| `NATIVE_TRUSTED_ORIGINS`   | allowlist دقیق CORS و Better Auth برای originهای نیتیو              |
+| `ANDROID_SHA256_CERT_FINGERPRINTS` | fingerprintهای debug/release/Play برای `assetlinks.json`    |
+| `ANDROID_KEYSTORE_*`       | اطلاعات خصوصی امضای AAB؛ فقط هنگام `android:build`                   |
 
 ## ۱۴. تست‌ها و پوشش فعلی
 
@@ -512,3 +517,55 @@ Basic Auth صحیح هیچ دسترسی مدیریتی اعطا نمی‌کند.
 webhook بله در `/api/bale/webhook/[secret]` فقط update معتبر دارای secret مسیر را می‌پذیرد. دستور
 `/start` مجوز مقصد حساب شناخته‌شده را فعال می‌کند و یک دکمه Web App برمی‌گرداند؛ سایر پیام‌ها نیز
 فقط کاربر را به مینی‌اپ هدایت می‌کنند و قابلیت‌های دامنه داخل گفت‌وگوی بازو تکرار نمی‌شوند.
+
+## ۱۹. مرز دوگانهٔ SSR وب و CSR نیتیو
+
+از این بخش به بعد، ارجاع‌های قدیمی این سند به user-facing `+page.server.ts` و form actionها منسوخ
+هستند. UI و universal loadها فقط قراردادهای `src/lib/contracts/` و transport مرکزی
+`src/lib/utility/request.ts` را می‌بینند. دادهٔ root، خانه، فهرست، ختم، ذکر، بازهٔ قرآن و حساب از
+endpointهای JSON زیر `/api` می‌آید؛ endpointها منطق و Prisma را در serviceهای server-only نگه
+می‌دارند. در SSR، `event.fetch` این درخواست‌ها را داخل SvelteKit اجرا و نتیجه را در HTML serialize
+می‌کند؛ در CSR همان loadها URL مطلق backend را مصرف می‌کنند.
+
+`PUBLIC_BUILD_TARGET` یکی از `web` یا `capacitor` است و پیش‌فرض آن `web` باقی می‌ماند:
+
+| target | adapter | SSR | خروجی |
+| --- | --- | --- | --- |
+| `web` | `adapter-node` | فعال، جز مسیرهای client-only قبلی | `build/` |
+| `capacitor` | `adapter-static` با `index.html` fallback | غیرفعال | `build-capacitor/` |
+
+بیلد CSR به `PUBLIC_SERVER_ORIGIN` مطلق و HTTPS نیاز دارد. `ApiClient` در وب URL نسبی و cookie، و
+در نیتیو URL مطلق و bearer token را استفاده می‌کند. `AuthTokenStore` پیش از bootstrap از secure
+storage مبتنی بر Android Keystore hydrate می‌شود و token قدیمی localStorage را یک‌بار مهاجرت می‌دهد. Better Auth هم‌زمان session cookie و
+bearer را می‌پذیرد. CORS فقط originهای دقیق `NATIVE_TRUSTED_ORIGINS` را قبول می‌کند و preflight را
+پیش از auth و database پاسخ می‌دهد. CSRF/origin validation غیرفعال نشده و همان originها در
+`trustedOrigins` نیز ثبت می‌شوند.
+
+برندینگ، icon، font، locale، auth، گزارش خطا و URLهای share از resolver مشترک عبور می‌کنند. manifest
+پویا فقط برای وب است و CSR assetهای برندینگ را با URL مطلق backend دریافت می‌کند. routeهای
+`/admin` و `/api/admin` در خروجی CSR به صفحهٔ توضیح «مدیریت فقط در نسخه وب» reroute می‌شوند؛ فایل‌های
+server load/action ادمین عمداً فقط در target وب باقی مانده‌اند.
+
+فرمان‌ها: `pnpm build` و `pnpm build:web` برای Node SSR، `pnpm build:csr` برای خروجی استاتیک، و
+`pnpm build:all` برای هر دو خروجی. هنگام افزودن Capacitor، `webDir` باید `build-capacitor` و origin
+محلی باید `https://localhost` باشد.
+
+### PWA وب و مرز کش آفلاین
+
+در target وب، `src/service-worker.ts` فایل‌های build و static را precache می‌کند و فقط branding عمومی و فونت
+قرآن را به‌صورت runtime cache نگه می‌دارد. navigation آفلاین به `static/offline.html` برمی‌گردد. HTML
+شخصی‌سازی‌شده، APIهای داده، account و URLهای دارای access token وارد Cache Storage نمی‌شوند. ثبت service
+worker در target `capacitor` غیرفعال است تا lifecycle کش وب با assetهای بسته‌بندی‌شدهٔ WebView تداخل نداشته باشد.
+
+## ۲۰. پوستهٔ Android، App Links و میان‌بر ختم
+
+پروژه Capacitor 8 با application id برابر `ir.dorkhani.app` در `android/` و تنظیم مرکزی در
+`capacitor.config.ts` نگهداری می‌شود. `@capacitor/app` لینک شروع سرد و `appUrlOpen` را به resolver
+مشترک می‌دهد؛ resolver فقط URLهای HTTPS دامنه `dorkhani.ir` و routeهای user-facing را به navigation
+داخلی می‌فرستد و `/api` و `/admin` را رد می‌کند. association دامنه از endpoint مستقل
+`/.well-known/assetlinks.json` و fingerprintهای `ANDROID_SHA256_CERT_FINGERPRINTS` تأمین می‌شود.
+
+`KhatmShortcuts` یک plugin محلی Android است که pinned shortcut را با شناسه پایدار نوع ختم و
+`id/seriesId` می‌سازد. Intent همان `publicLink` را باز می‌کند؛ در ختم خصوصی این URL شامل access token
+است. UI این قابلیت را فقط روی Android و launcher پشتیبانی‌شده نشان می‌دهد و میان‌بر حذف‌شده یا مقصد
+قطعی 404/410 را disable می‌کند. ورود Google در target نیتیو غیرفعال و auth ایمیلی فعال است.

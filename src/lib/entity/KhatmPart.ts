@@ -1,14 +1,14 @@
-import type { TKhatmPart } from '@prisma-client'
+import type { KhatmPartData } from '$lib/contracts/domain'
 import { QuranRange } from './Range'
 
 export class KhatmPart {
-	plain: TKhatmPart
+	plain: KhatmPartData
 
-	constructor(plain: TKhatmPart) {
+	constructor(plain: KhatmPartData) {
 		this.plain = plain
 	}
 
-	static fromList(plainParts: TKhatmPart[]) {
+	static fromList(plainParts: KhatmPartData[]) {
 		const parts = plainParts.map((part) => new KhatmPart(part)).sort((a, b) => a.start - b.start)
 
 		if (parts.length <= 1) return parts

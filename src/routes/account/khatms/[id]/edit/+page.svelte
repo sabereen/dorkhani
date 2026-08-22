@@ -4,11 +4,66 @@
 	import Header from '$lib/components/Header.svelte'
 	import PageTitle from '$lib/components/PageTitle.svelte'
 	import type { PageProps } from './$types'
+	import { apiRequest } from '$lib/utility/request'
+	import { goto } from '$app/navigation'
+	import { localizeHref } from '$lib/paraglide/runtime.js'
+	import { Khatm } from '$lib/entity/Khatm.svelte'
+	import type { KhatmData } from '$lib/contracts/domain'
+	import { disableKhatmShortcut, khatmShortcutRoute } from '$lib/native/khatm-shortcuts'
 
-	const { data, form }: PageProps = $props()
-	const deleteAction = $derived(
-		`${base}/account/khatms/${data.khatm.id}/edit/delete${data.isAdmin ? '?admin=1' : ''}`,
+	const { data }: PageProps = $props()
+	let errorMessage = $state('')
+	let submitting = $state(false)
+	const apiPath = $derived(
+		`/account/khatms/${data.khatm.id}${data.isAdmin ? '?admin=1' : ''}`,
 	)
+
+	async function save(event: SubmitEvent) {
+		event.preventDefault()
+		submitting = true
+		errorMessage = ''
+		const form = new FormData(event.currentTarget as HTMLFormElement)
+		try {
+			const result = await apiRequest<{ khatm: KhatmData }>('PUT', apiPath, {
+				origin: location.origin,
+				body: {
+					title: String(form.get('title') || ''),
+					description: String(form.get('description') || ''),
+					rangeType: String(form.get('rangeType') || ''),
+					private: form.get('access') === 'private',
+					disableSeries: form.get('disableSeries') === 'on',
+				},
+			})
+			if (data.isAdmin) {
+				const link = new URL(Khatm.fromPlain(result.khatm).link)
+				link.searchParams.set('admin', '1')
+				await goto(link.href)
+			} else {
+				await goto(localizeHref(`${base}/account`))
+			}
+		} catch (cause) {
+			errorMessage = cause instanceof Error ? cause.message : 'ذخیره تغییرات ناموفق بود.'
+		} finally {
+			submitting = false
+		}
+	}
+
+	async function remove(event: SubmitEvent) {
+		event.preventDefault()
+		if (!confirm('این ختم و همه مشارکت‌های آن حذف شود؟')) return
+		submitting = true
+		errorMessage = ''
+		try {
+			await apiRequest('DELETE', apiPath, { origin: location.origin })
+			const deletedKhatm = Khatm.fromPlain(data.khatm)
+			await disableKhatmShortcut(khatmShortcutRoute(deletedKhatm)).catch(() => undefined)
+			await goto(data.isAdmin ? `${base}/admin/review` : localizeHref(`${base}/account`))
+		} catch (cause) {
+			errorMessage = cause instanceof Error ? cause.message : 'حذف ختم ناموفق بود.'
+		} finally {
+			submitting = false
+		}
+	}
 </script>
 
 <PageTitle title="ویرایش ختم" />
@@ -16,10 +71,10 @@
 <Header title="ویرایش ختم" />
 
 <div class="ui-form-status-slot mx-auto max-w-md" aria-live="polite">
-	{#if form?.errorMessage}<div class="ui-alert ui-alert-error">{form.errorMessage}</div>{/if}
+	{#if errorMessage}<div class="ui-alert ui-alert-error">{errorMessage}</div>{/if}
 </div>
 
-<form use:validateForm novalidate method="POST" class="mx-auto max-w-md">
+<form use:validateForm novalidate class="mx-auto max-w-md" aria-busy={submitting} onsubmit={save}>
 	<fieldset class="ui-card ui-card-bordered">
 		<div class="ui-card-body grid gap-3">
 			<label class="grid gap-1"
@@ -81,7 +136,7 @@
 					دور جاری آخرین دور باشد
 				</label>
 			{/if}
-			<button class="ui-btn ui-btn-primary" type="submit">ذخیره تغییرات</button>
+			<button class="ui-btn ui-btn-primary" type="submit" disabled={submitting}>ذخیره تغییرات</button>
 		</div>
 	</fieldset>
 </form>
@@ -89,10 +144,8 @@
 <form
 	use:validateForm
 	novalidate
-	method="POST"
-	action={deleteAction}
 	class="mx-auto mt-4 max-w-md"
-	onsubmit={(event) => !confirm('این ختم و همه مشارکت‌های آن حذف شود؟') && event.preventDefault()}
+	onsubmit={remove}
 >
-	<button class="ui-btn ui-btn-danger ui-btn-block" type="submit">حذف ختم</button>
+	<button class="ui-btn ui-btn-danger ui-btn-block" type="submit" disabled={submitting}>حذف ختم</button>
 </form>

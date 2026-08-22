@@ -1,7 +1,6 @@
 <script lang="ts">
 	/* eslint-disable svelte/no-unused-svelte-ignore */
 	import type { PageProps } from './$types'
-	import { enhance } from '$app/forms'
 	import { validateForm } from '$lib/actions/validateForm'
 	import Header from '$lib/components/Header.svelte'
 	import PageTitle from '$lib/components/PageTitle.svelte'
@@ -10,16 +9,18 @@
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import RangeTypePicker from '$lib/components/RangeTypePicker.svelte'
 	import Modal from '$lib/components/Modal.svelte'
-	import type { RangeType } from '@prisma-client'
+	import type { RangeType } from '$lib/contracts/domain'
 	import IconBook from '~icons/ic/round-menu-book'
 	import IconLock from '~icons/ic/round-lock'
 	import IconPublic from '~icons/ic/round-public'
 	import IconRepeat from '~icons/ic/round-autorenew'
 	import IconArrow from '~icons/ic/round-arrow-back'
-	import type { SubmitFunction } from '@sveltejs/kit'
 	import { tick } from 'svelte'
+	import type { CreateKhatmResult } from '$lib/contracts/api'
+	import { ApiError, apiRequest } from '$lib/utility/request'
 
-	let { data, form }: PageProps = $props()
+	let { data }: PageProps = $props()
+	let result = $state<CreateKhatmResult | null>(null)
 
 	const initialRangeType: RangeType =
 		/* svelte-ignore state_referenced_locally */ data.rangeType === 'ayah' ? 'ayah' : 'free'
@@ -34,24 +35,35 @@
 	let formElement = $state<HTMLFormElement>()
 	let submitting = $state(false)
 
-	const enhanceForm: SubmitFunction = () => {
+	async function submitForm(event: SubmitEvent) {
+		event.preventDefault()
 		submitting = true
-		return async ({ update }) => {
-			try {
-				await update()
-			} finally {
-				submitting = false
+		const form = new FormData(event.currentTarget as HTMLFormElement)
+		try {
+			result = await apiRequest<CreateKhatmResult>('POST', '/khatm/create', {
+				body: {
+					title: String(form.get('title') || ''),
+					description: String(form.get('description') || ''),
+					rangeType: String(form.get('rangeType') || ''),
+					private: form.get('access') === 'private',
+					series: form.get('series') === 'on',
+					force: form.get('force') === 'true',
+					aiReviewId: String(form.get('aiReviewId') || ''),
+				},
+				origin: location.origin,
+			})
+		} catch (cause) {
+			const response = cause instanceof ApiError ? (cause.body as CreateKhatmResult | null) : null
+			if (response?.aiWarning) {
+				aiWarning = response.aiWarning
+				aiWarningOpen = true
+			} else {
+				toast('error', response?.errorMessage || (cause instanceof Error ? cause.message : 'خطایی رخ داده است.'))
 			}
+		} finally {
+			submitting = false
 		}
 	}
-
-	$effect(() => {
-		if (form?.errorMessage) toast('error', form.errorMessage)
-		if (form?.aiWarning) {
-			aiWarning = form.aiWarning
-			aiWarningOpen = true
-		}
-	})
 
 	function handleKeyPress(event: KeyboardEvent) {
 		if (event.code === 'Enter') event.preventDefault()
@@ -75,7 +87,7 @@
 
 <Header title="ایجاد ختم گروهی جدید" />
 
-{#if !form || !form.khatm}
+{#if !result?.khatm}
 	<div class="add-shell">
 		<section class="add-intro" aria-labelledby="add-intro-title">
 			<div class="add-intro-icon" aria-hidden="true"><IconBook /></div>
@@ -89,12 +101,10 @@
 		<form
 			bind:this={formElement}
 			use:validateForm
-			use:enhance={enhanceForm}
 			novalidate
 			class="ui-card ui-card-bordered add-form"
 			aria-busy={submitting}
-			action=""
-			method="POST"
+			onsubmit={submitForm}
 		>
 			{#if forceAiReviewId}
 				<input type="hidden" name="force" value="true" />
@@ -226,7 +236,7 @@
 		</form>
 	</div>
 {:else}
-	<SucessResult khatm={Khatm.fromPlain(form.khatm)} claimToken={form.guestClaimToken} />
+	<SucessResult khatm={Khatm.fromPlain(result.khatm)} claimToken={result.guestClaimToken} />
 {/if}
 
 <Modal bind:open={aiWarningOpen} contentClass="add-ai-warning-dialog">

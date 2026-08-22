@@ -21,12 +21,18 @@ vi.mock('$service/appSettings', () => ({
 import { GET } from './+server'
 
 describe('application manifest branding', () => {
-	it('uses the configured name and versioned icons', async () => {
+	it('has a stable install identity and versioned icons', async () => {
 		const response = await GET({} as never)
 		const manifest = await response.json()
 
 		expect(manifest.name).toBe('نام سفارشی')
+		expect(manifest.id).toBe('/')
+		expect(manifest.scope).toBe('/')
+		expect(manifest.lang).toBe('fa')
+		expect(manifest.dir).toBe('rtl')
 		expect(manifest.icons[0].src).toContain('/branding/icon/192?v=revision-2')
+		expect(manifest.icons[2]).toMatchObject({ sizes: '512x512', purpose: 'maskable' })
 		expect(response.headers.get('cache-control')).toBe('no-cache')
+		expect(response.headers.get('content-type')).toBe('application/manifest+json')
 	})
 })

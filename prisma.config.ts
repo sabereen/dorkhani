@@ -4,7 +4,11 @@ import { defineConfig, env } from 'prisma/config'
 const datasourceUrl =
 	process.env.DATABASE_URL && process.env.DIRECT_DATABASE_URL
 		? env('DIRECT_DATABASE_URL')
-		: env('DATABASE_URL')
+		: process.env.DATABASE_URL
+			? env('DATABASE_URL')
+			: process.env.PUBLIC_BUILD_TARGET === 'capacitor'
+				? 'mysql://build:build@localhost:3306/build'
+				: env('DATABASE_URL')
 
 export default defineConfig({
 	schema: 'prisma/schema.prisma',

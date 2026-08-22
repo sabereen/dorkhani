@@ -1,6 +1,6 @@
 // db.ts
-import type { TZekr } from '@prisma-client'
-import type { KhatmData } from '$lib/entity/KhatmData'
+import type { ZekrRecord } from '$lib/contracts/domain'
+import type { KhatmData } from '$lib/contracts/domain'
 import Dexie, { type EntityTable } from 'dexie'
 
 /** بازه‌ی انتخاب شده برای ختم */
@@ -28,7 +28,7 @@ export interface CreatedKhatm {
 export interface LocalZekr {
 	id?: number
 	/** ذکر ساخته شده */
-	zekr: TZekr
+	zekr: ZekrRecord
 	/** آیا کاربر جاری صاحب این ختم ذکر است */
 	isMine: boolean
 	/** تعداد ذکرهایی که کاربر جاری از این ختم ذکر تقبل کرده است */

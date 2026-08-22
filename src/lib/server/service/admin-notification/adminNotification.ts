@@ -1,4 +1,4 @@
-import type { KhatmData } from '$lib/entity/KhatmData'
+import type { KhatmData } from '$lib/contracts/domain'
 
 export interface AdminNotification {
 	send(text: string): Promise<void>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '@ghoran/text/fonts/uthmanic-hafs/style.css'
 	import { slide } from 'svelte/transition'
-	import type { AyahInfo } from '$service/quran'
+	import type { AyahInfo } from '$lib/contracts/domain'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 	import { useKathmContext } from '../khatm-context.svelte'

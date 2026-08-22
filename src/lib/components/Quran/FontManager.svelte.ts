@@ -4,8 +4,8 @@ import '@ghoran/text/fonts/uthmanic-hafs/style.css'
 import { noop } from '$lib/utility/noop'
 import type { Ayah } from '@ghoran/entity'
 import { SvelteSet } from 'svelte/reactivity'
-import { base } from '$app/paths'
 import type { QuranFont } from '$lib/entity/LocalSettings.svelte'
+import { apiUrl } from '$lib/config/runtime'
 
 export interface FontManager {
 	readonly font: QuranFont
@@ -79,7 +79,7 @@ abstract class QPCFontManager implements FontManager {
 		this.loadingPages.add(pageNumber)
 
 		try {
-			const src = `${base}/api/font?font=qpc-v${this.version}&page=${pageNumber}`
+			const src = apiUrl(`/font?font=qpc-v${this.version}&page=${pageNumber}`, location.origin)
 			const fontFamily = `qpc-v${this.version}-${pageNumber}`
 			const fontFace = new FontFace(fontFamily, `url(${src})`, { display: 'block' })
 			document.fonts.add(fontFace)

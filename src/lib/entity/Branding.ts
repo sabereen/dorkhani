@@ -1,4 +1,7 @@
 import type { Locale } from '$lib/paraglide/runtime.js'
+import type { PublicBranding } from '$lib/contracts/domain'
+
+export type { PublicBranding } from '$lib/contracts/domain'
 
 export type BrandingText = {
 	name: string
@@ -14,13 +17,6 @@ export type BrandingText = {
 export type BrandingConfig = {
 	texts: Record<Locale, BrandingText>
 	revision: string
-}
-
-export type PublicBranding = BrandingText & {
-	revision: string
-	heroImageUrl: string
-	icon192Url: string
-	icon512Url: string
 }
 
 const fa: BrandingText = {

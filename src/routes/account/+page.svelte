@@ -3,19 +3,49 @@
 	import PageTitle from '$lib/components/PageTitle.svelte'
 	import KhatmListCard from '$lib/components/KhatmListCard.svelte'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
-	import { authClient } from '$lib/auth-client'
+	import { authClient, clearAuthToken } from '$lib/auth-client'
 	import { goto, invalidateAll } from '$app/navigation'
 	import { base } from '$app/paths'
 	import type { PageProps } from './$types'
 	import { localizeHref } from '$lib/paraglide/runtime.js'
+	import { apiRequest } from '$lib/utility/request'
 
-	const { data, form }: PageProps = $props()
+	const { data }: PageProps = $props()
 	const khatms = $derived(Khatm.fromPlainList(data.khatms))
+	let notificationStatus = $state<'saved' | 'error' | null>(null)
+	let notificationError = $state('')
+	let notificationSubmitting = $state(false)
 
 	async function signOut() {
-		await authClient.signOut()
+		await authClient.signOut().catch(() => undefined)
+		await clearAuthToken()
 		await invalidateAll()
 		await goto(localizeHref(`${base}/`))
+	}
+
+	async function saveNotifications(event: SubmitEvent) {
+		event.preventDefault()
+		notificationSubmitting = true
+		notificationStatus = null
+		const form = new FormData(event.currentTarget as HTMLFormElement)
+		try {
+			await apiRequest('PUT', '/account/notifications', {
+				origin: location.origin,
+				body: {
+					enabled: form.get('enabled') === 'on',
+					preferredChannel: String(form.get('preferredChannel') || '') || null,
+					baleEnabled: form.get('baleEnabled') === 'on',
+					eitaaEnabled: form.get('eitaaEnabled') === 'on',
+					emailEnabled: form.get('emailEnabled') === 'on',
+				},
+			})
+			notificationStatus = 'saved'
+		} catch (cause) {
+			notificationError = cause instanceof Error ? cause.message : 'ذخیره تنظیمات ناموفق بود.'
+			notificationStatus = 'error'
+		} finally {
+			notificationSubmitting = false
+		}
 	}
 </script>
 
@@ -40,13 +70,13 @@
 			پیام‌های ساخت، انتخاب سهم و پایان ختم از نخستین کانال در دسترس فرستاده می‌شوند.
 		</p>
 
-		{#if form?.notificationSaved}
+		{#if notificationStatus === 'saved'}
 			<div class="ui-alert ui-alert-success mt-3" role="status">تنظیمات اعلان ذخیره شد.</div>
-		{:else if form?.notificationError}
-			<div class="ui-alert ui-alert-error mt-3" role="alert">{form.notificationError}</div>
+		{:else if notificationStatus === 'error'}
+			<div class="ui-alert ui-alert-error mt-3" role="alert">{notificationError}</div>
 		{/if}
 
-		<form method="POST" action="?/notifications" class="ui-auth-form mt-4">
+		<form class="ui-auth-form mt-4" aria-busy={notificationSubmitting} onsubmit={saveNotifications}>
 			<label class="ui-field-label">
 				<input
 					class="ui-checkbox"
@@ -124,7 +154,7 @@
 				</select>
 			</div>
 
-			<button class="ui-btn ui-btn-primary" type="submit">ذخیره تنظیمات اعلان</button>
+			<button class="ui-btn ui-btn-primary" type="submit" disabled={notificationSubmitting}>ذخیره تنظیمات اعلان</button>
 		</form>
 	</div>
 </section>

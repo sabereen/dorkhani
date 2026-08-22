@@ -1,18 +1,13 @@
 import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
-import type { KhatmData } from '$lib/entity/KhatmData'
+import type { PickAyahResult } from '$lib/contracts/api'
 import { khatmPartService_pickNextAyat } from '$service/khatmPart'
 
-import { type Translation, type AyahInfo, getAyahInfoRange } from '$service/quran'
+import { type Translation, getAyahInfoRange } from '$service/quran'
 import { userNotification_notify } from '$service/user-notification'
 import { QuranRange } from '$lib/entity/Range'
 import { formatNumber } from '$lib/i18n/format'
 import * as m from '$lib/paraglide/messages.js'
-
-export type PickAyahResult = {
-	khatm: KhatmData
-	ayat: AyahInfo[]
-}
 
 type Body = {
 	khatmId: number

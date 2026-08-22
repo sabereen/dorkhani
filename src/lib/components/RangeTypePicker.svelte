@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { RangeType } from '@prisma-client'
+	import type { RangeType } from '$lib/contracts/domain'
 	import RangeTypeIcon from '$lib/components/RangeTypeIcon.svelte'
 
 	type Props = {

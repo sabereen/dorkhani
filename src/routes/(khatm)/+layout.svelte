@@ -31,6 +31,7 @@
 	import KhatmParticipation from './KhatmParticipation.svelte'
 	import KhatmReviewBar from './KhatmReviewBar.svelte'
 	import RangeTypeIcon from '$lib/components/RangeTypeIcon.svelte'
+	import { apiRequest } from '$lib/utility/request'
 
 	const { data, children }: LayoutProps = $props()
 
@@ -96,6 +97,7 @@
 	)
 	let showAuthPrompt = $state(false)
 	let showStopPrompt = $state(false)
+	let stoppingSeries = $state(false)
 	let canManageAsGuest = $state(false)
 	const canRequestSeriesStop = $derived(data.canStopSeries && (data.isOwner || canManageAsGuest))
 	const hasNextRound = $derived(
@@ -105,6 +107,23 @@
 	function requestSeriesStop() {
 		if (data.isOwner) showStopPrompt = true
 		else showAuthPrompt = true
+	}
+
+	async function stopSeries(event: SubmitEvent) {
+		event.preventDefault()
+		stoppingSeries = true
+		try {
+			await apiRequest('POST', `/account/khatms/${khatm.id}/stop`, {
+				origin: location.origin,
+			})
+			showStopPrompt = false
+			await invalidateAll()
+			toast('info', 'این دور به‌عنوان آخرین دور ختم ثبت شد.')
+		} catch (cause) {
+			toast('error', cause instanceof Error ? cause.message : 'توقف ختم ناموفق بود.')
+		} finally {
+			stoppingSeries = false
+		}
 	}
 
 	$effect(() => {
@@ -137,7 +156,7 @@
 	<meta property="og:description" content={khatm.description} />
 	<meta property="og:logo" content={new URL(page.data.branding.icon512Url, page.url.origin).href} />
 	<meta property="og:image" content={new URL(page.data.branding.icon512Url, page.url.origin).href} />
-	<meta property="og:url" content={khatm.link} />
+	<meta property="og:url" content={khatm.publicLink} />
 	<meta property="og:type" content="website" />
 	{#if khatm.private}
 		<meta name="robots" content="noindex" />
@@ -331,11 +350,8 @@
 		دور جاری بدون تغییر ادامه پیدا می‌کند، اما پس از کامل‌شدن آن دور تازه‌ای ساخته نخواهد شد.
 	</p>
 	<div class="ui-khatm-stop-actions">
-		<form
-			method="POST"
-			action={`${base}/account/khatms/${khatm.id}/stop?returnTo=${encodeURIComponent(page.url.pathname + page.url.search)}`}
-		>
-			<button class="ui-btn ui-btn-danger ui-btn-block" type="submit">
+		<form onsubmit={stopSeries} aria-busy={stoppingSeries}>
+			<button class="ui-btn ui-btn-danger ui-btn-block" type="submit" disabled={stoppingSeries}>
 				<IconStop class="size-5" />
 				بله، ختم متوقف شود
 			</button>

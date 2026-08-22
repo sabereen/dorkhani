@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { base } from '$app/paths'
+	import { publicWebUrl } from '$lib/config/runtime'
 	import { authClient } from '$lib/auth-client'
 	import { validateForm } from '$lib/actions/validateForm'
 	import AuthShell from '$lib/components/AuthShell.svelte'
@@ -22,7 +23,7 @@
 		errorMessage = ''
 		const result = await authClient.requestPasswordReset({
 			email,
-			redirectTo: `${location.origin}${localizeHref(`${base}/auth/reset-password`)}`,
+			redirectTo: publicWebUrl(localizeHref(`${base}/auth/reset-password`)),
 		})
 		loading = false
 		if (result.error) errorMessage = result.error.message || m.auth_email_failed()

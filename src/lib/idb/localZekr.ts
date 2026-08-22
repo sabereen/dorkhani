@@ -1,4 +1,4 @@
-import type { TZekr } from '@prisma-client'
+import type { ZekrRecord } from '$lib/contracts/domain'
 import type { LocalZekr } from './idb'
 
 export async function idb_localZekr_get(id: number) {
@@ -40,7 +40,7 @@ export async function idb_localZekr_getList(limit?: number) {
 	return collection.toArray()
 }
 
-export async function idb_localZekr_increaseMyCount(zekr: TZekr, count: number) {
+export async function idb_localZekr_increaseMyCount(zekr: ZekrRecord, count: number) {
 	const { db } = await import('./idb')
 
 	const localZekr = await idb_localZekr_get(zekr.id)

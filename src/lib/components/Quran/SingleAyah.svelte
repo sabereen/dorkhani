@@ -2,7 +2,7 @@
 	import { localeTag } from '$lib/i18n/format'
 	import { ayah_getExternalLink } from '$lib/entity/Ayah'
 	import { surah_getName } from '$lib/entity/Surah'
-	import type { AyahInfo } from '$service/quran'
+	import type { AyahInfo } from '$lib/contracts/domain'
 	import { Ayah } from '@ghoran/entity'
 	import { fade, slide } from 'svelte/transition'
 	import type { FontManager } from './FontManager.svelte'

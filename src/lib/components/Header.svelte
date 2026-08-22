@@ -2,7 +2,7 @@
 	import { goto, invalidateAll } from '$app/navigation'
 	import { base } from '$app/paths'
 	import { navigating, page } from '$app/state'
-	import { authClient } from '$lib/auth-client'
+	import { authClient, clearAuthToken } from '$lib/auth-client'
 	import { DEFAULT_BRANDING_CONFIG, getPublicBranding } from '$lib/entity/Branding'
 	import { getLocale } from '$lib/paraglide/runtime.js'
 	import { localizeHref } from '$lib/paraglide/runtime.js'
@@ -59,7 +59,8 @@
 	}
 
 	async function signOut() {
-		await authClient.signOut()
+		await authClient.signOut().catch(() => undefined)
+		clearAuthToken()
 		open = false
 		accountMenu?.removeAttribute('open')
 		await invalidateAll()

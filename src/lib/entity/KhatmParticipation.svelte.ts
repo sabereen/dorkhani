@@ -1,5 +1,5 @@
 import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
-import type { KhatmData } from './KhatmData'
+import type { KhatmData } from '$lib/contracts/domain'
 import { PickedKhatmPart } from './PickedKhatmPart'
 import type { QuranRange } from './Range'
 import { roundPercent } from '$lib/utility/percent'

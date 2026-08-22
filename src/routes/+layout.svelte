@@ -12,6 +12,8 @@
 	import { onMount } from 'svelte'
 	import { base } from '$app/paths'
 	import LocaleChooser from '$lib/components/LocaleChooser.svelte'
+	import { isCapacitorBuild } from '$lib/config/runtime'
+	import { localeDirection } from '$lib/i18n/locale'
 
 	let { children, data }: LayoutProps = $props()
 
@@ -26,6 +28,8 @@
 	})
 
 	$effect(() => {
+		document.documentElement.lang = data.locale
+		document.documentElement.dir = localeDirection(data.locale)
 		const colorScheme = localSettings.config.colorScheme
 		if (colorScheme === 'system') {
 			delete document.documentElement.dataset.colorScheme
@@ -53,7 +57,9 @@
 	<title>{data.branding.name}</title>
 	<link rel="icon" type="image/png" sizes="192x192" href={data.branding.icon192Url} />
 	<link rel="apple-touch-icon" href={data.branding.icon192Url} />
-	<link rel="manifest" href={`${base}/manifest.json?v=${data.branding.revision}`} />
+	{#if !isCapacitorBuild}
+		<link rel="manifest" href={`${base}/manifest.json?v=${data.branding.revision}`} />
+	{/if}
 	<meta property="og:site_name" content={data.branding.name} />
 </svelte:head>
 

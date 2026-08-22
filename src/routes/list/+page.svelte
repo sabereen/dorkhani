@@ -12,7 +12,7 @@
 		type KhatmDirectoryView,
 	} from '$lib/entity/KhatmDirectory'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
-	import type { RangeType } from '@prisma-client'
+	import type { RangeType } from '$lib/contracts/domain'
 	import type { Component } from 'svelte'
 	import IconClose from '~icons/ic/round-close'
 	import IconFilter from '~icons/ic/round-filter-list'

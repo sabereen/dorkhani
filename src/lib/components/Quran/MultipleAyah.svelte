@@ -5,7 +5,7 @@
 	import { AudioManager } from './AudioManager.svelte'
 	import { SettingsEditor, type QuranFont } from '$lib/entity/LocalSettings.svelte'
 	import { getFontManager } from './FontManager.svelte'
-	import type { AyahInfo } from '$service/quran'
+	import type { AyahInfo } from '$lib/contracts/domain'
 	import { useKathmContext } from '../../../routes/(khatm)/khatm-context.svelte'
 	import type { Khatm } from '$lib/entity/Khatm.svelte'
 

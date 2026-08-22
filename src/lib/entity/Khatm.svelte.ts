@@ -1,7 +1,6 @@
 import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
-import type { RangeType, TKhatmPart, ReviewStatus } from '@prisma-client'
-import type { KhatmData } from './KhatmData'
-import type { PickAyahResult } from '$api/khatmPart/pickNext/+server'
+import type { KhatmData, KhatmPartData, RangeType, ReviewStatus } from '$lib/contracts/domain'
+import type { PickAyahResult } from '$lib/contracts/api'
 import { QuranRange } from './Range'
 import { untrack } from 'svelte'
 import { KhatmPart } from './KhatmPart'
@@ -16,23 +15,24 @@ import { roundPercent } from '$lib/utility/percent'
 import type { AdminKhatmListItem } from './KhatmFeatured'
 import { formatNumber } from '$lib/i18n/format'
 import * as m from '$lib/paraglide/messages.js'
+import { publicWebUrl } from '$lib/config/runtime'
 
 const cache = new Map<number, Khatm>()
 
 export class Khatm {
 	plain = $state() as KhatmData
-	plainParts = $state([]) as TKhatmPart[]
+	plainParts = $state([]) as KhatmPartData[]
 	participation: KhatmParticipation
 
-	private constructor(plain: KhatmData & { parts?: TKhatmPart[] }) {
+	private constructor(plain: KhatmData & { parts?: KhatmPartData[] }) {
 		this.plain = Khatm.normalizePlain(plain)
 		this.plainParts = plain.parts || []
 		this.participation = new KhatmParticipation(() => this.plain)
 	}
 
 	private static normalizePlain(
-		plain: KhatmData & { parts?: TKhatmPart[] },
-	): KhatmData & { parts?: TKhatmPart[] } {
+		plain: KhatmData & { parts?: KhatmPartData[] },
+	): KhatmData & { parts?: KhatmPartData[] } {
 		if (Number.isFinite(plain.pageProgress) && plain.aiReviewStatus) return plain
 		return {
 			...plain,
@@ -42,7 +42,7 @@ export class Khatm {
 		}
 	}
 
-	static fromPlain(plain: KhatmData & { parts?: TKhatmPart[] }) {
+	static fromPlain(plain: KhatmData & { parts?: KhatmPartData[] }) {
 		plain = this.normalizePlain(plain)
 		if (!browser) return new this(plain)
 
@@ -253,6 +253,11 @@ export class Khatm {
 		return this.getLink()
 	}
 
+	get publicLink() {
+		const localUrl = new URL(this.link)
+		return publicWebUrl(`${localUrl.pathname}${localUrl.search}`, localUrl.origin)
+	}
+
 	getKhatmParts(merge = true) {
 		if (merge) return KhatmPart.fromList(this.plainParts)
 		return this.plainParts.map((part) => new KhatmPart(part)).sort((a, b) => a.start - b.start)
@@ -278,26 +283,26 @@ export class Khatm {
 	async share() {
 		try {
 			await navigator.share({
-				url: this.link,
+				url: this.publicLink,
 				text: m.share_khatm({ title: this.title, description: this.description }),
 			})
 		} catch (err) {
 			console.error(err)
-			await copy(this.link)
+			await copy(this.publicLink)
 		}
 	}
 
 	async copy() {
 		try {
-			await navigator.clipboard.writeText(this.link)
+			await navigator.clipboard.writeText(this.publicLink)
 		} catch (err) {
 			console.error(err)
-			await copy(this.link)
+			await copy(this.publicLink)
 		}
 	}
 
 	async refresh() {
-		const result = await request<{ khatm: KhatmData & { parts?: TKhatmPart[] } }>('get', '/khatm', {
+		const result = await request<{ khatm: KhatmData & { parts?: KhatmPartData[] } }>('get', '/khatm', {
 			khatmId: this.id,
 			accessToken: this.accessToken || '',
 		})

@@ -1,7 +1,7 @@
 import '@inlang/paraglide-js/urlpattern-polyfill'
 import './polyfill'
 import '$lib/i18n/client'
-import { base } from '$app/paths'
+import { apiUrl } from '$lib/config/runtime'
 import type { ClientInit, HandleClientError } from '@sveltejs/kit'
 
 type ClientErrorReport = {
@@ -83,7 +83,7 @@ function reportClientError(report: ClientErrorReport) {
 	if (reportedErrors.has(fingerprint)) return
 	reportedErrors.add(fingerprint)
 
-	void fetch(`${base}/api/client-error`, {
+	void fetch(apiUrl('/client-error', location.origin), {
 		method: 'POST',
 		headers: { 'content-type': 'application/json' },
 		body: JSON.stringify(report),

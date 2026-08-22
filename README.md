@@ -43,6 +43,22 @@ pnpm run build
 node build/index.js
 ```
 
+## بیلد وب و CSR نیتیو
+
+بیلد پیش‌فرض و `build:web` خروجی Node SSR را در `build/` می‌سازند. برای خروجی استاتیک آمادهٔ
+Capacitor، آدرس HTTPS سرور فعلی را مشخص کنید:
+
+```bash
+pnpm build:web
+PUBLIC_SERVER_ORIGIN=https://example.com pnpm build:csr
+pnpm build:all
+```
+
+در ویندوز، `PUBLIC_SERVER_ORIGIN` را در env یا فایل `.env` قرار دهید. خروجی CSR در
+`build-capacitor/` ساخته می‌شود و برای داده، auth و branding به همان backend متصل است. روی backend
+نیز originهای مجاز نیتیو را به‌صورت comma-separated در `NATIVE_TRUSTED_ORIGINS` قرار دهید؛ مقدار
+استاندارد آیندهٔ Capacitor برابر `https://localhost` است. پنل `/admin` فقط در بیلد وب در دسترس است.
+
 ## مینی‌اپ و بازوی بله
 
 برای اجرای پروژه در بله، یک بازو با `@botfather` بسازید و آدرس HTTPS برنامه را به‌عنوان مینی‌اپ

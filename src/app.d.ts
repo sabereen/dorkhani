@@ -45,7 +45,6 @@ declare global {
 	}
 
 	namespace App {
-		type AuthSession = import('$lib/server/auth').AuthSession
 		type Locale = import('$lib/paraglide/runtime.js').Locale
 		type ErrorType =
 			/** به علت تداخل بازه‌ها امکان درج رکورد جدید نیست */
@@ -63,8 +62,14 @@ declare global {
 		}
 
 		interface Locals {
-			session: AuthSession['session'] | null
-			user: AuthSession['user'] | null
+			session: unknown | null
+			user: {
+				id: string
+				name: string
+				email: string
+				image: string | null
+				locale: string
+			} | null
 			locale: Locale
 			needsLocaleChoice: boolean
 		}

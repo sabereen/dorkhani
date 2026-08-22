@@ -6,20 +6,24 @@ import { DEFAULT_BRANDING_CONFIG, getBrandingText } from '$lib/entity/Branding'
 import { appSettings_store } from '$lib/server/service/appSettings'
 import { prismaAdapter } from '@better-auth/prisma-adapter'
 import { betterAuth } from 'better-auth'
+import { bearer } from 'better-auth/plugins'
 import { sveltekitCookies } from 'better-auth/svelte-kit'
 import { authEmail_send } from './email'
 import { baleAuthPlugin } from './bale'
 import { eitaaAuthPlugin } from './eitaa'
 import { getLocale, isLocale } from '$lib/paraglide/runtime.js'
 import * as m from '$lib/paraglide/messages.js'
+import { parseTrustedOrigins } from '$lib/server/cors'
 
 const authBaseUrl = env.BETTER_AUTH_URL || env.ORIGIN
 const isSecureOrigin = authBaseUrl?.startsWith('https://')
+const nativeTrustedOrigins = [...parseTrustedOrigins(env.NATIVE_TRUSTED_ORIGINS)]
 
 export const auth = betterAuth({
 	appName: DEFAULT_BRANDING_CONFIG.texts.fa.name,
 	baseURL: authBaseUrl,
 	secret: env.BETTER_AUTH_SECRET,
+	trustedOrigins: nativeTrustedOrigins,
 	database: prismaAdapter(db, { provider: 'mysql' }),
 	user: {
 		additionalFields: {
@@ -85,6 +89,7 @@ export const auth = betterAuth({
 			}
 		: undefined,
 	plugins: [
+		bearer(),
 		baleAuthPlugin(),
 		eitaaAuthPlugin(),
 		...(building ? [] : [sveltekitCookies(getRequestEvent)]),

@@ -2,7 +2,7 @@ import { rebaseFullPath } from '$lib/utility/path'
 import { appSettings_store } from '$service/appSettings'
 import type { AdminNotification } from './adminNotification'
 import { base } from '$app/paths'
-import type { KhatmData } from '$lib/entity/KhatmData'
+import type { KhatmData } from '$lib/contracts/domain'
 
 type SendMessageBody = {
 	chat_id: string | number

@@ -15,6 +15,7 @@
 	import type { PageProps } from './$types'
 	import { localizeHref } from '$lib/paraglide/runtime.js'
 	import * as m from '$lib/paraglide/messages.js'
+	import { isCapacitorBuild } from '$lib/config/runtime'
 
 	const { data }: PageProps = $props()
 	let email = $state('')
@@ -114,7 +115,7 @@
 		</button>
 	</form>
 
-	{#if data.authProviders.google}
+	{#if data.authProviders.google && !isCapacitorBuild}
 		<div class="ui-auth-divider"><span>{m.auth_continue_with()}</span></div>
 		<div class="ui-auth-socials">
 			{#if data.authProviders.google}

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import type { ReviewStatus } from '@prisma-client'
+	import type { ReviewStatus } from '$lib/contracts/domain'
 	import AdminNav from '$lib/components/AdminNav.svelte'
 	import Header from '$lib/components/Header.svelte'
 	import PageTitle from '$lib/components/PageTitle.svelte'

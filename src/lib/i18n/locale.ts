@@ -7,6 +7,7 @@ export const INTERNAL_LOCALE_HEADER = 'x-dorkhani-resolved-locale'
 export type LocaleResolutionSource =
 	| 'admin'
 	| 'cookie'
+	| 'client'
 	| 'account'
 	| 'url'
 	| 'browser'
@@ -53,6 +54,7 @@ export function isAdminPath(pathname: string) {
 export function resolveRequestLocale(input: {
 	pathname: string
 	cookieLocale?: string | null
+	clientLocale?: string | null
 	accountLocale?: string | null
 	acceptLanguage?: string | null
 }): LocaleResolution {
@@ -61,6 +63,9 @@ export function resolveRequestLocale(input: {
 	}
 	if (isLocale(input.cookieLocale)) {
 		return { locale: input.cookieLocale, source: 'cookie', needsLocaleChoice: false }
+	}
+	if (isLocale(input.clientLocale)) {
+		return { locale: input.clientLocale, source: 'client', needsLocaleChoice: false }
 	}
 	if (isLocale(input.accountLocale)) {
 		return { locale: input.accountLocale, source: 'account', needsLocaleChoice: false }

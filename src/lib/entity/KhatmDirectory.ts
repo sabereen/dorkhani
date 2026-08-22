@@ -1,5 +1,4 @@
-import type { RangeType } from '@prisma-client'
-import type { KhatmData } from './KhatmData'
+import type { KhatmData, RangeType } from '$lib/contracts/domain'
 
 export const KHATM_DIRECTORY_VIEWS = ['recent', 'progress', 'continuous'] as const
 export type KhatmDirectoryView = (typeof KHATM_DIRECTORY_VIEWS)[number]

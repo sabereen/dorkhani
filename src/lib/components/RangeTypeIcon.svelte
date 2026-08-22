@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { RangeType } from '@prisma-client'
+	import type { RangeType } from '$lib/contracts/domain'
 	import ayahIcon from '$lib/icons/ayah.svg?raw'
 	import hizbIcon from '$lib/icons/hizb.svg?raw'
 	import juzIcon from '$lib/icons/juz.svg?raw'

@@ -63,12 +63,14 @@
 									<span>{zekr.plain.created.toLocaleDateString('fa-IR')}</span>
 									{#if zekr.isFinite}
 										<span class="ui-badge ui-badge-xs ui-badge-info"
-										>{m.history_count_target({ count: zekr.targetCount.toLocaleString(localeTag()) })}</span
+											>{m.history_count_target({
+												count: zekr.targetCount.toLocaleString(localeTag()),
+											})}</span
 										>
 									{/if}
 								</span>
 							</span>
-							<span class="ui-activity-arrow"><IconArrow /></span>
+							<span class="ui-activity-arrow"><IconArrow class="ltr:mirror" /></span>
 						</a>
 					</li>
 				{/each}
@@ -78,7 +80,7 @@
 				<div class="ui-activity-footer">
 					<a class="ui-btn ui-btn-ghost ui-btn-sm" href={localizeHref(`${base}/history`)}>
 						{m.history_view_all()}
-						<IconArrow />
+						<IconArrow class="ltr:mirror" />
 					</a>
 				</div>
 			{/if}

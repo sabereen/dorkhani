@@ -68,10 +68,7 @@
 
 <svelte:head>
 	<title>{branding.seoTitle}</title>
-	<meta
-		name="description"
-		content={branding.seoDescription}
-	/>
+	<meta name="description" content={branding.seoDescription} />
 	<meta property="og:title" content={branding.seoTitle} />
 	<meta property="og:description" content={branding.seoDescription} />
 	<meta property="og:logo" content={new URL(branding.icon512Url, page.url.origin).href} />
@@ -99,7 +96,7 @@
 				</a>
 				<a class="ui-btn ui-btn-xl landing-secondary-action" href={localizeHref(`${base}/list`)}>
 					{m.home_view_public()}
-					<IconArrow class="size-5" />
+					<IconArrow class="ltr:mirror size-5" />
 				</a>
 			</div>
 			<div class="landing-hero-points" aria-label={m.home_features_label()}>
@@ -115,7 +112,10 @@
 			</div>
 			<div class="landing-floating-card landing-floating-top">
 				<span class="landing-floating-icon"><IconGroups /></span>
-				<span><strong>{m.home_start_together()}</strong><small>{m.home_start_together_hint()}</small></span>
+				<span
+					><strong>{m.home_start_together()}</strong><small>{m.home_start_together_hint()}</small
+					></span
+				>
 			</div>
 			<div class="landing-floating-card landing-floating-bottom">
 				<span class="landing-progress-mark"><IconCheck /></span>
@@ -257,7 +257,7 @@
 			</div>
 			<a class="ui-btn ui-btn-ghost" href={localizeHref(`${base}/history`)}>
 				{m.home_history_link()}
-				<IconArrow class="size-5" />
+				<IconArrow class="ltr:mirror size-5" />
 			</a>
 		</div>
 
@@ -268,7 +268,9 @@
 						<span class="landing-empty-icon"><IconAdd /></span>
 						<h3>{m.home_no_created()}</h3>
 						<p>{m.home_first_group()}</p>
-						<a class="ui-btn ui-btn-soft ui-btn-sm" href={localizeHref(`${base}/add`)}>{m.home_create_first()}</a>
+						<a class="ui-btn ui-btn-soft ui-btn-sm" href={localizeHref(`${base}/add`)}
+							>{m.home_create_first()}</a
+						>
 					</article>
 				{/snippet}
 			</HistoryKhatm>
@@ -279,7 +281,9 @@
 						<span class="landing-empty-icon"><IconMenuBook /></span>
 						<h3>{m.home_no_picked()}</h3>
 						<p>{m.home_join_public()}</p>
-						<a class="ui-btn ui-btn-soft ui-btn-sm" href={localizeHref(`${base}/list`)}>{m.home_view_khatms()}</a>
+						<a class="ui-btn ui-btn-soft ui-btn-sm" href={localizeHref(`${base}/list`)}
+							>{m.home_view_khatms()}</a
+						>
 					</article>
 				{/snippet}
 			</HistoryPickedRange>
@@ -312,7 +316,7 @@
 			<ul class="ui-khatm-card-list landing-khatm-card-list">
 				{#each items.slice(0, 6) as khatm}
 					<li>
-					<KhatmListCard {khatm} meta={m.home_join_signin()} />
+						<KhatmListCard {khatm} meta={m.home_join_signin()} />
 					</li>
 				{/each}
 			</ul>
@@ -334,7 +338,7 @@
 					<div class="landing-featured-heading">
 						<span class="landing-featured-icon" aria-hidden="true"><IconStar /></span>
 						<div>
-						<span class="landing-featured-kicker">{m.home_featured_kicker()}</span>
+							<span class="landing-featured-kicker">{m.home_featured_kicker()}</span>
 							<h3 id="featured-khatms-title">{m.home_featured_title()}</h3>
 							<p>{m.home_featured_description()}</p>
 						</div>
@@ -342,7 +346,7 @@
 					<ul class="landing-featured-grid">
 						{#each featuredKhatms as khatm (khatm.id)}
 							<li>
-							<KhatmListCard {khatm} meta={m.home_featured_meta()} showDescription />
+								<KhatmListCard {khatm} meta={m.home_featured_meta()} showDescription />
 							</li>
 						{/each}
 					</ul>
@@ -386,10 +390,12 @@
 											<span>
 												{#if zekr.isFinite}
 													<span class="ui-badge ui-badge-info ui-badge-xs"
-										>{m.home_zekr_count({ count: zekr.targetCount.toLocaleString(localeTag()) })}</span
+														>{m.home_zekr_count({
+															count: zekr.targetCount.toLocaleString(localeTag()),
+														})}</span
 													>
 												{/if}
-								<span class="landing-list-hint">{m.home_zekr_registered()}</span>
+												<span class="landing-list-hint">{m.home_zekr_registered()}</span>
 											</span>
 										</span>
 										<span class="landing-list-progress">

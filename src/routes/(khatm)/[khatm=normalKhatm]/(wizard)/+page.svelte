@@ -191,7 +191,9 @@
 			<span>{description}</span>
 		</span>
 		<span class="ui-khatm-commitment-meta">{meta}</span>
-		<span class="ui-khatm-commitment-arrow" aria-hidden="true"><IconArrow /></span>
+		<span class="ui-khatm-commitment-arrow" aria-hidden="true"
+			><IconArrow class="ltr:mirror" /></span
+		>
 	</button>
 {/snippet}
 
@@ -204,15 +206,31 @@
 		</p>
 	</div>
 	<div class="ui-khatm-commitments">
-		{@render rangeTypeOption('page', m.wizard_one_page(), m.wizard_one_page_description(), m.wizard_short(), true)}
+		{@render rangeTypeOption(
+			'page',
+			m.wizard_one_page(),
+			m.wizard_one_page_description(),
+			m.wizard_short(),
+			true,
+		)}
 		{@render rangeTypeOption(
 			'hizbQuarter',
 			m.wizard_one_hizb(),
 			m.wizard_one_hizb_description(),
 			m.wizard_brief(),
 		)}
-		{@render rangeTypeOption('juz', m.wizard_one_juz(), m.wizard_one_juz_description(), m.wizard_continuous())}
-		{@render rangeTypeOption('surah', m.wizard_one_surah(), m.wizard_one_surah_description(), m.wizard_meaningful())}
+		{@render rangeTypeOption(
+			'juz',
+			m.wizard_one_juz(),
+			m.wizard_one_juz_description(),
+			m.wizard_continuous(),
+		)}
+		{@render rangeTypeOption(
+			'surah',
+			m.wizard_one_surah(),
+			m.wizard_one_surah_description(),
+			m.wizard_meaningful(),
+		)}
 		{#if khatm.progress > 0.9}
 			{@render rangeTypeOption(
 				'all',
@@ -227,7 +245,9 @@
 {#snippet stepSelectRange()}
 	<div class="ui-khatm-range-heading">
 		<div>
-			<span class="ui-khatm-wizard-kicker">{m.wizard_select_range_eyebrow({ rangeType: rangeTypeTitle })}</span>
+			<span class="ui-khatm-wizard-kicker"
+				>{m.wizard_select_range_eyebrow({ rangeType: rangeTypeTitle })}</span
+			>
 			<h2>{m.wizard_select_range_title()}</h2>
 			<p>{m.wizard_available_ranges({ count: availableRangeCount.toLocaleString(localeTag()) })}</p>
 		</div>
@@ -259,7 +279,10 @@
 	<div class="ui-khatm-range-tools">
 		<div class="ui-khatm-range-legend" aria-label={m.wizard_range_legend()}>
 			<span><i class="ui-khatm-range-key ui-khatm-range-key-free"></i>{m.wizard_fully_free()}</span>
-			<span><i class="ui-khatm-range-key ui-khatm-range-key-partial"></i>{m.wizard_partially_free()}</span>
+			<span
+				><i class="ui-khatm-range-key ui-khatm-range-key-partial"
+				></i>{m.wizard_partially_free()}</span
+			>
 			<span><i class="ui-khatm-range-key ui-khatm-range-key-mine"></i>{m.wizard_my_share()}</span>
 		</div>
 		<label class="ui-khatm-check">
@@ -269,7 +292,10 @@
 	</div>
 
 	{#if visibleRanges.length > 0}
-		<ul class="ui-khatm-range-results" aria-label={m.wizard_range_list({ rangeType: rangeTypeTitle })}>
+		<ul
+			class="ui-khatm-range-results"
+			aria-label={m.wizard_range_list({ rangeType: rangeTypeTitle })}
+		>
 			{#each visibleRanges as { range, percent, myLength }}
 				{@const completed = percent >= 100}
 				{@const partial = percent > 0 && !completed}
@@ -292,11 +318,11 @@
 									</span>
 								{/if}
 								{#if partial}
-								<span class="ui-badge ui-badge-info ui-badge-xs">{m.wizard_partial_free()}</span>
+									<span class="ui-badge ui-badge-info ui-badge-xs">{m.wizard_partial_free()}</span>
 								{:else if completed}
-								<span class="ui-badge ui-badge-neutral ui-badge-xs">{m.wizard_completed()}</span>
+									<span class="ui-badge ui-badge-neutral ui-badge-xs">{m.wizard_completed()}</span>
 								{:else}
-								<span class="ui-badge ui-badge-success ui-badge-xs">{m.wizard_fully_free()}</span>
+									<span class="ui-badge ui-badge-success ui-badge-xs">{m.wizard_fully_free()}</span>
 								{/if}
 							</span>
 						</span>
@@ -307,13 +333,19 @@
 									class="ui-progress"
 									max={100}
 									value={percent}
-									aria-label={m.wizard_selected_percent({ percent: percent.toLocaleString(localeTag()) })}
+									aria-label={m.wizard_selected_percent({
+										percent: percent.toLocaleString(localeTag()),
+									})}
 								></progress>
 							</span>
 						{/if}
 						<span class="ui-khatm-range-card-action">
-							{completed ? m.wizard_no_free_share() : partial ? m.wizard_view_free_parts() : m.wizard_select_share()}
-							{#if !completed}<IconArrow aria-hidden="true" />{/if}
+							{completed
+								? m.wizard_no_free_share()
+								: partial
+									? m.wizard_view_free_parts()
+									: m.wizard_select_share()}
+							{#if !completed}<IconArrow aria-hidden="true" class="ltr:mirror" />{/if}
 						</span>
 					</button>
 				</li>
@@ -344,9 +376,7 @@
 				{rangeQuery ? m.wizard_no_search_result() : m.wizard_no_free_range()}
 			</h3>
 			<p>
-				{rangeQuery
-					? m.wizard_try_another_search()
-					: m.wizard_choose_another_size()}
+				{rangeQuery ? m.wizard_try_another_search() : m.wizard_choose_another_size()}
 			</p>
 			{#if rangeQuery}
 				<button type="button" class="ui-btn ui-btn-soft" onclick={() => (rangeQuery = '')}

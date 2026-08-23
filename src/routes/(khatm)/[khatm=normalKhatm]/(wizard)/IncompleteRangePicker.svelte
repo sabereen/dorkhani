@@ -44,7 +44,7 @@
 		class="ui-btn ui-btn-ghost ui-btn-sm ui-khatm-partial-back"
 		onclick={() => (confirming = false)}
 	>
-		<IconArrowForward />
+		<IconArrowForward class="ltr:mirror" />
 		{m.wizard_partial_back()}
 	</button>
 	<ConfirmRange {khatm} {onClose} onFinished={finish} range={selectedRange} />

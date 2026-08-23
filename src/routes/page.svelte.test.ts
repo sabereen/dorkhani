@@ -123,3 +123,17 @@ describe('/+page.svelte', () => {
 		expect(screen.getByText(customBranding.texts[testLocale].heroDescription)).toBeInTheDocument()
 	})
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+

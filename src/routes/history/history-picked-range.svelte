@@ -92,7 +92,7 @@
 				<div class="ui-activity-footer">
 					<a class="ui-btn ui-btn-ghost ui-btn-sm" href={localizeHref(`${base}/history`)}>
 						{m.history_view_all()}
-						<IconArrow />
+						<IconArrow class="ltr:mirror" />
 					</a>
 				</div>
 			{/if}

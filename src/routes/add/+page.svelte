@@ -59,7 +59,10 @@
 				aiWarning = response.aiWarning
 				aiWarningOpen = true
 			} else {
-				toast('error', response?.errorMessage || (cause instanceof Error ? cause.message : m.error_generic()))
+				toast(
+					'error',
+					response?.errorMessage || (cause instanceof Error ? cause.message : m.error_generic()),
+				)
 			}
 		} finally {
 			submitting = false
@@ -218,7 +221,7 @@
 				</section>
 
 				<div class="add-submit">
-				<p class="ui-text-muted">{m.add_submit_hint()}</p>
+					<p class="ui-text-muted">{m.add_submit_hint()}</p>
 					<button
 						class="ui-btn ui-btn-primary ui-btn-lg ui-btn-block"
 						type="submit"
@@ -229,7 +232,7 @@
 							<span>{m.add_creating()}</span>
 						{:else}
 							<span>{m.add_create()}</span>
-							<IconArrow aria-hidden="true" />
+							<IconArrow aria-hidden="true" class="ltr:mirror" />
 						{/if}
 					</button>
 				</div>
@@ -247,8 +250,12 @@
 			<p>{aiWarning.reason}</p>
 			<p class="ui-text-muted">{m.add_ai_description()}</p>
 			<div class="add-ai-warning-actions">
-				<button class="ui-btn ui-btn-outline" type="button" onclick={reviseContent}>{m.add_edit_text()}</button>
-				<button class="ui-btn ui-btn-primary" type="button" onclick={forceCreate}>{m.add_force_create()}</button>
+				<button class="ui-btn ui-btn-outline" type="button" onclick={reviseContent}
+					>{m.add_edit_text()}</button
+				>
+				<button class="ui-btn ui-btn-primary" type="button" onclick={forceCreate}
+					>{m.add_force_create()}</button
+				>
 			</div>
 		</section>
 	{/if}

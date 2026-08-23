@@ -65,9 +65,9 @@
 					</div>
 				</div>
 				<select id="input-font" class="ui-select" name="font" bind:value={editor.config.quranFont}>
-					<option value="hafs">پیش‌فرض</option>
-					<option value="qpc1">مصحف مدینه ۱</option>
-					<option value="qpc2">مصحف مدینه ۲</option>
+					<option value="hafs">{m.settings_font_default()}</option>
+					<option value="qpc1">{m.settings_font_madinah_1()}</option>
+					<option value="qpc2">{m.settings_font_madinah_2()}</option>
 				</select>
 			</div>
 		{/if}
@@ -86,10 +86,10 @@
 				name="reciter"
 				bind:value={editor.config.reciter}
 			>
-				<option value="parhizgar">پرهیزگار</option>
-				<option value="minshawi">منشاوی</option>
-				<option value="husari">خلیل الحصری</option>
-				<option value="abdulbasit">عبد الباسط</option>
+				<option value="parhizgar">{m.settings_reciter_parhizgar()}</option>
+				<option value="minshawi">{m.settings_reciter_minshawi()}</option>
+				<option value="husari">{m.settings_reciter_husari()}</option>
+				<option value="abdulbasit">{m.settings_reciter_abdulbasit()}</option>
 			</select>
 		</div>
 	</div>

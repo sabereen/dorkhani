@@ -34,7 +34,7 @@
 				: await idb_offlineKhatm_create({ title, description, rangeType, series })
 			onSaved(saved)
 		} catch (cause) {
-			errorMessage = cause instanceof Error ? cause.message : 'ذخیرهٔ ختم آفلاین ناموفق بود.'
+			errorMessage = cause instanceof Error ? cause.message : m.offline_save_error()
 		} finally {
 			saving = false
 		}
@@ -46,8 +46,8 @@
 		<header class="offline-form-heading">
 			<span class="offline-form-icon"><IconBook /></span>
 			<div>
-				<h2>{khatm ? 'ویرایش ختم آفلاین' : 'ساخت ختم آفلاین تازه'}</h2>
-				<p>{m.offline_khatm_device_only()} این ختم قابل اشتراک‌گذاری نیست.</p>
+				<h2>{khatm ? m.offline_edit_title() : m.offline_create_title()}</h2>
+				<p>{m.offline_khatm_device_only()} {m.offline_not_shareable()}</p>
 			</div>
 		</header>
 
@@ -56,7 +56,7 @@
 		{/if}
 
 		<div class="offline-fields">
-			<label class="ui-field-label" for="offline-khatm-title">عنوان ختم</label>
+		<label class="ui-field-label" for="offline-khatm-title">{m.offline_title_label()}</label>
 			<input
 				id="offline-khatm-title"
 				class="ui-input"
@@ -64,10 +64,10 @@
 				maxlength="100"
 				required
 				bind:value={title}
-				placeholder="مثلاً ختم شخصی روزانه"
+			placeholder={m.offline_title_placeholder()}
 			/>
 
-			<label class="ui-field-label" for="offline-khatm-description">توضیحات (اختیاری)</label>
+		<label class="ui-field-label" for="offline-khatm-description">{m.offline_description_label()}</label>
 			<textarea
 				id="offline-khatm-description"
 				class="ui-textarea"
@@ -78,27 +78,27 @@
 		</div>
 
 		<fieldset class="ui-fieldset">
-			<legend class="ui-fieldset-legend">نحوهٔ تقسیم قرائت</legend>
+		<legend class="ui-fieldset-legend">{m.offline_division()}</legend>
 			<RangeTypePicker bind:value={rangeType} disabled={Boolean(khatm?.versesRead)} />
 			{#if khatm?.versesRead}
-				<p class="ui-text-muted">پس از شروع ختم، نوع تقسیم قابل تغییر نیست.</p>
+				<p class="ui-text-muted">{m.offline_range_locked()}</p>
 			{/if}
 		</fieldset>
 
 		{#if !khatm}
 			<label class="offline-series" data-selected={series}>
 				<input class="ui-checkbox" type="checkbox" bind:checked={series} />
-				<span><strong>ختم پیوسته باشد</strong><small>پس از پایان هر دور می‌توانید دور بعدی را آغاز کنید.</small></span>
+				<span><strong>{m.offline_serial()}</strong><small>{m.offline_serial_hint()}</small></span>
 			</label>
 		{/if}
 
 		<div class="offline-form-actions">
 			{#if onCancel}
-				<button class="ui-btn ui-btn-ghost" type="button" onclick={onCancel}>انصراف</button>
+				<button class="ui-btn ui-btn-ghost" type="button" onclick={onCancel}>{m.offline_cancel()}</button>
 			{/if}
 			<button class="ui-btn ui-btn-primary" type="submit" disabled={saving}>
 				{#if saving}<span class="ui-spinner"></span>{:else}<IconSave />{/if}
-				{saving ? 'در حال ذخیره…' : khatm ? 'ذخیرهٔ تغییرات' : m.offline_khatm_create()}
+				{saving ? m.offline_saving() : khatm ? m.offline_save_changes() : m.offline_khatm_create()}
 			</button>
 		</div>
 	</div>

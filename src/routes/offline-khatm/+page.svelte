@@ -78,7 +78,7 @@
 		try {
 			list = await idb_offlineKhatm_getList()
 		} catch (cause) {
-			loadError = cause instanceof Error ? cause.message : 'خواندن ختم‌های آفلاین ناموفق بود.'
+			loadError = cause instanceof Error ? cause.message : m.offline_open_failed()
 		} finally {
 			loading = false
 		}
@@ -96,7 +96,7 @@
 				parts = currentParts
 			}
 		} catch (cause) {
-			loadError = cause instanceof Error ? cause.message : 'خواندن ختم آفلاین ناموفق بود.'
+			loadError = cause instanceof Error ? cause.message : m.offline_read_failed()
 			selected = null
 		} finally {
 			loading = false
@@ -118,20 +118,20 @@
 <Header title={selected?.title || m.offline_khatm_title()} />
 
 {#if !checked}
-	<div class="offline-loading" role="status"><span class="ui-spinner"></span><span>در حال آماده‌سازی ختم آفلاین…</span></div>
+	<div class="offline-loading" role="status"><span class="ui-spinner"></span><span>{m.offline_preparing()}</span></div>
 {:else if !supported}
 	<section class="ui-card ui-card-bordered offline-unsupported">
 		<div class="ui-card-body">
 			<span class="offline-main-icon"><IconInstall /></span>
-			<h2>ختم آفلاین ویژهٔ نسخهٔ نصب‌شده است</h2>
-			<p>برای نگهداری امن داده روی همین دستگاه، این قابلیت در اپ Capacitor یا PWA نصب‌شده در دسترس قرار می‌گیرد.</p>
-			<a class="ui-btn ui-btn-primary" href={localizeHref(`${base}/`)}>بازگشت به خانه</a>
+			<h2>{m.offline_supported_title()}</h2>
+			<p>{m.offline_supported_description()}</p>
+			<a class="ui-btn ui-btn-primary" href={localizeHref(`${base}/`)}>{m.offline_back_home()}</a>
 		</div>
 	</section>
 {:else if loadError && !selected}
 	<section class="ui-alert ui-alert-error" role="alert">
-		<div><strong>ختم آفلاین باز نشد</strong><p>{loadError}</p></div>
-		<button class="ui-btn ui-btn-outline" type="button" onclick={() => selectedId ? loadSelected() : loadList()}>تلاش دوباره</button>
+		<div><strong>{m.offline_failure_title()}</strong><p>{loadError}</p></div>
+		<button class="ui-btn ui-btn-outline" type="button" onclick={() => selectedId ? loadSelected() : loadList()}>{m.common_retry()}</button>
 	</section>
 {:else if selected && reading && range}
 	<OfflineReading khatm={selected} {range} onBack={() => navigate({ id: selected!.id, view })} />
@@ -150,22 +150,22 @@
 		<section class="offline-intro">
 			<span class="offline-main-icon"><IconCloudOff /></span>
 			<div>
-				<p class="offline-eyebrow">بدون حساب و بدون اینترنت</p>
-				<h2>ختم قرآن شخصی خودتان را پیش ببرید</h2>
-				<p>همهٔ اطلاعات فقط در IndexedDB همین دستگاه ذخیره می‌شود و هیچ لینکی برای اشتراک‌گذاری ساخته نخواهد شد.</p>
+				<p class="offline-eyebrow">{m.offline_eyebrow()}</p>
+				<h2>{m.offline_heading()}</h2>
+				<p>{m.offline_description()}</p>
 			</div>
 		</section>
 
 		<section class="ui-alert ui-alert-info" role="note">
-			<strong>مهم:</strong>
-			<span>با پاک‌کردن داده‌های برنامه یا مرورگر، ختم‌های آفلاین نیز حذف می‌شوند و در این نسخه امکان بازیابی یا انتقال وجود ندارد.</span>
+			<strong>{m.offline_important()}</strong>
+			<span>{m.offline_data_warning()}</span>
 		</section>
 
 		{#if list.length}
 			<section class="ui-card ui-card-bordered offline-list-card">
 				<div class="ui-card-body">
 					<header class="offline-section-heading">
-						<div><h2>ختم‌های آفلاین شما</h2><p>آخرین تغییرها در ابتدای فهرست قرار دارند.</p></div>
+						<div><h2>{m.offline_list_title()}</h2><p>{m.offline_list_description()}</p></div>
 						<span class="ui-badge ui-badge-info">{list.length.toLocaleString('fa-IR')}</span>
 					</header>
 					<ul class="offline-khatm-list">
@@ -175,9 +175,9 @@
 									<span class="offline-list-icon"><IconBook /></span>
 									<span class="offline-list-copy">
 										<strong>{khatm.title}</strong>
-										<small>{khatm.status === 'completed' ? 'کامل‌شده' : `${khatm.pageProgress.toLocaleString('fa-IR')}٪ پیشرفت`}</small>
+										<small>{khatm.status === 'completed' ? m.offline_completed() : m.offline_progress({ percent: khatm.pageProgress.toLocaleString() })}</small>
 									</span>
-									{#if khatm.series}<span class="ui-badge ui-badge-accent"><IconRepeat />دور {khatm.roundNumber.toLocaleString('fa-IR')}</span>{/if}
+									{#if khatm.series}<span class="ui-badge ui-badge-accent"><IconRepeat />{m.offline_round({ count: khatm.roundNumber.toLocaleString() })}</span>{/if}
 									<IconArrow />
 								</a>
 							</li>
@@ -186,7 +186,7 @@
 				</div>
 			</section>
 		{:else if !loading}
-			<div class="offline-empty"><IconBook /><h2>هنوز ختم آفلاینی ندارید</h2><p>فرم زیر را تکمیل کنید تا اولین ختم شخصی شما ساخته شود.</p></div>
+			<div class="offline-empty"><IconBook /><h2>{m.offline_empty_title()}</h2><p>{m.offline_empty_description()}</p></div>
 		{/if}
 
 		<OfflineKhatmForm onSaved={created} />

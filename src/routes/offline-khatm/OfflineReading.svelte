@@ -5,6 +5,7 @@
 	import { SettingsEditor } from '$lib/entity/LocalSettings.svelte'
 	import { QuranRange } from '$lib/entity/Range'
 	import { getOfflineAyahInfoRange } from '$lib/offline/quran'
+	import * as m from '$lib/paraglide/messages.js'
 	import { onMount } from 'svelte'
 	import IconBack from '~icons/ic/round-arrow-forward'
 	import IconBook from '~icons/ic/round-menu-book'
@@ -38,16 +39,16 @@
 
 <div class="offline-reading">
 	<div class="offline-reading-toolbar">
-		<button class="ui-btn ui-btn-ghost" type="button" onclick={onBack}><IconBack />بازگشت به ختم</button>
+		<button class="ui-btn ui-btn-ghost" type="button" onclick={onBack}><IconBack />{m.offline_reading_back()}</button>
 		<span class="ui-badge ui-badge-info"><IconBook />{khatm.title}</span>
 	</div>
-	<div class="ui-khatm-reading-marker"><IconBook /><span>آغاز {range.getTitle()}</span></div>
+	<div class="ui-khatm-reading-marker"><IconBook /><span>{m.offline_reading_start({ title: range.getTitle() })}</span></div>
 	<section class="ui-khatm-panel">
 		<MultipleAyah ayahInfoList={ayat} {audioManager} font="hafs" onlineActions={online} />
 	</section>
-	<div class="ui-khatm-reading-marker"><IconBook /><span>پایان {range.getTitle()}</span></div>
+	<div class="ui-khatm-reading-marker"><IconBook /><span>{m.offline_reading_end({ title: range.getTitle() })}</span></div>
 	<button class="ui-btn ui-btn-primary ui-btn-lg ui-btn-block" type="button" onclick={onBack}>
-		بازگشت به صفحهٔ ختم
+		{m.offline_reading_back_page()}
 	</button>
 </div>
 

@@ -16,6 +16,7 @@
 		idb_offlineKhatm_stopSeries,
 	} from '$lib/idb/offlineKhatm'
 	import { formatPercent, localeTag } from '$lib/i18n/format'
+	import * as m from '$lib/paraglide/messages.js'
 	import OfflineKhatmForm from './OfflineKhatmForm.svelte'
 	import IconBook from '~icons/ic/round-menu-book'
 	import IconCheck from '~icons/ic/round-check-circle'
@@ -51,20 +52,20 @@
 	let deleteOpen = $state(false)
 	let stopOpen = $state(false)
 	const freeUnitLabels: Record<FreeUnit, string> = {
-		page: 'صفحه',
-		hizbQuarter: 'ربع حزب',
-		surah: 'سوره',
-		juz: 'جزء',
+		page: m.offline_unit_page(),
+		hizbQuarter: m.offline_unit_hizb(),
+		surah: m.offline_unit_surah(),
+		juz: m.offline_unit_juz(),
 	}
 
 	const rangeTypeTitle = $derived(
 		{
-			free: 'آزاد',
-			page: 'صفحه‌به‌صفحه',
-			hizbQuarter: 'ربع حزب',
-			surah: 'سوره‌به‌سوره',
-			juz: 'جزءبه‌جزء',
-			ayah: 'آیه‌به‌آیه',
+			free: m.range_free(),
+			page: m.range_page(),
+			hizbQuarter: m.range_hizb(),
+			surah: m.range_surah(),
+			juz: m.range_juz(),
+			ayah: m.range_ayah(),
 		}[khatm.rangeType],
 	)
 	const activeType = $derived<FreeUnit>(
@@ -124,7 +125,7 @@
 			picked = true
 			await onReload()
 		} catch (cause) {
-			actionError = cause instanceof Error ? cause.message : 'ثبت بازه ناموفق بود.'
+			actionError = cause instanceof Error ? cause.message : m.error_generic()
 		} finally {
 			working = false
 		}
@@ -139,7 +140,7 @@
 			await onReload()
 			onRead(result.range)
 		} catch (cause) {
-			actionError = cause instanceof Error ? cause.message : 'انتخاب آیات ناموفق بود.'
+			actionError = cause instanceof Error ? cause.message : m.error_generic()
 		} finally {
 			working = false
 		}
@@ -151,7 +152,7 @@
 			await idb_offlineKhatm_startNextRound(khatm.id)
 			await onReload()
 		} catch (cause) {
-			actionError = cause instanceof Error ? cause.message : 'شروع دور جدید ناموفق بود.'
+			actionError = cause instanceof Error ? cause.message : m.error_generic()
 		} finally {
 			working = false
 		}
@@ -187,15 +188,15 @@
 <div class="offline-detail">
 	<section class="ui-khatm-hero offline-hero" aria-labelledby="offline-detail-title">
 		<div class="ui-khatm-hero-copy">
-			<div class="ui-khatm-eyebrow"><IconBook /><span>ختم شخصی ذخیره‌شده روی این دستگاه</span></div>
+			<div class="ui-khatm-eyebrow"><IconBook /><span>{m.offline_detail_eyebrow()}</span></div>
 			<h1 id="offline-detail-title" class="ui-khatm-title">{khatm.title}</h1>
 			<div class="offline-badges">
 				<span class="ui-badge ui-badge-info"
 					><RangeTypeIcon type={khatm.rangeType} />{rangeTypeTitle}</span
 				>
-				<span class="ui-badge ui-badge-neutral">آفلاین</span>
+				<span class="ui-badge ui-badge-neutral">{m.offline_badge()}</span>
 				{#if khatm.series}<span class="ui-badge ui-badge-accent"
-						>دور {khatm.roundNumber.toLocaleString(localeTag())}</span
+						>{m.offline_round({ count: khatm.roundNumber.toLocaleString(localeTag()) })}</span
 					>{/if}
 			</div>
 			{#if khatm.description}<p class="offline-description" dir="auto">{khatm.description}</p>{/if}
@@ -203,32 +204,32 @@
 				<button
 					class="ui-btn ui-btn-ghost ui-btn-sm"
 					type="button"
-					onclick={() => (editOpen = true)}><IconEdit />ویرایش</button
+					onclick={() => (editOpen = true)}><IconEdit />{m.offline_edit()}</button
 				>
 				<button
 					class="ui-btn ui-btn-ghost ui-btn-sm"
 					type="button"
-					onclick={() => (deleteOpen = true)}><IconDelete />حذف</button
+					onclick={() => (deleteOpen = true)}><IconDelete />{m.offline_delete()}</button
 				>
 				{#if khatm.series && !khatm.seriesStopped}
 					<button
 						class="ui-btn ui-btn-ghost ui-btn-sm"
 						type="button"
-						onclick={() => (stopOpen = true)}><IconStop />توقف پس از این دور</button
+						onclick={() => (stopOpen = true)}><IconStop />{m.offline_stop_round()}</button
 					>
 				{/if}
 			</div>
 		</div>
 		<div class="ui-khatm-progress-card">
-			<strong>پیشرفت دور جاری</strong>
+			<strong>{m.offline_progress_round()}</strong>
 			<div class="offline-progress-value">{formatPercent(khatm.pageProgress)}</div>
 			<progress
 				class="ui-progress ui-progress-success"
 				max="100"
 				value={khatm.pageProgress}
-				aria-label="پیشرفت ختم"
+				aria-label={m.offline_progress_label()}
 			></progress>
-			<small>{khatm.versesRead.toLocaleString(localeTag())} آیه ثبت شده است</small>
+			<small>{m.offline_verses_read({ count: khatm.versesRead.toLocaleString(localeTag()) })}</small>
 		</div>
 	</section>
 
@@ -237,7 +238,7 @@
 	{#if parts.length}
 		<section class="ui-card ui-card-bordered offline-parts">
 			<div class="ui-card-body">
-				<h2>بازه‌های خوانده‌شده در این دور</h2>
+				<h2>{m.offline_read_ranges()}</h2>
 				<ul class="ui-list">
 					{#each [...parts].reverse().slice(0, 8) as part (part.id)}
 						<li class="ui-list-row">
@@ -252,12 +253,12 @@
 	{#if khatm.completedRounds.length}
 		<section class="ui-card ui-card-bordered offline-round-history">
 			<div class="ui-card-body">
-				<h2>دورهای کامل‌شده</h2>
+				<h2>{m.offline_completed_rounds()}</h2>
 				<ul class="ui-list">
 					{#each [...khatm.completedRounds].reverse() as round (round.roundNumber)}
 						<li class="ui-list-row">
 							<IconCheck />
-							<span>دور {round.roundNumber.toLocaleString(localeTag())}</span>
+							<span>{m.offline_round_label({ count: round.roundNumber.toLocaleString(localeTag()) })}</span>
 							<time datetime={round.completed.toISOString()}
 								>{round.completed.toLocaleDateString(localeTag())}</time
 							>
@@ -274,31 +275,31 @@
 			<div>
 				<h2>
 					{khatm.series
-						? `دور ${khatm.roundNumber.toLocaleString(localeTag())} کامل شد`
-						: 'این ختم قرآن کامل شد'}
+						? m.offline_round_complete({ count: khatm.roundNumber.toLocaleString(localeTag()) })
+						: m.offline_complete_title()}
 				</h2>
-				<p>تمام آیات قرآن در این دور ثبت شده‌اند.</p>
+				<p>{m.offline_complete_description()}</p>
 			</div>
 			{#if khatm.series && !khatm.seriesStopped}
 				<button
 					class="ui-btn ui-btn-outline"
 					type="button"
 					disabled={working}
-					onclick={startNextRound}><IconRepeat />شروع دور جدید</button
+					onclick={startNextRound}><IconRepeat />{m.offline_start_next_round()}</button
 				>
 			{/if}
 		</section>
 	{:else if khatm.rangeType === 'ayah'}
 		<section class="ui-card ui-card-bordered offline-ayah-picker">
 			<div class="ui-card-body">
-				<h2>سهم بعدی از ختم</h2>
-				<p class="ui-text-muted">آیات بعدی به‌ترتیب ثبت و برای مطالعه نمایش داده می‌شوند.</p>
+				<h2>{m.offline_next_share()}</h2>
+				<p class="ui-text-muted">{m.offline_next_share_description()}</p>
 				<div class="offline-ayah-actions">
 					<button
 						class="ui-btn ui-btn-primary ui-btn-lg"
 						type="button"
 						disabled={working}
-						onclick={() => pickAyat(1)}>پذیرفتن یک آیه</button
+						onclick={() => pickAyat(1)}>{m.offline_accept_one()}</button
 					>
 					{#each [3, 5, 7, 10] as count}
 						<button
@@ -306,7 +307,7 @@
 							type="button"
 							disabled={working}
 							onclick={() => pickAyat(count)}
-							>{count.toLocaleString(localeTag())} آیهٔ متوالی</button
+							>{m.offline_consecutive({ count: count.toLocaleString(localeTag()) })}</button
 						>
 					{/each}
 				</div>
@@ -314,22 +315,22 @@
 		</section>
 	{:else}
 		{#if khatm.rangeType === 'free'}
-			<section class="offline-view-switch" aria-label="شیوهٔ نمایش بازه‌ها">
+			<section class="offline-view-switch" aria-label={m.offline_view_switch()}>
 				<div>
 					<button
 						class={['ui-btn', view === 'wizard' ? 'ui-btn-primary' : 'ui-btn-ghost']}
 						type="button"
-						onclick={() => onView('wizard')}><IconWizard />مرحله‌ای</button
+						onclick={() => onView('wizard')}><IconWizard />{m.offline_view_step()}</button
 					>
 					<button
 						class={['ui-btn', view === 'list' ? 'ui-btn-primary' : 'ui-btn-ghost']}
 						type="button"
-						onclick={() => onView('list')}><IconList />لیستی</button
+						onclick={() => onView('list')}><IconList />{m.offline_view_list()}</button
 					>
 					<button
 						class={['ui-btn', view === 'grid' ? 'ui-btn-primary' : 'ui-btn-ghost']}
 						type="button"
-						onclick={() => onView('grid')}><IconGrid />جدولی</button
+						onclick={() => onView('grid')}><IconGrid />{m.offline_view_grid()}</button
 					>
 				</div>
 			</section>
@@ -337,12 +338,12 @@
 
 		<section class="ui-khatm-panel offline-picker">
 			<header class="ui-khatm-panel-header">
-				<h2>انتخاب بخش بعدی برای قرائت</h2>
-				<p>با تأیید انتخاب، این بازه همان لحظه در پیشرفت ختم ثبت می‌شود.</p>
+				<h2>{m.offline_choose_next()}</h2>
+				<p>{m.offline_choose_next_description()}</p>
 			</header>
 
 			{#if khatm.rangeType === 'free'}
-				<div class="offline-unit-picker" role="group" aria-label="اندازهٔ سهم">
+				<div class="offline-unit-picker" role="group" aria-label={m.offline_unit_size()}>
 					{#each ['page', 'hizbQuarter', 'surah', 'juz'] as type}
 						<button
 							class={[
@@ -368,14 +369,14 @@
 							<strong>{item.range.title || item.range.getTitleSurahOrinted()}</strong>
 							<small
 								>{completed
-									? 'خوانده‌شده'
+								? m.offline_read_status()
 									: item.available.length > 1 || item.available[0]?.length !== item.range.length
-										? 'بخشی خوانده‌شده'
-										: 'آمادهٔ انتخاب'}</small
+										? m.offline_partial_status()
+										: m.offline_ready_status()}</small
 							>
 						</div>
 						{#if completed}
-							<span class="ui-badge ui-badge-success"><IconCheck />کامل</span>
+							<span class="ui-badge ui-badge-success"><IconCheck />{m.offline_complete_badge()}</span>
 						{:else}
 							<div class="offline-range-actions">
 								{#each item.available as range (range.start + ':' + range.end)}
@@ -384,7 +385,7 @@
 										type="button"
 										onclick={() => requestPick(range)}
 									>
-										{range.length === item.range.length ? 'انتخاب' : range.getTitleSurahOrinted()}
+										{range.length === item.range.length ? m.offline_select() : range.getTitleSurahOrinted()}
 										<IconNext />
 									</button>
 								{/each}
@@ -402,36 +403,36 @@
 		{#if picked}
 			<div class="offline-dialog-content">
 				<IconCheck class="offline-dialog-icon" />
-				<h2>بازه با موفقیت ثبت شد</h2>
+				<h2>{m.offline_range_saved()}</h2>
 				<p>{selected.getTitle()}</p>
 				<button
 					class="ui-btn ui-btn-primary ui-btn-block"
 					type="button"
-					onclick={() => onRead(selected!)}><IconBook />مشاهده و قرائت آیات</button
+					onclick={() => onRead(selected!)}><IconBook />{m.offline_view_read()}</button
 				>
 				<button
 					class="ui-btn ui-btn-ghost ui-btn-block"
 					type="button"
-					onclick={() => (confirmOpen = false)}>انتخاب بخش دیگر</button
+					onclick={() => (confirmOpen = false)}>{m.offline_choose_another()}</button
 				>
 			</div>
 		{:else}
 			<div class="offline-dialog-content">
 				<IconBook class="offline-dialog-icon" />
-				<h2>این بخش به‌عنوان خوانده‌شده ثبت شود؟</h2>
+				<h2>{m.offline_mark_read()}</h2>
 				<p>{selected.getTitle()}</p>
 				{#if actionError}<div class="ui-alert ui-alert-error">{actionError}</div>{/if}
 				<button
 					class="ui-btn ui-btn-primary ui-btn-block"
 					type="button"
 					disabled={working}
-					onclick={pickSelected}>{working ? 'در حال ثبت…' : 'بله، ثبت شود'}</button
+					onclick={pickSelected}>{working ? m.offline_registering() : m.offline_register_yes()}</button
 				>
 				<button
 					class="ui-btn ui-btn-ghost ui-btn-block"
 					type="button"
 					disabled={working}
-					onclick={() => (confirmOpen = false)}>انصراف</button
+					onclick={() => (confirmOpen = false)}>{m.offline_cancel()}</button
 				>
 			</div>
 		{/if}
@@ -445,19 +446,19 @@
 <Modal bind:open={deleteOpen} contentClass="offline-confirm-dialog">
 	<div class="offline-dialog-content">
 		<IconDelete class="offline-dialog-icon offline-dialog-icon-danger" />
-		<h2>این ختم آفلاین حذف شود؟</h2>
-		<p>تمام دورها و بازه‌های ثبت‌شده برای همیشه از این دستگاه حذف می‌شوند.</p>
+		<h2>{m.offline_delete_title()}</h2>
+		<p>{m.offline_delete_description()}</p>
 		<button
 			class="ui-btn ui-btn-danger ui-btn-block"
 			type="button"
 			disabled={working}
-			onclick={removeKhatm}>حذف کامل ختم</button
+			onclick={removeKhatm}>{m.offline_delete_all()}</button
 		>
 		<button
 			class="ui-btn ui-btn-ghost ui-btn-block"
 			type="button"
 			disabled={working}
-			onclick={() => (deleteOpen = false)}>انصراف</button
+			onclick={() => (deleteOpen = false)}>{m.offline_cancel()}</button
 		>
 	</div>
 </Modal>
@@ -465,19 +466,19 @@
 <Modal bind:open={stopOpen} contentClass="offline-confirm-dialog">
 	<div class="offline-dialog-content">
 		<IconStop class="offline-dialog-icon offline-dialog-icon-danger" />
-		<h2>این دور، آخرین دور باشد؟</h2>
-		<p>دور جاری ادامه پیدا می‌کند، اما پس از کامل‌شدن آن دور تازه‌ای ساخته نمی‌شود.</p>
+		<h2>{m.offline_stop_title()}</h2>
+		<p>{m.offline_stop_description()}</p>
 		<button
 			class="ui-btn ui-btn-danger ui-btn-block"
 			type="button"
 			disabled={working}
-			onclick={stopSeries}>توقف ختم پیوسته</button
+			onclick={stopSeries}>{m.offline_stop_series()}</button
 		>
 		<button
 			class="ui-btn ui-btn-ghost ui-btn-block"
 			type="button"
 			disabled={working}
-			onclick={() => (stopOpen = false)}>انصراف</button
+			onclick={() => (stopOpen = false)}>{m.offline_cancel()}</button
 		>
 	</div>
 </Modal>

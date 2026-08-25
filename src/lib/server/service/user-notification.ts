@@ -254,6 +254,17 @@ export async function userNotification_upsertEndpoint(
 	})
 }
 
+export async function userNotification_setEndpointCanSend(
+	userId: string,
+	channel: Exclude<UserNotificationChannel, 'email'>,
+	canSend: boolean,
+) {
+	return db.notificationEndpoint.updateMany({
+		where: { userId, channel },
+		data: { canSend },
+	})
+}
+
 export async function userNotification_enableEndpointFromProvider(
 	channel: Exclude<UserNotificationChannel, 'email'>,
 	address: string,

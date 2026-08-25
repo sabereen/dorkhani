@@ -8,6 +8,7 @@ declare global {
 				colorScheme?: 'light' | 'dark'
 				ready?: () => void
 				expand?: () => void
+				requestWriteAccess?: (callback?: (granted: boolean) => void) => void
 				BackButton?: {
 					show?: () => void
 					hide?: () => void

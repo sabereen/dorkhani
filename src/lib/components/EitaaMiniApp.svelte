@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { goto, invalidateAll } from '$app/navigation'
+	import { base } from '$app/paths'
 	import { page } from '$app/state'
 	import { serverUrl } from '$lib/config/runtime'
 	import { claimCreatedKhatms } from '$lib/auth/claimCreatedKhatms'
 	import { localizeHref } from '$lib/paraglide/runtime.js'
 	import * as m from '$lib/paraglide/messages.js'
+	import EitaaWriteAccessModal from './EitaaWriteAccessModal.svelte'
 	import Modal from './Modal.svelte'
 	import { onMount } from 'svelte'
 
@@ -15,6 +17,7 @@
 	type EitaaAuthResult = {
 		status?: 'authenticated' | 'choice-required'
 		reason?: 'unlinked' | 'different-account'
+		allowsWriteToPm?: boolean
 		message?: string
 	}
 
@@ -55,6 +58,7 @@
 	const { enabled }: Props = $props()
 	let initData = ''
 	let open = $state(false)
+	let writeAccessOpen = $state(false)
 	let loading = $state(false)
 	let reason = $state<EitaaAuthResult['reason']>()
 	let errorMessage = $state('')
@@ -94,6 +98,7 @@
 			open = false
 			await claimCreatedKhatms()
 			await invalidateAll()
+			if (result.allowsWriteToPm === false) writeAccessOpen = true
 		} catch {
 			errorMessage = m.miniapp_server_error({ provider })
 			open = true
@@ -149,9 +154,11 @@
 	})
 </script>
 
-<Modal bind:open contentClass="ui-khatm-auth-dialog">
+<Modal bind:open contentClass="ui-khatm-auth-dialog" labelledBy="eitaa-auth-title">
 	<p class="ui-khatm-auth-eyebrow">{m.miniapp_login_eyebrow({ provider })}</p>
-	<h2>{errorMessage ? m.miniapp_auto_login_failed_title() : m.miniapp_choose_account()}</h2>
+	<h2 id="eitaa-auth-title">
+		{errorMessage ? m.miniapp_auto_login_failed_title() : m.miniapp_choose_account()}
+	</h2>
 	{#if errorMessage}
 		<div class="ui-alert ui-alert-error mt-3" role="alert">{errorMessage}</div>
 		<div class="ui-khatm-auth-actions mt-4">
@@ -205,3 +212,5 @@
 		</div>
 	{/if}
 </Modal>
+
+<EitaaWriteAccessModal bind:open={writeAccessOpen} />

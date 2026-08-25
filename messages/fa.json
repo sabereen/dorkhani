@@ -1,4 +1,20 @@
 {
+	"eitaa_write_access_eyebrow": "اعلان‌های ایتا",
+	"eitaa_write_access_title": "در جریان ختم‌ها بمانید",
+	"eitaa_write_access_description": "برای اینکه بتوانیم بیرون از برنامک هم خبرهای مهم ختم را به شما برسانیم، اجازهٔ ارسال پیام در ایتا لازم است.",
+	"eitaa_write_access_created": "تأیید ساخته‌شدن ختم و لینک مدیریت آن",
+	"eitaa_write_access_participation": "ثبت سهم تلاوت و دسترسی سریع به بازهٔ انتخابی",
+	"eitaa_write_access_completed": "اعلام تکمیل دورهای ختم و پایان مجموعه",
+	"eitaa_write_access_privacy": "فقط پیام‌های مرتبط با فعالیت خودتان ارسال می‌شود و هر زمان بخواهید می‌توانید اعلان‌ها را غیرفعال کنید.",
+	"eitaa_write_access_enable": "فعال‌کردن اعلان‌های ایتا",
+	"eitaa_write_access_requesting": "در حال درخواست دسترسی…",
+	"eitaa_write_access_later": "فعلاً نه",
+	"eitaa_write_access_granted": "دسترسی ارسال پیام ایتا با موفقیت فعال شد.",
+	"eitaa_write_access_denied": "دسترسی فعال نشد. برای دریافت اعلان‌ها، دوباره تلاش کنید و گزینهٔ اجازه را بزنید.",
+	"eitaa_write_access_error": "ثبت دسترسی اعلان‌ها انجام نشد. لطفاً دوباره تلاش کنید.",
+	"eitaa_write_access_unsupported": "برای دادن این دسترسی، صفحه پروفایل را داخل برنامک ایتا باز کنید.",
+	"account_eitaa_permission_description": "برای آماده‌شدن این کانال، اجازهٔ ارسال پیام ایتا را فعال کنید.",
+	"eitaa_write_access_continue": "ادامه",
 	"nav_offline_khatm": "ختم آفلاین",
 	"offline_khatm_title": "ختم آفلاین",
 	"offline_khatm_create": "ایجاد ختم آفلاین",
@@ -583,6 +599,35 @@
 	,"account_public_khatm": "ختم عمومی"
 	,"account_view": "مشاهده"
 	,"account_edit": "ویرایش"
+	,"account_profile_eyebrow": "پروفایل و فعالیت‌ها"
+	,"account_email_not_set": "ایمیلی برای این حساب ثبت نشده است"
+	,"account_overview": "خلاصه وضعیت حساب"
+	,"account_khatms_total": "همه ختم‌ها"
+	,"account_khatms_active": "در حال اجرا"
+	,"account_ready_channels": "کانال آماده"
+	,"account_app_settings": "تنظیمات برنامه"
+	,"account_notifications_master_description": "همه پیام‌های مرتبط با فعالیت‌ها و ختم‌های شما را یک‌جا کنترل کنید."
+	,"account_notifications_disabled_note": "اعلان‌ها خاموش‌اند؛ تا زمان فعال‌سازی دوباره، پیامی برای شما ارسال نمی‌شود."
+	,"account_not_connected": "متصل نیست"
+	,"account_bale": "بله"
+	,"account_eitaa": "ایتا"
+	,"account_channel_ready_description": "این کانال متصل است و می‌تواند اعلان‌ها را دریافت کند."
+	,"account_channel_setup_description": "برای دریافت اعلان‌ها، ابتدا گفت‌وگو با ربات را آغاز کنید."
+	,"account_channel_unavailable_description": "این کانال در حال حاضر برای ارسال اعلان پیکربندی نشده است."
+	,"account_email_ready_description": "اعلان‌ها به ایمیل تأییدشده حساب شما ارسال می‌شوند."
+	,"account_channel_enabled": "استفاده از این کانال"
+	,"account_preferred_channel_description": "در صورت امکان، ارسال از این کانال آغاز می‌شود و سپس کانال‌های دیگر امتحان می‌شوند."
+	,"account_unsaved_changes": "تغییرات ذخیره‌نشده دارید"
+	,"account_discard_changes": "لغو تغییرات"
+	,"account_saving": "در حال ذخیره..."
+	,"account_khatms_description": "ختم‌هایی را که ساخته‌اید مشاهده، ویرایش و مدیریت کنید."
+	,"account_create_khatm": "ایجاد ختم"
+	,"account_no_khatms_description": "با ساخت نخستین ختم، دعوت از همراهان و پیگیری پیشرفت را شروع کنید."
+	,"account_create_first_khatm": "ساخت نخستین ختم"
+	,"account_sign_out_confirm_title": "از حساب خارج می‌شوید؟"
+	,"account_sign_out_confirm_description": "برای دسترسی دوباره به ختم‌ها و تنظیمات شخصی باید مجدداً وارد شوید."
+	,"account_cancel": "انصراف"
+	,"account_signing_out": "در حال خروج..."
 	,"edit_khatm_title": "ویرایش ختم"
 	,"edit_save_error": "ذخیره تغییرات ناموفق بود."
 	,"edit_delete_confirm": "این ختم و همه مشارکت‌های آن حذف شود؟"

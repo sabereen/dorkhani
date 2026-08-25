@@ -4470,6 +4470,113 @@
 	margin-top: 1.25rem;
 }
 
+.ui-eitaa-permission-dialog {
+	max-width: 30rem;
+}
+
+.ui-eitaa-permission-icon {
+	border-color: var(--ui-color-primary);
+	background: var(--ui-color-primary-soft);
+}
+
+.ui-eitaa-permission-list {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	grid-gap: 0.55rem;
+	margin: 1.15rem 0 0;
+	padding: 0;
+	list-style: none;
+	text-align: start;
+}
+
+.ui-eitaa-permission-list li {
+	display: flex;
+	align-items: center;
+	min-height: 3rem;
+	padding: 0.65rem 0.75rem;
+	border: 1px solid var(--ui-color-border);
+	border-radius: 1rem;
+	background: var(--ui-color-surface-raised);
+	box-shadow: var(--ui-shadow-sm);
+	color: var(--ui-color-text-soft);
+	font-size: 0.8rem;
+	font-weight: 750;
+	line-height: 1.7;
+}
+
+.ui-eitaa-permission-list li > * + * {
+	margin-inline-start: 0.65rem;
+}
+
+.ui-eitaa-permission-marker {
+	display: flex;
+	width: 2rem;
+	height: 2rem;
+	flex: 0 0 2rem;
+	align-items: center;
+	justify-content: center;
+	border-radius: 0.7rem;
+	background: var(--ui-color-success-soft);
+	color: var(--ui-color-success);
+}
+
+.ui-eitaa-permission-marker svg {
+	width: 1.15rem;
+	height: 1.15rem;
+}
+
+.ui-eitaa-permission-note {
+	display: flex;
+	align-items: flex-start;
+	margin-top: 0.85rem;
+	padding: 0.75rem;
+	border: 1px solid var(--ui-color-border);
+	border-radius: 1rem;
+	background: var(--ui-color-surface-muted);
+	color: var(--ui-color-text-muted);
+	font-size: 0.72rem;
+	line-height: 1.8;
+	text-align: start;
+}
+
+.ui-eitaa-permission-note > * + * {
+	margin-inline-start: 0.55rem;
+}
+
+.ui-eitaa-permission-note svg {
+	width: 1.2rem;
+	height: 1.2rem;
+	flex: 0 0 1.2rem;
+	margin-top: 0.15rem;
+	color: var(--ui-color-primary);
+}
+
+.ui-eitaa-permission-dialog .ui-alert {
+	justify-content: center;
+	font-size: 0.78rem;
+	line-height: 1.7;
+	text-align: start;
+}
+
+.ui-eitaa-permission-dialog .ui-alert svg {
+	width: 1.2rem;
+	height: 1.2rem;
+	flex: 0 0 1.2rem;
+}
+
+.ui-eitaa-permission-actions {
+	display: flex;
+	margin-top: 1rem;
+}
+
+.ui-eitaa-permission-actions .ui-btn {
+	flex: 1 1 0;
+}
+
+.ui-eitaa-permission-actions > * + * {
+	margin-inline-start: 0.6rem;
+}
+
 @media (max-width: 479px) {
 	.ui-khatm-auth-dialog {
 		padding: 1.75rem 1rem 1rem;
@@ -4477,6 +4584,19 @@
 
 	.ui-khatm-auth-actions {
 		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.ui-eitaa-permission-list li {
+		font-size: 0.76rem;
+	}
+
+	.ui-eitaa-permission-actions {
+		flex-direction: column;
+	}
+
+	.ui-eitaa-permission-actions > * + * {
+		margin-top: 0.5rem;
+		margin-inline-start: 0;
 	}
 }
 

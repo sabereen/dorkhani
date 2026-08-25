@@ -1,4 +1,20 @@
 {
+	"eitaa_write_access_eyebrow": "إشعارات إيتا",
+	"eitaa_write_access_title": "ابقَ على اطلاع بختماتك",
+	"eitaa_write_access_description": "اسمح برسائل إيتا كي نرسل إليك تحديثات الختم المهمة حتى عندما يكون التطبيق المصغر مغلقًا.",
+	"eitaa_write_access_created": "تأكيد إنشاء الختم ورابط إدارته",
+	"eitaa_write_access_participation": "تأكيد حصة التلاوة والوصول السريع إلى المقطع المختار",
+	"eitaa_write_access_completed": "إشعارات اكتمال دور الختم وانتهاء السلسلة",
+	"eitaa_write_access_privacy": "نرسل فقط الرسائل المرتبطة بنشاطك، ويمكنك تعطيل الإشعارات في أي وقت.",
+	"eitaa_write_access_enable": "تفعيل إشعارات إيتا",
+	"eitaa_write_access_requesting": "جارٍ طلب الإذن…",
+	"eitaa_write_access_later": "ليس الآن",
+	"eitaa_write_access_granted": "تم تفعيل إذن إرسال رسائل إيتا بنجاح.",
+	"eitaa_write_access_denied": "لم يتم تفعيل الإذن. حاول مجددًا واختر السماح لتلقي الإشعارات.",
+	"eitaa_write_access_error": "تعذّر حفظ إذن الإشعارات. يرجى المحاولة مرة أخرى.",
+	"eitaa_write_access_unsupported": "افتح صفحة ملفك الشخصي داخل تطبيق إيتا المصغر لمنح هذا الإذن.",
+	"account_eitaa_permission_description": "امنح إذن إرسال رسائل إيتا لتجهيز هذه القناة.",
+	"eitaa_write_access_continue": "متابعة",
 	"nav_offline_khatm": "ختمة دون اتصال",
 	"offline_khatm_title": "الختمة دون اتصال",
 	"offline_khatm_create": "إنشاء ختمة دون اتصال",
@@ -583,6 +599,35 @@
 	,"account_public_khatm": "ختمة عامة"
 	,"account_view": "عرض"
 	,"account_edit": "تعديل"
+	,"account_profile_eyebrow": "الملف الشخصي والنشاط"
+	,"account_email_not_set": "لم يُسجّل بريد إلكتروني لهذا الحساب"
+	,"account_overview": "ملخص الحساب"
+	,"account_khatms_total": "كل الختمات"
+	,"account_khatms_active": "قيد التنفيذ"
+	,"account_ready_channels": "قنوات جاهزة"
+	,"account_app_settings": "إعدادات التطبيق"
+	,"account_notifications_master_description": "تحكّم في كل رسائل نشاطك وختماتك من مكان واحد."
+	,"account_notifications_disabled_note": "الإشعارات متوقفة، ولن تصلك رسائل حتى تعيد تفعيلها."
+	,"account_not_connected": "غير متصل"
+	,"account_bale": "بله"
+	,"account_eitaa": "إيتا"
+	,"account_channel_ready_description": "هذه القناة متصلة وجاهزة لاستقبال الإشعارات."
+	,"account_channel_setup_description": "ابدأ محادثة مع الروبوت أولاً لتلقي الإشعارات هنا."
+	,"account_channel_unavailable_description": "هذه القناة غير مهيأة حالياً لإرسال الإشعارات."
+	,"account_email_ready_description": "تُرسل الإشعارات إلى بريد الحساب الإلكتروني المؤكد."
+	,"account_channel_enabled": "استخدام هذه القناة"
+	,"account_preferred_channel_description": "يبدأ الإرسال عبر هذه القناة عند الإمكان، ثم تُجرّب القنوات الأخرى."
+	,"account_unsaved_changes": "لديك تغييرات غير محفوظة"
+	,"account_discard_changes": "إلغاء التغييرات"
+	,"account_saving": "جارٍ الحفظ..."
+	,"account_khatms_description": "اعرض الختمات التي أنشأتها وعدّلها وأدرها."
+	,"account_create_khatm": "إنشاء ختمة"
+	,"account_no_khatms_description": "أنشئ ختمتك الأولى لدعوة الآخرين ومتابعة التقدم."
+	,"account_create_first_khatm": "إنشاء الختمة الأولى"
+	,"account_sign_out_confirm_title": "هل تريد تسجيل الخروج؟"
+	,"account_sign_out_confirm_description": "ستحتاج إلى تسجيل الدخول مجدداً للوصول إلى ختماتك وإعداداتك الشخصية."
+	,"account_cancel": "إلغاء"
+	,"account_signing_out": "جارٍ تسجيل الخروج..."
 	,"edit_khatm_title": "تعديل الختمة"
 	,"edit_save_error": "تعذّر حفظ التغييرات."
 	,"edit_delete_confirm": "هل تريد حذف هذه الختمة وجميع مشاركاتها؟"

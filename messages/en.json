@@ -1,4 +1,20 @@
 {
+	"eitaa_write_access_eyebrow": "Eitaa notifications",
+	"eitaa_write_access_title": "Stay up to date with your khatms",
+	"eitaa_write_access_description": "Allow Eitaa messages so we can send important khatm updates even when the Mini App is closed.",
+	"eitaa_write_access_created": "Khatm creation confirmation and its management link",
+	"eitaa_write_access_participation": "Recitation assignment confirmation and quick access to your range",
+	"eitaa_write_access_completed": "Round completion and series completion updates",
+	"eitaa_write_access_privacy": "Only messages related to your own activity are sent, and you can disable notifications at any time.",
+	"eitaa_write_access_enable": "Enable Eitaa notifications",
+	"eitaa_write_access_requesting": "Requesting access…",
+	"eitaa_write_access_later": "Not now",
+	"eitaa_write_access_granted": "Eitaa message access is now enabled.",
+	"eitaa_write_access_denied": "Access was not enabled. Try again and choose Allow to receive notifications.",
+	"eitaa_write_access_error": "Notification access could not be saved. Please try again.",
+	"eitaa_write_access_unsupported": "Open your profile inside the Eitaa Mini App to grant this permission.",
+	"account_eitaa_permission_description": "Grant Eitaa message access to make this channel ready.",
+	"eitaa_write_access_continue": "Continue",
 	"nav_offline_khatm": "Offline khatm",
 	"offline_khatm_title": "Offline khatm",
 	"offline_khatm_create": "Create offline khatm",
@@ -583,6 +599,35 @@
 	,"account_public_khatm": "Public khatm"
 	,"account_view": "View"
 	,"account_edit": "Edit"
+	,"account_profile_eyebrow": "Profile and activity"
+	,"account_email_not_set": "No email is registered for this account"
+	,"account_overview": "Account overview"
+	,"account_khatms_total": "All khatms"
+	,"account_khatms_active": "In progress"
+	,"account_ready_channels": "Ready channels"
+	,"account_app_settings": "App settings"
+	,"account_notifications_master_description": "Control all messages about your activity and khatms in one place."
+	,"account_notifications_disabled_note": "Notifications are off. You will not receive messages until you turn them on again."
+	,"account_not_connected": "Not connected"
+	,"account_bale": "Bale"
+	,"account_eitaa": "Eitaa"
+	,"account_channel_ready_description": "This channel is connected and ready to receive notifications."
+	,"account_channel_setup_description": "Start a chat with the bot before receiving notifications here."
+	,"account_channel_unavailable_description": "This channel is not currently configured to send notifications."
+	,"account_email_ready_description": "Notifications are sent to your verified account email."
+	,"account_channel_enabled": "Use this channel"
+	,"account_preferred_channel_description": "Delivery starts with this channel when possible, then tries the remaining channels."
+	,"account_unsaved_changes": "You have unsaved changes"
+	,"account_discard_changes": "Discard changes"
+	,"account_saving": "Saving..."
+	,"account_khatms_description": "View, edit, and manage the khatms you have created."
+	,"account_create_khatm": "Create khatm"
+	,"account_no_khatms_description": "Create your first khatm to invite others and follow its progress."
+	,"account_create_first_khatm": "Create your first khatm"
+	,"account_sign_out_confirm_title": "Sign out of your account?"
+	,"account_sign_out_confirm_description": "You will need to sign in again to access your khatms and personal settings."
+	,"account_cancel": "Cancel"
+	,"account_signing_out": "Signing out..."
 	,"edit_khatm_title": "Edit khatm"
 	,"edit_save_error": "The changes could not be saved."
 	,"edit_delete_confirm": "Delete this khatm and all its participation?"

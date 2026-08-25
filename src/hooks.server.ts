@@ -122,6 +122,7 @@ export const handle: Handle = async ({ resolve, event }) => {
 		})
 	})
 	response.headers.delete('x-frame-options')
+	response.headers.delete('link')
 	if (!response.headers.has('content-security-policy')) {
 		response.headers.set(
 			'content-security-policy',

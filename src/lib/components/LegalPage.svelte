@@ -3,6 +3,8 @@
 	import * as m from '$lib/paraglide/messages.js'
 	import type { Snippet } from 'svelte'
 	import PageTitle from './PageTitle.svelte'
+	import SeoHead from './SeoHead.svelte'
+	import { page } from '$app/state'
 
 	type Props = {
 		title: string
@@ -14,11 +16,26 @@
 	const { title, eyebrow, summary, children }: Props = $props()
 </script>
 
-<PageTitle {title} />
+	<PageTitle {title} emitHead={false} />
 
-<svelte:head>
-	<meta name="description" content={summary} />
-</svelte:head>
+<SeoHead
+	meta={{
+		title: `${title} | ${page.data.branding.name}`,
+		description: summary,
+		canonicalPath: page.url.pathname,
+		imagePath: `/og/home.png?v=${encodeURIComponent(page.data.branding.revision)}`,
+		imageAlt: page.data.branding.name,
+		locale: page.data.locale,
+		jsonLd: {
+			'@context': 'https://schema.org',
+			'@type': 'WebPage',
+			name: title,
+			description: summary,
+			url: page.url.href,
+			inLanguage: page.data.locale,
+		},
+	}}
+/>
 
 <Header {title} />
 

@@ -22,6 +22,7 @@
 	import IconTrending from '~icons/ic/round-trending-up'
 	import type { PageProps } from './$types'
 	import * as m from '$lib/paraglide/messages.js'
+	import SeoHead from '$lib/components/SeoHead.svelte'
 
 	let { data }: PageProps = $props()
 
@@ -177,7 +178,27 @@
 	}
 </script>
 
-<PageTitle title={m.directory_title()} />
+<PageTitle title={m.directory_title()} emitHead={false} />
+
+<SeoHead
+	meta={{
+		title: `${m.directory_title()} | ${page.data.branding.name}`,
+		description: m.directory_description(),
+		canonicalPath: page.url.pathname,
+		imagePath: `/og/home.png?l=${page.data.locale}&v=${encodeURIComponent(page.data.branding.revision)}`,
+		imageAlt: page.data.branding.name,
+		locale: page.data.locale,
+		robots: filtering ? 'noindex, follow' : undefined,
+		jsonLd: {
+			'@context': 'https://schema.org',
+			'@type': 'CollectionPage',
+			name: m.directory_title(),
+			description: m.directory_description(),
+			url: page.url.href,
+			inLanguage: page.data.locale,
+		},
+	}}
+/>
 
 <Header title={m.directory_title()} />
 

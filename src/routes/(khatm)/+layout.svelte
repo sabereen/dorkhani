@@ -35,6 +35,7 @@
 	import { isKhatmShortcutSupported, pinKhatmShortcut } from '$lib/native/khatm-shortcuts'
 	import KhatmShareModal from '$lib/components/KhatmShareModal.svelte'
 	import * as m from '$lib/paraglide/messages.js'
+	import SeoHead from '$lib/components/SeoHead.svelte'
 
 	const { data, children }: LayoutProps = $props()
 
@@ -93,6 +94,15 @@
 	const canRequestSeriesStop = $derived(data.canStopSeries && (data.isOwner || canManageAsGuest))
 	const hasNextRound = $derived(
 		khatm.isSerial && (data.seriesMaxRounds == null || khatm.roundNumber < data.seriesMaxRounds),
+	)
+	const canonicalPath = $derived(new URL(khatm.getLink('wizard')).pathname)
+	const isCanonicalKhatmPage = $derived(page.url.pathname === canonicalPath)
+	const isIndexable = $derived(
+		!khatm.private && khatm.reviewStatus === 'approved' && isCanonicalKhatmPage,
+	)
+	const accessToken = $derived(page.url.searchParams.get('t'))
+	const ogVersion = $derived(
+		`${khatm.versesRead}-${khatm.status}-${khatm.roundNumber}-${page.data.branding.revision}`,
 	)
 
 	onMount(() => {
@@ -172,20 +182,29 @@
 	})
 </script>
 
-<PageTitle title={khatm.title} />
+<PageTitle title={khatm.title} emitHead={false} />
 
-<svelte:head>
-	<meta name="description" content={khatm.description} />
-	<meta property="og:title" content={`${khatm.title} | ${page.data.branding.name}`} />
-	<meta property="og:description" content={khatm.description} />
-	<meta property="og:logo" content={new URL(page.data.branding.icon512Url, page.url.origin).href} />
-	<meta property="og:image" content={new URL(page.data.branding.icon512Url, page.url.origin).href} />
-	<meta property="og:url" content={khatm.publicLink} />
-	<meta property="og:type" content="website" />
-	{#if khatm.private}
-		<meta name="robots" content="noindex" />
-	{/if}
-</svelte:head>
+<SeoHead
+	meta={{
+		title: `${khatm.title} | ${page.data.branding.name}`,
+		description: khatm.description || page.data.branding.seoDescription,
+		canonicalPath,
+		imagePath: `/og/khatm/${page.params.khatm}.png?l=${page.data.locale}&v=${encodeURIComponent(ogVersion)}${accessToken ? `&t=${encodeURIComponent(accessToken)}` : ''}`,
+		imageAlt: khatm.title,
+		locale: page.data.locale,
+		robots: isIndexable ? undefined : 'noindex, nofollow, noarchive',
+		jsonLd: {
+			'@context': 'https://schema.org',
+			'@type': 'CreativeWork',
+			name: khatm.title,
+			description: khatm.description || page.data.branding.seoDescription,
+			url: khatm.publicLink,
+			dateCreated: khatm.plain.created,
+			isAccessibleForFree: true,
+			inLanguage: page.data.locale,
+		},
+	}}
+/>
 
 <Header title={khatm.title}>
 	{#snippet end()}

@@ -13,6 +13,7 @@
 	import HistoryKhatm from './history/history-khatm.svelte'
 	import HistoryPickedRange from './history/history-picked-range.svelte'
 	import HistoryZekr from './history/history-zekr.svelte'
+	import SeoHead from '$lib/components/SeoHead.svelte'
 
 	import IconAdd from '~icons/ic/round-add'
 	import IconArrow from '~icons/ic/round-arrow-back'
@@ -66,14 +67,34 @@
 	}
 </script>
 
-<svelte:head>
-	<title>{branding.seoTitle}</title>
-	<meta name="description" content={branding.seoDescription} />
-	<meta property="og:title" content={branding.seoTitle} />
-	<meta property="og:description" content={branding.seoDescription} />
-	<meta property="og:logo" content={new URL(branding.icon512Url, page.url.origin).href} />
-	<meta property="og:image" content={new URL(branding.icon512Url, page.url.origin).href} />
-</svelte:head>
+<SeoHead
+	meta={{
+		title: branding.seoTitle,
+		description: branding.seoDescription,
+		canonicalPath: page.url.pathname,
+		imagePath: `/og/home.png?l=${data.locale}&v=${encodeURIComponent(branding.revision)}`,
+		imageAlt: branding.name,
+		locale: data.locale,
+		jsonLd: [
+			{
+				'@context': 'https://schema.org',
+				'@type': 'WebSite',
+				name: branding.name,
+				url: page.url.href,
+				inLanguage: data.locale,
+			},
+			{
+				'@context': 'https://schema.org',
+				'@type': 'WebApplication',
+				name: branding.name,
+				description: branding.seoDescription,
+				applicationCategory: 'LifestyleApplication',
+				operatingSystem: 'Web',
+				url: page.url.href,
+			},
+		],
+	}}
+/>
 
 <Header />
 

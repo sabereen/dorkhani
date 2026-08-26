@@ -190,6 +190,30 @@ export async function khatmService_getPublicList({ limit = 20 } = {}) {
 	return khatms.map(khatmService_toPublic)
 }
 
+export async function khatmService_countSitemapEntries() {
+	return db.tKhatm.count({
+		where: {
+			private: false,
+			reviewStatus: 'approved',
+			OR: [{ seriesId: null }, { seriesId: { not: null }, status: 'inProgress' }],
+		},
+	})
+}
+
+export async function khatmService_getSitemapEntries({ skip, take }: { skip: number; take: number }) {
+	return db.tKhatm.findMany({
+		where: {
+			private: false,
+			reviewStatus: 'approved',
+			OR: [{ seriesId: null }, { seriesId: { not: null }, status: 'inProgress' }],
+		},
+		select: { id: true, rangeType: true, seriesId: true, accessToken: true },
+		orderBy: { id: 'asc' },
+		skip,
+		take,
+	})
+}
+
 const AUTOMATIC_SHOWCASE_WINDOW_MS = 72 * 60 * 60 * 1000
 
 export async function khatmService_getAutomaticShowcase({

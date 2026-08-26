@@ -18,6 +18,7 @@
 	import { idb_localZekr_get } from '$lib/idb/localZekr'
 	import { slide } from 'svelte/transition'
 	import * as m from '$lib/paraglide/messages.js'
+	import SeoHead from '$lib/components/SeoHead.svelte'
 
 	const { data }: PageProps = $props()
 
@@ -50,17 +51,28 @@
 	const remainingCount = $derived(Math.max(zekr.targetCount - zekr.count, 0))
 </script>
 
-<PageTitle title={zekr.title} />
+<PageTitle title={zekr.title} emitHead={false} />
 
-<svelte:head>
-	<meta name="description" content={zekr.description} />
-	<meta property="og:title" content={`${zekr.title} | ${page.data.branding.name}`} />
-	<meta property="og:description" content={zekr.description} />
-	<meta property="og:logo" content={new URL(page.data.branding.icon512Url, page.url.origin).href} />
-	<meta property="og:image" content={new URL(page.data.branding.icon512Url, page.url.origin).href} />
-	<meta property="og:url" content={zekr.publicLink} />
-	<meta property="og:type" content="website" />
-</svelte:head>
+<SeoHead
+	meta={{
+		title: `${zekr.title} | ${page.data.branding.name}`,
+		description: zekr.description || page.data.branding.seoDescription,
+		canonicalPath: page.url.pathname,
+		imagePath: `/og/zekr/${zekr.id}.png?l=${page.data.locale}&v=${zekr.count}-${zekr.targetCount}`,
+		imageAlt: zekr.title,
+		locale: page.data.locale,
+		jsonLd: {
+			'@context': 'https://schema.org',
+			'@type': 'CreativeWork',
+			name: zekr.title,
+			description: zekr.description || page.data.branding.seoDescription,
+			url: zekr.publicLink,
+			dateCreated: zekr.plain.created,
+			isAccessibleForFree: true,
+			inLanguage: page.data.locale,
+		},
+	}}
+/>
 
 <Header title={zekr.title}>
 	{#snippet end()}

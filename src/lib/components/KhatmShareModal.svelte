@@ -7,6 +7,7 @@
 	import { miniAppState } from '$lib/miniapp/state.svelte'
 	import { page } from '$app/state'
 	import { onDestroy, tick, untrack } from 'svelte'
+	import { base } from '$app/paths'
 	import copyToClipboard from 'clipboard-copy'
 	import IconBook from '~icons/ic/round-menu-book'
 	import IconClose from '~icons/ic/round-close'
@@ -23,7 +24,6 @@
 	}
 
 	let { open = $bindable(false), khatm }: Props = $props()
-	let captureCard = $state<HTMLElement>()
 	let imageBlob = $state<Blob | null>(null)
 	let previewUrl = $state<string | null>(null)
 	let generating = $state(false)
@@ -42,6 +42,16 @@
 		m.share_khatm({ title: khatm.title, description: khatm.description }).trim(),
 	)
 	const inviteText = $derived(`${shareText}\n${preferredUrl}`)
+	const cardUrl = $derived.by(() => {
+		const url = new URL(`${base}/og/khatm/${page.params.khatm}.png`, page.url.origin)
+		url.searchParams.set('l', page.data.locale)
+		url.searchParams.set(
+			'v',
+			`${khatm.versesRead}-${khatm.status}-${khatm.roundNumber}-${page.data.branding.revision}`,
+		)
+		if (khatm.accessToken) url.searchParams.set('t', khatm.accessToken)
+		return url.href
+	})
 
 	function revokePreview() {
 		if (previewUrl) URL.revokeObjectURL(previewUrl)
@@ -50,21 +60,15 @@
 	}
 
 	async function generateImage() {
-		if (!browser || !captureCard || generating) return
+		if (!browser || generating) return
 		const version = ++generationVersion
 		generating = true
 		generationError = false
 		try {
 			await tick()
-			await document.fonts?.ready
-			const { domToBlob } = await import('modern-screenshot')
-			const blob = await domToBlob(captureCard, {
-				width: 720,
-				height: 405,
-				scale: 2,
-				style: { transform: 'none' },
-			})
-			if (!blob) throw new Error('Share card image was not generated')
+			const response = await fetch(cardUrl)
+			if (!response.ok) throw new Error('Share card image was not generated')
+			const blob = await response.blob()
 			if (version !== generationVersion || !open) return
 			revokePreview()
 			imageBlob = blob
@@ -78,7 +82,7 @@
 	}
 
 	$effect(() => {
-		const imageKey = `${khatm.id}:${platformUrl || ''}`
+		const imageKey = `${khatm.id}:${platformUrl || ''}:${cardUrl}`
 		void imageKey
 		if (!open) {
 			generationVersion += 1
@@ -263,7 +267,6 @@
 	aria-hidden="true"
 >
 	<article
-		bind:this={captureCard}
 		class="relative box-border h-[405px] w-[720px] overflow-hidden bg-[#0b493b] p-[18px] text-[#102d27]"
 	>
 		<div

@@ -17,6 +17,19 @@ export async function zekrService_getPublicList({ limit = 20 } = {}) {
 	return zekrList
 }
 
+export async function zekrService_countSitemapEntries() {
+	return db.tZekr.count()
+}
+
+export async function zekrService_getSitemapEntries({ skip, take }: { skip: number; take: number }) {
+	return db.tZekr.findMany({
+		select: { id: true },
+		orderBy: { id: 'asc' },
+		skip,
+		take,
+	})
+}
+
 type CreatingZekr = {
 	title: string
 	description: string

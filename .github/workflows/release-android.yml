@@ -15,6 +15,7 @@ jobs:
     environment: android
     env:
       PUBLIC_SERVER_ORIGIN: https://dorkhani.ir
+      PUBLIC_FONT_PROXY: 0
       ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
       ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
       ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}

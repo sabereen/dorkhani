@@ -44,7 +44,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             if (hasReleaseSigningConfig) {
-                signingConfig signingConfigs.release
+                signingConfig signingConfigs.getByName('release')
             }
         }
     }

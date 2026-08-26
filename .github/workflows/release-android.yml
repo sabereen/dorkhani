@@ -20,7 +20,7 @@ jobs:
 
     env:
       PUBLIC_SERVER_ORIGIN: https://dorkhani.ir
-      PUBLIC_FONT_PROXY: 0
+      PUBLIC_FONT_PROXY: '0'
       ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
       ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
       ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
@@ -38,7 +38,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: '22'
           cache: pnpm
 
       - name: Set up Java
@@ -59,36 +59,44 @@ jobs:
 
           tag="${GITHUB_REF_NAME#android-v}"
 
-          if [[ ! "$tag" =~ ^([0-9]+)\.([0-9]{1,2})\.([0-9]{1,2})(-beta\.([0-9]))?$ ]]; then
-            echo 'Tag must be android-v<major>.<minor>.<patch> or android-v<major>.<minor>.<patch>-beta.<0-9>.' >&2
+          if [[ "$tag" =~ ^([0-9]{1,4})\.([0-9]{1,2})\.([0-9]{1,2})$ ]]; then
+            major="${BASH_REMATCH[1]}"
+            minor="${BASH_REMATCH[2]}"
+            patch="${BASH_REMATCH[3]}"
+            channel=99
+            prerelease=false
+          elif [[ "$tag" =~ ^([0-9]{1,4})\.([0-9]{1,2})\.([0-9]{1,2})-beta\.([0-9])$ ]]; then
+            major="${BASH_REMATCH[1]}"
+            minor="${BASH_REMATCH[2]}"
+            patch="${BASH_REMATCH[3]}"
+            beta="${BASH_REMATCH[4]}"
+            channel=$((10#$beta + 1))
+            prerelease=true
+          else
+            echo 'Invalid tag.' >&2
+            echo 'Use android-v<major>.<minor>.<patch> or android-v<major>.<minor>.<patch>-beta.<0-9>.' >&2
             exit 1
           fi
 
-          major="${BASH_REMATCH[1]}"
-          minor="${BASH_REMATCH[2]}"
-          patch="${BASH_REMATCH[3]}"
-          beta="${BASH_REMATCH[5]:-0}"
+          version_code=$((
+            10#$major * 1000000 +
+            10#$minor * 10000 +
+            10#$patch * 100 +
+            channel
+          ))
 
-          version_code=$(
-            (
-              10#$major * 100000 +
-              10#$minor * 1000 +
-              10#$patch * 10 +
-              10#$beta
-            )
-          )
-
-          if (( version_code > 2147483647 )); then
-            echo 'The calculated Android version code exceeds the supported maximum.' >&2
+          if (( version_code < 1 || version_code > 2100000000 )); then
+            echo "Calculated Android versionCode is invalid: $version_code" >&2
             exit 1
           fi
 
           echo "name=$tag" >> "$GITHUB_OUTPUT"
           echo "code=$version_code" >> "$GITHUB_OUTPUT"
-          echo "beta=$beta" >> "$GITHUB_OUTPUT"
+          echo "prerelease=$prerelease" >> "$GITHUB_OUTPUT"
 
-          echo "Android version name: $tag"
-          echo "Android version code: $version_code"
+          echo "Android versionName: $tag"
+          echo "Android versionCode: $version_code"
+          echo "Prerelease: $prerelease"
 
       - name: Restore Android signing key
         env:
@@ -107,16 +115,19 @@ jobs:
 
           keystore_path="$RUNNER_TEMP/release.keystore"
 
-          printf '%s' "$ANDROID_KEYSTORE_BASE64" \
-            | base64 --decode \
-            > "$keystore_path"
-
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$keystore_path"
           chmod 600 "$keystore_path"
 
           if [[ ! -s "$keystore_path" ]]; then
             echo 'Decoded Android keystore is empty.' >&2
             exit 1
           fi
+
+          keytool -list \
+            -keystore "$keystore_path" \
+            -storepass "$ANDROID_KEYSTORE_PASSWORD" \
+            -alias "$ANDROID_KEY_ALIAS" \
+            >/dev/null
 
           echo "ANDROID_KEYSTORE_PATH=$keystore_path" >> "$GITHUB_ENV"
 
@@ -143,39 +154,60 @@ jobs:
             -PversionName='${{ steps.version.outputs.name }}' \
             -PversionCode='${{ steps.version.outputs.code }}'
 
-      - name: Verify release APK exists
+      - name: Prepare release artifact
+        id: artifact
+        env:
+          VERSION_NAME: ${{ steps.version.outputs.name }}
         shell: bash
         run: |
           set -euo pipefail
 
-          apk="android/app/build/outputs/apk/release/app-release.apk"
+          source_apk="android/app/build/outputs/apk/release/app-release.apk"
+          artifact_dir="$RUNNER_TEMP/android-release"
+          artifact_apk="$artifact_dir/quran-khatm-$VERSION_NAME.apk"
 
-          if [[ ! -f "$apk" ]]; then
-            echo "Release APK was not created at: $apk" >&2
+          if [[ ! -f "$source_apk" ]]; then
+            echo "Release APK was not created at: $source_apk" >&2
             exit 1
           fi
 
-          echo "Release APK:"
-          ls -lh "$apk"
+          mkdir -p "$artifact_dir"
+          cp "$source_apk" "$artifact_apk"
+
+          if [[ ! -s "$artifact_apk" ]]; then
+            echo 'Prepared release APK is empty.' >&2
+            exit 1
+          fi
+
+          echo "apk=$artifact_apk" >> "$GITHUB_OUTPUT"
+
+          echo "Prepared release APK:"
+          ls -lh "$artifact_apk"
 
       - name: Publish GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION_NAME: ${{ steps.version.outputs.name }}
-          IS_BETA: ${{ steps.version.outputs.beta }}
+          IS_PRERELEASE: ${{ steps.version.outputs.prerelease }}
+          APK_PATH: ${{ steps.artifact.outputs.apk }}
         shell: bash
         run: |
           set -euo pipefail
 
-          apk="android/app/build/outputs/apk/release/app-release.apk"
-          release_args=()
+          release_args=(
+            --title "Android $VERSION_NAME"
+            --generate-notes
+          )
 
-          if [[ "$IS_BETA" != '0' ]]; then
+          if [[ "$IS_PRERELEASE" == 'true' ]]; then
             release_args+=(--prerelease)
           fi
 
-          gh release create "$GITHUB_REF_NAME" \
-            "$apk#quran-khatm-$VERSION_NAME.apk" \
-            --title "Android $VERSION_NAME" \
-            --generate-notes \
-            "${release_args[@]}"
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            echo "Release $GITHUB_REF_NAME already exists; replacing APK asset."
+            gh release upload "$GITHUB_REF_NAME" "$APK_PATH" --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" \
+              "$APK_PATH" \
+              "${release_args[@]}"
+          fi

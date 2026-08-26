@@ -6,6 +6,7 @@ on:
       - 'android-v*'
     branches:
       - 'release/android-v*'
+  workflow_dispatch:
 
 permissions:
   contents: write

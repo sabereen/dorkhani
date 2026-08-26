@@ -12,6 +12,7 @@ import type {
 } from '$lib/entity/KhatmDirectory'
 import { statisticsService_applyCommitted, statisticsService_increment } from './statistics'
 import { userNotification_notify } from './user-notification'
+import { getKhatmPath } from '$lib/utility/khatmPath'
 
 type SecretKhatmFields = {
 	ownerId?: string | null
@@ -48,13 +49,6 @@ export function khatmService_toPublic<T extends TKhatm & SecretKhatmFields>(khat
 
 function hashClaimToken(token: string) {
 	return createHash('sha256').update(token).digest('hex')
-}
-
-function khatmService_getPath(khatm: Pick<TKhatm, 'id' | 'rangeType' | 'seriesId' | 'accessToken'>) {
-	let prefix = khatm.rangeType === 'ayah' ? 'a' : 'k'
-	if (khatm.seriesId != null) prefix += 's'
-	const id = khatm.seriesId ?? khatm.id
-	return `/${prefix}${id}${khatm.accessToken ? `?t=${khatm.accessToken}` : ''}`
 }
 
 function khatmService_canFeature(khatm: KhatmWithSeries) {
@@ -196,6 +190,30 @@ export async function khatmService_getPublicList({ limit = 20 } = {}) {
 	return khatms.map(khatmService_toPublic)
 }
 
+export async function khatmService_countSitemapEntries() {
+	return db.tKhatm.count({
+		where: {
+			private: false,
+			reviewStatus: 'approved',
+			OR: [{ seriesId: null }, { seriesId: { not: null }, status: 'inProgress' }],
+		},
+	})
+}
+
+export async function khatmService_getSitemapEntries({ skip, take }: { skip: number; take: number }) {
+	return db.tKhatm.findMany({
+		where: {
+			private: false,
+			reviewStatus: 'approved',
+			OR: [{ seriesId: null }, { seriesId: { not: null }, status: 'inProgress' }],
+		},
+		select: { id: true, rangeType: true, seriesId: true, accessToken: true },
+		orderBy: { id: 'asc' },
+		skip,
+		take,
+	})
+}
+
 const AUTOMATIC_SHOWCASE_WINDOW_MS = 72 * 60 * 60 * 1000
 
 export async function khatmService_getAutomaticShowcase({
@@ -280,7 +298,7 @@ export async function khatmService_create(body: CreatingKhatm, ownerId?: string 
 		khatmId: khatm.id,
 		title: khatm.title,
 		private: khatm.private,
-		khatmPath: khatmService_getPath(khatm),
+		khatmPath: getKhatmPath(khatm),
 	})
 
 	return { khatm: khatmService_toPublic(khatm), guestClaimToken }

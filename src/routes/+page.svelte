@@ -13,6 +13,7 @@
 	import HistoryKhatm from './history/history-khatm.svelte'
 	import HistoryPickedRange from './history/history-picked-range.svelte'
 	import HistoryZekr from './history/history-zekr.svelte'
+	import SeoHead from '$lib/components/SeoHead.svelte'
 
 	import IconAdd from '~icons/ic/round-add'
 	import IconArrow from '~icons/ic/round-arrow-back'
@@ -66,17 +67,34 @@
 	}
 </script>
 
-<svelte:head>
-	<title>{branding.seoTitle}</title>
-	<meta
-		name="description"
-		content={branding.seoDescription}
-	/>
-	<meta property="og:title" content={branding.seoTitle} />
-	<meta property="og:description" content={branding.seoDescription} />
-	<meta property="og:logo" content={new URL(branding.icon512Url, page.url.origin).href} />
-	<meta property="og:image" content={new URL(branding.icon512Url, page.url.origin).href} />
-</svelte:head>
+<SeoHead
+	meta={{
+		title: branding.seoTitle,
+		description: branding.seoDescription,
+		canonicalPath: page.url.pathname,
+		imagePath: `/og/home.png?l=${data.locale}&v=${encodeURIComponent(branding.revision)}`,
+		imageAlt: branding.name,
+		locale: data.locale,
+		jsonLd: [
+			{
+				'@context': 'https://schema.org',
+				'@type': 'WebSite',
+				name: branding.name,
+				url: page.url.href,
+				inLanguage: data.locale,
+			},
+			{
+				'@context': 'https://schema.org',
+				'@type': 'WebApplication',
+				name: branding.name,
+				description: branding.seoDescription,
+				applicationCategory: 'LifestyleApplication',
+				operatingSystem: 'Web',
+				url: page.url.href,
+			},
+		],
+	}}
+/>
 
 <Header />
 
@@ -99,7 +117,7 @@
 				</a>
 				<a class="ui-btn ui-btn-xl landing-secondary-action" href={localizeHref(`${base}/list`)}>
 					{m.home_view_public()}
-					<IconArrow class="size-5" />
+					<IconArrow class="ltr:mirror size-5" />
 				</a>
 			</div>
 			<div class="landing-hero-points" aria-label={m.home_features_label()}>
@@ -115,7 +133,10 @@
 			</div>
 			<div class="landing-floating-card landing-floating-top">
 				<span class="landing-floating-icon"><IconGroups /></span>
-				<span><strong>{m.home_start_together()}</strong><small>{m.home_start_together_hint()}</small></span>
+				<span
+					><strong>{m.home_start_together()}</strong><small>{m.home_start_together_hint()}</small
+					></span
+				>
 			</div>
 			<div class="landing-floating-card landing-floating-bottom">
 				<span class="landing-progress-mark"><IconCheck /></span>
@@ -151,9 +172,9 @@
 	<section class="landing-section landing-statistics" aria-labelledby="statistics-title">
 		<div class="landing-section-heading">
 			<div>
-				<span class="landing-section-kicker"><IconStats /> روایت همراهی‌ها</span>
-				<h2 id="statistics-title">هر تلاوت، بخشی از یک جریان زنده</h2>
-				<p>نگاهی به ثمرهٔ همراهی همهٔ کسانی که در این سامانه قرآن خوانده‌اند.</p>
+				<span class="landing-section-kicker"><IconStats /> {m.home_statistics_title()}</span>
+				<h2 id="statistics-title">{m.home_statistics_title()}</h2>
+				<p>{m.home_statistics_description()}</p>
 			</div>
 		</div>
 
@@ -164,11 +185,11 @@
 						<IconMenuBook />
 					</span>
 					<div>
-						<p class="landing-stat-total-label">آیات تلاوت‌شده در سامانه</p>
+						<p class="landing-stat-total-label">{m.home_stats_recited_label()}</p>
 						<strong class="landing-stat-total-value">
 							{statistics.totals.recitedAyahs.toLocaleString(localeTag())}
 						</strong>
-						<p class="landing-stat-total-description">آیه که با همراهی جمع خوانده شده است</p>
+						<p class="landing-stat-total-description">{m.home_stats_recited_description()}</p>
 					</div>
 				</div>
 			</article>
@@ -178,11 +199,11 @@
 						<IconCheck />
 					</span>
 					<div>
-						<p class="landing-stat-total-label">دورهای کامل‌شده در سامانه</p>
+						<p class="landing-stat-total-label">{m.home_stats_rounds_label()}</p>
 						<strong class="landing-stat-total-value">
 							{statistics.totals.completedRounds.toLocaleString(localeTag())}
 						</strong>
-						<p class="landing-stat-total-description">دور ختم قرآن که به پایان رسیده است</p>
+						<p class="landing-stat-total-description">{m.home_stats_rounds_description()}</p>
 					</div>
 				</div>
 			</article>
@@ -193,20 +214,20 @@
 				<div class="landing-daily-title">
 					<span class="landing-daily-heading-icon" aria-hidden="true"><IconCalendar /></span>
 					<div>
-						<h3>نبض تلاوت در هفت روز اخیر</h3>
-						<p>روند روزانهٔ فعالیت سامانه بر اساس زمان تهران</p>
+						<h3>{m.home_daily_title()}</h3>
+						<p>{m.home_daily_description()}</p>
 					</div>
 				</div>
 				<div class="landing-daily-summary">
 					<strong>{weeklyRecitedAyahs.toLocaleString(localeTag())}</strong>
-					<span>آیه در این هفته</span>
+					<span>{m.home_weekly_ayahs()}</span>
 				</div>
 			</div>
 
-			<div class="landing-daily-legend" aria-label="راهنمای نمودار">
-				<span class="landing-daily-legend-ayah">آیات تلاوت‌شده</span>
-				<span class="landing-daily-legend-created">ختم ایجادشده</span>
-				<span class="landing-daily-legend-completed">دور کامل‌شده</span>
+			<div class="landing-daily-legend" aria-label={m.home_chart_legend()}>
+				<span class="landing-daily-legend-ayah">{m.home_legend_ayah()}</span>
+				<span class="landing-daily-legend-created">{m.home_legend_created()}</span>
+				<span class="landing-daily-legend-completed">{m.home_legend_completed()}</span>
 			</div>
 
 			<div class="landing-daily-chart-frame">
@@ -216,7 +237,7 @@
 					<span></span>
 					<span></span>
 				</div>
-				<ul class="landing-daily-list" aria-label="آمار فعالیت هفت روز اخیر">
+				<ul class="landing-daily-list" aria-label={m.home_statistics_daily_label()}>
 					{#each statistics.daily as item}
 						<li>
 							<div class="landing-daily-bar-column">
@@ -233,11 +254,11 @@
 							</time>
 							<dl class="landing-daily-details">
 								<div>
-									<dt class="ui-sr-only">ختم ایجادشده</dt>
+									<dt class="ui-sr-only">{m.home_legend_created()}</dt>
 									<dd>{item.createdKhatms.toLocaleString(localeTag())}</dd>
 								</div>
 								<div>
-									<dt class="ui-sr-only">دور کامل‌شده</dt>
+									<dt class="ui-sr-only">{m.home_legend_completed()}</dt>
 									<dd>{item.completedRounds.toLocaleString(localeTag())}</dd>
 								</div>
 							</dl>
@@ -251,35 +272,39 @@
 	<section class="landing-section landing-personal" aria-labelledby="personal-title">
 		<div class="landing-section-heading">
 			<div>
-				<span class="landing-section-kicker"><IconHistory /> مسیر شما</span>
-				<h2 id="personal-title">از همان‌جایی که بودید ادامه دهید</h2>
-				<p>آخرین ختم‌ها و مشارکت‌های شما روی همین دستگاه نگهداری می‌شوند.</p>
+				<span class="landing-section-kicker"><IconHistory /> {m.home_personal_kicker()}</span>
+				<h2 id="personal-title">{m.home_personal_title()}</h2>
+				<p>{m.home_personal_description()}</p>
 			</div>
 			<a class="ui-btn ui-btn-ghost" href={localizeHref(`${base}/history`)}>
-				تاریخچه کامل
-				<IconArrow class="size-5" />
+				{m.home_history_link()}
+				<IconArrow class="ltr:mirror size-5" />
 			</a>
 		</div>
 
 		<div class="landing-history-grid">
-			<HistoryKhatm limit={3} title="ختم‌هایی که ساخته‌اید">
+			<HistoryKhatm limit={3} title={m.home_created_title()}>
 				{#snippet fallback()}
 					<article class="landing-empty-card">
 						<span class="landing-empty-icon"><IconAdd /></span>
-						<h3>هنوز ختمی نساخته‌اید</h3>
-						<p>اولین جمع قرآنی‌تان را همین امروز شکل دهید.</p>
-						<a class="ui-btn ui-btn-soft ui-btn-sm" href={localizeHref(`${base}/add`)}>ایجاد اولین ختم</a>
+						<h3>{m.home_no_created()}</h3>
+						<p>{m.home_first_group()}</p>
+						<a class="ui-btn ui-btn-soft ui-btn-sm" href={localizeHref(`${base}/add`)}
+							>{m.home_create_first()}</a
+						>
 					</article>
 				{/snippet}
 			</HistoryKhatm>
-			<HistoryZekr limit={3} title="ختم‌های ذکر شما" />
-			<HistoryPickedRange limit={3} title="آخرین مشارکت‌ها">
+			<HistoryZekr limit={3} title={m.history_zekr()} />
+			<HistoryPickedRange limit={3} title={m.history_latest_picks()}>
 				{#snippet fallback()}
 					<article class="landing-empty-card">
 						<span class="landing-empty-icon"><IconMenuBook /></span>
-						<h3>هنوز سهمی انتخاب نکرده‌اید</h3>
-						<p>به یک ختم عمومی بپیوندید و سهم خودتان را بردارید.</p>
-						<a class="ui-btn ui-btn-soft ui-btn-sm" href={localizeHref(`${base}/list`)}>مشاهده ختم‌ها</a>
+						<h3>{m.home_no_picked()}</h3>
+						<p>{m.home_join_public()}</p>
+						<a class="ui-btn ui-btn-soft ui-btn-sm" href={localizeHref(`${base}/list`)}
+							>{m.home_view_khatms()}</a
+						>
 					</article>
 				{/snippet}
 			</HistoryPickedRange>
@@ -304,7 +329,7 @@
 				</div>
 				{#if moreLink}
 					<a href={moreLink} class="ui-btn ui-btn-ghost ui-btn-sm">
-						همه موارد
+						{m.home_view_all()}
 						<IconMore class="size-5 -scale-x-100" />
 					</a>
 				{/if}
@@ -312,7 +337,7 @@
 			<ul class="ui-khatm-card-list landing-khatm-card-list">
 				{#each items.slice(0, 6) as khatm}
 					<li>
-						<KhatmListCard {khatm} meta="برای مشارکت وارد شوید" />
+						<KhatmListCard {khatm} meta={m.home_join_signin()} />
 					</li>
 				{/each}
 			</ul>
@@ -323,9 +348,9 @@
 		<section class="landing-section" aria-labelledby="public-title">
 			<div class="landing-section-heading">
 				<div>
-					<span class="landing-section-kicker"><IconGroups /> جمع‌های روشن</span>
-					<h2 id="public-title">همین حالا به یک ختم بپیوندید</h2>
-					<p>از میان ختم‌های عمومی، جمعی را انتخاب کنید و سهمی از این مسیر داشته باشید.</p>
+					<span class="landing-section-kicker"><IconGroups /> {m.home_public_kicker()}</span>
+					<h2 id="public-title">{m.home_public_title()}</h2>
+					<p>{m.home_public_description()}</p>
 				</div>
 			</div>
 
@@ -334,15 +359,15 @@
 					<div class="landing-featured-heading">
 						<span class="landing-featured-icon" aria-hidden="true"><IconStar /></span>
 						<div>
-							<span class="landing-featured-kicker">نیت‌های ماندگار، همراهی همیشگی</span>
-							<h3 id="featured-khatms-title">ختم‌های شاخص</h3>
-							<p>ختم‌های دائمی برای موضوعات ویژه؛ هر دور که تمام شود، دور تازه‌ای آغاز می‌شود.</p>
+							<span class="landing-featured-kicker">{m.home_featured_kicker()}</span>
+							<h3 id="featured-khatms-title">{m.home_featured_title()}</h3>
+							<p>{m.home_featured_description()}</p>
 						</div>
 					</div>
 					<ul class="landing-featured-grid">
 						{#each featuredKhatms as khatm (khatm.id)}
 							<li>
-								<KhatmListCard {khatm} meta="ختم دائمی شاخص" showDescription />
+								<KhatmListCard {khatm} meta={m.home_featured_meta()} showDescription />
 							</li>
 						{/each}
 					</ul>
@@ -353,8 +378,8 @@
 				{#if showcase.length > 0}
 					{@render khatmList(
 						showcase,
-						'پرمشارکت‌های این روزها',
-						'این فهرست به‌صورت خودکار بر اساس بیشترین تعداد آیات خوانده‌شده در ۳ روز گذشته مرتب می‌شود.',
+						m.home_showcase_title(),
+						m.home_showcase_description(),
 						undefined,
 						true,
 					)}
@@ -362,8 +387,8 @@
 				{#if khatms.length > 0}
 					{@render khatmList(
 						khatms,
-						'تازه‌ترین ختم‌ها',
-						'جمع‌های عمومی و تأییدشده',
+						m.home_recent_title(),
+						m.home_recent_description(),
 						`${base}/list`,
 					)}
 				{/if}
@@ -373,8 +398,8 @@
 						<div class="landing-public-header">
 							<div>
 								<span class="landing-public-icon"><IconAutoAwesome /></span>
-								<h3>حلقه‌های ذکر</h3>
-								<p>همراهی‌های کوچک و پیوسته برای یاد خدا</p>
+								<h3>{m.home_zekr_title()}</h3>
+								<p>{m.home_zekr_description()}</p>
 							</div>
 						</div>
 						<ul class="landing-public-list">
@@ -386,10 +411,12 @@
 											<span>
 												{#if zekr.isFinite}
 													<span class="ui-badge ui-badge-info ui-badge-xs"
-														>{zekr.targetCount.toLocaleString(localeTag())} تایی</span
+														>{m.home_zekr_count({
+															count: zekr.targetCount.toLocaleString(localeTag()),
+														})}</span
 													>
 												{/if}
-												<span class="landing-list-hint">تعداد ثبت‌شده</span>
+												<span class="landing-list-hint">{m.home_zekr_registered()}</span>
 											</span>
 										</span>
 										<span class="landing-list-progress">
@@ -415,26 +442,26 @@
 	<section class="landing-section landing-how" aria-labelledby="how-title">
 		<div class="landing-section-heading landing-section-heading-centered">
 			<div>
-				<span class="landing-section-kicker"><IconMenuBook /> خیلی ساده</span>
-				<h2 id="how-title">سه قدم تا یک ختم جمعی</h2>
-				<p>از ساختن جمع تا پایان قرائت، همه‌چیز روشن و بی‌دردسر پیش می‌رود.</p>
+				<span class="landing-section-kicker"><IconMenuBook /> {m.home_how_kicker()}</span>
+				<h2 id="how-title">{m.home_how_title()}</h2>
+				<p>{m.home_how_description()}</p>
 			</div>
 		</div>
 		<ol class="landing-steps">
 			<li>
 				<span class="landing-step-number">۱</span>
-				<h3>ختم را بسازید</h3>
-				<p>یک عنوان انتخاب کنید و شیوه‌ی تقسیم آیات، صفحات یا اجزا را مشخص کنید.</p>
+				<h3>{m.home_step_create()}</h3>
+				<p>{m.home_step_create_description()}</p>
 			</li>
 			<li>
 				<span class="landing-step-number">۲</span>
-				<h3>همراهان را دعوت کنید</h3>
-				<p>لینک اختصاصی ختم را در جمع خانواده، دوستان یا همکاران به اشتراک بگذارید.</p>
+				<h3>{m.home_step_invite()}</h3>
+				<p>{m.home_step_invite_description()}</p>
 			</li>
 			<li>
 				<span class="landing-step-number">۳</span>
-				<h3>با هم به پایان برسانید</h3>
-				<p>هرکس سهم خود را می‌خواند و پیشرفت جمع برای همه به‌روز می‌ماند.</p>
+				<h3>{m.home_step_finish()}</h3>
+				<p>{m.home_step_finish_description()}</p>
 			</li>
 		</ol>
 	</section>
@@ -442,14 +469,14 @@
 	<section class="landing-cta" aria-labelledby="cta-title">
 		<div>
 			<span class="landing-section-kicker landing-section-kicker-light"
-				><IconAutoAwesome /> یک قدم روشن</span
+				><IconAutoAwesome /> {m.home_cta_kicker()}</span
 			>
-			<h2 id="cta-title">جمع قرآنی شما می‌تواند همین امروز شکل بگیرد</h2>
-			<p>نیت کنید، ختم را بسازید و اولین دعوت را برای یک همراه بفرستید.</p>
+			<h2 id="cta-title">{m.home_cta_title()}</h2>
+			<p>{m.home_cta_description()}</p>
 		</div>
 		<a class="ui-btn ui-btn-xl landing-primary-action" href={localizeHref(`${base}/add`)}>
 			<IconAdd class="size-6" />
-			شروع ختم جدید
+			{m.home_cta_action()}
 		</a>
 	</section>
 </div>

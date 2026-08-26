@@ -3,6 +3,50 @@ import '@testing-library/jest-dom/vitest'
 import { render, screen, within } from '@testing-library/svelte'
 import Page from './+page.svelte'
 import { DEFAULT_BRANDING_CONFIG, getPublicBranding } from '$lib/entity/Branding'
+import * as m from '$lib/paraglide/messages.js'
+
+const testLocale = 'fa' as const
+const numberFormatter = new Intl.NumberFormat('fa-IR')
+
+const featuredKhatmText = {
+	fa: {
+		title: 'ختم دائمی برای سلامتی',
+		description: 'همراهی ماندگار برای نیت سلامتی',
+	},
+	ar: {
+		title: 'ختمة دائمة من أجل الصحة',
+		description: 'رفقة مستمرة بنية الصحة والعافية',
+	},
+	en: {
+		title: 'A permanent khatm for wellbeing',
+		description: 'Lasting companionship with the intention of wellbeing',
+	},
+} as const
+
+const customBranding = {
+	...DEFAULT_BRANDING_CONFIG,
+	texts: {
+		...DEFAULT_BRANDING_CONFIG.texts,
+		fa: {
+			...DEFAULT_BRANDING_CONFIG.texts.fa,
+			heroTitle: 'عنوان سفارشی',
+			heroHighlight: 'بخش برجسته',
+			heroDescription: 'توضیح سفارشی Hero',
+		},
+		ar: {
+			...DEFAULT_BRANDING_CONFIG.texts.ar,
+			heroTitle: 'عنوان مخصص',
+			heroHighlight: 'قسم بارز',
+			heroDescription: 'وصف مخصص Hero',
+		},
+		en: {
+			...DEFAULT_BRANDING_CONFIG.texts.en,
+			heroTitle: 'Custom title',
+			heroHighlight: 'Featured section',
+			heroDescription: 'Custom Hero description',
+		},
+	},
+}
 
 describe('/+page.svelte', () => {
 	const data = {
@@ -26,20 +70,20 @@ describe('/+page.svelte', () => {
 		render(Page, { props: { data } } as never)
 		expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()
 		expect(
-			screen.getByRole('heading', { name: 'هر تلاوت، بخشی از یک جریان زنده' }),
+			screen.getByRole('heading', { name: m.home_statistics_title() }),
 		).toBeInTheDocument()
-		expect(screen.getByText('۱۲٬۳۴۵')).toBeInTheDocument()
-		expect(screen.getByText('۱۷')).toBeInTheDocument()
-		const dailyList = screen.getByRole('list', { name: 'آمار فعالیت هفت روز اخیر' })
+		expect(screen.getByText(numberFormatter.format(12345))).toBeInTheDocument()
+		expect(screen.getByText(numberFormatter.format(17))).toBeInTheDocument()
+		const dailyList = screen.getByRole('list', { name: m.home_statistics_daily_label() })
 		expect(within(dailyList).getAllByRole('listitem')).toHaveLength(7)
-		expect(screen.queryByRole('heading', { name: 'ختم‌های شاخص' })).not.toBeInTheDocument()
+		expect(screen.queryByRole('heading', { name: m.home_featured_title() })).not.toBeInTheDocument()
 	})
 
 	test('renders the permanent featured showcase when curated khatms exist', () => {
 		const featuredKhatm = {
 			id: 44,
-			title: 'ختم دائمی برای سلامتی',
-			description: 'همراهی ماندگار برای نیت سلامتی',
+			title: featuredKhatmText[testLocale].title,
+			description: featuredKhatmText[testLocale].description,
 			rangeType: 'page',
 			versesRead: 120,
 			pageProgress: 12,
@@ -57,8 +101,10 @@ describe('/+page.svelte', () => {
 			props: { data: { ...data, featuredKhatms: [featuredKhatm] } },
 		} as never)
 
-		expect(screen.getByRole('heading', { name: 'ختم‌های شاخص' })).toBeInTheDocument()
-		expect(screen.getByRole('link', { name: 'ختم دائمی برای سلامتی' })).toBeInTheDocument()
+		expect(screen.getByRole('heading', { name: m.home_featured_title() })).toBeInTheDocument()
+		expect(
+			screen.getByRole('link', { name: featuredKhatmText[testLocale].title }),
+		).toBeInTheDocument()
 	})
 
 	test('renders configured hero branding', () => {
@@ -66,17 +112,28 @@ describe('/+page.svelte', () => {
 			props: {
 				data: {
 					...data,
-					branding: {
-						...data.branding,
-						heroTitle: 'عنوان سفارشی',
-						heroHighlight: 'بخش برجسته',
-						heroDescription: 'توضیح سفارشی Hero',
-					},
+					branding: getPublicBranding(customBranding, testLocale),
 				},
 			},
 		} as never)
 
-		expect(screen.getByRole('heading', { name: /عنوان سفارشی/ })).toBeInTheDocument()
-		expect(screen.getByText('توضیح سفارشی Hero')).toBeInTheDocument()
+		expect(
+			screen.getByRole('heading', { name: customBranding.texts[testLocale].heroTitle }),
+		).toBeInTheDocument()
+		expect(screen.getByText(customBranding.texts[testLocale].heroDescription)).toBeInTheDocument()
 	})
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -19,13 +19,13 @@ describe('locale resolution', () => {
 		).toMatchObject({ locale: 'fa', source: 'admin' })
 	})
 
-	it('uses cookie, account, and URL in priority order', () => {
+	it('uses the URL as the source of truth for localized pages', () => {
 		expect(
 			resolveRequestLocale({ pathname: '/en/list', cookieLocale: 'ar', accountLocale: 'en' }),
-		).toMatchObject({ locale: 'ar', source: 'cookie' })
+		).toMatchObject({ locale: 'en', source: 'url' })
 		expect(resolveRequestLocale({ pathname: '/en/list', accountLocale: 'fa' })).toMatchObject({
-			locale: 'fa',
-			source: 'account',
+			locale: 'en',
+			source: 'url',
 		})
 		expect(resolveRequestLocale({ pathname: '/en/list' })).toMatchObject({
 			locale: 'en',
@@ -38,11 +38,11 @@ describe('locale resolution', () => {
 		expect(findPreferredArabicLocale(['en', 'ar'])).toBe('ar')
 	})
 
-	it('marks an unknown request as unresolved', () => {
+	it('uses Persian as the stable base-locale URL', () => {
 		expect(resolveRequestLocale({ pathname: '/', acceptLanguage: 'en-US,en;q=0.9' })).toEqual({
 			locale: 'fa',
-			source: 'fallback',
-			needsLocaleChoice: true,
+			source: 'url',
+			needsLocaleChoice: false,
 		})
 	})
 

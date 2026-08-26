@@ -7,6 +7,7 @@
 	import IconVolunteer from '~icons/ic/round-volunteer-activism'
 	import IconExpand from '~icons/ic/round-expand-more'
 	import IconBook from '~icons/ic/round-menu-book'
+	import * as m from '$lib/paraglide/messages.js'
 
 	type Props = {
 		khatm: Khatm
@@ -28,9 +29,9 @@
 	)
 
 	function getRoundTitle(roundNumber: number) {
-		if (roundNumber === 1) return 'دور اوّل'
-		if (roundNumber === 2) return 'دور دوم'
-		return 'دور ' + roundNumber.toLocaleString(localeTag())
+		if (roundNumber === 1) return m.round_first()
+		if (roundNumber === 2) return m.round_second()
+		return m.round_number({ number: roundNumber.toLocaleString(localeTag()) })
 	}
 </script>
 
@@ -38,14 +39,14 @@
 	<li>
 		<div>
 			<strong>{item.range.getTitle()}</strong>
-			<time datetime={item.date.toISOString()}>{item.date.toLocaleDateString('fa-IR')}</time>
+			<time datetime={item.date.toISOString()}>{item.date.toLocaleDateString(localeTag())}</time>
 		</div>
 		<a
 			class="ui-btn ui-btn-icon ui-btn-ghost ui-btn-sm"
 			target="_blank"
 			rel="noopener"
 			href={item.range.getLink(item.khatm)}
-			aria-label={`مشاهده و قرائت ${item.range.getTitle()}`}
+			aria-label={m.khatm_read_range({ range: item.range.getTitle() })}
 		>
 			<IconBook />
 		</a>
@@ -56,7 +57,7 @@
 	<section class="ui-khatm-my-round">
 		<header>
 			<strong>{getRoundTitle(round.roundNumber)}</strong>
-			<span>{round.verseCount.toLocaleString(localeTag())} آیه</span>
+			<span>{m.khatm_verse_count({ count: round.verseCount.toLocaleString(localeTag()) })}</span>
 		</header>
 		{#if !khatm.isAyahOriented}
 			<ul class="ui-khatm-my-ranges">
@@ -72,21 +73,21 @@
 	<div class="ui-khatm-my-summary">
 		<span class="ui-khatm-my-icon" aria-hidden="true"><IconVolunteer /></span>
 		<div class="ui-khatm-my-copy" aria-live="polite">
-			<h2 id={`${componentId}-title`}>مشارکت من</h2>
+			<h2 id={`${componentId}-title`}>{m.khatm_my_participation()}</h2>
 			{#if participation.loaded}
 				<p>
 					<strong>{verseCount.toLocaleString(localeTag())}</strong>
-					<span>آیه در {khatm.isSerial ? 'این دور' : 'این ختم'}</span>
+					<span>{m.khatm_verses_in_round({ period: khatm.isSerial ? m.khatm_current_round() : m.khatm_current_khatm() })}</span>
 				</p>
 			{:else}
 				<div class="ui-khatm-my-loading" role="status">
 					<span class="ui-spinner"></span>
-					<span>در حال خواندن سابقهٔ این دستگاه</span>
+					<span>{m.khatm_reading_history_loading()}</span>
 				</div>
 			{/if}
 		</div>
 		{#if participation.loaded}
-			<span class="ui-khatm-my-percent">{formatPercent(percent)} از قرآن</span>
+			<span class="ui-khatm-my-percent">{m.khatm_percent_of_quran({ percent: formatPercent(percent) })}</span>
 		{/if}
 	</div>
 
@@ -95,11 +96,11 @@
 			class="ui-progress ui-khatm-my-progress"
 			max={100}
 			value={percent}
-			aria-label="درصد مشارکت من در این ختم"
+			aria-label={m.khatm_participation_progress_aria()}
 		></progress>
 		{#if verseCount === 0}
 			<p class="ui-khatm-my-empty">
-				هنوز در {khatm.isSerial ? 'این دور' : 'این ختم'} سهمی برای قرائت نپذیرفته‌اید.
+				{m.khatm_no_participation({ period: khatm.isSerial ? m.khatm_current_round() : m.khatm_current_khatm() })}
 			</p>
 		{/if}
 
@@ -112,7 +113,7 @@
 				aria-controls={detailsId}
 				onclick={() => (expanded = !expanded)}
 			>
-				<span>{khatm.isSerial ? 'نمایش مشارکت در همهٔ دورها' : 'نمایش بازه‌های پذیرفته‌شده'}</span>
+				<span>{khatm.isSerial ? m.khatm_show_all_rounds() : m.khatm_show_picked_ranges()}</span>
 				<IconExpand class={expanded ? 'ui-khatm-my-toggle-open' : ''} />
 			</button>
 		{/if}

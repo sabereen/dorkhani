@@ -148,7 +148,7 @@ export function eitaaAuthPlugin() {
 						})
 					}
 					const { userNotification_upsertEndpoint } = await import('$service/user-notification')
-					await userNotification_upsertEndpoint(
+					const notificationEndpoint = await userNotification_upsertEndpoint(
 						user.id,
 						'eitaa',
 						accountId,
@@ -156,14 +156,22 @@ export function eitaaAuthPlugin() {
 					)
 
 					if (currentSession?.user.id === user.id) {
-						return ctx.json({ status: 'authenticated', user })
+						return ctx.json({
+							status: 'authenticated',
+							user,
+							allowsWriteToPm: notificationEndpoint.canSend,
+						})
 					}
 
 					const session = await ctx.context.internalAdapter.createSession(user.id)
 					if (!session)
 						throw new APIError('INTERNAL_SERVER_ERROR', { message: 'ساخت نشست ناموفق بود.' })
 					await setSessionCookie(ctx, { session, user })
-					return ctx.json({ status: 'authenticated', user })
+					return ctx.json({
+						status: 'authenticated',
+						user,
+						allowsWriteToPm: notificationEndpoint.canSend,
+					})
 				},
 			),
 		},

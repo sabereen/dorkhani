@@ -7,6 +7,7 @@ import { getBrandingText } from '$lib/entity/Branding'
 import { formatNumber } from '$lib/i18n/format'
 import { isLocale, localizeUrl, type Locale } from '$lib/paraglide/runtime.js'
 import * as m from '$lib/paraglide/messages.js'
+import { createMiniAppLink } from '$lib/miniapp/links'
 
 export type UserNotificationChannel = 'bale' | 'eitaa' | 'email'
 
@@ -45,6 +46,7 @@ type NotificationMessage = {
 	forward?: {
 		text: string
 		url: string
+		khatmPath: string
 	}
 }
 
@@ -83,6 +85,7 @@ function toMessage(event: UserNotificationEvent, locale: Locale): NotificationMe
 				url: fullUrl(`/account/khatms/${event.khatmId}/edit`, locale),
 				forward: {
 					url: khatmUrl,
+					khatmPath: event.khatmPath,
 					text: [
 						m.notification_invite_title({ name: branding.name }, { locale }),
 						'',
@@ -126,6 +129,17 @@ function toMessage(event: UserNotificationEvent, locale: Locale): NotificationMe
 	}
 }
 
+function getForwardMessage(
+	forward: NonNullable<NotificationMessage['forward']>,
+	miniAppUrl: string | undefined,
+) {
+	const url = createMiniAppLink(miniAppUrl, forward.khatmPath) || forward.url
+	return {
+		url,
+		text: forward.text.replace(forward.url, url),
+	}
+}
+
 async function requestJson(url: string, body: object) {
 	const controller = new AbortController()
 	const timer = setTimeout(() => controller.abort(), PROVIDER_TIMEOUT_MS)
@@ -156,11 +170,14 @@ async function sendBale(address: string, message: NotificationMessage, locale: L
 
 	if (message.forward) {
 		try {
+			const forward = getForwardMessage(message.forward, env.BALE_MINI_APP_URL)
 			await requestJson(`https://tapi.bale.ai/bot${env.BALE_BOT_TOKEN}/sendMessage`, {
 				chat_id: address,
-				text: message.forward.text,
+				text: forward.text,
 				reply_markup: {
-					inline_keyboard: [[{ text: m.notification_join_khatm({}, { locale }), url: message.forward.url }]],
+					inline_keyboard: [
+						[{ text: m.notification_join_khatm({}, { locale }), url: forward.url }],
+					],
 				},
 			})
 		} catch (error) {
@@ -178,9 +195,10 @@ async function sendEitaa(address: string, message: NotificationMessage) {
 
 	if (message.forward) {
 		try {
+			const forward = getForwardMessage(message.forward, env.EITAA_MINI_APP_URL)
 			await requestJson(`https://eitaayar.ir/api/${env.EITAA_APP_TOKEN}/sendMessage`, {
 				chat_id: address,
-				text: message.forward.text,
+				text: forward.text,
 			})
 		} catch (error) {
 			console.error('Failed to send Eitaa khatm forwarding message.', error)
@@ -251,6 +269,17 @@ export async function userNotification_upsertEndpoint(
 		where: { userId_channel: { userId, channel } },
 		create: { userId, channel, address, canSend: canSend === true },
 		update: { address, ...(canSend == null ? {} : { canSend }) },
+	})
+}
+
+export async function userNotification_setEndpointCanSend(
+	userId: string,
+	channel: Exclude<UserNotificationChannel, 'email'>,
+	canSend: boolean,
+) {
+	return db.notificationEndpoint.updateMany({
+		where: { userId, channel },
+		data: { canSend },
 	})
 }
 

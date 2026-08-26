@@ -1,7 +1,7 @@
 import '@inlang/paraglide-js/urlpattern-polyfill'
 import { building } from '$app/environment'
 import { env as privateEnv } from '$env/dynamic/private'
-import { env as publicEnv } from '$env/dynamic/public'
+import { PUBLIC_BUILD_TARGET } from '$env/static/public'
 import type { ServerInit, HandleServerError, Handle } from '@sveltejs/kit'
 import { isManualColorScheme } from '$lib/entity/Theme'
 import { svelteKitHandler } from 'better-auth/svelte-kit'
@@ -27,7 +27,7 @@ defineCustomServerStrategy('custom-preference', {
 })
 
 export const init: ServerInit = async () => {
-	if (publicEnv.PUBLIC_BUILD_TARGET === 'capacitor') return
+	if (PUBLIC_BUILD_TARGET === 'capacitor') return
 	const { appSettingsService_init } = await import('$service/appSettings')
 	await appSettingsService_init()
 	if (!building) {
@@ -51,7 +51,7 @@ export const handle: Handle = async ({ resolve, event }) => {
 		return new Response(null, { status: 403 })
 	}
 
-	if (publicEnv.PUBLIC_BUILD_TARGET === 'capacitor') return resolve(event)
+	if (PUBLIC_BUILD_TARGET === 'capacitor') return resolve(event)
 	if (withoutBase(event.url.pathname) === '/.well-known/assetlinks.json') return resolve(event)
 
 	const [{ auth }, { db }] = await Promise.all([
@@ -122,6 +122,7 @@ export const handle: Handle = async ({ resolve, event }) => {
 		})
 	})
 	response.headers.delete('x-frame-options')
+	response.headers.delete('link')
 	if (!response.headers.has('content-security-policy')) {
 		response.headers.set(
 			'content-security-policy',
@@ -173,7 +174,7 @@ export const handleError: HandleServerError = async ({ error, event, status, mes
 	// so the deployment log is the source of truth for unexpected request failures.
 	console.error('Unhandled SvelteKit request error:', report)
 
-	if (publicEnv.PUBLIC_BUILD_TARGET !== 'capacitor') {
+	if (PUBLIC_BUILD_TARGET !== 'capacitor') {
 		void import('$service/admin-notification').then(({ getNotificationProvider }) => {
 			getNotificationProvider()
 				.sendError(`${status} ${report.message}`, report)

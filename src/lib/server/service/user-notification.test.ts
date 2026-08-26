@@ -14,6 +14,8 @@ vi.mock('$env/dynamic/private', () => ({
 		ORIGIN: 'https://example.com',
 		BALE_BOT_TOKEN: 'bale-token',
 		EITAA_APP_TOKEN: 'eitaa-token',
+		BALE_MINI_APP_URL: 'https://ble.ir/khatm-app',
+		EITAA_MINI_APP_URL: 'https://eitaa.com/khatm-app/main',
 	},
 }))
 vi.mock('$lib/server/db', () => ({ db: dbMock }))
@@ -96,5 +98,52 @@ describe('userNotification_send', () => {
 
 		expect(fetchMock).not.toHaveBeenCalled()
 		expect(emailMock.send).not.toHaveBeenCalled()
+	})
+
+	it('uses the Bale Mini App link in the forwarding message and button', async () => {
+		dbMock.user.findUnique.mockResolvedValue(userResult())
+		const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ ok: true }) })
+		vi.stubGlobal('fetch', fetchMock)
+
+		await userNotification_send('user-1', {
+			type: 'khatmCreated',
+			khatmId: 42,
+			title: 'Test khatm',
+			private: true,
+			khatmPath: '/k42?t=private-token',
+		})
+
+		const forwardBody = JSON.parse(String(fetchMock.mock.calls[1][1]?.body))
+		expect(forwardBody.text).toContain('https://ble.ir/khatm-app?startapp=')
+		expect(forwardBody.reply_markup.inline_keyboard[0][0].url).toContain(
+			'https://ble.ir/khatm-app?startapp=',
+		)
+	})
+
+	it('uses the Eitaa Mini App link in its forwarding message', async () => {
+		dbMock.user.findUnique.mockResolvedValue(
+			userResult({
+				notificationPreference: {
+					enabled: true,
+					preferredChannel: 'eitaa',
+					baleEnabled: true,
+					eitaaEnabled: true,
+					emailEnabled: true,
+				},
+			}),
+		)
+		const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ ok: true }) })
+		vi.stubGlobal('fetch', fetchMock)
+
+		await userNotification_send('user-1', {
+			type: 'khatmCreated',
+			khatmId: 42,
+			title: 'Test khatm',
+			private: false,
+			khatmPath: '/a42',
+		})
+
+		const forwardBody = JSON.parse(String(fetchMock.mock.calls[1][1]?.body))
+		expect(forwardBody.text).toContain('https://eitaa.com/khatm-app/main?startapp=')
 	})
 })

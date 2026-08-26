@@ -15,11 +15,21 @@
 	import { isCapacitorBuild } from '$lib/config/runtime'
 	import { localeDirection } from '$lib/i18n/locale'
 	import { initializeNativeAppLinks } from '$lib/native/app-links'
+	import { page } from '$app/state'
 
 	let { children, data }: LayoutProps = $props()
 
 	LocalSettings.provide()
 	const localSettings = LocalSettings.use()
+	const routeRobots = $derived.by(() => {
+		const path = page.url.pathname.replace(/^\/(?:ar|en)(?=\/|$)/, '') || '/'
+		const privatePrefix = /^(?:\/account|\/add|\/admin|\/api|\/auth|\/history|\/native-admin|\/offline-khatm|\/settings)(?:\/|$)/
+		const duplicateKhatmView = /^\/(?:a|k)s?\d+\/.+/.test(path)
+		const filteredDirectory = path === '/list' && [...page.url.searchParams.keys()].some((key) => key !== 'page')
+		return privatePrefix.test(path) || duplicateKhatmView || filteredDirectory
+			? 'noindex, nofollow, noarchive'
+			: undefined
+	})
 
 	onMount(() => {
 		let removeAppLinkListener: (() => void) | undefined
@@ -83,6 +93,7 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="default" />
 	{/if}
 	<meta property="og:site_name" content={data.branding.name} />
+	{#if routeRobots}<meta name="robots" content={routeRobots} />{/if}
 </svelte:head>
 
 <MiniAppHost

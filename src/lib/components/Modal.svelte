@@ -2,20 +2,36 @@
 	import type { Snippet } from 'svelte'
 	import { fade, scale } from 'svelte/transition'
 	import { tick } from 'svelte'
+	import * as m from '$lib/paraglide/messages.js'
 
 	type Props = {
 		open?: boolean
 		children?: Snippet
 		class?: string
 		contentClass?: string
+		labelledBy?: string
+		closeOnBackdrop?: boolean
+		closeOnEscape?: boolean
 	}
 
-	let { open = $bindable(false), children, contentClass, class: className }: Props = $props()
+	let {
+		open = $bindable(false),
+		children,
+		contentClass,
+		class: className,
+		labelledBy,
+		closeOnBackdrop = true,
+		closeOnEscape = true,
+	}: Props = $props()
 	let modalBox = $state<HTMLElement>()
 	let returnFocus: HTMLElement | null = null
 
 	function close() {
 		open = false
+	}
+
+	function handleBackdrop() {
+		if (closeOnBackdrop) close()
 	}
 
 	function getFocusableElements() {
@@ -30,7 +46,7 @@
 	function handleKeyboard(event: KeyboardEvent) {
 		if (!open) return
 		if (event.key === 'Escape') {
-			close()
+			if (closeOnEscape) close()
 			return
 		}
 		if (event.key !== 'Tab') return
@@ -73,9 +89,9 @@
 		<button
 			in:fade|global
 			type="button"
-			aria-label="بستن پنجره"
+			aria-label={m.common_close()}
 			class="ui-modal-backdrop"
-			onclick={close}
+			onclick={handleBackdrop}
 		></button>
 		<div
 			bind:this={modalBox}
@@ -83,6 +99,7 @@
 			transition:scale|global={{ start: 0.92, opacity: 0 }}
 			role="dialog"
 			aria-modal="true"
+			aria-labelledby={labelledBy}
 			tabindex="-1"
 		>
 			{@render children?.()}

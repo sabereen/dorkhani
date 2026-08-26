@@ -21,6 +21,8 @@
 	import IconSearch from '~icons/ic/round-search'
 	import IconTrending from '~icons/ic/round-trending-up'
 	import type { PageProps } from './$types'
+	import * as m from '$lib/paraglide/messages.js'
+	import SeoHead from '$lib/components/SeoHead.svelte'
 
 	let { data }: PageProps = $props()
 
@@ -32,31 +34,31 @@
 	}> = [
 		{
 			value: 'recent',
-			label: 'تازه‌ترین',
-			description: 'آخرین ختم‌های ثبت‌شده',
+			label: m.directory_sort_recent(),
+			description: m.directory_sort_recent_description(),
 			icon: IconRecent,
 		},
 		{
 			value: 'progress',
-			label: 'بیشترین پیشرفت',
-			description: 'ختم‌های ناتمام نزدیک‌تر به پایان',
+			label: m.directory_sort_progress(),
+			description: m.directory_sort_progress_description(),
 			icon: IconTrending,
 		},
 		{
 			value: 'continuous',
-			label: 'ختم‌های پیوسته',
-			description: 'بیشترین دورهای کامل‌شده',
+			label: m.directory_sort_continuous(),
+			description: m.directory_sort_continuous_description(),
 			icon: IconInfinite,
 		},
 	]
 
 	const rangeTypeTitles: Record<RangeType, string> = {
-		free: 'آزاد',
-		page: 'صفحه به صفحه',
-		hizbQuarter: 'حزب به حزب',
-		surah: 'سوره به سوره',
-		juz: 'جزء به جزء',
-		ayah: 'آیه به آیه',
+		free: m.directory_range_free(),
+		page: m.directory_range_page(),
+		hizbQuarter: m.directory_range_hizb(),
+		surah: m.directory_range_surah(),
+		juz: m.directory_range_juz(),
+		ayah: m.directory_range_ayah(),
 	}
 
 	function getFilterKey(filters: KhatmDirectoryFilters) {
@@ -157,7 +159,7 @@
 		} catch (error) {
 			console.error(error)
 			if (requestKey === loadedFilterKey) {
-				loadError = 'بارگذاری موارد بیشتر انجام نشد. دوباره تلاش کنید.'
+				loadError = m.directory_load_more_error()
 			}
 		} finally {
 			if (requestKey === loadedFilterKey) loadingMore = false
@@ -166,45 +168,65 @@
 
 	function getCardMeta(khatm: Khatm) {
 		if (data.filters.view === 'progress') {
-			return `${khatm.versesRead.toLocaleString(localeTag())} آیه خوانده‌شده`
+			return m.directory_read_count({ count: khatm.versesRead.toLocaleString(localeTag()) })
 		}
 		if (data.filters.view === 'continuous') {
 			const completedRounds = Math.max(0, khatm.roundNumber - 1)
-			return `${completedRounds.toLocaleString(localeTag())} دور کامل‌شده`
+			return m.directory_round_count({ count: completedRounds.toLocaleString(localeTag()) })
 		}
-		return 'آماده برای مشارکت شما'
+		return m.directory_ready()
 	}
 </script>
 
-<PageTitle title="ختم‌های ثبت‌شده" />
+<PageTitle title={m.directory_title()} emitHead={false} />
 
-<Header title="ختم‌های ثبت‌شده" />
+<SeoHead
+	meta={{
+		title: `${m.directory_title()} | ${page.data.branding.name}`,
+		description: m.directory_description(),
+		canonicalPath: page.url.pathname,
+		imagePath: `/og/home.png?l=${page.data.locale}&v=${encodeURIComponent(page.data.branding.revision)}`,
+		imageAlt: page.data.branding.name,
+		locale: page.data.locale,
+		robots: filtering ? 'noindex, follow' : undefined,
+		jsonLd: {
+			'@context': 'https://schema.org',
+			'@type': 'CollectionPage',
+			name: m.directory_title(),
+			description: m.directory_description(),
+			url: page.url.href,
+			inLanguage: page.data.locale,
+		},
+	}}
+/>
+
+<Header title={m.directory_title()} />
 
 <section class="directory-intro" aria-labelledby="directory-title">
 	<div>
-		<span class="directory-kicker"><IconSearch /> جستجو در جمع‌های قرآنی</span>
-		<h2 id="directory-title">ختم مناسب خودتان را پیدا کنید</h2>
-		<p>میان ختم‌های عمومی جستجو کنید، نوع تقسیم را انتخاب کنید و برترین‌ها را ببینید.</p>
+		<span class="directory-kicker"><IconSearch /> {m.directory_kicker()}</span>
+		<h2 id="directory-title">{m.directory_heading()}</h2>
+		<p>{m.directory_description()}</p>
 	</div>
 </section>
 
-<section class="directory-toolbar" aria-label="جستجو و فیلتر ختم‌ها">
+<section class="directory-toolbar" aria-label={m.directory_toolbar_label()}>
 	<div class="directory-search-control">
 		<label for="khatm-search" class="directory-control-label">
 			<IconSearch aria-hidden="true" />
-			<span>جستجو در عنوان و توضیحات</span>
+			<span>{m.directory_search_label()}</span>
 		</label>
 		<div class="directory-search-input">
 			<input
 				id="khatm-search"
 				class="ui-input"
 				type="search"
-				placeholder="مثلاً ختم برای سلامتی…"
+				placeholder={m.directory_search_placeholder()}
 				autocomplete="off"
 				bind:value={search}
 			/>
 			{#if search}
-				<button type="button" aria-label="پاک‌کردن جستجو" onclick={clearSearch}>
+				<button type="button" aria-label={m.directory_clear_search()} onclick={clearSearch}>
 					<IconClose />
 				</button>
 			{/if}
@@ -214,7 +236,7 @@
 	<div class="directory-type-control">
 		<label for="khatm-range-type" class="directory-control-label">
 			<IconFilter aria-hidden="true" />
-			<span>نوع بازه‌بندی</span>
+			<span>{m.directory_range_label()}</span>
 		</label>
 		<select
 			id="khatm-range-type"
@@ -225,7 +247,7 @@
 					rangeType: (event.currentTarget.value || undefined) as RangeType | undefined,
 				})}
 		>
-			<option value="">همهٔ انواع</option>
+			<option value="">{m.directory_all_ranges()}</option>
 			{#each KHATM_DIRECTORY_RANGE_TYPES as rangeType}
 				<option value={rangeType}>{rangeTypeTitles[rangeType]}</option>
 			{/each}
@@ -233,7 +255,7 @@
 	</div>
 </section>
 
-<div class="directory-views" role="group" aria-label="شیوهٔ مرتب‌سازی ختم‌ها">
+<div class="directory-views" role="group" aria-label={m.directory_views_label()}>
 	{#each viewOptions as option}
 		{@const ViewIcon = option.icon}
 		<button
@@ -263,17 +285,17 @@
 			<h2>{viewOptions.find((option) => option.value === data.filters.view)?.label}</h2>
 			<p>
 				{#if data.filters.q}
-					نتایج مرتبط با «{data.filters.q}»
+					{m.directory_results_for({ query: data.filters.q })}
 				{:else if data.filters.rangeType}
-					ختم‌های {rangeTypeTitles[data.filters.rangeType]}
+					{m.directory_range_results({ rangeType: rangeTypeTitles[data.filters.rangeType] })}
 				{:else}
-					یک ختم را انتخاب کنید و سهم خود را برای قرائت بردارید.
+					{m.directory_choose_message()}
 				{/if}
 			</p>
 		</div>
 		{#if filtering}
 			<button class="ui-btn ui-btn-ghost ui-btn-sm" type="button" onclick={resetFilters}>
-				پاک‌کردن فیلترها
+				{m.directory_clear_filters()}
 			</button>
 		{/if}
 	</header>
@@ -293,15 +315,15 @@
 	{:else}
 		<div class="directory-empty">
 			<span aria-hidden="true"><IconSearch /></span>
-			<h3>ختمی پیدا نشد</h3>
+			<h3>{m.directory_not_found()}</h3>
 			<p>
 				{filtering
-					? 'عبارت جستجو یا نوع بازه را تغییر دهید و دوباره امتحان کنید.'
-					: 'هنوز ختمی در این دسته برای نمایش وجود ندارد.'}
+					? m.directory_change_filter()
+					: m.directory_empty()}
 			</p>
 			{#if filtering}
 				<button class="ui-btn ui-btn-soft ui-btn-sm" type="button" onclick={resetFilters}>
-					نمایش همهٔ ختم‌ها
+					{m.directory_show_all()}
 				</button>
 			{/if}
 		</div>
@@ -311,7 +333,7 @@
 		<div class="ui-alert ui-alert-error directory-load-error" role="alert">
 			<span>{loadError}</span>
 			<button class="ui-btn ui-btn-outline ui-btn-sm" type="button" onclick={nextPage}
-				>تلاش دوباره</button
+				>{m.directory_retry()}</button
 			>
 		</div>
 	{/if}
@@ -319,7 +341,7 @@
 	{#if nextCursor && khatms.length > 0 && !loadError}
 		<div class="ui-khatm-collection-footer">
 			<button class="ui-btn ui-btn-soft ui-btn-sm" onclick={nextPage} disabled={loadingMore}>
-				{loadingMore ? 'در حال بارگذاری…' : 'نمایش موارد بیشتر'}
+				{loadingMore ? m.directory_loading() : m.directory_load_more()}
 			</button>
 		</div>
 	{/if}

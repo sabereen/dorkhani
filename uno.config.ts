@@ -23,4 +23,8 @@ export default defineConfig({
 			})
 		},
 	],
+	shortcuts: {
+		mirror: '-scale-x-100',
+		center: 'flex justify-center items-center'
+	},
 })

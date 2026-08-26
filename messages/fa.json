@@ -1,4 +1,24 @@
 {
+	"eitaa_write_access_eyebrow": "اعلان‌های ایتا",
+	"eitaa_write_access_title": "در جریان ختم‌ها بمانید",
+	"eitaa_write_access_description": "برای اینکه بتوانیم بیرون از برنامک هم خبرهای مهم ختم را به شما برسانیم، اجازهٔ ارسال پیام در ایتا لازم است.",
+	"eitaa_write_access_created": "تأیید ساخته‌شدن ختم و لینک مدیریت آن",
+	"eitaa_write_access_participation": "ثبت سهم تلاوت و دسترسی سریع به بازهٔ انتخابی",
+	"eitaa_write_access_completed": "اعلام تکمیل دورهای ختم و پایان مجموعه",
+	"eitaa_write_access_privacy": "فقط پیام‌های مرتبط با فعالیت خودتان ارسال می‌شود و هر زمان بخواهید می‌توانید اعلان‌ها را غیرفعال کنید.",
+	"eitaa_write_access_enable": "فعال‌کردن اعلان‌های ایتا",
+	"eitaa_write_access_requesting": "در حال درخواست دسترسی…",
+	"eitaa_write_access_later": "فعلاً نه",
+	"eitaa_write_access_granted": "دسترسی ارسال پیام ایتا با موفقیت فعال شد.",
+	"eitaa_write_access_denied": "دسترسی فعال نشد. برای دریافت اعلان‌ها، دوباره تلاش کنید و گزینهٔ اجازه را بزنید.",
+	"eitaa_write_access_error": "ثبت دسترسی اعلان‌ها انجام نشد. لطفاً دوباره تلاش کنید.",
+	"eitaa_write_access_unsupported": "برای دادن این دسترسی، صفحه پروفایل را داخل برنامک ایتا باز کنید.",
+	"account_eitaa_permission_description": "برای آماده‌شدن این کانال، اجازهٔ ارسال پیام ایتا را فعال کنید.",
+	"eitaa_write_access_continue": "ادامه",
+	"nav_offline_khatm": "ختم آفلاین",
+	"offline_khatm_title": "ختم آفلاین",
+	"offline_khatm_create": "ایجاد ختم آفلاین",
+	"offline_khatm_device_only": "اطلاعات این ختم فقط روی همین دستگاه ذخیره می‌شود.",
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"language_fa": "فارسی",
 	"language_ar": "العربية",
@@ -233,5 +253,646 @@
 	"home_feature_progress_title": "پیشرفت قابل پیگیری",
 	"home_feature_progress_text": "وضعیت ختم، مشارکت‌ها و بخش‌های باقی‌مانده همیشه پیش چشم همهٔ اعضاست.",
 	"home_feature_invite_title": "دعوت با یک لینک",
-	"home_feature_invite_text": "لینک ختم را برای خانواده و دوستان بفرستید و جمع‌تان را به‌سادگی شکل دهید."
+	"home_feature_invite_text": "لینک ختم را برای خانواده و دوستان بفرستید و جمع‌تان را به‌سادگی شکل دهید.",
+	"home_statistics_title": "هر تلاوت، بخشی از یک جریان زنده",
+	"home_featured_title": "ختم‌های شاخص",
+	"home_statistics_daily_label": "آمار فعالیت هفت روز اخیر",
+	"khatm_copy_success": "لینک ختم قرآن شما کپی شد.",
+	"khatm_copy_error": "خطا در کپی.",
+	"khatm_shortcut_requested": "درخواست افزودن میان‌بر به صفحه اصلی نمایش داده شد.",
+	"khatm_shortcut_unsupported": "لانچر گوشی از افزودن میان‌بر پشتیبانی نمی‌کند.",
+	"khatm_shortcut_error": "افزودن میان‌بر ختم ناموفق بود.",
+	"khatm_round_saved_as_last": "این دور به‌عنوان آخرین دور ختم ثبت شد.",
+	"khatm_stop_error": "توقف ختم ناموفق بود.",
+	"khatm_add_to_home_aria": "افزودن ختم به صفحه اصلی",
+	"khatm_edit_aria": "ویرایش ختم",
+	"khatm_manage_aria": "ویرایش یا حذف ختم",
+	"khatm_share": "اشتراک‌گذاری",
+	"khatm_copy_link": "کپی لینک",
+	"khatm_manage": "مدیریت",
+	"khatm_home": "صفحه اصلی",
+	"khatm_hero_eyebrow": "یک همراهی نورانی برای ختم قرآن",
+	"khatm_round_of": "از {total} دور",
+	"khatm_stop_after_round_aria": "توقف ختم پس از پایان دور جاری",
+	"khatm_stop_after_round": "توقف پس از این دور",
+	"khatm_progress": "پیشرفت ختم",
+	"khatm_progress_hint": "قدم‌به‌قدم تا پایان این همراهی",
+	"khatm_progress_range": "پیشرفت {range}",
+	"khatm_unapproved_aria": "وضعیت تأیید ختم",
+	"khatm_unapproved_title": "این ختم هنوز توسط سامانه تأیید نشده است.",
+	"khatm_unapproved_text": "ما محتوای این ختم را تأیید نمی‌کنیم و استفاده و مشارکت در آن با مسئولیت کاربران است.",
+	"khatm_ai_warning_aria": "هشدار بررسی AI",
+	"khatm_ai_warning_title": "هشدار دربارهٔ عنوان یا توضیح ختم",
+	"khatm_view_switch_aria": "شیوه نمایش بازه‌ها",
+	"khatm_selection_method": "شیوه انتخاب",
+	"khatm_selection_method_hint": "نمای مناسب خودتان را انتخاب کنید",
+	"khatm_layout_wizard": "مرحله‌ای",
+	"khatm_layout_list": "لیستی",
+	"khatm_layout_grid": "جدولی",
+	"khatm_serial_complete": "این دور از ختم کامل شده است ({round}).",
+	"khatm_complete": "این ختم قرآن کامل شده است.",
+	"khatm_start_new_round": "شروع دور جدید",
+	"khatm_last_round": "آخرین دور ختم",
+	"khatm_stop_eyebrow": "پایان ختم تمام‌نشدنی",
+	"khatm_stop_title": "این دور، آخرین دور باشد؟",
+	"khatm_stop_description": "دور جاری بدون تغییر ادامه پیدا می‌کند، اما پس از کامل‌شدن آن دور تازه‌ای ساخته نخواهد شد.",
+	"khatm_stop_confirm": "بله، ختم متوقف شود",
+	"khatm_continue_rounds": "ادامهٔ دورهای ختم",
+	"khatm_private_shortcut_eyebrow": "میان‌بر ختم خصوصی",
+	"khatm_private_shortcut_title": "این میان‌بر دسترسی مستقیم دارد",
+	"khatm_private_shortcut_description": "لینک خصوصی ختم داخل میان‌بر ذخیره می‌شود. اگر گوشی مشترک است، میان‌بر را نسازید.",
+	"khatm_add_to_home": "افزودن به صفحه اصلی",
+	"khatm_auth_eyebrow": "مدیریت ختم",
+	"khatm_auth_title": "برای مدیریت ختم خود وارد حساب شوید",
+	"khatm_auth_description": "پس از ورود یا ثبت‌نام، این ختم به حساب شما متصل می‌شود و می‌توانید آن را ویرایش، متوقف یا حذف کنید.",
+	"khatm_my_participation": "مشارکت من",
+	"khatm_verse_count": "{count} آیه",
+	"khatm_verses_in_round": "آیه در {period}",
+	"khatm_current_round": "این دور",
+	"khatm_current_khatm": "این ختم",
+	"khatm_reading_history_loading": "در حال خواندن سابقهٔ این دستگاه",
+	"khatm_percent_of_quran": "{percent} از قرآن",
+	"khatm_participation_progress_aria": "درصد مشارکت من در این ختم",
+	"khatm_no_participation": "هنوز در {period} سهمی برای قرائت نپذیرفته‌اید.",
+	"khatm_show_all_rounds": "نمایش مشارکت در همهٔ دورها",
+	"khatm_show_picked_ranges": "نمایش بازه‌های پذیرفته‌شده",
+	"khatm_read_range": "مشاهده و قرائت {range}",
+	"khatm_review_pending": "منتظر بررسی",
+	"khatm_review_approved": "تأییدشده",
+	"khatm_review_rejected": "ردشده",
+	"khatm_review_error": "تغییرات مدیریتی ختم انجام نشد. دوباره تلاش کنید.",
+	"khatm_review_approved_message": "ختم تأیید شد.",
+	"khatm_review_rejected_message": "ختم رد شد.",
+	"khatm_feature_added": "ختم به فهرست شاخص‌ها افزوده شد.",
+	"khatm_feature_removed": "ختم از فهرست شاخص‌ها حذف شد.",
+	"khatm_review_eyebrow": "مدیریت بررسی",
+	"khatm_review_title": "وضعیت انتشار ختم",
+	"khatm_review_save": "در حال ثبت…",
+	"khatm_review_approve": "تأیید ختم",
+	"khatm_review_reject": "رد ختم",
+	"khatm_feature_title": "نمایش در ختم‌های شاخص",
+	"khatm_feature_position": "جایگاه {position} از فهرست صفحهٔ اصلی",
+	"khatm_feature_ready": "این ختم دائمی آمادهٔ انتخاب است.",
+	"khatm_feature_approval_hint": "پس از تأیید انتشار، می‌توانید آن را شاخص کنید.",
+	"khatm_feature_unavailable": "فقط دنباله‌های عمومی و نامحدودِ در حال اجرا قابل انتخاب‌اند.",
+	"khatm_remove_feature": "حذف از شاخص‌ها",
+	"khatm_add_feature": "افزودن به شاخص‌ها",
+	"wizard_range_juz": "جزء",
+	"wizard_range_hizb": "ربع حزب",
+	"wizard_range_page": "صفحه",
+	"wizard_range_surah": "سوره",
+	"wizard_range_all": "بخش باقی‌مانده",
+	"wizard_commitment_eyebrow": "میزان همراهی شما",
+	"wizard_commitment_title": "از یک سهم کوچک و دل‌خواه شروع کنید",
+	"wizard_commitment_description": "اندازه‌ای را انتخاب کنید که با فرصت امروزتان هماهنگ است؛ در مرحله بعد بازه دقیق را برمی‌دارید.",
+	"wizard_one_page": "یک صفحه",
+	"wizard_one_page_description": "سبک، سریع و مناسب شروع",
+	"wizard_short": "کم‌حجم",
+	"wizard_one_hizb": "یک ربع حزب",
+	"wizard_one_hizb_description": "چند صفحه پیوسته برای قرائتی منظم",
+	"wizard_brief": "کوتاه",
+	"wizard_one_juz": "یک جزء",
+	"wizard_one_juz_description": "سهمی کامل‌تر برای همراهی پررنگ",
+	"wizard_continuous": "پیوسته",
+	"wizard_one_surah": "یک سوره",
+	"wizard_one_surah_description": "از آغاز تا پایان یک سوره",
+	"wizard_meaningful": "معنادار",
+	"wizard_all_remaining": "همه بخش‌های باقی‌مانده",
+	"wizard_all_remaining_description": "قدم آخر را بردارید و ختم را کامل کنید",
+	"wizard_finale": "ویژه پایان ختم",
+	"wizard_select_range_eyebrow": "انتخاب {rangeType}",
+	"wizard_select_range_title": "کدام بازه برای شما مناسب‌تر است؟",
+	"wizard_available_ranges": "{count} بازه هنوز سهم آزاد دارد.",
+	"wizard_change_commitment": "تغییر اندازه سهم",
+	"wizard_search_range": "جست‌وجوی {rangeType}",
+	"wizard_search_placeholder": "نام یا شماره {rangeType} را بنویسید",
+	"wizard_range_legend": "راهنمای وضعیت بازه‌ها",
+	"wizard_fully_free": "کاملاً آزاد",
+	"wizard_partially_free": "دارای بخش آزاد",
+	"wizard_my_share": "سهم شما",
+	"wizard_hide_completed": "پنهان‌کردن تکمیل‌شده‌ها",
+	"wizard_range_list": "فهرست {rangeType}ها",
+	"wizard_includes_my_share": "شامل سهم شما",
+	"wizard_partial_free": "بخشی آزاد است",
+	"wizard_completed": "تکمیل‌شده",
+	"wizard_selected_percent": "{percent} انتخاب شده",
+	"wizard_no_free_share": "بدون سهم آزاد",
+	"wizard_view_free_parts": "دیدن بخش‌های آزاد",
+	"wizard_select_share": "انتخاب این سهم",
+	"wizard_showing_items": "در حال نمایش {visible} مورد از {total} مورد",
+	"wizard_show_more": "نمایش موارد بیشتر",
+	"wizard_no_search_result": "بازه‌ای با این جست‌وجو پیدا نشد",
+	"wizard_no_free_range": "بازه آزادی در این دسته نمانده است",
+	"wizard_try_another_search": "عبارت دیگری را امتحان کنید یا فیلتر را پاک کنید.",
+	"wizard_choose_another_size": "اندازه دیگری برای سهمتان انتخاب کنید.",
+	"wizard_clear_search": "پاک‌کردن جست‌وجو",
+	"wizard_choose_other_size": "انتخاب اندازه دیگر",
+	"wizard_selection_success": "انتخاب با موفقیت انجام شد",
+	"wizard_share_reserved": "این سهم برای شما کنار گذاشته شد",
+	"wizard_share_success_description": "حالا می‌توانید آیات سهم خود را باز کنید و قرائت را آغاز کنید.",
+	"wizard_view_read_ayahs": "مشاهده و قرائت آیات",
+	"wizard_choose_another_share": "انتخاب یک سهم دیگر",
+	"wizard_title": "انتخاب مرحله‌ای سهم ختم قرآن",
+	"wizard_steps": "مراحل انتخاب سهم",
+	"wizard_share_size": "اندازه سهم",
+	"wizard_choose_range": "انتخاب بازه",
+	"wizard_start_reading": "شروع قرائت",
+	"wizard_partial_back": "بازگشت به بخش‌های آزاد",
+	"wizard_partial_eyebrow": "انتخاب از یک بازه نیمه‌تکمیل",
+	"wizard_partial_title": "بخش آزاد دل‌خواهتان را بردارید",
+	"wizard_partial_free": "بخش آزاد",
+	"wizard_partial_selected": "{percent} از این بازه پیش‌تر انتخاب شده است",
+	"wizard_partial_instruction": "یک ردیف با نشان «آزاد» را انتخاب کنید. بخش‌های کم‌رنگ پیش‌تر برداشته شده‌اند.",
+	"wizard_partial_list": "بخش‌های این بازه",
+	"wizard_taken": "برداشته شده",
+	"wizard_continue_review": "ادامه و بررسی نهایی",
+	"wizard_cancel_selection": "انصراف از انتخاب",
+	"wizard_selection": "انتخاب شما",
+	"wizard_no_partial_selection": "هنوز بخشی انتخاب نشده است",
+	"wizard_confirm_eyebrow": "بررسی نهایی انتخاب",
+	"wizard_confirm_title": "این سهم را برای قرائت برمی‌دارید؟",
+	"wizard_confirm_description": "پس از تأیید، این بازه به‌عنوان سهم شما ثبت می‌شود تا همراه دیگری آن را انتخاب نکند.",
+	"wizard_selected_share": "سهم انتخاب‌شده",
+	"wizard_preview_before_confirm": "دیدن آیات پیش از تأیید",
+	"wizard_confirm_loading": "در حال ثبت سهم…",
+	"wizard_confirm_action": "بله، این سهم را برمی‌دارم",
+	"wizard_choose_another_range": "انتخاب بازه دیگر",
+	"wizard_range_taken_title": "این بازه دیگر آزاد نیست",
+	"wizard_range_taken_description": "یکی از همراهان کمی زودتر آن را انتخاب کرده است. لطفاً بازه دیگری بردارید.",
+	"wizard_view_free_ranges": "دیدن بازه‌های آزاد",
+	"reading_start": "آغاز {range}",
+	"reading_end": "پایان {range}",
+	"reading_back_to_khatm": "بازگشت به صفحه ختم",
+	"ayah_today_share": "سهم امروز شما از این ختم",
+	"ayah_today_description": "با یک انتخاب، نزدیک‌ترین آیات خوانده‌نشده به شما سپرده می‌شود.",
+	"ayah_last_completed": "آخرین آیه هم به پایان رسید",
+	"ayah_end": "پایان",
+	"ayah_accept_one_more": "پذیرفتن یک آیه بیشتر",
+	"ayah_accept_one": "پذیرفتن خواندن یک آیه",
+	"ayah_accept_consecutive": "پذیرفتن {count} آیه متوالی",
+	"ayah_settings": "تنظیم ترجمه، صوت و نمایش",
+	"list_unavailable_range": "این ختم بر اساس {rangeType} تقسیم شده و این بازه قابل انتخاب نیست.",
+	"list_eyebrow": "مرور جزء‌به‌جزء قرآن",
+	"list_title": "سهمتان را با جزئیات پیدا کنید",
+	"list_description": "هر جزء را باز کنید، شیوه تقسیم‌بندی را تغییر دهید و وضعیت تمام بخش‌ها را یک‌جا ببینید.",
+	"list_summary": "خلاصه وضعیت فهرست",
+	"list_progress": "پیشرفت ختم",
+	"list_available_juz": "جزء دارای بخش آزاد",
+	"list_my_juz": "جزء شامل سهم شما",
+	"list_go_to_juz": "رفتن به جزء",
+	"list_search_placeholder": "مثلاً جزء ۱۲",
+	"list_capacity_only": "فقط جزءهای دارای ظرفیت",
+	"list_hide_completed": "جزءهای تکمیل‌شده پنهان شوند",
+	"list_legend": "راهنمای وضعیت بخش‌ها",
+	"list_free_selectable": "آزاد و قابل انتخاب",
+	"list_picked": "برداشته‌شده",
+	"list_close_details": "بستن جزئیات",
+	"list_view_details": "مشاهده جزئیات",
+	"list_view_parts": "دیدن بخش‌ها",
+	"list_details": "جزئیات {title}",
+	"list_all_picked": "همه بخش‌های این جزء برداشته شده‌اند",
+	"list_green_free": "بخش‌های سبزرنگ هنوز آزاد هستند",
+	"list_select_all": "انتخاب کامل {title}",
+	"list_divide_parts": "تقسیم‌بندی بخش‌ها",
+	"list_choose_view": "نمای مناسب برای مرور را انتخاب کنید",
+	"list_this_share": "این بخش سهم شماست",
+	"list_picked_before": "این بخش پیش‌تر برداشته شده است",
+	"list_ready": "آزاد و آماده انتخاب",
+	"list_range_type_only": "این ختم فقط با بازه {rangeType} انتخاب می‌شود",
+	"list_select_part": "انتخاب این بخش",
+	"list_no_free_parts": "بخش آزادی در این تقسیم‌بندی باقی نمانده است",
+	"list_disable_filter": "فیلتر جزءهای تکمیل‌شده را خاموش کنید تا همه جزئیات نمایش داده شوند.",
+	"list_no_juz": "جزئی با این شماره پیدا نشد",
+	"list_all_completed": "همه جزءها تکمیل شده‌اند",
+	"list_search_another_number": "شماره دیگری را جست‌وجو کنید.",
+	"list_disable_capacity_filter": "برای مرور نتیجه، فیلتر جزءهای دارای ظرفیت را خاموش کنید.",
+	"grid_title": "نقشه‌ی کامل ختم",
+	"grid_description": "جای هر بخش را در ساختار قرآن ببینید و مستقیم از روی نقشه انتخاب کنید.",
+	"grid_free_ranges_only": "فقط بازه‌های آزاد",
+	"grid_show_range_ends": "نمایش ابتدا و انتهای بازه",
+	"grid_select_instruction": "برای پذیرفتن قرائت، روی بخش مورد نظر بزنید.",
+	"grid_legend": "راهنمای وضعیت بازه‌ها",
+	"grid_free": "آزاد",
+	"grid_read": "خوانده‌شده",
+	"grid_juz": "جزء",
+	"grid_surah": "سوره",
+	"grid_page": "صفحه",
+	"grid_reading_label": "قرائت شده",
+	"range_picker_aria": "انتخاب نوع بازه‌بندی",
+	"range_picker_free_hint": "هر همراه می‌تواند به اندازهٔ فرصت خودش، از بخش‌های آزاد قرآن انتخاب کند.",
+	"range_picker_ayah_hint": "آیه‌ها به‌ترتیب میان همراهان پخش می‌شوند؛ در این مدل، هر نفر یک بازهٔ دلخواه انتخاب نمی‌کند.",
+	"quran_offline_audio_hint": "صوت و پیوند آیات به اینترنت نیاز دارد.",
+	"legal_last_updated": "آخرین به‌روزرسانی: ۲۴ مرداد ۱۴۰۵",
+	"miniapp_auto_login_failed": "ورود خودکار با {provider} ناموفق بود.",
+	"miniapp_server_error": "ارتباط با سرور برای ورود {provider} برقرار نشد.",
+	"miniapp_login_eyebrow": "ورود از {provider}",
+	"miniapp_auto_login_failed_title": "ورود خودکار انجام نشد",
+	"miniapp_choose_account": "انتخاب حساب",
+	"miniapp_continue_without": "ادامه بدون ورود {provider}",
+	"miniapp_different_account": "حساب {provider} به حساب دیگری متصل است. می‌توانید نشست فعلی را نگه دارید یا به حساب {provider} بروید.",
+	"miniapp_active_session": "یک نشست فعال دارید. حساب {provider} را به همین نشست متصل کنید یا برای آن حساب جداگانه‌ای بسازید.",
+	"miniapp_link_current": "اتصال به حساب فعلی",
+	"miniapp_create_separate": "ساخت حساب جدا برای {provider}",
+	"miniapp_sign_in_provider": "ورود به حساب {provider}",
+	"miniapp_continue_current": "ادامه با حساب فعلی"
+	,"common_share": "اشتراک‌گذاری"
+	,"common_copy_link": "کپی لینک"
+	,"common_copy_error": "خطا در کپی."
+	,"zekr_share_copied": "لینک ختم ذکر شما کپی شد."
+	,"zekr_group_title": "ختم ذکر گروهی"
+	,"zekr_goal_completed": "هدف این ختم کامل شده است"
+	,"zekr_target": "هدف: {count} مرتبه"
+	,"zekr_unlimited": "بدون محدودیت تعداد"
+	,"zekr_collective": "مشارکت جمعی"
+	,"zekr_repetitions": "مرتبه ذکر گفته شده"
+	,"zekr_progress": "{percent} پیشرفت"
+	,"zekr_target_completed": "هدف تکمیل شده"
+	,"zekr_remaining": "{count} مرتبه تا هدف"
+	,"zekr_start": "شروع"
+	,"zekr_goal": "هدف {count}"
+	,"zekr_open_message": "این ختم سقف مشخصی ندارد؛ هر بار مشارکت شما به این همراهی جمعی اضافه می‌شود."
+	,"zekr_your_share": "سهم شما در این ختم"
+	,"zekr_reading_text": "متن برای خواندن"
+	,"zekr_this_text": "ذکر این ختم"
+	,"zekr_empty_input": "ورودی خالی است."
+	,"zekr_participation_eyebrow": "ثبت همراهی"
+	,"zekr_join_again": "دوباره در این ختم سهیم شوید"
+	,"zekr_add_share": "سهم خود را به این ختم اضافه کنید"
+	,"zekr_participation_description": "تعداد ذکری را که خوانده‌اید انتخاب کنید؛ مشارکت شما همان لحظه ثبت می‌شود."
+	,"zekr_registered_count": "{count} مرتبه ثبت شد"
+	,"zekr_one_success": "یک مرتبه با موفقیت ثبت شد"
+	,"zekr_one_said": "یک مرتبه ذکر گفتم"
+	,"zekr_custom_count": "تعداد دلخواه"
+	,"zekr_registering": "در حال ثبت {count} مرتبه ذکر…"
+	,"zekr_wait": "لطفاً چند لحظه صبر کنید."
+	,"zekr_success_total": "مجموع مشارکت شما: {count} مرتبه"
+	,"zekr_participation_failed": "ثبت مشارکت انجام نشد"
+	,"zekr_check_connection": "اتصال خود را بررسی و دوباره تلاش کنید."
+	,"zekr_stats_updated": "با ثبت هر مشارکت، آمار بالای صفحه به‌روز می‌شود."
+	,"zekr_custom_participation": "مشارکت با تعداد دلخواه"
+	,"zekr_count_question": "چند مرتبه ذکر گفته‌اید؟"
+	,"zekr_participation_count": "تعداد مشارکت"
+	,"zekr_example_100": "مثلاً ۱۰۰"
+	,"zekr_positive_number": "یک عدد بزرگ‌تر از صفر وارد کنید."
+	,"zekr_registering_short": "در حال ثبت…"
+	,"zekr_register_participation": "ثبت مشارکت"
+	,"add_title": "ایجاد ختم گروهی جدید"
+	,"add_eyebrow": "یک نیت، یک همراهی جمعی"
+	,"add_heading": "ختم تازه‌تان را بسازید"
+	,"add_description": "مشخصات و شیوهٔ تقسیم را انتخاب کنید؛ لینک دعوت بلافاصله آماده می‌شود."
+	,"add_details_title": "مشخصات ختم"
+	,"add_details_hint": "یک عنوان کوتاه و به‌یادماندنی انتخاب کنید."
+	,"add_khatm_title": "عنوان ختم"
+	,"add_title_placeholder": "مثلاً ختم قرآن برای سلامتی خانواده"
+	,"add_description_label": "توضیحات"
+	,"add_optional": "اختیاری"
+	,"add_description_placeholder": "نیت ختم یا توضیح کوتاهی برای همراهان بنویسید…"
+	,"add_range_title": "نحوهٔ تقسیم قرائت"
+	,"add_range_hint": "اندازهٔ سهم هر مشارکت‌کننده را مشخص کنید."
+	,"add_access_title": "دسترسی و تکرار"
+	,"add_access_hint": "مشخص کنید چه کسانی ختم را پیدا کنند و بعد از پایان چه اتفاقی بیفتد."
+	,"add_private": "خصوصی"
+	,"add_private_hint": "فقط کسانی که لینک را دارند به ختم دسترسی خواهند داشت."
+	,"add_public": "عمومی"
+	,"add_public_hint": "پس از تأیید مدیر، امکان نمایش ختم در صفحهٔ اصلی وجود دارد."
+	,"add_serial": "ختم پیوسته باشد"
+	,"add_serial_hint": "پس از پایان هر دور، دور تازه‌ای به‌صورت خودکار آغاز می‌شود."
+	,"add_submit_hint": "بعد از ایجاد، لینک دعوت را می‌توانید برای دیگران بفرستید."
+	,"add_creating": "در حال ایجاد ختم…"
+	,"add_create": "ایجاد ختم و دریافت لینک"
+	,"add_ai_title": "نیاز به بررسی عنوان ختم"
+	,"add_ai_description": "می‌توانید متن را اصلاح کنید یا با مسئولیت خودتان ختم را ثبت کنید."
+	,"add_edit_text": "ویرایش متن"
+	,"add_force_create": "ثبت با وجود هشدار"
+	,"success_ready": "همه‌چیز آماده است"
+	,"success_created": "ختم شما با موفقیت ایجاد شد"
+	,"success_description": "لینک زیر را برای همراهانتان بفرستید تا قرائت گروهی را آغاز کنید."
+	,"success_details": "مشخصات ختم ایجاد شده"
+	,"success_invite_ready": "لینک دعوت آماده است"
+	,"success_invite_hint": "آن را برای همراهانتان بفرستید تا به ختم بپیوندند."
+	,"success_ready_to_send": "آمادهٔ ارسال"
+	,"success_open_link": "باز کردن لینک دعوت در صفحهٔ جدید"
+	,"success_invite_copied": "لینک دعوت کپی شد"
+	,"success_copy_invite": "کپی لینک دعوت"
+	,"success_copied": "کپی شد"
+	,"success_open_khatm": "ورود به صفحهٔ ختم"
+	,"success_saved_note": "این ختم در بخش «فعالیت‌های من» نیز ذخیره شده است."
+	,"account_title": "حساب من"
+	,"account_sign_out": "خروج"
+	,"account_notifications": "اعلان‌ها"
+	,"account_notifications_description": "پیام‌های ساخت، انتخاب سهم و پایان ختم از نخستین کانال در دسترس فرستاده می‌شوند."
+	,"account_notifications_saved": "تنظیمات اعلان ذخیره شد."
+	,"account_notifications_error": "ذخیره تنظیمات ناموفق بود."
+	,"account_notifications_enabled": "اعلان‌های کاربری فعال باشد"
+	,"account_channels": "کانال‌ها"
+	,"account_ready": "آماده"
+	,"account_start_chat": "شروع گفت‌وگو"
+	,"account_unavailable": "در دسترس نیست"
+	,"account_email": "ایمیل"
+	,"account_email_unavailable": "ایمیل تأییدشده یا SMTP موجود نیست"
+	,"account_preferred_channel": "کانال ترجیحی"
+	,"account_default_priority": "اولویت پیش‌فرض: بله، ایتا، ایمیل"
+	,"account_save_notifications": "ذخیره تنظیمات اعلان"
+	,"account_my_khatms": "ختم‌های من"
+	,"account_no_khatms": "هنوز ختمی به این حساب متصل نشده است."
+	,"account_private_khatm": "ختم خصوصی"
+	,"account_public_khatm": "ختم عمومی"
+	,"account_view": "مشاهده"
+	,"account_edit": "ویرایش"
+	,"account_profile_eyebrow": "پروفایل و فعالیت‌ها"
+	,"account_email_not_set": "ایمیلی برای این حساب ثبت نشده است"
+	,"account_overview": "خلاصه وضعیت حساب"
+	,"account_khatms_total": "همه ختم‌ها"
+	,"account_khatms_active": "در حال اجرا"
+	,"account_ready_channels": "کانال آماده"
+	,"account_app_settings": "تنظیمات برنامه"
+	,"account_notifications_master_description": "همه پیام‌های مرتبط با فعالیت‌ها و ختم‌های شما را یک‌جا کنترل کنید."
+	,"account_notifications_disabled_note": "اعلان‌ها خاموش‌اند؛ تا زمان فعال‌سازی دوباره، پیامی برای شما ارسال نمی‌شود."
+	,"account_not_connected": "متصل نیست"
+	,"account_bale": "بله"
+	,"account_eitaa": "ایتا"
+	,"account_channel_ready_description": "این کانال متصل است و می‌تواند اعلان‌ها را دریافت کند."
+	,"account_channel_setup_description": "برای دریافت اعلان‌ها، ابتدا گفت‌وگو با ربات را آغاز کنید."
+	,"account_channel_unavailable_description": "این کانال در حال حاضر برای ارسال اعلان پیکربندی نشده است."
+	,"account_email_ready_description": "اعلان‌ها به ایمیل تأییدشده حساب شما ارسال می‌شوند."
+	,"account_channel_enabled": "استفاده از این کانال"
+	,"account_preferred_channel_description": "در صورت امکان، ارسال از این کانال آغاز می‌شود و سپس کانال‌های دیگر امتحان می‌شوند."
+	,"account_unsaved_changes": "تغییرات ذخیره‌نشده دارید"
+	,"account_discard_changes": "لغو تغییرات"
+	,"account_saving": "در حال ذخیره..."
+	,"account_khatms_description": "ختم‌هایی را که ساخته‌اید مشاهده، ویرایش و مدیریت کنید."
+	,"account_create_khatm": "ایجاد ختم"
+	,"account_no_khatms_description": "با ساخت نخستین ختم، دعوت از همراهان و پیگیری پیشرفت را شروع کنید."
+	,"account_create_first_khatm": "ساخت نخستین ختم"
+	,"account_sign_out_confirm_title": "از حساب خارج می‌شوید؟"
+	,"account_sign_out_confirm_description": "برای دسترسی دوباره به ختم‌ها و تنظیمات شخصی باید مجدداً وارد شوید."
+	,"account_cancel": "انصراف"
+	,"account_signing_out": "در حال خروج..."
+	,"edit_khatm_title": "ویرایش ختم"
+	,"edit_save_error": "ذخیره تغییرات ناموفق بود."
+	,"edit_delete_confirm": "این ختم و همه مشارکت‌های آن حذف شود؟"
+	,"edit_delete_error": "حذف ختم ناموفق بود."
+	,"edit_title": "عنوان"
+	,"edit_description": "توضیحات"
+	,"edit_range_type": "نوع بازه"
+	,"edit_range_locked": "به‌دلیل ثبت مشارکت، نوع بازه قفل شده است."
+	,"edit_private": "خصوصی"
+	,"edit_public": "عمومی"
+	,"edit_last_series": "دور جاری آخرین دور باشد"
+	,"edit_save": "ذخیره تغییرات"
+	,"edit_delete": "حذف ختم"
+	,"zekr_count_times": "{count} مرتبه"
+	,"history_title": "تاریخچه فعالیت‌های شما"
+	,"history_heading": "رد پای همراهی شما"
+	,"history_description": "ختم‌هایی که ساخته‌اید، ذکرهایی که همراه شده‌اید و سهم‌های قرائت‌شده را اینجا می‌بینید."
+	,"history_created": "ختم‌های ساخته‌شده"
+	,"history_created_empty": "هنوز ختمی ایجاد نکرده‌اید."
+	,"history_zekr": "ختم‌های ذکر شما"
+	,"history_zekr_empty": "هنوز ختم ذکری در سابقه‌ی شما نیست."
+	,"history_picked": "مشارکت‌های قرائت"
+	,"history_picked_empty": "هنوز سهمی برای قرائت انتخاب نکرده‌اید."
+	,"history_started_groups": "جمع‌هایی که آغاز کرده‌اید"
+	,"history_latest_picks": "آخرین مشارکت‌ها"
+	,"history_picked_description": "سهم‌هایی که برای قرائت برداشته‌اید"
+	,"history_zekr_description": "حلقه‌های ذکری که همراهی کرده‌اید"
+	,"history_created_at": "ایجادشده در {date}"
+	,"history_from_khatm": "از ختم «{title}»"
+	,"history_private": "خصوصی"
+	,"history_view": "مشاهده {title}"
+	,"history_count_target": "{count} تایی"
+	,"history_view_all": "دیدن همه"
+	,"directory_sort_recent": "تازه‌ترین"
+	,"directory_sort_recent_description": "آخرین ختم‌های ثبت‌شده"
+	,"directory_sort_progress": "بیشترین پیشرفت"
+	,"directory_sort_progress_description": "ختم‌های ناتمام نزدیک‌تر به پایان"
+	,"directory_sort_continuous": "ختم‌های پیوسته"
+	,"directory_sort_continuous_description": "بیشترین دورهای کامل‌شده"
+	,"directory_range_free": "آزاد"
+	,"directory_range_page": "صفحه به صفحه"
+	,"directory_range_hizb": "حزب به حزب"
+	,"directory_range_surah": "سوره به سوره"
+	,"directory_range_juz": "جزء به جزء"
+	,"directory_range_ayah": "آیه به آیه"
+	,"directory_load_more_error": "بارگذاری موارد بیشتر انجام نشد. دوباره تلاش کنید."
+	,"directory_read_count": "{count} آیه خوانده‌شده"
+	,"directory_round_count": "{count} دور کامل‌شده"
+	,"directory_ready": "آماده برای مشارکت شما"
+	,"directory_title": "ختم‌های ثبت‌شده"
+	,"directory_kicker": "جستجو در جمع‌های قرآنی"
+	,"directory_heading": "ختم مناسب خودتان را پیدا کنید"
+	,"directory_description": "میان ختم‌های عمومی جستجو کنید، نوع تقسیم را انتخاب کنید و برترین‌ها را ببینید."
+	,"directory_toolbar_label": "جستجو و فیلتر ختم‌ها"
+	,"directory_search_label": "جستجو در عنوان و توضیحات"
+	,"directory_search_placeholder": "مثلاً ختم برای سلامتی…"
+	,"directory_clear_search": "پاک‌کردن جستجو"
+	,"directory_range_label": "نوع بازه‌بندی"
+	,"directory_all_ranges": "همهٔ انواع"
+	,"directory_views_label": "شیوهٔ مرتب‌سازی ختم‌ها"
+	,"directory_results_for": "نتایج مرتبط با «{query}»"
+	,"directory_choose_message": "یک ختم را انتخاب کنید و سهم خود را برای قرائت بردارید."
+	,"directory_clear_filters": "پاک‌کردن فیلترها"
+	,"directory_not_found": "ختمی پیدا نشد"
+	,"directory_change_filter": "عبارت جستجو یا نوع بازه را تغییر دهید و دوباره امتحان کنید."
+	,"directory_empty": "هنوز ختمی در این دسته برای نمایش وجود ندارد."
+	,"directory_show_all": "نمایش همهٔ ختم‌ها"
+	,"directory_retry": "تلاش دوباره"
+	,"directory_loading": "در حال بارگذاری…"
+	,"directory_load_more": "نمایش موارد بیشتر"
+	,"directory_range_results": "ختم‌های {rangeType}"
+	,"offline_preparing": "در حال آماده‌سازی ختم آفلاین…"
+	,"offline_supported_title": "ختم آفلاین ویژهٔ نسخهٔ نصب‌شده است"
+	,"offline_supported_description": "برای نگهداری امن داده روی همین دستگاه، این قابلیت در اپ Capacitor یا PWA نصب‌شده در دسترس قرار می‌گیرد."
+	,"offline_back_home": "بازگشت به خانه"
+	,"offline_open_failed": "خواندن ختم‌های آفلاین ناموفق بود."
+	,"offline_read_failed": "خواندن ختم آفلاین ناموفق بود."
+	,"offline_failure_title": "ختم آفلاین باز نشد"
+	,"offline_eyebrow": "بدون حساب و بدون اینترنت"
+	,"offline_heading": "ختم قرآن شخصی خودتان را پیش ببرید"
+	,"offline_description": "همهٔ اطلاعات فقط در IndexedDB همین دستگاه ذخیره می‌شود و هیچ لینکی برای اشتراک‌گذاری ساخته نخواهد شد."
+	,"offline_important": "مهم:"
+	,"offline_data_warning": "با پاک‌کردن داده‌های برنامه یا مرورگر، ختم‌های آفلاین نیز حذف می‌شوند و در این نسخه امکان بازیابی یا انتقال وجود ندارد."
+	,"offline_list_title": "ختم‌های آفلاین شما"
+	,"offline_list_description": "آخرین تغییرها در ابتدای فهرست قرار دارند."
+	,"offline_completed": "کامل‌شده"
+	,"offline_progress": "{percent}٪ پیشرفت"
+	,"offline_round": "دور {count}"
+	,"offline_empty_title": "هنوز ختم آفلاینی ندارید"
+	,"offline_empty_description": "فرم زیر را تکمیل کنید تا اولین ختم شخصی شما ساخته شود."
+	,"offline_save_error": "ذخیرهٔ ختم آفلاین ناموفق بود."
+	,"offline_edit_title": "ویرایش ختم آفلاین"
+	,"offline_create_title": "ساخت ختم آفلاین تازه"
+	,"offline_not_shareable": "این ختم قابل اشتراک‌گذاری نیست."
+	,"offline_title_label": "عنوان ختم"
+	,"offline_title_placeholder": "مثلاً ختم شخصی روزانه"
+	,"offline_description_label": "توضیحات (اختیاری)"
+	,"offline_division": "نحوهٔ تقسیم قرائت"
+	,"offline_range_locked": "پس از شروع ختم، نوع تقسیم قابل تغییر نیست."
+	,"offline_serial": "ختم پیوسته باشد"
+	,"offline_serial_hint": "پس از پایان هر دور می‌توانید دور بعدی را آغاز کنید."
+	,"offline_cancel": "انصراف"
+	,"offline_saving": "در حال ذخیره…"
+	,"offline_save_changes": "ذخیرهٔ تغییرات"
+	,"offline_detail_eyebrow": "ختم شخصی ذخیره‌شده روی این دستگاه"
+	,"offline_badge": "آفلاین"
+	,"offline_edit": "ویرایش"
+	,"offline_delete": "حذف"
+	,"offline_stop_round": "توقف پس از این دور"
+	,"offline_progress_round": "پیشرفت دور جاری"
+	,"offline_progress_label": "پیشرفت ختم"
+	,"offline_verses_read": "{count} آیه ثبت شده است"
+	,"offline_read_ranges": "بازه‌های خوانده‌شده در این دور"
+	,"offline_completed_rounds": "دورهای کامل‌شده"
+	,"offline_round_label": "دور {count}"
+	,"offline_round_complete": "دور {count} کامل شد"
+	,"offline_complete_title": "این ختم قرآن کامل شد"
+	,"offline_complete_description": "تمام آیات قرآن در این دور ثبت شده‌اند."
+	,"offline_start_next_round": "شروع دور جدید"
+	,"offline_next_share": "سهم بعدی از ختم"
+	,"offline_next_share_description": "آیات بعدی به‌ترتیب ثبت و برای مطالعه نمایش داده می‌شوند."
+	,"offline_accept_one": "پذیرفتن یک آیه"
+	,"offline_consecutive": "{count} آیهٔ متوالی"
+	,"offline_view_switch": "شیوهٔ نمایش بازه‌ها"
+	,"offline_view_step": "مرحله‌ای"
+	,"offline_view_list": "لیستی"
+	,"offline_view_grid": "جدولی"
+	,"offline_choose_next": "انتخاب بخش بعدی برای قرائت"
+	,"offline_choose_next_description": "با تأیید انتخاب، این بازه همان لحظه در پیشرفت ختم ثبت می‌شود."
+	,"offline_unit_size": "اندازهٔ سهم"
+	,"offline_unit_page": "صفحه"
+	,"offline_unit_hizb": "ربع حزب"
+	,"offline_unit_surah": "سوره"
+	,"offline_unit_juz": "جزء"
+	,"offline_read_status": "خوانده‌شده"
+	,"offline_partial_status": "بخشی خوانده‌شده"
+	,"offline_ready_status": "آمادهٔ انتخاب"
+	,"offline_complete_badge": "کامل"
+	,"offline_select": "انتخاب"
+	,"offline_range_saved": "بازه با موفقیت ثبت شد"
+	,"offline_view_read": "مشاهده و قرائت آیات"
+	,"offline_choose_another": "انتخاب بخش دیگر"
+	,"offline_mark_read": "این بخش به‌عنوان خوانده‌شده ثبت شود؟"
+	,"offline_registering": "در حال ثبت…"
+	,"offline_register_yes": "بله، ثبت شود"
+	,"offline_delete_title": "این ختم آفلاین حذف شود؟"
+	,"offline_delete_description": "تمام دورها و بازه‌های ثبت‌شده برای همیشه از این دستگاه حذف می‌شوند."
+	,"offline_delete_all": "حذف کامل ختم"
+	,"offline_stop_title": "این دور، آخرین دور باشد؟"
+	,"offline_stop_description": "دور جاری ادامه پیدا می‌کند، اما پس از کامل‌شدن آن دور تازه‌ای ساخته نمی‌شود."
+	,"offline_stop_series": "توقف ختم پیوسته"
+	,"offline_reading_back": "بازگشت به ختم"
+	,"offline_reading_start": "آغاز {title}"
+	,"offline_reading_end": "پایان {title}"
+	,"offline_reading_back_page": "بازگشت به صفحهٔ ختم"
+	,"privacy_title": "حریم خصوصی"
+	,"privacy_eyebrow": "شفافیت در نگهداری داده‌ها"
+	,"privacy_summary": "این صفحه توضیح می‌دهد چه داده‌هایی برای فراهم‌کردن تجربهٔ {name} پردازش می‌شوند و چه انتخاب‌هایی در اختیار شماست."
+	,"privacy_purpose_title": "هدف این سیاست"
+	,"privacy_purpose_text": "ما فقط داده‌هایی را پردازش می‌کنیم که برای ساخت و مدیریت ختم‌ها، ثبت مشارکت‌ها، ورود به حساب و ارسال اعلان‌های انتخابی لازم‌اند."
+	,"privacy_collected_title": "داده‌هایی که جمع‌آوری می‌شوند"
+	,"privacy_collected_account": "اطلاعات حساب، مانند نام، نشانی ایمیل و روش ورود انتخاب‌شده."
+	,"privacy_collected_khatm": "اطلاعاتی که برای ایجاد یا مشارکت در ختم وارد می‌کنید؛ مانند عنوان، توضیح و بازه‌های انتخاب‌شده."
+	,"privacy_collected_notifications": "تنظیمات اعلان و نشانی کانال متصل‌شده، در صورتی که خودتان آن را فعال کنید."
+	,"privacy_collected_technical": "داده‌های فنی لازم برای امنیت نشست و عملکرد سرویس، مانند شناسهٔ نشست و اطلاعات مرورگر."
+	,"privacy_use_title": "نحوهٔ استفاده از داده‌ها"
+	,"privacy_use_text": "از داده‌ها برای ارائهٔ سرویس، جلوگیری از سوءاستفاده، پاسخ‌گویی به درخواست‌های پشتیبانی و ارسال اعلان‌های مربوط به ختم استفاده می‌کنیم. اعلان‌ها از بخش حساب کاربری قابل مدیریت هستند."
+	,"privacy_sharing_title": "نمایش و اشتراک‌گذاری"
+	,"privacy_sharing_text": "اطلاعاتی که در یک ختم عمومی ثبت می‌کنید ممکن است برای دیگر شرکت‌کنندگان همان ختم قابل مشاهده باشد. داده‌های شخصی شما فروخته نمی‌شوند و جز برای ارائهٔ قابلیت‌های انتخابی، در اختیار اشخاص ثالث قرار نمی‌گیرند."
+	,"privacy_control_title": "انتخاب‌ها و ارتباط با ما"
+	,"privacy_control_text": "می‌توانید تنظیمات اعلان را از حساب کاربری تغییر دهید. برای درخواست دسترسی، اصلاح یا حذف اطلاعات حساب، از راه ارتباطی بخش پشتیبانی سایت با ما در تماس باشید."
+	,"terms_title": "شرایط استفاده"
+	,"terms_eyebrow": "همراهی آگاهانه"
+	,"terms_summary": "با استفاده از {name}، می‌پذیرید که این شرایط را مطالعه کرده و به آن‌ها پایبند باشید."
+	,"terms_acceptance_title": "پذیرش شرایط"
+	,"terms_acceptance_text": "استفاده از این سامانه به معنای پذیرش این شرایط و سیاست حریم خصوصی است. اگر با بخشی از این موارد موافق نیستید، لطفاً از استفاده از سرویس خودداری کنید."
+	,"terms_use_title": "استفادهٔ مسئولانه"
+	,"terms_use_account": "اطلاعات حساب خود را صحیح وارد کنید و از دسترسی دیگران به آن جلوگیری کنید."
+	,"terms_use_respect": "در نام‌گذاری و توضیح ختم‌ها، احترام به دیگر کاربران و فضای معنوی سامانه را رعایت کنید."
+	,"terms_use_abuse": "از هرگونه استفادهٔ مخرب، ارسال محتوای نامناسب یا تلاش برای اختلال در سرویس خودداری کنید."
+	,"terms_khatms_title": "ختم‌ها و مشارکت‌ها"
+	,"terms_khatms_text": "ایجادکنندهٔ هر ختم مسئول اطلاعات و شیوهٔ دعوتی است که در آن ختم به‌کار می‌گیرد. ثبت یک بازه به منزلهٔ اعلام آمادگی شما برای قرائت آن است؛ بااین‌حال، برنامه جایگزین تعهد شخصی شما نیست."
+	,"terms_availability_title": "دسترسی به سرویس"
+	,"terms_availability_text": "ممکن است برای نگهداری، بهبود یا حفظ امنیت، بخش‌هایی از سرویس موقتاً تغییر کنند یا در دسترس نباشند. تلاش می‌کنیم هر تغییر مهم را به‌صورت مناسب اطلاع‌رسانی کنیم."
+	,"terms_changes_title": "تغییرات و تماس"
+	,"terms_changes_text": "ممکن است این شرایط به‌روزرسانی شوند. تاریخ بالای صفحه نشان می‌دهد که متن آخرین‌بار چه زمانی تغییر کرده است. پرسش‌ها و پیشنهادهای خود را از راه بخش پشتیبانی سایت ارسال کنید."
+	,"settings_font_default": "پیش‌فرض"
+	,"settings_font_madinah_1": "مصحف مدینه ۱"
+	,"settings_font_madinah_2": "مصحف مدینه ۲"
+	,"settings_reciter_parhizgar": "پرهیزگار"
+	,"settings_reciter_minshawi": "منشاوی"
+	,"settings_reciter_husari": "خلیل الحصری"
+	,"settings_reciter_abdulbasit": "عبد الباسط"
+	,"home_statistics_description": "نگاهی به ثمرهٔ همراهی همهٔ کسانی که در این سامانه قرآن خوانده‌اند."
+	,"home_stats_recited_label": "آیات تلاوت‌شده در سامانه"
+	,"home_stats_recited_description": "آیه که با همراهی جمع خوانده شده است"
+	,"home_stats_rounds_label": "دورهای کامل‌شده در سامانه"
+	,"home_stats_rounds_description": "دور ختم قرآن که به پایان رسیده است"
+	,"home_daily_title": "نبض تلاوت در هفت روز اخیر"
+	,"home_daily_description": "روند روزانهٔ فعالیت سامانه بر اساس زمان تهران"
+	,"home_weekly_ayahs": "آیه در این هفته"
+	,"home_chart_legend": "راهنمای نمودار"
+	,"home_legend_ayah": "آیات تلاوت‌شده"
+	,"home_legend_created": "ختم ایجادشده"
+	,"home_legend_completed": "دور کامل‌شده"
+	,"home_personal_kicker": "مسیر شما"
+	,"home_personal_title": "از همان‌جایی که بودید ادامه دهید"
+	,"home_personal_description": "آخرین ختم‌ها و مشارکت‌های شما روی همین دستگاه نگهداری می‌شوند."
+	,"home_history_link": "تاریخچه کامل"
+	,"home_created_title": "ختم‌هایی که ساخته‌اید"
+	,"home_no_created": "هنوز ختمی نساخته‌اید"
+	,"home_first_group": "اولین جمع قرآنی‌تان را همین امروز شکل دهید."
+	,"home_create_first": "ایجاد اولین ختم"
+	,"home_no_picked": "هنوز سهمی انتخاب نکرده‌اید"
+	,"home_join_public": "به یک ختم عمومی بپیوندید و سهم خودتان را بردارید."
+	,"home_view_khatms": "مشاهده ختم‌ها"
+	,"home_view_all": "همه موارد"
+	,"home_join_signin": "برای مشارکت وارد شوید"
+	,"home_public_kicker": "جمع‌های روشن"
+	,"home_public_title": "همین حالا به یک ختم بپیوندید"
+	,"home_public_description": "از میان ختم‌های عمومی، جمعی را انتخاب کنید و سهمی از این مسیر داشته باشید."
+	,"home_featured_kicker": "نیت‌های ماندگار، همراهی همیشگی"
+	,"home_featured_description": "ختم‌های دائمی برای موضوعات ویژه؛ هر دور که تمام شود، دور تازه‌ای آغاز می‌شود."
+	,"home_featured_meta": "ختم دائمی شاخص"
+	,"home_showcase_title": "پرمشارکت‌های این روزها"
+	,"home_showcase_description": "این فهرست به‌صورت خودکار بر اساس بیشترین تعداد آیات خوانده‌شده در ۳ روز گذشته مرتب می‌شود."
+	,"home_recent_title": "تازه‌ترین ختم‌ها"
+	,"home_recent_description": "جمع‌های عمومی و تأییدشده"
+	,"home_zekr_title": "حلقه‌های ذکر"
+	,"home_zekr_description": "همراهی‌های کوچک و پیوسته برای یاد خدا"
+	,"home_zekr_count": "{count} تایی"
+	,"home_zekr_registered": "تعداد ثبت‌شده"
+	,"home_how_kicker": "خیلی ساده"
+	,"home_how_title": "سه قدم تا یک ختم جمعی"
+	,"home_how_description": "از ساختن جمع تا پایان قرائت، همه‌چیز روشن و بی‌دردسر پیش می‌رود."
+	,"home_step_create": "ختم را بسازید"
+	,"home_step_create_description": "یک عنوان انتخاب کنید و شیوه‌ی تقسیم آیات، صفحات یا اجزا را مشخص کنید."
+	,"home_step_invite": "همراهان را دعوت کنید"
+	,"home_step_invite_description": "لینک اختصاصی ختم را در جمع خانواده، دوستان یا همکاران به اشتراک بگذارید."
+	,"home_step_finish": "با هم به پایان برسانید"
+	,"home_step_finish_description": "هرکس سهم خود را می‌خواند و پیشرفت جمع برای همه به‌روز می‌ماند."
+	,"home_cta_kicker": "یک قدم روشن"
+	,"home_cta_title": "جمع قرآنی شما می‌تواند همین امروز شکل بگیرد"
+	,"home_cta_description": "نیت کنید، ختم را بسازید و اولین دعوت را برای یک همراه بفرستید."
+	,"home_cta_action": "شروع ختم جدید"
+	,"share_dialog_title": "اشتراک‌گذاری ختم"
+	,"share_dialog_description": "متن دعوت، لینک‌ها و کارت‌پستال آمادهٔ ارسال هستند."
+	,"share_preview_alt": "کارت دعوت ختم {title}"
+	,"share_generating_image": "در حال ساخت کارت‌پستال…"
+	,"share_image_error": "ساخت تصویر ممکن نشد؛ متن و لینک همچنان قابل اشتراک هستند."
+	,"share_retry_image": "تلاش دوباره"
+	,"share_share_card": "اشتراک کارت"
+	,"share_share_text": "اشتراک متن و لینک"
+	,"share_download_card": "دانلود کارت"
+	,"share_copy_text": "کپی متن دعوت"
+	,"share_links_title": "لینک‌های دعوت"
+	,"share_normal_link": "لینک عادی وب"
+	,"share_direct_link": "لینک مستقیم {provider}"
+	,"share_copy_link": "کپی لینک"
+	,"share_text_copied": "متن دعوت کپی شد"
+	,"share_link_copied": "لینک کپی شد"
+	,"share_download_started": "دانلود کارت آغاز شد"
+	,"share_action_error": "اشتراک‌گذاری انجام نشد"
+	,"share_card_eyebrow": "دعوت به یک همراهی قرآنی"
+	,"share_card_invitation": "با انتخاب بخشی از قرآن، در این ختم جمعی همراه شوید."
+	,"share_card_hint": "برای پیوستن، لینک همراه پیام را باز کنید"
+	,"success_miniapp_link_hint": "این لینک، ختم را مستقیم داخل {provider} باز می‌کند."
 }

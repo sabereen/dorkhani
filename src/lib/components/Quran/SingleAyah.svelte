@@ -18,9 +18,10 @@
 		font: 'hafs' | 'qpc1' | 'qpc2' | 'hafs'
 		fontManager: FontManager
 		audioManager: AudioManager
+		onlineActions?: boolean
 	}
 
-	const { ayahInfo, font, fontManager, audioManager }: Props = $props()
+	const { ayahInfo, font, fontManager, audioManager, onlineActions = true }: Props = $props()
 
 	const ayah = $derived(Ayah.get(ayahInfo.index))
 </script>
@@ -60,7 +61,7 @@
 		<p class="ui-quran-translation" lang="fa" dir="rtl">{ayahInfo.translation}</p>
 	</div>
 	<footer class="ui-quran-ayah-footer">
-		{#if !audioManager.paused && audioManager.playingIndex === ayah.index}
+		{#if onlineActions && !audioManager.paused && audioManager.playingIndex === ayah.index}
 			<button
 				type="button"
 				class="ui-btn ui-btn-sm ui-btn-soft relative"
@@ -73,7 +74,7 @@
 				{/if}
 				{m.quran_pause_audio()}
 			</button>
-		{:else}
+		{:else if onlineActions}
 			<button
 				type="button"
 				class="ui-btn ui-btn-sm ui-btn-soft"
@@ -83,14 +84,18 @@
 				{m.quran_play_audio()}
 			</button>
 		{/if}
-		<a href={ayah_getExternalLink(ayah)} target="_blank" class="ui-btn ui-btn-sm ui-btn-ghost">
-			<IconContext class="size-5" />
-			{m.quran_context()}
-		</a>
+		{#if onlineActions}
+			<a href={ayah_getExternalLink(ayah)} target="_blank" class="ui-btn ui-btn-sm ui-btn-ghost">
+				<IconContext class="size-5" />
+				{m.quran_context()}
+			</a>
+		{:else}
+			<span class="ui-text-muted">{m.quran_offline_audio_hint()}</span>
+		{/if}
 		<p class="ui-quran-ayah-meta">
 			{m.quran_ayah_meta({ number: ayah.number.toLocaleString(localeTag()), surah: surah_getName(ayah.surah) })}
 		</p>
-		{#if audioManager.audioDuration && !audioManager.paused && audioManager.playingIndex === ayah.index}
+		{#if onlineActions && audioManager.audioDuration && !audioManager.paused && audioManager.playingIndex === ayah.index}
 			<progress
 				transition:fade
 				class="ui-progress rounded-0 absolute bottom-0 left-0 right-0 h-1 w-full"

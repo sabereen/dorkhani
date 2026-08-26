@@ -13,6 +13,7 @@
 	import { pushState } from '$app/navigation'
 	import IconGrid from '~icons/ic/round-grid-view'
 	import PickedRangeResult from '../PickedRangeResult.svelte'
+	import * as m from '$lib/paraglide/messages.js'
 
 	type PageState = {
 		modal?: boolean
@@ -96,33 +97,33 @@
 <section class="ui-khatm-panel ui-khatm-map-panel">
 	<div class="ui-khatm-panel-header ui-khatm-map-panel-header">
 		<span class="ui-khatm-option-icon"><IconGrid /></span>
-		<h2>نقشه‌ی کامل ختم</h2>
-		<p>جای هر بخش را در ساختار قرآن ببینید و مستقیم از روی نقشه انتخاب کنید.</p>
+		<h2>{m.grid_title()}</h2>
+		<p>{m.grid_description()}</p>
 	</div>
 	<div class="ui-khatm-toolbar ui-khatm-map-toolbar">
 		<label class="ui-khatm-check">
 			<input type="checkbox" class="ui-checkbox" bind:checked={hideFinishedIntervals} />
-			<span>فقط بازه‌های آزاد</span>
+			<span>{m.grid_free_ranges_only()}</span>
 		</label>
 		<label class="ui-khatm-check">
 			<input type="checkbox" class="ui-checkbox" bind:checked={showBadges} />
-			<span>نمایش ابتدا و انتهای بازه</span>
+			<span>{m.grid_show_range_ends()}</span>
 		</label>
 	</div>
 	<div>
-		<div class="ui-alert ui-alert-info">برای پذیرفتن قرائت، روی بخش مورد نظر بزنید.</div>
+		<div class="ui-alert ui-alert-info">{m.grid_select_instruction()}</div>
 	</div>
-	<div class="ui-khatm-map-legend" aria-label="راهنمای وضعیت بازه‌ها">
-		<span><i class="ui-khatm-map-key ui-khatm-map-key-free" aria-hidden="true"></i>آزاد</span>
+	<div class="ui-khatm-map-legend" aria-label={m.grid_legend()}>
+		<span><i class="ui-khatm-map-key ui-khatm-map-key-free" aria-hidden="true"></i>{m.grid_free()}</span>
 		<span
-			><i class="ui-khatm-map-key ui-khatm-map-key-finished" aria-hidden="true"></i>خوانده‌شده</span
+			><i class="ui-khatm-map-key ui-khatm-map-key-finished" aria-hidden="true"></i>{m.grid_read()}</span
 		>
-		<span><i class="ui-khatm-map-key ui-khatm-map-key-mine" aria-hidden="true"></i>سهم شما</span>
+		<span><i class="ui-khatm-map-key ui-khatm-map-key-mine" aria-hidden="true"></i>{m.wizard_my_share()}</span>
 	</div>
 	<div class="ui-khatm-map">
 		<div class="ui-khatm-map-scroll">
 			<div class="ui-khatm-map-head" aria-hidden="true">
-				<span>جزء</span><span>سوره</span><span>صفحه</span>
+				<span>{m.grid_juz()}</span><span>{m.grid_surah()}</span><span>{m.grid_page()}</span>
 			</div>
 			<div class="ui-khatm-map-grid" style:grid-template-rows={gridTemplateRows}>
 				{#snippet renderSelectableRanges(ranges: { start: number; end: number }[], column: number)}
@@ -183,12 +184,12 @@
 							class="ui-khatm-map-picked col-span-3 col-start-1"
 							class:ui-khatm-map-finished={!mine}
 							class:ui-khatm-map-mine={mine}
-							title={`${mine ? 'سهم شما' : 'قرائت شده'}: ${label}`}
+							title={`${mine ? m.wizard_my_share() : m.grid_read()}: ${label}`}
 							style:grid-row-start={part.start + 1}
 							style:grid-row-end={part.end + 1}
 						>
 							<span class="select-none">
-								<strong>{mine ? 'سهم شما' : 'قرائت شده'}</strong>
+								<strong>{mine ? m.wizard_my_share() : m.grid_read()}</strong>
 								<small>{label}</small>
 							</span>
 						</div>

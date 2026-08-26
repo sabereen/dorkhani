@@ -8,6 +8,7 @@
 	import IconArrowForward from '~icons/ic/round-arrow-forward'
 	import IconCheck from '~icons/ic/round-check'
 	import IconLayers from '~icons/ic/round-layers'
+	import * as m from '$lib/paraglide/messages.js'
 
 	type Props = {
 		range: QuranRange
@@ -43,8 +44,8 @@
 		class="ui-btn ui-btn-ghost ui-btn-sm ui-khatm-partial-back"
 		onclick={() => (confirming = false)}
 	>
-		<IconArrowForward />
-		بازگشت به بخش‌های آزاد
+		<IconArrowForward class="ltr:mirror" />
+		{m.wizard_partial_back()}
 	</button>
 	<ConfirmRange {khatm} {onClose} onFinished={finish} range={selectedRange} />
 {:else}
@@ -52,8 +53,8 @@
 		<header class="ui-khatm-partial-heading">
 			<span class="ui-khatm-partial-heading-icon"><IconLayers /></span>
 			<div>
-				<span class="ui-khatm-wizard-kicker">انتخاب از یک بازه نیمه‌تکمیل</span>
-				<h2>بخش آزاد دل‌خواهتان را بردارید</h2>
+				<span class="ui-khatm-wizard-kicker">{m.wizard_partial_eyebrow()}</span>
+				<h2>{m.wizard_partial_title()}</h2>
 				<p>{range.title || range.getTitleSurahOrinted()}</p>
 			</div>
 		</header>
@@ -61,24 +62,24 @@
 		<div class="ui-khatm-partial-summary">
 			<div>
 				<strong>{availableCount.toLocaleString(localeTag())}</strong>
-				<span>بخش آزاد</span>
+				<span>{m.wizard_partial_free()}</span>
 			</div>
 			<div>
-				<span><b>{formatPercent(percent)}</b> از این بازه پیش‌تر انتخاب شده است</span>
+				<span>{m.wizard_partial_selected({ percent: formatPercent(percent) })}</span>
 				<progress
 					class="ui-progress"
 					max={100}
 					value={percent}
-					aria-label={`${percent.toLocaleString(localeTag())} درصد انتخاب شده`}
+					aria-label={m.wizard_selected_percent({ percent: percent.toLocaleString(localeTag()) })}
 				></progress>
 			</div>
 		</div>
 
 		<p class="ui-khatm-partial-help">
-			یک ردیف با نشان «آزاد» را انتخاب کنید. بخش‌های کم‌رنگ پیش‌تر برداشته شده‌اند.
+			{m.wizard_partial_instruction()}
 		</p>
 
-		<ul class="ui-khatm-partial-list" aria-label="بخش‌های این بازه">
+		<ul class="ui-khatm-partial-list" aria-label={m.wizard_partial_list()}>
 			{#each subranges as { range: subrange, khatmPart } (subrange.start + ':' + subrange.end)}
 				{@const mine = !!khatmPart && participation.getOverlapLength(subrange) === subrange.length}
 				<li>
@@ -94,7 +95,7 @@
 								class:ui-badge-accent={mine}
 								class:ui-badge-neutral={!mine}
 							>
-								{mine ? 'سهم شما' : 'برداشته شده'}
+								{mine ? m.wizard_my_share() : m.wizard_taken()}
 							</span>
 						</div>
 					{:else}
@@ -110,7 +111,7 @@
 								bind:group={selectedRange}
 							/>
 							<span class="ui-khatm-partial-item-title">{subrange.getTitleSurahOrinted()}</span>
-							<span class="ui-badge ui-badge-success ui-badge-xs">آزاد</span>
+							<span class="ui-badge ui-badge-success ui-badge-xs">{m.grid_free()}</span>
 						</label>
 					{/if}
 				</li>
@@ -119,11 +120,11 @@
 
 		<div class="ui-khatm-partial-selection" aria-live="polite">
 			<div>
-				<span>انتخاب شما</span>
+				<span>{m.wizard_selection()}</span>
 				<strong
 					>{selectedRange
 						? selectedRange.getTitleSurahOrinted()
-						: 'هنوز بخشی انتخاب نشده است'}</strong
+						: m.wizard_no_partial_selection()}</strong
 				>
 			</div>
 			<button
@@ -132,11 +133,11 @@
 				disabled={!selectedRange}
 				onclick={continueToConfirmation}
 			>
-				ادامه و بررسی نهایی
+				{m.wizard_continue_review()}
 			</button>
 		</div>
 		<button type="button" class="ui-btn ui-btn-ghost ui-btn-block" onclick={onClose}
-			>انصراف از انتخاب</button
+			>{m.wizard_cancel_selection()}</button
 		>
 	</div>
 {/if}

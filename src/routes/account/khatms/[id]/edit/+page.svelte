@@ -10,6 +10,7 @@
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import type { KhatmData } from '$lib/contracts/domain'
 	import { disableKhatmShortcut, khatmShortcutRoute } from '$lib/native/khatm-shortcuts'
+	import * as m from '$lib/paraglide/messages.js'
 
 	const { data }: PageProps = $props()
 	let errorMessage = $state('')
@@ -42,7 +43,7 @@
 				await goto(localizeHref(`${base}/account`))
 			}
 		} catch (cause) {
-			errorMessage = cause instanceof Error ? cause.message : 'ذخیره تغییرات ناموفق بود.'
+			errorMessage = cause instanceof Error ? cause.message : m.edit_save_error()
 		} finally {
 			submitting = false
 		}
@@ -50,7 +51,7 @@
 
 	async function remove(event: SubmitEvent) {
 		event.preventDefault()
-		if (!confirm('این ختم و همه مشارکت‌های آن حذف شود؟')) return
+		if (!confirm(m.edit_delete_confirm())) return
 		submitting = true
 		errorMessage = ''
 		try {
@@ -59,16 +60,16 @@
 			await disableKhatmShortcut(khatmShortcutRoute(deletedKhatm)).catch(() => undefined)
 			await goto(data.isAdmin ? `${base}/admin/review` : localizeHref(`${base}/account`))
 		} catch (cause) {
-			errorMessage = cause instanceof Error ? cause.message : 'حذف ختم ناموفق بود.'
+			errorMessage = cause instanceof Error ? cause.message : m.edit_delete_error()
 		} finally {
 			submitting = false
 		}
 	}
 </script>
 
-<PageTitle title="ویرایش ختم" />
+<PageTitle title={m.edit_khatm_title()} />
 
-<Header title="ویرایش ختم" />
+<Header title={m.edit_khatm_title()} />
 
 <div class="ui-form-status-slot mx-auto max-w-md" aria-live="polite">
 	{#if errorMessage}<div class="ui-alert ui-alert-error">{errorMessage}</div>{/if}
@@ -78,7 +79,7 @@
 	<fieldset class="ui-card ui-card-bordered">
 		<div class="ui-card-body grid gap-3">
 			<label class="grid gap-1"
-				>عنوان<input
+				>{m.edit_title()}<input
 					class="ui-input"
 					name="title"
 					maxlength="100"
@@ -87,25 +88,25 @@
 				/></label
 			>
 			<label class="grid gap-1"
-				>توضیحات<textarea class="ui-textarea" name="description" maxlength="65535"
+				>{m.edit_description()}<textarea class="ui-textarea" name="description" maxlength="65535"
 					>{data.khatm.description}</textarea
 				></label
 			>
 			<label class="grid gap-1">
-				نوع بازه
+				{m.edit_range_type()}
 				<select class="ui-select" name="rangeType" disabled={!data.canChangeRange}>
-					<option value="free" selected={data.khatm.rangeType === 'free'}>آزاد</option>
-					<option value="page" selected={data.khatm.rangeType === 'page'}>صفحه به صفحه</option>
+					<option value="free" selected={data.khatm.rangeType === 'free'}>{m.range_free()}</option>
+					<option value="page" selected={data.khatm.rangeType === 'page'}>{m.range_page()}</option>
 					<option value="hizbQuarter" selected={data.khatm.rangeType === 'hizbQuarter'}
-						>حزب به حزب</option
+						>{m.range_hizb()}</option
 					>
-					<option value="surah" selected={data.khatm.rangeType === 'surah'}>سوره به سوره</option>
-					<option value="juz" selected={data.khatm.rangeType === 'juz'}>جزء به جزء</option>
-					<option value="ayah" selected={data.khatm.rangeType === 'ayah'}>آیه به آیه</option>
+					<option value="surah" selected={data.khatm.rangeType === 'surah'}>{m.range_surah()}</option>
+					<option value="juz" selected={data.khatm.rangeType === 'juz'}>{m.range_juz()}</option>
+					<option value="ayah" selected={data.khatm.rangeType === 'ayah'}>{m.range_ayah()}</option>
 				</select>
 				{#if !data.canChangeRange}
 					<input type="hidden" name="rangeType" value={data.khatm.rangeType} />
-					<span class="ui-text-muted text-xs">به‌دلیل ثبت مشارکت، نوع بازه قفل شده است.</span>
+					<span class="ui-text-muted text-xs">{m.edit_range_locked()}</span>
 				{/if}
 			</label>
 			<div class="grid gap-2">
@@ -117,7 +118,7 @@
 						value="private"
 						checked={data.khatm.private}
 					/>
-					خصوصی
+					{m.edit_private()}
 				</label>
 				<label>
 					<input
@@ -127,16 +128,16 @@
 						value="public"
 						checked={!data.khatm.private}
 					/>
-					عمومی
+					{m.edit_public()}
 				</label>
 			</div>
 			{#if data.canDisableSeries}
 				<label class="ui-alert ui-alert-info">
 					<input class="ui-checkbox" type="checkbox" name="disableSeries" />
-					دور جاری آخرین دور باشد
+					{m.edit_last_series()}
 				</label>
 			{/if}
-			<button class="ui-btn ui-btn-primary" type="submit" disabled={submitting}>ذخیره تغییرات</button>
+			<button class="ui-btn ui-btn-primary" type="submit" disabled={submitting}>{m.edit_save()}</button>
 		</div>
 	</fieldset>
 </form>
@@ -147,5 +148,5 @@
 	class="mx-auto mt-4 max-w-md"
 	onsubmit={remove}
 >
-	<button class="ui-btn ui-btn-danger ui-btn-block" type="submit" disabled={submitting}>حذف ختم</button>
+	<button class="ui-btn ui-btn-danger ui-btn-block" type="submit" disabled={submitting}>{m.edit_delete()}</button>
 </form>

@@ -9,6 +9,7 @@
 	import IconRejected from '~icons/ic/baseline-remove-circle-outline'
 	import IconStar from '~icons/ic/round-star'
 	import IconStarOutline from '~icons/ic/round-star-border'
+	import * as m from '$lib/paraglide/messages.js'
 
 	type ReviewAction = Extract<ReviewStatus, 'approved' | 'rejected'>
 	type Props = { khatm: Khatm; featuredOrder?: number | null; canFeature?: boolean }
@@ -24,9 +25,9 @@
 
 	const statusTitle = $derived(
 		{
-			pending: 'منتظر بررسی',
-			approved: 'تأییدشده',
-			rejected: 'ردشده',
+			pending: m.khatm_review_pending(),
+			approved: m.khatm_review_approved(),
+			rejected: m.khatm_review_rejected(),
 		}[khatm.reviewStatus],
 	)
 
@@ -39,7 +40,7 @@
 		) {
 			return cause.message
 		}
-		return 'تغییرات مدیریتی ختم انجام نشد. دوباره تلاش کنید.'
+		return m.khatm_review_error()
 	}
 
 	async function updateReviewStatus(reviewStatus: ReviewAction) {
@@ -50,7 +51,7 @@
 		try {
 			await khatm.update({ reviewStatus })
 			if (reviewStatus === 'rejected') currentFeaturedOrder = null
-			message = reviewStatus === 'approved' ? 'ختم تأیید شد.' : 'ختم رد شد.'
+			message = reviewStatus === 'approved' ? m.khatm_review_approved_message() : m.khatm_review_rejected_message()
 			toast('info', message)
 		} catch (cause) {
 			message = getErrorMessage(cause)
@@ -69,7 +70,7 @@
 			const { items } = await featuredKhatm_set(khatm.id, featured)
 			currentFeaturedOrder =
 				items.find((item) => item.khatm.seriesId === khatm.seriesId)?.featuredOrder ?? null
-			message = featured ? 'ختم به فهرست شاخص‌ها افزوده شد.' : 'ختم از فهرست شاخص‌ها حذف شد.'
+			message = featured ? m.khatm_feature_added() : m.khatm_feature_removed()
 			toast('info', message)
 		} catch (cause) {
 			message = getErrorMessage(cause)
@@ -87,8 +88,8 @@
 >
 	<div class="ui-khatm-review-copy">
 		<div>
-			<p class="ui-khatm-review-eyebrow">مدیریت بررسی</p>
-			<h2 id="khatm-review-title">وضعیت انتشار ختم</h2>
+			<p class="ui-khatm-review-eyebrow">{m.khatm_review_eyebrow()}</p>
+			<h2 id="khatm-review-title">{m.khatm_review_title()}</h2>
 		</div>
 		<span
 			class:ui-badge-accent={khatm.reviewStatus === 'pending'}
@@ -109,7 +110,7 @@
 				onclick={() => updateReviewStatus('approved')}
 			>
 				<IconApproved />
-				{reviewLoading === 'approved' ? 'در حال ثبت…' : 'تأیید ختم'}
+				{reviewLoading === 'approved' ? m.khatm_review_save() : m.khatm_review_approve()}
 			</button>
 		{/if}
 		{#if khatm.reviewStatus !== 'rejected'}
@@ -120,7 +121,7 @@
 				onclick={() => updateReviewStatus('rejected')}
 			>
 				<IconRejected />
-				{reviewLoading === 'rejected' ? 'در حال ثبت…' : 'رد ختم'}
+				{reviewLoading === 'rejected' ? m.khatm_review_save() : m.khatm_review_reject()}
 			</button>
 		{/if}
 	</div>
@@ -134,15 +135,15 @@
 				{#if currentFeaturedOrder != null}<IconStar />{:else}<IconStarOutline />{/if}
 			</span>
 			<div>
-				<strong>نمایش در ختم‌های شاخص</strong>
+				<strong>{m.khatm_feature_title()}</strong>
 				{#if currentFeaturedOrder != null}
-					<span>جایگاه {currentFeaturedOrder.toLocaleString(localeTag())} از فهرست صفحهٔ اصلی</span>
+					<span>{m.khatm_feature_position({ position: currentFeaturedOrder.toLocaleString(localeTag()) })}</span>
 				{:else if featureAllowed}
-					<span>این ختم دائمی آمادهٔ انتخاب است.</span>
+					<span>{m.khatm_feature_ready()}</span>
 				{:else if canFeature}
-					<span>پس از تأیید انتشار، می‌توانید آن را شاخص کنید.</span>
+					<span>{m.khatm_feature_approval_hint()}</span>
 				{:else}
-					<span>فقط دنباله‌های عمومی و نامحدودِ در حال اجرا قابل انتخاب‌اند.</span>
+					<span>{m.khatm_feature_unavailable()}</span>
 				{/if}
 			</div>
 		</div>
@@ -155,7 +156,7 @@
 				onclick={() => updateFeatured(false)}
 			>
 				<IconStarOutline />
-				{featureLoading ? 'در حال ثبت…' : 'حذف از شاخص‌ها'}
+				{featureLoading ? m.khatm_review_save() : m.khatm_remove_feature()}
 			</button>
 		{:else if featureAllowed}
 			<button
@@ -165,7 +166,7 @@
 				onclick={() => updateFeatured(true)}
 			>
 				<IconStar />
-				{featureLoading ? 'در حال ثبت…' : 'افزودن به شاخص‌ها'}
+				{featureLoading ? m.khatm_review_save() : m.khatm_add_feature()}
 			</button>
 		{/if}
 	</div>

@@ -1,0 +1,146 @@
+name: Release Android APK (tag recovery)
+
+on:
+  push:
+    branches:
+      - 'android-v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and publish APK
+    runs-on: ubuntu-latest
+    environment: android
+
+    env:
+      PUBLIC_SERVER_ORIGIN: https://dorkhani.ir
+      PUBLIC_FONT_PROXY: '0'
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+    steps:
+      - name: Check out corrected source
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10.8.0
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: pnpm
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Derive Android version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="$GITHUB_REF_NAME"
+          if [[ ! "$tag" =~ ^android-v([0-9]{1,4})\.([0-9]{1,2})\.([0-9]{1,2})(-beta\.([0-9]))?$ ]]; then
+            echo "Invalid version branch: $tag" >&2
+            exit 1
+          fi
+          major="${BASH_REMATCH[1]}"
+          minor="${BASH_REMATCH[2]}"
+          patch="${BASH_REMATCH[3]}"
+          beta="${BASH_REMATCH[5]}"
+          if [[ -n "$beta" ]]; then
+            channel=$((10#$beta + 1))
+            prerelease=true
+          else
+            channel=99
+            prerelease=false
+          fi
+          code=$((10#$major * 1000000 + 10#$minor * 10000 + 10#$patch * 100 + channel))
+          echo "name=${tag#android-v}" >> "$GITHUB_OUTPUT"
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          echo "prerelease=$prerelease" >> "$GITHUB_OUTPUT"
+
+      - name: Move release tag to corrected commit
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git push --force origin "$GITHUB_SHA:refs/tags/$RELEASE_TAG"
+
+      - name: Restore Android signing key
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "$ANDROID_KEYSTORE_BASE64" || -z "$ANDROID_KEYSTORE_PASSWORD" || -z "$ANDROID_KEY_ALIAS" || -z "$ANDROID_KEY_PASSWORD" ]]; then
+            echo 'Configure all Android signing secrets before creating a release.' >&2
+            exit 1
+          fi
+          keystore_path="$RUNNER_TEMP/release.keystore"
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$keystore_path"
+          chmod 600 "$keystore_path"
+          keytool -list -keystore "$keystore_path" -storepass "$ANDROID_KEYSTORE_PASSWORD" -alias "$ANDROID_KEY_ALIAS" >/dev/null
+          echo "ANDROID_KEYSTORE_PATH=$keystore_path" >> "$GITHUB_ENV"
+
+      - name: Build Capacitor web assets and sync Android
+        run: pnpm android:sync
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x android/gradlew
+
+      - name: Build signed release APK
+        working-directory: android
+        run: |
+          set -euo pipefail
+          ./gradlew --no-daemon --stacktrace assembleRelease \
+            -PversionName='${{ steps.version.outputs.name }}' \
+            -PversionCode='${{ steps.version.outputs.code }}'
+
+      - name: Prepare APK
+        id: artifact
+        env:
+          VERSION_NAME: ${{ steps.version.outputs.name }}
+        run: |
+          set -euo pipefail
+          source_apk="android/app/build/outputs/apk/release/app-release.apk"
+          artifact_dir="$RUNNER_TEMP/android-release"
+          artifact_apk="$artifact_dir/quran-khatm-$VERSION_NAME.apk"
+          test -s "$source_apk"
+          mkdir -p "$artifact_dir"
+          cp "$source_apk" "$artifact_apk"
+          echo "apk=$artifact_apk" >> "$GITHUB_OUTPUT"
+          ls -lh "$artifact_apk"
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION_NAME: ${{ steps.version.outputs.name }}
+          RELEASE_TAG: ${{ github.ref_name }}
+          IS_PRERELEASE: ${{ steps.version.outputs.prerelease }}
+          APK_PATH: ${{ steps.artifact.outputs.apk }}
+        run: |
+          set -euo pipefail
+          args=(--title "Android $VERSION_NAME" --generate-notes)
+          [[ "$IS_PRERELEASE" == true ]] && args+=(--prerelease)
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" "$APK_PATH" --clobber
+          else
+            gh release create "$RELEASE_TAG" "$APK_PATH" "${args[@]}"
+          fi

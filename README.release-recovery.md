@@ -1,0 +1,1 @@
+Temporary release recovery branch used to rebuild the Android APK from the corrected signing configuration.

@@ -1,4 +1,4 @@
-import { env } from '$env/dynamic/public'
+import { PUBLIC_BUILD_TARGET } from '$env/static/public'
 import { browser } from '$app/environment'
 import { base } from '$app/paths'
 import type { LayoutLoad } from './$types'
@@ -8,7 +8,7 @@ import { DEFAULT_BRANDING_CONFIG, getPublicBranding } from '$lib/entity/Branding
 import { isInstalledApp } from '$lib/config/installedApp'
 import { isLocale } from '$lib/i18n/locale'
 
-export const ssr = env.PUBLIC_BUILD_TARGET !== 'capacitor'
+export const ssr = PUBLIC_BUILD_TARGET !== 'capacitor'
 
 export const load: LayoutLoad = async ({ fetch, url, depends }) => {
 	depends('app:bootstrap')

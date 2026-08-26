@@ -1,13 +1,13 @@
 import { base } from '$app/paths'
-import { env } from '$env/dynamic/public'
+import { PUBLIC_BUILD_TARGET, PUBLIC_SERVER_ORIGIN } from '$env/static/public'
 
 export type BuildTarget = 'web' | 'capacitor'
 
 export const buildTarget: BuildTarget =
-	env.PUBLIC_BUILD_TARGET === 'capacitor' ? 'capacitor' : 'web'
+	PUBLIC_BUILD_TARGET === 'capacitor' ? 'capacitor' : 'web'
 export const isCapacitorBuild = buildTarget === 'capacitor'
 
-const configuredServerOrigin = env.PUBLIC_SERVER_ORIGIN?.replace(/\/$/, '') || ''
+const configuredServerOrigin = PUBLIC_SERVER_ORIGIN?.replace(/\/$/, '') || ''
 
 export function withBasePath(path: string, basePath = '') {
 	const normalizedPath = path.startsWith('/') ? path : `/${path}`

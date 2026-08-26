@@ -18,6 +18,7 @@ node_modules
 /android/local.properties
 *.jks
 *.keystore
+/android/release-keystore.env
 
 # OS
 .DS_Store

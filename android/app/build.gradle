@@ -1,19 +1,22 @@
 apply plugin: 'com.android.application'
 
+def appVersionCode = (project.findProperty('versionCode') ?: 1).toInteger()
+def appVersionName = project.findProperty('versionName') ?: "0.0.1"
+
+def releaseKeystorePath = System.getenv('ANDROID_KEYSTORE_PATH')
+def releaseKeystorePassword = System.getenv('ANDROID_KEYSTORE_PASSWORD')
+def releaseKeyAlias = System.getenv('ANDROID_KEY_ALIAS')
+def releaseKeyPassword = System.getenv('ANDROID_KEY_PASSWORD')
+def hasReleaseSigningConfig = [
+    releaseKeystorePath,
+    releaseKeystorePassword,
+    releaseKeyAlias,
+    releaseKeyPassword,
+].every { it }
+
 android {
     namespace = "ir.dorkhani.app"
     compileSdk = rootProject.ext.compileSdkVersion
-
-    def releaseKeystorePath = System.getenv('ANDROID_KEYSTORE_PATH')
-    def releaseKeystorePassword = System.getenv('ANDROID_KEYSTORE_PASSWORD')
-    def releaseKeyAlias = System.getenv('ANDROID_KEY_ALIAS')
-    def releaseKeyPassword = System.getenv('ANDROID_KEY_PASSWORD')
-    def hasReleaseSigningConfig = [
-        releaseKeystorePath,
-        releaseKeystorePassword,
-        releaseKeyAlias,
-        releaseKeyPassword,
-    ].every { it }
 
     if (hasReleaseSigningConfig) {
         signingConfigs {
@@ -30,8 +33,8 @@ android {
         applicationId "ir.dorkhani.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode (project.findProperty('versionCode') ?: 1).toInteger()
-        versionName project.findProperty('versionName') ?: "0.0.1"
+        versionCode appVersionCode
+        versionName appVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

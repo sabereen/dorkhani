@@ -10,4 +10,8 @@
 	)
 </script>
 
-{#if emitHead}<svelte:head><title>{title} | {branding.name}</title></svelte:head>{/if}
+<svelte:head>
+	{#if emitHead}
+		<title>{title} | {branding.name}</title>
+	{/if}
+</svelte:head>

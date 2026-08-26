@@ -31,12 +31,27 @@ function truncate(value: string, limit: number) {
 
 function copy(locale: Locale) {
 	if (locale === 'ar') {
-		return { invitation: 'شارك في هذا الختم الجماعي', progress: 'نسبة التقدّم', completed: 'اكتمل الختم' }
+		return {
+			invitation: 'شارك في هذا الختم الجماعي',
+			progress: 'نسبة التقدّم',
+			completed: 'اكتمل الختم',
+			snapshot: 'لقطة عند المشاركة',
+		}
 	}
 	if (locale === 'en') {
-		return { invitation: 'Join this collective Quran reading', progress: 'Reading progress', completed: 'Khatm completed' }
+		return {
+			invitation: 'Join this collective Quran reading',
+			progress: 'Reading progress',
+			completed: 'Khatm completed',
+			snapshot: 'Snapshot at sharing',
+		}
 	}
-	return { invitation: 'در این ختم جمعی همراه شوید', progress: 'میزان پیشرفت', completed: 'ختم به پایان رسیده است' }
+	return {
+		invitation: 'در این ختم جمعی همراه شوید',
+		progress: 'میزان پیشرفت',
+		completed: 'ختم به پایان رسیده است',
+		snapshot: 'نمای لحظهٔ اشتراک',
+	}
 }
 
 function formatPercent(value: number, locale: Locale) {
@@ -74,18 +89,24 @@ export async function renderShareCard(card: ShareCard) {
 	const description = card.description ? escapeHtml(truncate(card.description, 170)) : ''
 	const badge = card.badge ? escapeHtml(truncate(card.badge, 42)) : ''
 	const html = `
-		<div class="card" dir="${direction}" lang="${card.locale}">
+		<div class="card ${direction}" lang="${card.locale}">
 			<div class="orb orb-one"></div><div class="orb orb-two"></div>
-			<div class="arch"><div class="arch-inner"><span>۞</span></div></div>
-			<section class="content">
+			<section class="content" dir="${direction}">
 				<header><div class="brand-mark">۞</div><strong>${escapeHtml(truncate(card.brand, 50))}</strong></header>
 				<div class="eyebrow">${status}</div>
 				<h1>${title}</h1>
 				${description ? `<p>${description}</p>` : ''}
 				${badge ? `<span class="badge">${badge}</span>` : ''}
 			</section>
-			${progress == null ? '' : `<section class="progress"><div class="ring"${progressStyle}><div class="ring-inner"><strong>${progressText}</strong><span>${text.progress}</span></div></div><div class="progress-copy"><strong>${card.completed ? text.completed : text.invitation}</strong><span>${text.progress}</span></div></section>`}
-			<footer><span>${escapeHtml(truncate(card.brand, 50))}</span><span>quran</span></footer>
+			<section class="visual" aria-hidden="true">
+				<div class="arch"><div class="arch-inner"></div></div>
+				${
+					progress == null
+						? '<div class="motif">۞</div>'
+						: `<div class="progress"><div class="ring"${progressStyle}><div class="ring-inner"><strong>${progressText}</strong><span>${text.progress}</span></div></div><div class="progress-copy">${card.completed ? text.completed : text.snapshot}</div></div>`
+				}
+			</section>
+			<footer dir="ltr"><span>${escapeHtml(truncate(card.brand, 50))}</span><span>quran</span></footer>
 		</div>
 	`
 	const { node, stylesheets } = await fromHtml(html)
@@ -101,28 +122,33 @@ export async function renderShareCard(card: ShareCard) {
 
 const shareCardCss = `
 * { box-sizing: border-box; }
-.card { width: 1200px; height: 630px; position: relative; overflow: hidden; display: flex; align-items: stretch; padding: 62px 72px 52px; background: #07110f; color: #f7f5ef; font-family: Vazirmatn, sans-serif; }
+.card { width: 1200px; height: 630px; position: relative; overflow: hidden; background: #07110f; color: #f7f5ef; font-family: Vazirmatn, sans-serif; }
 .card:before { content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: linear-gradient(135deg, #07110f 0%, #103c35 52%, #0a211d 100%); }
 .orb { position: absolute; border-radius: 999px; opacity: .42; }
 .orb-one { width: 430px; height: 430px; top: -180px; right: -90px; background: #d6b46a; }
-.orb-two { width: 310px; height: 310px; bottom: -150px; left: 330px; background: #39a986; }
-.arch { position: absolute; top: 0; bottom: 0; right: 0; width: 448px; display: flex; align-items: center; justify-content: center; background: rgba(247,245,239,.07); }
-.arch-inner { width: 342px; height: 420px; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(214,180,106,.78); border-bottom: 0; border-radius: 180px 180px 0 0; box-shadow: 0 0 0 24px rgba(247,245,239,.04), 0 0 0 48px rgba(214,180,106,.06); color: #f1d58f; font-size: 135px; }
-.content, .progress, footer { position: relative; z-index: 1; }
-.content { width: 670px; display: flex; flex-direction: column; align-items: flex-start; }
-header { display: flex; align-items: center; font-size: 25px; color: #f7f5ef; }
-.brand-mark { width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; margin-inline-end: 14px; border-radius: 15px; background: #d6b46a; color: #07110f; font-size: 27px; }
-.eyebrow { margin-top: 62px; color: #f1d58f; font-size: 25px; font-weight: 700; }
-h1 { max-width: 650px; max-height: 210px; margin: 14px 0 0; overflow: hidden; font-size: 62px; font-weight: 700; line-height: 1.38; letter-spacing: -.8px; }
-p { max-width: 620px; max-height: 74px; margin: 20px 0 0; overflow: hidden; color: #d5e8df; font-size: 25px; line-height: 1.5; }
-.badge { margin-top: 25px; padding: 10px 17px; border: 1px solid rgba(241,213,143,.64); border-radius: 999px; background: rgba(7,17,15,.28); color: #f7f5ef; font-size: 21px; }
-.progress { position: absolute; z-index: 2; right: 82px; bottom: 105px; width: 340px; display: flex; flex-direction: column; align-items: center; text-align: center; }
-.ring { width: 210px; height: 210px; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 999px; transform: rotate(-28deg); }
-.ring-inner { width: 164px; height: 164px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 999px; background: #0b332b; transform: rotate(28deg); }
+.orb-two { width: 330px; height: 330px; bottom: -175px; left: 300px; background: #39a986; }
+.content { position: absolute; z-index: 3; top: 58px; width: 690px; height: 500px; display: flex; flex-direction: column; }
+.card.rtl .content { right: 70px; text-align: right; }
+.card.ltr .content { left: 70px; text-align: left; }
+.content header { width: 100%; display: flex; align-items: center; color: #f7f5ef; font-size: 25px; }
+.content header strong { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.brand-mark { width: 48px; height: 48px; display: flex; flex: 0 0 48px; align-items: center; justify-content: center; margin-inline-end: 14px; border-radius: 15px; background: #d6b46a; color: #07110f; font-size: 27px; }
+.eyebrow { margin-top: 60px; color: #f1d58f; font-size: 25px; font-weight: 700; }
+h1 { width: 100%; max-height: 236px; margin: 15px 0 0; overflow: hidden; color: #fffdf6; font-size: 59px; font-weight: 700; line-height: 1.36; letter-spacing: -.6px; }
+p { width: 100%; max-height: 74px; margin: 18px 0 0; overflow: hidden; color: #d5e8df; font-size: 24px; line-height: 1.55; }
+.badge { align-self: flex-start; margin-top: 23px; padding: 9px 17px; border: 1px solid rgba(241,213,143,.64); border-radius: 999px; background: rgba(7,17,15,.34); color: #f7f5ef; font-size: 20px; }
+.card.rtl .badge { align-self: flex-end; }
+.visual { position: absolute; z-index: 2; top: 54px; width: 350px; height: 500px; }
+.card.rtl .visual { left: 54px; }
+.card.ltr .visual { right: 54px; }
+.arch { position: absolute; top: 0; right: 0; bottom: 0; left: 0; display: flex; align-items: flex-end; justify-content: center; }
+.arch-inner { width: 310px; height: 455px; border: 2px solid rgba(214,180,106,.72); border-bottom: 0; border-radius: 165px 165px 0 0; background: rgba(247,245,239,.035); box-shadow: 0 0 0 22px rgba(247,245,239,.035), 0 0 0 44px rgba(214,180,106,.045); }
+.motif { position: absolute; top: 145px; right: 0; left: 0; color: #f1d58f; font-size: 118px; text-align: center; }
+.progress { position: absolute; top: 108px; right: 0; left: 0; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.ring { width: 220px; height: 220px; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 999px; }
+.ring-inner { width: 174px; height: 174px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 999px; background: #0b332b; box-shadow: 0 8px 28px rgba(0,0,0,.24); }
 .ring-inner strong { font-size: 43px; line-height: 1; }
 .ring-inner span { margin-top: 9px; color: #c8dbd3; font-size: 17px; }
-.progress-copy { margin-top: 23px; display: flex; flex-direction: column; }
-.progress-copy strong { color: #f7f5ef; font-size: 22px; }
-.progress-copy span { margin-top: 6px; color: #c8dbd3; font-size: 18px; }
-footer { position: absolute; right: 72px; bottom: 28px; left: 72px; display: flex; justify-content: space-between; color: rgba(247,245,239,.66); font-size: 17px; letter-spacing: .8px; }
+.progress-copy { margin-top: 22px; color: #d5e8df; font-size: 18px; }
+footer { position: absolute; z-index: 4; right: 70px; bottom: 26px; left: 70px; display: flex; justify-content: space-between; color: rgba(247,245,239,.62); font-size: 17px; letter-spacing: .8px; }
 `

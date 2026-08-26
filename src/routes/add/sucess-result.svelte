@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { browser } from '$app/environment'
 	import ExpandableText from '$lib/components/ExpandableText.svelte'
+	import KhatmShareModal from '$lib/components/KhatmShareModal.svelte'
 	import { toast } from '$lib/components/TheToast.svelte'
 	import { CreatedKhatm } from '$lib/entity/CreatedKhatm'
 	import type { Khatm } from '$lib/entity/Khatm.svelte'
@@ -11,6 +11,11 @@
 	import IconShare from '~icons/ic/outline-share'
 	import IconOpen from '~icons/ic/round-open-in-new'
 	import IconLink from '~icons/ic/round-link'
+	import IconChat from '~icons/ic/round-chat'
+	import { page } from '$app/state'
+	import { createMiniAppLink } from '$lib/miniapp/links'
+	import { miniAppState } from '$lib/miniapp/state.svelte'
+	import copyToClipboard from 'clipboard-copy'
 	import * as m from '$lib/paraglide/messages.js'
 
 	type Props = {
@@ -20,8 +25,16 @@
 
 	const { khatm, claimToken }: Props = $props()
 
-	const canShare = !browser || navigator.share
 	let copied = $state(false)
+	let platformCopied = $state(false)
+	let shareOpen = $state(false)
+	const platform = $derived(miniAppState.host)
+	const platformName = $derived(
+		platform === 'bale' ? m.account_bale() : platform === 'eitaa' ? m.account_eitaa() : '',
+	)
+	const platformUrl = $derived(
+		platform ? createMiniAppLink(page.data.miniAppUrls[platform], khatm.getPath()) : null,
+	)
 
 	async function copy() {
 		try {
@@ -35,12 +48,20 @@
 		}
 	}
 
-	async function share() {
+	async function copyPlatformLink() {
+		if (!platformUrl) return
 		try {
-			await khatm.share()
+			try {
+				await navigator.clipboard.writeText(platformUrl)
+			} catch {
+				await copyToClipboard(platformUrl)
+			}
+			platformCopied = true
+			toast('info', m.share_link_copied())
 		} catch (err) {
 			console.error(err)
-			toast('error', String(err))
+			platformCopied = false
+			toast('error', m.common_copy_error())
 		}
 	}
 
@@ -131,23 +152,42 @@
 				</div>
 			</div>
 
+			{#if platformUrl}
+				<div class="success-platform-panel">
+					<span class="success-platform-icon" aria-hidden="true"><IconChat /></span>
+					<div class="success-platform-copy">
+						<strong>{m.share_direct_link({ provider: platformName })}</strong>
+						<p>{m.success_miniapp_link_hint({ provider: platformName })}</p>
+						<a href={platformUrl} target="_blank" rel="noopener" dir="ltr">{platformUrl}</a>
+					</div>
+					<button
+						class={`ui-btn ui-btn-sm ${platformCopied ? 'ui-btn-success' : 'ui-btn-soft'}`}
+						type="button"
+						onclick={copyPlatformLink}
+					>
+						{#if platformCopied}<IconCheck />{:else}<IconCopy />{/if}
+						{platformCopied ? m.success_copied() : m.share_copy_link()}
+					</button>
+				</div>
+			{/if}
+
 			<div class="success-actions">
 				<a href={khatm.link} class="ui-btn ui-btn-primary ui-btn-lg" target="_blank" rel="noopener">
 					<IconOpen aria-hidden="true" />
 						{m.success_open_khatm()}
 				</a>
-				{#if canShare}
-					<button class="ui-btn ui-btn-soft ui-btn-lg" type="button" onclick={share}>
-						<IconShare aria-hidden="true" />
-						{m.common_share()}
-					</button>
-				{/if}
+				<button class="ui-btn ui-btn-soft ui-btn-lg" type="button" onclick={() => (shareOpen = true)}>
+					<IconShare aria-hidden="true" />
+					{m.common_share()}
+				</button>
 			</div>
 		</div>
 	</section>
 
 	<p class="success-note">{m.success_saved_note()}</p>
 </div>
+
+<KhatmShareModal bind:open={shareOpen} {khatm} />
 
 <style>
 	.success-shell {
@@ -378,6 +418,60 @@
 		margin-top: 0.35rem;
 	}
 
+	.success-platform-panel {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr) auto;
+		grid-gap: 0.75rem;
+		align-items: center;
+		padding: 0.85rem;
+		border: 1px solid var(--ui-color-border);
+		border-inline-start: 0.25rem solid var(--ui-color-primary);
+		border-radius: var(--ui-radius-lg);
+		background: var(--ui-color-primary-softer);
+	}
+
+	.success-platform-icon {
+		display: flex;
+		width: 2.75rem;
+		height: 2.75rem;
+		align-items: center;
+		justify-content: center;
+		border-radius: 9999px;
+		background: var(--ui-color-primary-soft);
+		color: var(--ui-color-primary);
+		font-size: 1.4rem;
+	}
+
+	.success-platform-copy {
+		min-width: 0;
+	}
+
+	.success-platform-copy strong,
+	.success-platform-copy p,
+	.success-platform-copy a {
+		display: block;
+		margin: 0;
+	}
+
+	.success-platform-copy strong {
+		font-size: 0.84rem;
+	}
+
+	.success-platform-copy p {
+		margin-top: 0.15rem;
+		color: var(--ui-color-text-muted);
+		font-size: 0.7rem;
+	}
+
+	.success-platform-copy a {
+		margin-top: 0.3rem;
+		color: var(--ui-color-primary);
+		font-size: 0.68rem;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
 	.success-note {
 		padding: 0.9rem;
 		color: var(--ui-color-text-muted);
@@ -418,6 +512,15 @@
 		}
 
 		.success-copy-button {
+			width: 100%;
+		}
+
+		.success-platform-panel {
+			grid-template-columns: auto minmax(0, 1fr);
+		}
+
+		.success-platform-panel .ui-btn {
+			grid-column: 1 / -1;
 			width: 100%;
 		}
 	}

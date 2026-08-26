@@ -44,5 +44,6 @@ function offlineBootstrap(): AppBootstrap {
 		},
 		user: null,
 		authProviders: { google: false, eitaa: false, bale: false },
+		miniAppUrls: { bale: null, eitaa: null },
 	}
 }

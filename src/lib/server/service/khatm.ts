@@ -12,6 +12,7 @@ import type {
 } from '$lib/entity/KhatmDirectory'
 import { statisticsService_applyCommitted, statisticsService_increment } from './statistics'
 import { userNotification_notify } from './user-notification'
+import { getKhatmPath } from '$lib/utility/khatmPath'
 
 type SecretKhatmFields = {
 	ownerId?: string | null
@@ -48,13 +49,6 @@ export function khatmService_toPublic<T extends TKhatm & SecretKhatmFields>(khat
 
 function hashClaimToken(token: string) {
 	return createHash('sha256').update(token).digest('hex')
-}
-
-function khatmService_getPath(khatm: Pick<TKhatm, 'id' | 'rangeType' | 'seriesId' | 'accessToken'>) {
-	let prefix = khatm.rangeType === 'ayah' ? 'a' : 'k'
-	if (khatm.seriesId != null) prefix += 's'
-	const id = khatm.seriesId ?? khatm.id
-	return `/${prefix}${id}${khatm.accessToken ? `?t=${khatm.accessToken}` : ''}`
 }
 
 function khatmService_canFeature(khatm: KhatmWithSeries) {
@@ -280,7 +274,7 @@ export async function khatmService_create(body: CreatingKhatm, ownerId?: string 
 		khatmId: khatm.id,
 		title: khatm.title,
 		private: khatm.private,
-		khatmPath: khatmService_getPath(khatm),
+		khatmPath: getKhatmPath(khatm),
 	})
 
 	return { khatm: khatmService_toPublic(khatm), guestClaimToken }

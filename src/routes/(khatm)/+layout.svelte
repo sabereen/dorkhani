@@ -7,7 +7,6 @@
 	import IconViewList from '~icons/ic/outline-view-agenda'
 	import IconViewTable from '~icons/ic/round-calendar-view-month'
 	import IconShare from '~icons/ic/outline-share'
-	import IconCopy from '~icons/ic/outline-copy-all'
 	import IconEdit from '~icons/ic/round-edit'
 	import IconBook from '~icons/ic/round-menu-book'
 	import IconPeople from '~icons/ic/round-people-alt'
@@ -23,7 +22,6 @@
 	import { setKhatmContext } from './khatm-context.svelte'
 	import { page } from '$app/state'
 	import Tab from '$lib/components/Tab.svelte'
-	import { browser } from '$app/environment'
 	import { base } from '$app/paths'
 	import { localizeHref } from '$lib/paraglide/runtime.js'
 	import ExpandableText from '$lib/components/ExpandableText.svelte'
@@ -35,11 +33,10 @@
 	import { apiRequest } from '$lib/utility/request'
 	import { onMount } from 'svelte'
 	import { isKhatmShortcutSupported, pinKhatmShortcut } from '$lib/native/khatm-shortcuts'
+	import KhatmShareModal from '$lib/components/KhatmShareModal.svelte'
 	import * as m from '$lib/paraglide/messages.js'
 
 	const { data, children }: LayoutProps = $props()
-
-	const canShare = !browser || navigator.share
 
 	let layout = $derived.by<'wizard' | 'list' | 'grid'>(() => {
 		if (page.url.pathname.includes('grid')) return 'grid'
@@ -77,20 +74,6 @@
 		}
 	})
 
-	function share() {
-		khatm.share()
-	}
-
-	async function copy() {
-		try {
-			await khatm.copy()
-			toast('info', m.khatm_copy_success())
-		} catch (err) {
-			console.error(err)
-			toast('error', m.khatm_copy_error())
-		}
-	}
-
 	const roundTitle = $derived(khatm.getRoundTitle())
 
 	const percent = $derived(khatm.percent)
@@ -102,6 +85,7 @@
 	let showAuthPrompt = $state(false)
 	let showStopPrompt = $state(false)
 	let showPrivateShortcutPrompt = $state(false)
+	let showShare = $state(false)
 	let stoppingSeries = $state(false)
 	let pinningShortcut = $state(false)
 	let shortcutSupported = $state(false)
@@ -237,27 +221,15 @@
 				<span>{m.khatm_manage()}</span>
 			</button>
 		{/if}
-		{#if canShare}
-			<button
-				type="button"
-				class="ui-header-page-action ui-header-page-action-primary"
-				onclick={share}
-				aria-label={m.khatm_share()}
-			>
-				<IconShare class="size-5" />
-				<span>{m.khatm_share()}</span>
-			</button>
-		{:else}
-			<button
-				type="button"
-				class="ui-header-page-action ui-header-page-action-primary"
-				onclick={copy}
-				aria-label={m.khatm_copy_link()}
-			>
-				<IconCopy class="size-5" />
-				<span>{m.khatm_copy_link()}</span>
-			</button>
-		{/if}
+		<button
+			type="button"
+			class="ui-header-page-action ui-header-page-action-primary"
+			onclick={() => (showShare = true)}
+			aria-label={m.khatm_share()}
+		>
+			<IconShare class="size-5" />
+			<span>{m.khatm_share()}</span>
+		</button>
 	{/snippet}
 </Header>
 
@@ -397,6 +369,8 @@
 		{/if}
 	</section>
 </main>
+
+<KhatmShareModal bind:open={showShare} {khatm} />
 
 <Modal bind:open={showStopPrompt} contentClass="ui-khatm-stop-dialog">
 	<div class="ui-khatm-stop-icon" aria-hidden="true"><IconStop /></div>

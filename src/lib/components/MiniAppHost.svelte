@@ -2,13 +2,17 @@
 	import { onMount } from 'svelte'
 	import BaleMiniApp from './BaleMiniApp.svelte'
 	import EitaaMiniApp from './EitaaMiniApp.svelte'
+	import { goto } from '$app/navigation'
+	import { base } from '$app/paths'
+	import { localizeHref } from '$lib/paraglide/runtime.js'
+	import { withBasePath } from '$lib/config/runtime'
+	import { decodeMiniAppTarget, type MiniAppHostName } from '$lib/miniapp/links'
+	import { miniAppState } from '$lib/miniapp/state.svelte'
 
 	type Props = {
 		baleEnabled: boolean
 		eitaaEnabled: boolean
 	}
-
-	type MiniAppHostName = 'bale' | 'eitaa'
 
 	const baleSdkUrl = 'https://tapi.bale.ai/miniapp.js?3'
 	const eitaaSdkUrl = 'https://developer.eitaa.com/eitaa-web-app.js'
@@ -59,8 +63,21 @@
 	const { baleEnabled, eitaaEnabled }: Props = $props()
 	let host = $state<MiniAppHostName | null>(null)
 
+	function getStartParam(initData: string | undefined) {
+		const signedParam = initData ? new URLSearchParams(initData).get('start_param') : null
+		return signedParam || new URL(location.href).searchParams.get('tgWebAppStartParam')
+	}
+
+	function activateHost(value: MiniAppHostName, initData: string | undefined) {
+		host = value
+		miniAppState.setHost(value)
+		const target = decodeMiniAppTarget(getStartParam(initData))
+		if (target) void goto(localizeHref(withBasePath(target, base)), { replaceState: true })
+	}
+
 	onMount(() => {
 		let cancelled = false
+		miniAppState.setHost(null)
 
 		async function detectHost() {
 			if (baleEnabled) {
@@ -72,7 +89,7 @@
 						'Bale SDK failed to load',
 					)
 					if (hasBaleInitData(window.Bale?.WebApp?.initData)) {
-						if (!cancelled) host = 'bale'
+						if (!cancelled) activateHost('bale', window.Bale?.WebApp?.initData)
 						return
 					}
 				} catch {
@@ -89,7 +106,7 @@
 						'Eitaa SDK failed to load',
 					)
 					if (hasEitaaInitData(window.Eitaa?.WebApp?.initData)) {
-						if (!cancelled) host = 'eitaa'
+						if (!cancelled) activateHost('eitaa', window.Eitaa?.WebApp?.initData)
 					}
 				} catch {
 					// Mini App SDKs are optional outside their host applications.
@@ -100,6 +117,7 @@
 		void detectHost()
 		return () => {
 			cancelled = true
+			miniAppState.setHost(null)
 		}
 	})
 </script>

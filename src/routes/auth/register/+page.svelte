@@ -51,7 +51,8 @@
 			<span class="ui-auth-success-icon"><IconCheck /></span>
 			<h3>{m.auth_verification_sent_title()}</h3>
 			<p>{m.auth_verification_sent_text()}</p>
-			<a class="ui-btn ui-btn-primary ui-btn-block" href={localizeHref(`${base}/auth/login`)}>{m.auth_go_to_login()}</a
+			<a class="ui-btn ui-btn-primary ui-btn-block" href={localizeHref(`${base}/auth/login`)}
+				>{m.auth_go_to_login()}</a
 			>
 		</div>
 	{:else}
@@ -63,7 +64,8 @@
 
 		<form use:validateForm novalidate class="ui-auth-form" onsubmit={register} aria-busy={loading}>
 			<div class="ui-auth-field">
-				<label class="ui-field-label" for="register-name"><IconPerson /> {m.auth_full_name()}</label>
+				<label class="ui-field-label" for="register-name"><IconPerson /> {m.auth_full_name()}</label
+				>
 				<input id="register-name" class="ui-input" bind:value={name} autocomplete="name" required />
 			</div>
 
@@ -83,7 +85,9 @@
 			</div>
 
 			<div class="ui-auth-field">
-				<label class="ui-field-label" for="register-password"><IconLock /> {m.auth_password()}</label>
+				<label class="ui-field-label" for="register-password"
+					><IconLock /> {m.auth_password()}</label
+				>
 				<div class="ui-auth-password-wrap" data-ui-validation-host>
 					<input
 						id="register-password"
@@ -117,6 +121,9 @@
 	{/if}
 
 	{#if !sent}
-		<p class="ui-auth-switch">{m.auth_has_account()} <a href={localizeHref(`${base}/auth/login`)}>{m.auth_login_action()}</a></p>
+		<p class="ui-auth-switch">
+			{m.auth_has_account()}
+			<a href={localizeHref(`${base}/auth/login`)}>{m.auth_login_action()}</a>
+		</p>
 	{/if}
 </AuthShell>

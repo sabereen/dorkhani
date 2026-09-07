@@ -36,10 +36,10 @@ export function encodeMiniAppTarget(path: string) {
 export function decodeMiniAppTarget(payload: string | undefined | null) {
 	if (!payload || !/^[A-Za-z0-9_-]+$/.test(payload)) return null
 	try {
-		const padded = payload.replace(/-/g, '+').replace(/_/g, '/').padEnd(
-			Math.ceil(payload.length / 4) * 4,
-			'=',
-		)
+		const padded = payload
+			.replace(/-/g, '+')
+			.replace(/_/g, '/')
+			.padEnd(Math.ceil(payload.length / 4) * 4, '=')
 		const path = fromBase64(padded)
 		return khatmTargetPattern.test(path) ? path : null
 	} catch {

@@ -39,14 +39,20 @@
 
 <div class="offline-reading">
 	<div class="offline-reading-toolbar">
-		<button class="ui-btn ui-btn-ghost" type="button" onclick={onBack}><IconBack />{m.offline_reading_back()}</button>
+		<button class="ui-btn ui-btn-ghost" type="button" onclick={onBack}
+			><IconBack />{m.offline_reading_back()}</button
+		>
 		<span class="ui-badge ui-badge-info"><IconBook />{khatm.title}</span>
 	</div>
-	<div class="ui-khatm-reading-marker"><IconBook /><span>{m.offline_reading_start({ title: range.getTitle() })}</span></div>
+	<div class="ui-khatm-reading-marker">
+		<IconBook /><span>{m.offline_reading_start({ title: range.getTitle() })}</span>
+	</div>
 	<section class="ui-khatm-panel">
 		<MultipleAyah ayahInfoList={ayat} {audioManager} font="hafs" onlineActions={online} />
 	</section>
-	<div class="ui-khatm-reading-marker"><IconBook /><span>{m.offline_reading_end({ title: range.getTitle() })}</span></div>
+	<div class="ui-khatm-reading-marker">
+		<IconBook /><span>{m.offline_reading_end({ title: range.getTitle() })}</span>
+	</div>
 	<button class="ui-btn ui-btn-primary ui-btn-lg ui-btn-block" type="button" onclick={onBack}>
 		{m.offline_reading_back_page()}
 	</button>

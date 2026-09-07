@@ -1,10 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import {
-	createCorsHeaders,
-	getAllowedCorsOrigin,
-	isSameOrigin,
-	parseTrustedOrigins,
-} from './cors'
+import { createCorsHeaders, getAllowedCorsOrigin, isSameOrigin, parseTrustedOrigins } from './cors'
 
 describe('native CORS policy', () => {
 	const trusted = parseTrustedOrigins('https://localhost, https://native.example.test/')

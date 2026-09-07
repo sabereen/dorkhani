@@ -10,7 +10,7 @@
 	import IconGroups from '~icons/ic/round-groups'
 	import IconInfinite from '~icons/ic/round-all-inclusive'
 	import { Zekr } from '$lib/entity/Zekr.svelte'
-	import { toast } from '$lib/components/TheToast.svelte'
+	import { toast } from '$lib/components/toast.svelte'
 	import { browser } from '$app/environment'
 	import { page } from '$app/state'
 	import ExpandableText from '$lib/components/ExpandableText.svelte'
@@ -171,7 +171,7 @@
 				</div>
 			{:else}
 				<p class="ui-zekr-open-message">
-				{m.zekr_open_message()}
+					{m.zekr_open_message()}
 				</p>
 			{/if}
 
@@ -180,8 +180,10 @@
 					<div class="ui-zekr-personal" transition:slide={{ axis: 'y' }}>
 						<span class="ui-zekr-personal-icon"><IconCheck /></span>
 						<div>
-						<span>{m.zekr_your_share()}</span>
-						<strong>{m.zekr_registered_count({ count: myCount.toLocaleString(localeTag()) })}</strong>
+							<span>{m.zekr_your_share()}</span>
+							<strong
+								>{m.zekr_registered_count({ count: myCount.toLocaleString(localeTag()) })}</strong
+							>
 						</div>
 					</div>
 				{/if}

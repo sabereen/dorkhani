@@ -1,10 +1,7 @@
 <script lang="ts">
 	import RangeTypePicker from '$lib/components/RangeTypePicker.svelte'
 	import type { OfflineKhatmRecord, RangeType } from '$lib/contracts/domain'
-	import {
-		idb_offlineKhatm_create,
-		idb_offlineKhatm_update,
-	} from '$lib/idb/offlineKhatm'
+	import { idb_offlineKhatm_create, idb_offlineKhatm_update } from '$lib/idb/offlineKhatm'
 	import * as m from '$lib/paraglide/messages.js'
 	import IconBook from '~icons/ic/round-menu-book'
 	import IconSave from '~icons/ic/round-save'
@@ -16,10 +13,12 @@
 	}
 
 	const { khatm, onSaved, onCancel }: Props = $props()
-	let title = $state(khatm?.title || '')
-	let description = $state(khatm?.description || '')
-	let rangeType = $state<RangeType>(khatm?.rangeType || 'free')
-	let series = $state(khatm?.series || false)
+	/* svelte-ignore state_referenced_locally */
+	const initialKhatm = khatm
+	let title = $state(initialKhatm?.title || '')
+	let description = $state(initialKhatm?.description || '')
+	let rangeType = $state<RangeType>(initialKhatm?.rangeType || 'free')
+	let series = $state(initialKhatm?.series || false)
 	let saving = $state(false)
 	let errorMessage = $state('')
 
@@ -56,7 +55,7 @@
 		{/if}
 
 		<div class="offline-fields">
-		<label class="ui-field-label" for="offline-khatm-title">{m.offline_title_label()}</label>
+			<label class="ui-field-label" for="offline-khatm-title">{m.offline_title_label()}</label>
 			<input
 				id="offline-khatm-title"
 				class="ui-input"
@@ -64,10 +63,12 @@
 				maxlength="100"
 				required
 				bind:value={title}
-			placeholder={m.offline_title_placeholder()}
+				placeholder={m.offline_title_placeholder()}
 			/>
 
-		<label class="ui-field-label" for="offline-khatm-description">{m.offline_description_label()}</label>
+			<label class="ui-field-label" for="offline-khatm-description"
+				>{m.offline_description_label()}</label
+			>
 			<textarea
 				id="offline-khatm-description"
 				class="ui-textarea"
@@ -78,7 +79,7 @@
 		</div>
 
 		<fieldset class="ui-fieldset">
-		<legend class="ui-fieldset-legend">{m.offline_division()}</legend>
+			<legend class="ui-fieldset-legend">{m.offline_division()}</legend>
 			<RangeTypePicker bind:value={rangeType} disabled={Boolean(khatm?.versesRead)} />
 			{#if khatm?.versesRead}
 				<p class="ui-text-muted">{m.offline_range_locked()}</p>
@@ -94,7 +95,9 @@
 
 		<div class="offline-form-actions">
 			{#if onCancel}
-				<button class="ui-btn ui-btn-ghost" type="button" onclick={onCancel}>{m.offline_cancel()}</button>
+				<button class="ui-btn ui-btn-ghost" type="button" onclick={onCancel}
+					>{m.offline_cancel()}</button
+				>
 			{/if}
 			<button class="ui-btn ui-btn-primary" type="submit" disabled={saving}>
 				{#if saving}<span class="ui-spinner"></span>{:else}<IconSave />{/if}

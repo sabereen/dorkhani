@@ -229,7 +229,8 @@
 				value={khatm.pageProgress}
 				aria-label={m.offline_progress_label()}
 			></progress>
-			<small>{m.offline_verses_read({ count: khatm.versesRead.toLocaleString(localeTag()) })}</small>
+			<small>{m.offline_verses_read({ count: khatm.versesRead.toLocaleString(localeTag()) })}</small
+			>
 		</div>
 	</section>
 
@@ -258,7 +259,11 @@
 					{#each [...khatm.completedRounds].reverse() as round (round.roundNumber)}
 						<li class="ui-list-row">
 							<IconCheck />
-							<span>{m.offline_round_label({ count: round.roundNumber.toLocaleString(localeTag()) })}</span>
+							<span
+								>{m.offline_round_label({
+									count: round.roundNumber.toLocaleString(localeTag()),
+								})}</span
+							>
 							<time datetime={round.completed.toISOString()}
 								>{round.completed.toLocaleDateString(localeTag())}</time
 							>
@@ -369,14 +374,16 @@
 							<strong>{item.range.title || item.range.getTitleSurahOrinted()}</strong>
 							<small
 								>{completed
-								? m.offline_read_status()
+									? m.offline_read_status()
 									: item.available.length > 1 || item.available[0]?.length !== item.range.length
 										? m.offline_partial_status()
 										: m.offline_ready_status()}</small
 							>
 						</div>
 						{#if completed}
-							<span class="ui-badge ui-badge-success"><IconCheck />{m.offline_complete_badge()}</span>
+							<span class="ui-badge ui-badge-success"
+								><IconCheck />{m.offline_complete_badge()}</span
+							>
 						{:else}
 							<div class="offline-range-actions">
 								{#each item.available as range (range.start + ':' + range.end)}
@@ -385,7 +392,9 @@
 										type="button"
 										onclick={() => requestPick(range)}
 									>
-										{range.length === item.range.length ? m.offline_select() : range.getTitleSurahOrinted()}
+										{range.length === item.range.length
+											? m.offline_select()
+											: range.getTitleSurahOrinted()}
 										<IconNext />
 									</button>
 								{/each}
@@ -426,7 +435,8 @@
 					class="ui-btn ui-btn-primary ui-btn-block"
 					type="button"
 					disabled={working}
-					onclick={pickSelected}>{working ? m.offline_registering() : m.offline_register_yes()}</button
+					onclick={pickSelected}
+					>{working ? m.offline_registering() : m.offline_register_yes()}</button
 				>
 				<button
 					class="ui-btn ui-btn-ghost ui-btn-block"
@@ -532,8 +542,8 @@
 		display: flex;
 		align-items: center;
 	}
-	.offline-parts .ui-list-row > * + *,
-	.offline-round-history .ui-list-row > * + * {
+	.offline-parts :global(.ui-list-row > * + *),
+	.offline-round-history :global(.ui-list-row > * + *) {
 		margin-inline-start: 0.5rem;
 	}
 	.offline-round-history time {
@@ -603,12 +613,12 @@
 	.offline-dialog-content :global(.ui-btn) + :global(.ui-btn) {
 		margin-top: 0.5rem;
 	}
-	.offline-dialog-icon {
+	:global(.offline-dialog-icon) {
 		width: 3rem;
 		height: 3rem;
 		color: var(--ui-color-success);
 	}
-	.offline-dialog-icon-danger {
+	:global(.offline-dialog-icon-danger) {
 		color: var(--ui-color-error);
 	}
 	:global(.offline-edit-dialog) {

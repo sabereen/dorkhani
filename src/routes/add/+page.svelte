@@ -4,7 +4,7 @@
 	import { validateForm } from '$lib/actions/validateForm'
 	import Header from '$lib/components/Header.svelte'
 	import PageTitle from '$lib/components/PageTitle.svelte'
-	import { toast } from '$lib/components/TheToast.svelte'
+	import { toast } from '$lib/components/toast.svelte'
 	import SucessResult from './sucess-result.svelte'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import RangeTypePicker from '$lib/components/RangeTypePicker.svelte'

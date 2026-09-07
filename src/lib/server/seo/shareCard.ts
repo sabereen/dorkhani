@@ -21,7 +21,11 @@ type ShareCard = {
 }
 
 function escapeHtml(value: string) {
-	return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+	return value
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;')
 }
 
 function truncate(value: string, limit: number) {
@@ -55,7 +59,9 @@ function copy(locale: Locale) {
 }
 
 function formatPercent(value: number, locale: Locale) {
-	return new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(Math.max(0, Math.min(100, value)))
+	return new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(
+		Math.max(0, Math.min(100, value)),
+	)
 }
 
 async function initializeRenderer() {

@@ -15,7 +15,7 @@
 	import IconTune from '~icons/ic/round-tune'
 	import ConfirmRange from '../confirm-range.svelte'
 	import { useKathmContext } from '../../khatm-context.svelte'
-	import { toast } from '$lib/components/TheToast.svelte'
+	import { toast } from '$lib/components/toast.svelte'
 	import { page } from '$app/state'
 	import { pushState } from '$app/navigation'
 	import Tab from '$lib/components/Tab.svelte'
@@ -115,10 +115,7 @@
 		if (modal) return
 
 		if (!range.matchRangeType(khatm.rangeType)) {
-			toast(
-				'error',
-				m.list_unavailable_range({ rangeType: khatm.rangeTypeTitle }),
-			)
+			toast('error', m.list_unavailable_range({ rangeType: khatm.rangeTypeTitle }))
 			return
 		}
 		selected = range
@@ -147,9 +144,13 @@
 		<div class="ui-khatm-browser-stats" aria-label={m.list_summary()}>
 			<div><strong>{formatPercent(khatm.percent)}</strong><span>{m.list_progress()}</span></div>
 			<div>
-				<strong>{availableJuzCount.toLocaleString(localeTag())}</strong><span>{m.list_available_juz()}</span>
+				<strong>{availableJuzCount.toLocaleString(localeTag())}</strong><span
+					>{m.list_available_juz()}</span
+				>
 			</div>
-			<div><strong>{myJuzCount.toLocaleString(localeTag())}</strong><span>{m.list_my_juz()}</span></div>
+			<div>
+				<strong>{myJuzCount.toLocaleString(localeTag())}</strong><span>{m.list_my_juz()}</span>
+			</div>
 		</div>
 	</header>
 
@@ -186,7 +187,10 @@
 	</div>
 
 	<div class="ui-khatm-browser-legend" aria-label={m.list_legend()}>
-		<span><i class="ui-khatm-browser-key ui-khatm-browser-key-free"></i>{m.list_free_selectable()}</span>
+		<span
+			><i class="ui-khatm-browser-key ui-khatm-browser-key-free"
+			></i>{m.list_free_selectable()}</span
+		>
 		<span><i class="ui-khatm-browser-key ui-khatm-browser-key-picked"></i>{m.list_picked()}</span>
 		<span><i class="ui-khatm-browser-key ui-khatm-browser-key-mine"></i>{m.wizard_my_share()}</span>
 	</div>
@@ -208,7 +212,8 @@
 						<span class="ui-khatm-browser-juz-main">
 							<span class="ui-khatm-browser-juz-title">
 								<strong>{range.title}</strong>
-								{#if mine}<span class="ui-badge ui-badge-accent ui-badge-xs">{m.wizard_includes_my_share()}</span
+								{#if mine}<span class="ui-badge ui-badge-accent ui-badge-xs"
+										>{m.wizard_includes_my_share()}</span
 									>{/if}
 								{#if percent >= 100}<span class="ui-badge ui-badge-neutral ui-badge-xs"
 										>{m.wizard_completed()}</span
@@ -226,7 +231,11 @@
 						</span>
 						<span class="ui-khatm-browser-juz-action">
 							<span>
-								{expanded ? m.list_close_details() : percent >= 100 ? m.list_view_details() : m.list_view_parts()}
+								{expanded
+									? m.list_close_details()
+									: percent >= 100
+										? m.list_view_details()
+										: m.list_view_parts()}
 							</span>
 							<IconExpand aria-hidden="true" />
 						</span>
@@ -240,9 +249,7 @@
 							<div>
 								<span>{m.list_details({ title: range.title })}</span>
 								<strong>
-									{juzPercent >= 100
-										? m.list_all_picked()
-										: m.list_green_free()}
+									{juzPercent >= 100 ? m.list_all_picked() : m.list_green_free()}
 								</strong>
 							</div>
 							{#if juzPercent === 0 && range.matchRangeType(khatm.rangeType)}
@@ -284,13 +291,14 @@
 										<header>
 											<div>
 												<strong>{subrange.title}</strong>
-										<span>{m.wizard_selected_percent({ percent: formatPercent(percent) })}</span>
+												<span>{m.wizard_selected_percent({ percent: formatPercent(percent) })}</span
+												>
 											</div>
 											<progress
 												class="ui-progress"
 												max={100}
 												value={percent}
-										aria-label={m.khatm_progress_range({ range: subrange.title })}
+												aria-label={m.khatm_progress_range({ range: subrange.title })}
 											></progress>
 										</header>
 										<ul class="ui-khatm-browser-parts">
@@ -311,12 +319,12 @@
 														<strong>{part.getTitleSurahOrinted()}</strong>
 														<span>
 															{mine
-											? m.list_this_share()
-											: khatmPart
-												? m.list_picked_before()
-												: canSelect
-													? m.list_ready()
-													: m.list_range_type_only({ rangeType: khatm.rangeTypeTitle })}
+																? m.list_this_share()
+																: khatmPart
+																	? m.list_picked_before()
+																	: canSelect
+																		? m.list_ready()
+																		: m.list_range_type_only({ rangeType: khatm.rangeTypeTitle })}
 														</span>
 													</div>
 													<div class="ui-khatm-browser-part-actions">
@@ -326,12 +334,12 @@
 																class="ui-btn ui-btn-primary ui-btn-sm"
 																onclick={() => openModal(part)}
 															>
-										{m.list_select_part()}
+																{m.list_select_part()}
 															</button>
 														{/if}
 														<a
 															class="ui-btn ui-btn-icon ui-btn-ghost ui-btn-sm"
-										aria-label={`${m.common_view()} ${part.getTitleSurahOrinted()}`}
+															aria-label={`${m.common_view()} ${part.getTitleSurahOrinted()}`}
 															target="_blank"
 															rel="noreferrer"
 															href={part.getLink(khatm)}><IconEye /></a
@@ -358,11 +366,7 @@
 		<div class="ui-khatm-browser-empty ui-khatm-browser-empty-page">
 			<IconSearch />
 			<strong>{juzQuery ? m.list_no_juz() : m.list_all_completed()}</strong>
-			<span
-				>{juzQuery
-					? m.list_search_another_number()
-					: m.list_disable_capacity_filter()}</span
-			>
+			<span>{juzQuery ? m.list_search_another_number() : m.list_disable_capacity_filter()}</span>
 			{#if juzQuery}<button type="button" class="ui-btn ui-btn-soft" onclick={clearSearch}
 					>{m.wizard_clear_search()}</button
 				>{/if}

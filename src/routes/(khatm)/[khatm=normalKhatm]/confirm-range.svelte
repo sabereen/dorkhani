@@ -76,7 +76,8 @@
 	<div class="ui-khatm-empty ui-khatm-wizard-empty">
 		<h3>{m.wizard_range_taken_title()}</h3>
 		<p>{m.wizard_range_taken_description()}</p>
-		<button class="ui-btn ui-btn-primary" type="button" onclick={onClose}>{m.wizard_view_free_ranges()}</button
+		<button class="ui-btn ui-btn-primary" type="button" onclick={onClose}
+			>{m.wizard_view_free_ranges()}</button
 		>
 	</div>
 {/if}

@@ -2,7 +2,7 @@
 	import { localeTag } from '$lib/i18n/format'
 	import '@ghoran/text/fonts/uthmanic-hafs/style.css'
 	import { slide } from 'svelte/transition'
-	import { toast } from '$lib/components/TheToast.svelte'
+	import { toast } from '$lib/components/toast.svelte'
 	import { wait } from '$lib/utility/wait'
 	import type { Zekr } from '$lib/entity/Zekr.svelte'
 	import { page } from '$app/state'
@@ -140,7 +140,8 @@
 				{:else}
 					<IconAdd />
 				{/if}
-				<span>{isSuccessful(count, 'quick') ? m.zekr_registered_count({ count: text }) : text}</span>
+				<span>{isSuccessful(count, 'quick') ? m.zekr_registered_count({ count: text }) : text}</span
+				>
 			</button>
 		{/snippet}
 
@@ -199,7 +200,11 @@
 				<div class="ui-zekr-feedback-content">
 					<IconCheck aria-hidden="true" />
 					<div>
-						<strong>{m.zekr_registered_count({ count: pickResult.count.toLocaleString(localeTag()) })}</strong>
+						<strong
+							>{m.zekr_registered_count({
+								count: pickResult.count.toLocaleString(localeTag()),
+							})}</strong
+						>
 						<small>{m.zekr_success_total({ count: myCount.toLocaleString(localeTag()) })}</small>
 					</div>
 				</div>

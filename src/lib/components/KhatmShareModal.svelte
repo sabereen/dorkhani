@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment'
 	import Modal from './Modal.svelte'
-	import { toast } from './TheToast.svelte'
+	import { toast } from './toast.svelte'
 	import type { Khatm } from '$lib/entity/Khatm.svelte'
 	import { createMiniAppLink } from '$lib/miniapp/links'
 	import { miniAppState } from '$lib/miniapp/state.svelte'
@@ -42,6 +42,7 @@
 		m.share_khatm({ title: khatm.title, description: khatm.description }).trim(),
 	)
 	const inviteText = $derived(`${shareText}\n${preferredUrl}`)
+	const shareSupported = browser && typeof (navigator as Partial<Navigator>).share === 'function'
 	const cardUrl = $derived.by(() => {
 		const url = new URL(`${base}/og/khatm/${page.params.khatm}.png`, page.url.origin)
 		url.searchParams.set('l', page.data.locale)
@@ -187,7 +188,7 @@
 
 		<div class="share-controls">
 			<div class="share-primary-actions">
-				{#if browser && navigator.share}
+				{#if shareSupported}
 					<button
 						class="ui-btn ui-btn-primary ui-btn-lg share-action-main"
 						type="button"
@@ -395,7 +396,7 @@
 		left: 0.75rem;
 	}
 
-	[dir='ltr'] .share-close {
+	:global(html[dir='ltr']) .share-close {
 		left: auto;
 		right: 0.75rem;
 	}

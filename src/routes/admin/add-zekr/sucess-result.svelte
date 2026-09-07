@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment'
 	import ExpandableText from '$lib/components/ExpandableText.svelte'
-	import { toast } from '$lib/components/TheToast.svelte'
+	import { toast } from '$lib/components/toast.svelte'
 	import type { Zekr } from '$lib/entity/Zekr.svelte'
 	import { idb_localZekr_add } from '$lib/idb/localZekr'
 	import { onMount } from 'svelte'

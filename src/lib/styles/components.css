@@ -865,7 +865,9 @@
 .ui-select:focus {
 	border-color: var(--ui-color-primary);
 	background: var(--ui-color-control-surface);
-	box-shadow: 0 0 0 3px var(--ui-color-focus), var(--ui-shadow-inset);
+	box-shadow:
+		0 0 0 3px var(--ui-color-focus),
+		var(--ui-shadow-inset);
 }
 
 .ui-input::placeholder,
@@ -1086,7 +1088,6 @@
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
-
 
 .ui-language-choice-check {
 	display: block;

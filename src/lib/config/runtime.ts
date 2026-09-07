@@ -3,8 +3,7 @@ import { PUBLIC_BUILD_TARGET, PUBLIC_SERVER_ORIGIN } from '$env/static/public'
 
 export type BuildTarget = 'web' | 'capacitor'
 
-export const buildTarget: BuildTarget =
-	PUBLIC_BUILD_TARGET === 'capacitor' ? 'capacitor' : 'web'
+export const buildTarget: BuildTarget = PUBLIC_BUILD_TARGET === 'capacitor' ? 'capacitor' : 'web'
 export const isCapacitorBuild = buildTarget === 'capacitor'
 
 const configuredServerOrigin = PUBLIC_SERVER_ORIGIN?.replace(/\/$/, '') || ''

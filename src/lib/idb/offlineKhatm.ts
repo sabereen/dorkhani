@@ -1,9 +1,5 @@
 import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
-import type {
-	OfflineKhatmPartRecord,
-	OfflineKhatmRecord,
-	RangeType,
-} from '$lib/contracts/domain'
+import type { OfflineKhatmPartRecord, OfflineKhatmRecord, RangeType } from '$lib/contracts/domain'
 import { QuranRange } from '$lib/entity/Range'
 import { roundPercent } from '$lib/utility/percent'
 import { v4 as uuid } from 'uuid'
@@ -162,9 +158,7 @@ export async function idb_offlineKhatm_pickRange(id: string, range: QuranRange) 
 			endDate: completed ? now : null,
 			completedRounds: completed
 				? [
-						...khatm.completedRounds.filter(
-							(round) => round.roundNumber !== khatm.roundNumber,
-						),
+						...khatm.completedRounds.filter((round) => round.roundNumber !== khatm.roundNumber),
 						{ roundNumber: khatm.roundNumber, created: khatm.roundCreated, completed: now },
 					]
 				: khatm.completedRounds,

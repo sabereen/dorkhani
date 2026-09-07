@@ -301,10 +301,14 @@ export class Khatm {
 	}
 
 	async refresh() {
-		const result = await request<{ khatm: KhatmData & { parts?: KhatmPartData[] } }>('get', '/khatm', {
-			khatmId: this.id,
-			accessToken: this.accessToken || '',
-		})
+		const result = await request<{ khatm: KhatmData & { parts?: KhatmPartData[] } }>(
+			'get',
+			'/khatm',
+			{
+				khatmId: this.id,
+				accessToken: this.accessToken || '',
+			},
+		)
 		this.plain = result.khatm
 		this.plainParts = result.khatm.parts || []
 	}

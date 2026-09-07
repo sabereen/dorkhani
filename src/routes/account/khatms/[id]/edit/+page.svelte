@@ -15,9 +15,7 @@
 	const { data }: PageProps = $props()
 	let errorMessage = $state('')
 	let submitting = $state(false)
-	const apiPath = $derived(
-		`/account/khatms/${data.khatm.id}${data.isAdmin ? '?admin=1' : ''}`,
-	)
+	const apiPath = $derived(`/account/khatms/${data.khatm.id}${data.isAdmin ? '?admin=1' : ''}`)
 
 	async function save(event: SubmitEvent) {
 		event.preventDefault()
@@ -100,7 +98,9 @@
 					<option value="hizbQuarter" selected={data.khatm.rangeType === 'hizbQuarter'}
 						>{m.range_hizb()}</option
 					>
-					<option value="surah" selected={data.khatm.rangeType === 'surah'}>{m.range_surah()}</option>
+					<option value="surah" selected={data.khatm.rangeType === 'surah'}
+						>{m.range_surah()}</option
+					>
 					<option value="juz" selected={data.khatm.rangeType === 'juz'}>{m.range_juz()}</option>
 					<option value="ayah" selected={data.khatm.rangeType === 'ayah'}>{m.range_ayah()}</option>
 				</select>
@@ -137,16 +137,15 @@
 					{m.edit_last_series()}
 				</label>
 			{/if}
-			<button class="ui-btn ui-btn-primary" type="submit" disabled={submitting}>{m.edit_save()}</button>
+			<button class="ui-btn ui-btn-primary" type="submit" disabled={submitting}
+				>{m.edit_save()}</button
+			>
 		</div>
 	</fieldset>
 </form>
 
-<form
-	use:validateForm
-	novalidate
-	class="mx-auto mt-4 max-w-md"
-	onsubmit={remove}
->
-	<button class="ui-btn ui-btn-danger ui-btn-block" type="submit" disabled={submitting}>{m.edit_delete()}</button>
+<form use:validateForm novalidate class="mx-auto mt-4 max-w-md" onsubmit={remove}>
+	<button class="ui-btn ui-btn-danger ui-btn-block" type="submit" disabled={submitting}
+		>{m.edit_delete()}</button
+	>
 </form>

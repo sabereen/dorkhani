@@ -60,7 +60,7 @@
 							<span class="ui-activity-content">
 								<strong>{zekr.title}</strong>
 								<span class="ui-activity-meta">
-									<span>{zekr.plain.created.toLocaleDateString('fa-IR')}</span>
+									<span>{new Date(zekr.plain.created).toLocaleDateString(localeTag())}</span>
 									{#if zekr.isFinite}
 										<span class="ui-badge ui-badge-xs ui-badge-info"
 											>{m.history_count_target({

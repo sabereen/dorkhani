@@ -8,13 +8,7 @@
 	import IconShield from '~icons/ic/round-shield'
 	import Modal from './Modal.svelte'
 
-	type WriteAccessState =
-		| 'idle'
-		| 'requesting'
-		| 'granted'
-		| 'denied'
-		| 'unsupported'
-		| 'error'
+	type WriteAccessState = 'idle' | 'requesting' | 'granted' | 'denied' | 'unsupported' | 'error'
 
 	type Props = {
 		open?: boolean

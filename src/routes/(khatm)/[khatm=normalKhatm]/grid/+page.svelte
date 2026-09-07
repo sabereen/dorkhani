@@ -114,11 +114,18 @@
 		<div class="ui-alert ui-alert-info">{m.grid_select_instruction()}</div>
 	</div>
 	<div class="ui-khatm-map-legend" aria-label={m.grid_legend()}>
-		<span><i class="ui-khatm-map-key ui-khatm-map-key-free" aria-hidden="true"></i>{m.grid_free()}</span>
 		<span
-			><i class="ui-khatm-map-key ui-khatm-map-key-finished" aria-hidden="true"></i>{m.grid_read()}</span
+			><i class="ui-khatm-map-key ui-khatm-map-key-free" aria-hidden="true"
+			></i>{m.grid_free()}</span
 		>
-		<span><i class="ui-khatm-map-key ui-khatm-map-key-mine" aria-hidden="true"></i>{m.wizard_my_share()}</span>
+		<span
+			><i class="ui-khatm-map-key ui-khatm-map-key-finished" aria-hidden="true"
+			></i>{m.grid_read()}</span
+		>
+		<span
+			><i class="ui-khatm-map-key ui-khatm-map-key-mine" aria-hidden="true"
+			></i>{m.wizard_my_share()}</span
+		>
 	</div>
 	<div class="ui-khatm-map">
 		<div class="ui-khatm-map-scroll">

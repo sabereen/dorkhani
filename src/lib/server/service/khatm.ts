@@ -1,4 +1,11 @@
-import type { AiReviewStatus, Prisma, RangeType, ReviewStatus, TKhatm, TKhatmSeries } from '@prisma-client'
+import type {
+	AiReviewStatus,
+	Prisma,
+	RangeType,
+	ReviewStatus,
+	TKhatm,
+	TKhatmSeries,
+} from '@prisma-client'
 import { createHash, randomBytes } from 'node:crypto'
 import { v4 as uuid } from 'uuid'
 import { db } from '$lib/server/db'
@@ -24,12 +31,12 @@ export type PublicKhatm = KhatmData
 
 export type KhatmManagementActor = { kind: 'owner'; ownerId: string } | { kind: 'admin' }
 
-export class KhatmOwnershipError extends Error { }
-export class KhatmRangeLockedError extends Error { }
-export class KhatmHistoricalRoundError extends Error { }
-export class KhatmFeaturedEligibilityError extends Error { }
-export class KhatmFeaturedLimitError extends Error { }
-export class KhatmFeaturedOrderError extends Error { }
+export class KhatmOwnershipError extends Error {}
+export class KhatmRangeLockedError extends Error {}
+export class KhatmHistoricalRoundError extends Error {}
+export class KhatmFeaturedEligibilityError extends Error {}
+export class KhatmFeaturedLimitError extends Error {}
+export class KhatmFeaturedOrderError extends Error {}
 
 type KhatmWithSeries = TKhatm & { series: TKhatmSeries | null }
 
@@ -54,10 +61,10 @@ function hashClaimToken(token: string) {
 function khatmService_canFeature(khatm: KhatmWithSeries) {
 	return Boolean(
 		!khatm.private &&
-		khatm.reviewStatus === 'approved' &&
-		khatm.status === 'inProgress' &&
-		khatm.series &&
-		khatm.series.maxRounds == null,
+			khatm.reviewStatus === 'approved' &&
+			khatm.status === 'inProgress' &&
+			khatm.series &&
+			khatm.series.maxRounds == null,
 	)
 }
 
@@ -200,7 +207,13 @@ export async function khatmService_countSitemapEntries() {
 	})
 }
 
-export async function khatmService_getSitemapEntries({ skip, take }: { skip: number; take: number }) {
+export async function khatmService_getSitemapEntries({
+	skip,
+	take,
+}: {
+	skip: number
+	take: number
+}) {
 	return db.tKhatm.findMany({
 		where: {
 			private: false,
@@ -360,8 +373,8 @@ export async function khatmService_getDirectoryList(
 		...(query.rangeType ? { rangeType: query.rangeType } : {}),
 		...(query.q
 			? {
-				OR: [{ title: { contains: query.q } }, { description: { contains: query.q } }],
-			}
+					OR: [{ title: { contains: query.q } }, { description: { contains: query.q } }],
+				}
 			: {}),
 	}
 
@@ -452,9 +465,9 @@ export async function khatmService_getAdminList(
 		featuredOrder: khatm.status === 'inProgress' ? (khatm.series?.featuredOrder ?? null) : null,
 		canFeature: Boolean(
 			!khatm.private &&
-			khatm.status === 'inProgress' &&
-			khatm.series &&
-			khatm.series.maxRounds == null,
+				khatm.status === 'inProgress' &&
+				khatm.series &&
+				khatm.series.maxRounds == null,
 		),
 	}))
 }

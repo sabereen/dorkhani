@@ -28,12 +28,17 @@ export function localeCode(locale: Locale) {
 }
 
 export function localizedCanonicalPaths(pathname: string) {
-	const withoutBase = base && pathname.startsWith(base) ? pathname.slice(base.length) || '/' : pathname
+	const withoutBase =
+		base && pathname.startsWith(base) ? pathname.slice(base.length) || '/' : pathname
 	const contentPath = withoutBase.replace(/^\/(?:ar|en)(?=\/|$)/, '') || '/'
-	const withLocale = (locale: Locale) => `${base}${locale === 'fa' ? '' : `/${locale}`}${contentPath}`
+	const withLocale = (locale: Locale) =>
+		`${base}${locale === 'fa' ? '' : `/${locale}`}${contentPath}`
 	return { fa: withLocale('fa'), ar: withLocale('ar'), en: withLocale('en') }
 }
 
 export function serializeJsonLd(value: JsonLd) {
-	return JSON.stringify(value).replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026')
+	return JSON.stringify(value)
+		.replace(/</g, '\\u003c')
+		.replace(/>/g, '\\u003e')
+		.replace(/&/g, '\\u0026')
 }

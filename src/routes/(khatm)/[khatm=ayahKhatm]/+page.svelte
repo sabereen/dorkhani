@@ -2,7 +2,7 @@
 	import '@ghoran/text/fonts/uthmanic-hafs/style.css'
 	import { slide } from 'svelte/transition'
 	import type { AyahInfo } from '$lib/contracts/domain'
-	import { toast } from '$lib/components/TheToast.svelte'
+	import { toast } from '$lib/components/toast.svelte'
 	import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 	import { useKathmContext } from '../khatm-context.svelte'
 	import { SettingsEditor } from '$lib/entity/LocalSettings.svelte'
@@ -133,10 +133,22 @@
 					{/if}
 				</button>
 
-				{@render smallButton(m.ayah_accept_consecutive({ count: (3).toLocaleString(localeTag()) }), 3)}
-				{@render smallButton(m.ayah_accept_consecutive({ count: (5).toLocaleString(localeTag()) }), 5)}
-				{@render smallButton(m.ayah_accept_consecutive({ count: (7).toLocaleString(localeTag()) }), 7)}
-				{@render smallButton(m.ayah_accept_consecutive({ count: (10).toLocaleString(localeTag()) }), 10)}
+				{@render smallButton(
+					m.ayah_accept_consecutive({ count: (3).toLocaleString(localeTag()) }),
+					3,
+				)}
+				{@render smallButton(
+					m.ayah_accept_consecutive({ count: (5).toLocaleString(localeTag()) }),
+					5,
+				)}
+				{@render smallButton(
+					m.ayah_accept_consecutive({ count: (7).toLocaleString(localeTag()) }),
+					7,
+				)}
+				{@render smallButton(
+					m.ayah_accept_consecutive({ count: (10).toLocaleString(localeTag()) }),
+					10,
+				)}
 
 				<button type="button" class="ui-btn ui-btn-ghost col-span-2" onclick={openSettings}>
 					<IconTune class="size-5" />

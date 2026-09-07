@@ -23,9 +23,11 @@
 	const localSettings = LocalSettings.use()
 	const routeRobots = $derived.by(() => {
 		const path = page.url.pathname.replace(/^\/(?:ar|en)(?=\/|$)/, '') || '/'
-		const privatePrefix = /^(?:\/account|\/add|\/admin|\/api|\/auth|\/history|\/native-admin|\/offline-khatm|\/settings)(?:\/|$)/
+		const privatePrefix =
+			/^(?:\/account|\/add|\/admin|\/api|\/auth|\/history|\/native-admin|\/offline-khatm|\/settings)(?:\/|$)/
 		const duplicateKhatmView = /^\/(?:a|k)s?\d+\/.+/.test(path)
-		const filteredDirectory = path === '/list' && [...page.url.searchParams.keys()].some((key) => key !== 'page')
+		const filteredDirectory =
+			path === '/list' && [...page.url.searchParams.keys()].some((key) => key !== 'page')
 		return privatePrefix.test(path) || duplicateKhatmView || filteredDirectory
 			? 'noindex, nofollow, noarchive'
 			: undefined
@@ -96,10 +98,7 @@
 	{#if routeRobots}<meta name="robots" content={routeRobots} />{/if}
 </svelte:head>
 
-<MiniAppHost
-	baleEnabled={data.authProviders.bale}
-	eitaaEnabled={data.authProviders.eitaa}
-/>
+<MiniAppHost baleEnabled={data.authProviders.bale} eitaaEnabled={data.authProviders.eitaa} />
 
 <LocaleChooser unresolved={data.needsLocaleChoice} />
 

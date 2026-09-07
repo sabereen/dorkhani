@@ -102,7 +102,9 @@ export const actions = {
 		try {
 			brandingInput = readBranding(form)
 		} catch (error) {
-			return fail(400, { errorMessage: error instanceof Error ? error.message : 'اطلاعات برندینگ معتبر نیست.' })
+			return fail(400, {
+				errorMessage: error instanceof Error ? error.message : 'اطلاعات برندینگ معتبر نیست.',
+			})
 		}
 
 		const eitaa = form.get('eitaa') === 'on'
@@ -114,9 +116,7 @@ export const actions = {
 		const aiKhatmReviewModel = form.get('aiKhatmReviewModel')?.toString().trim() || ''
 		const aiKhatmReviewApiKey = form.get('aiKhatmReviewApiKey')?.toString() || ''
 		const finalAiKhatmReviewApiKey =
-			aiKhatmReviewApiKey === 'unchanged'
-				? config.aiKhatmReview.apiKey
-				: aiKhatmReviewApiKey
+			aiKhatmReviewApiKey === 'unchanged' ? config.aiKhatmReview.apiKey : aiKhatmReviewApiKey
 
 		const supportLink = form.get('supportLink')?.toString()
 		const staleKhatmRetentionDays = Number(form.get('staleKhatmRetentionDays'))
@@ -166,8 +166,7 @@ export const actions = {
 		)
 		const branding = {
 			texts: brandingInput,
-			revision:
-				brandingChanged || assetsChanged ? randomUUID() : config.branding.revision,
+			revision: brandingChanged || assetsChanged ? randomUUID() : config.branding.revision,
 		}
 
 		await appSettingsService_setConfig(

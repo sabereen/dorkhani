@@ -77,7 +77,11 @@
 			{#if participation.loaded}
 				<p>
 					<strong>{verseCount.toLocaleString(localeTag())}</strong>
-					<span>{m.khatm_verses_in_round({ period: khatm.isSerial ? m.khatm_current_round() : m.khatm_current_khatm() })}</span>
+					<span
+						>{m.khatm_verses_in_round({
+							period: khatm.isSerial ? m.khatm_current_round() : m.khatm_current_khatm(),
+						})}</span
+					>
 				</p>
 			{:else}
 				<div class="ui-khatm-my-loading" role="status">
@@ -87,7 +91,9 @@
 			{/if}
 		</div>
 		{#if participation.loaded}
-			<span class="ui-khatm-my-percent">{m.khatm_percent_of_quran({ percent: formatPercent(percent) })}</span>
+			<span class="ui-khatm-my-percent"
+				>{m.khatm_percent_of_quran({ percent: formatPercent(percent) })}</span
+			>
 		{/if}
 	</div>
 
@@ -100,7 +106,9 @@
 		></progress>
 		{#if verseCount === 0}
 			<p class="ui-khatm-my-empty">
-				{m.khatm_no_participation({ period: khatm.isSerial ? m.khatm_current_round() : m.khatm_current_khatm() })}
+				{m.khatm_no_participation({
+					period: khatm.isSerial ? m.khatm_current_round() : m.khatm_current_khatm(),
+				})}
 			</p>
 		{/if}
 

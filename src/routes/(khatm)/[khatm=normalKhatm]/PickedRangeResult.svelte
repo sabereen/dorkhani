@@ -30,6 +30,8 @@
 			<IconBook />
 			{m.wizard_view_read_ayahs()}
 		</a>
-		<button type="button" class="ui-btn ui-btn-ghost" onclick={onClose}>{m.wizard_choose_another_share()}</button>
+		<button type="button" class="ui-btn ui-btn-ghost" onclick={onClose}
+			>{m.wizard_choose_another_share()}</button
+		>
 	</div>
 </div>

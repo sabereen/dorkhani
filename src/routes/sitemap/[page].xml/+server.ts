@@ -8,7 +8,9 @@ import type { RequestHandler } from './$types'
 const CHUNK_SIZE = 10_000
 const STATIC_PATHS = ['/', '/list', '/privacy', '/terms']
 const LOCALES: Locale[] = ['fa', 'ar', 'en']
-const STATIC_URLS = STATIC_PATHS.flatMap((path) => LOCALES.map((locale) => localizePath(path, locale)))
+const STATIC_URLS = STATIC_PATHS.flatMap((path) =>
+	LOCALES.map((locale) => localizePath(path, locale)),
+)
 
 export const GET: RequestHandler = async ({ params, url }) => {
 	const page = Number(params.page)
@@ -24,7 +26,12 @@ export const GET: RequestHandler = async ({ params, url }) => {
 		.join('')
 	return new Response(
 		`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${body}</urlset>`,
-		{ headers: { 'content-type': 'application/xml; charset=utf-8', 'cache-control': 'public, max-age=3600' } },
+		{
+			headers: {
+				'content-type': 'application/xml; charset=utf-8',
+				'cache-control': 'public, max-age=3600',
+			},
+		},
 	)
 }
 
@@ -74,5 +81,9 @@ function localizePath(path: string, locale: Locale) {
 }
 
 function escapeXml(value: string) {
-	return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+	return value
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;')
 }

@@ -16,7 +16,7 @@
 	const { title, eyebrow, summary, children }: Props = $props()
 </script>
 
-	<PageTitle {title} emitHead={false} />
+<PageTitle {title} emitHead={false} />
 
 <SeoHead
 	meta={{

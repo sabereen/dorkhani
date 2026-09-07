@@ -69,9 +69,7 @@ describe('/+page.svelte', () => {
 	test('renders the landing page and its aggregated statistics', () => {
 		render(Page, { props: { data } } as never)
 		expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()
-		expect(
-			screen.getByRole('heading', { name: m.home_statistics_title() }),
-		).toBeInTheDocument()
+		expect(screen.getByRole('heading', { name: m.home_statistics_title() })).toBeInTheDocument()
 		expect(screen.getByText(numberFormatter.format(12345))).toBeInTheDocument()
 		expect(screen.getByText(numberFormatter.format(17))).toBeInTheDocument()
 		const dailyList = screen.getByRole('list', { name: m.home_statistics_daily_label() })
@@ -123,17 +121,3 @@ describe('/+page.svelte', () => {
 		expect(screen.getByText(customBranding.texts[testLocale].heroDescription)).toBeInTheDocument()
 	})
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-

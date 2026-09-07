@@ -39,9 +39,8 @@
 	const activeKhatms = $derived(khatms.filter((khatm) => !khatm.finished).length)
 	const readyChannelCount = $derived(
 		data.notificationSettings
-			? Object.values(data.notificationSettings.channels).filter(
-					(channel) => channel.available,
-				).length
+			? Object.values(data.notificationSettings.channels).filter((channel) => channel.available)
+					.length
 			: 0,
 	)
 	const profileInitial = $derived(data.user.name.trim().charAt(0) || '•')
@@ -123,8 +122,7 @@
 			savedNotificationForm = JSON.stringify(notificationForm)
 			notificationStatus = 'saved'
 		} catch (cause) {
-			notificationError =
-				cause instanceof Error ? cause.message : m.account_notifications_error()
+			notificationError = cause instanceof Error ? cause.message : m.account_notifications_error()
 			notificationStatus = 'error'
 		} finally {
 			notificationSubmitting = false
@@ -203,10 +201,7 @@
 			{/if}
 
 			<form aria-busy={notificationSubmitting} onsubmit={saveNotifications}>
-				<div
-					class:account-master-enabled={notificationForm.enabled}
-					class="account-master-switch"
-				>
+				<div class:account-master-enabled={notificationForm.enabled} class="account-master-switch">
 					<div>
 						<strong>{m.account_notifications_enabled()}</strong>
 						<span>{m.account_notifications_master_description()}</span>
@@ -272,21 +267,13 @@
 							</div>
 						</article>
 
-						<article
-							class:account-channel-ready={eitaaAvailable}
-							class="account-channel"
-						>
+						<article class:account-channel-ready={eitaaAvailable} class="account-channel">
 							<div class="account-channel-heading">
 								<span class="account-channel-icon"><IconChat /></span>
 								<div>
 									<strong>{m.account_eitaa()}</strong>
-									<span
-										class:ui-badge-success={eitaaAvailable}
-										class="ui-badge ui-badge-xs"
-									>
-										{eitaaAvailable
-											? m.account_ready()
-											: m.account_not_connected()}
+									<span class:ui-badge-success={eitaaAvailable} class="ui-badge ui-badge-xs">
+										{eitaaAvailable ? m.account_ready() : m.account_not_connected()}
 									</span>
 								</div>
 							</div>
@@ -368,22 +355,13 @@
 						onchange={clearNotificationStatus}
 					>
 						<option value={null}>{m.account_default_priority()}</option>
-						<option
-							value="bale"
-							disabled={!data.notificationSettings?.channels.bale.available}
-						>
+						<option value="bale" disabled={!data.notificationSettings?.channels.bale.available}>
 							{m.account_bale()}
 						</option>
-						<option
-							value="eitaa"
-							disabled={!eitaaAvailable}
-						>
+						<option value="eitaa" disabled={!eitaaAvailable}>
 							{m.account_eitaa()}
 						</option>
-						<option
-							value="email"
-							disabled={!data.notificationSettings?.channels.email.available}
-						>
+						<option value="email" disabled={!data.notificationSettings?.channels.email.available}>
 							{m.account_email()}
 						</option>
 					</select>
@@ -408,8 +386,13 @@
 							type="submit"
 							disabled={!notificationDirty || notificationSubmitting}
 						>
-							{#if notificationSubmitting}<span class="ui-spinner" aria-hidden="true"></span>{:else}<IconSave />{/if}
-							<span>{notificationSubmitting ? m.account_saving() : m.account_save_notifications()}</span>
+							{#if notificationSubmitting}<span class="ui-spinner" aria-hidden="true"
+								></span>{:else}<IconSave />{/if}
+							<span
+								>{notificationSubmitting
+									? m.account_saving()
+									: m.account_save_notifications()}</span
+							>
 						</button>
 					</div>
 				</footer>
@@ -467,10 +450,7 @@
 	</section>
 </div>
 
-<EitaaWriteAccessModal
-	bind:open={eitaaWriteAccessOpen}
-	onGranted={handleEitaaWriteAccessGranted}
-/>
+<EitaaWriteAccessModal bind:open={eitaaWriteAccessOpen} onGranted={handleEitaaWriteAccessGranted} />
 
 <Modal
 	bind:open={signOutOpen}
@@ -579,7 +559,7 @@
 		border-radius: 9999px;
 		background: var(--ui-color-surface-raised);
 	}
-	[dir='rtl'] .account-avatar :global(svg) {
+	:global(html[dir='rtl']) .account-avatar :global(svg) {
 		right: auto;
 		left: -0.2rem;
 	}
@@ -725,7 +705,9 @@
 		border: 1px solid var(--ui-color-border);
 		border-radius: 1rem;
 		background: var(--ui-color-surface-muted);
-		transition: border-color 160ms ease, background-color 160ms ease;
+		transition:
+			border-color 160ms ease,
+			background-color 160ms ease;
 	}
 	.account-master-switch.account-master-enabled {
 		border-color: var(--ui-color-primary);
@@ -787,7 +769,7 @@
 		content: '';
 		transition: transform 160ms ease;
 	}
-	[dir='ltr'] .account-switch > span:last-child:after {
+	:global(html[dir='ltr']) .account-switch > span:last-child:after {
 		right: auto;
 		left: 0.2rem;
 	}
@@ -795,10 +777,10 @@
 		border-color: var(--ui-color-primary);
 		background: var(--ui-color-primary);
 	}
-	[dir='rtl'] .account-switch input:checked + span:after {
+	:global(html[dir='rtl']) .account-switch input:checked + span:after {
 		transform: translateX(-1.3rem);
 	}
-	[dir='ltr'] .account-switch input:checked + span:after {
+	:global(html[dir='ltr']) .account-switch input:checked + span:after {
 		transform: translateX(1.3rem);
 	}
 	.account-switch input:focus + span {
@@ -842,7 +824,9 @@
 		border: 1px solid var(--ui-color-border);
 		border-radius: 1rem;
 		background: var(--ui-color-surface);
-		transition: border-color 160ms ease, box-shadow 160ms ease;
+		transition:
+			border-color 160ms ease,
+			box-shadow 160ms ease;
 	}
 	.account-channel.account-channel-ready {
 		border-color: var(--ui-color-success);

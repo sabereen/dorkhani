@@ -164,7 +164,9 @@ async function sendBale(address: string, message: NotificationMessage, locale: L
 		chat_id: address,
 		text: `${message.subject}\n\n${message.text}`,
 		reply_markup: {
-			inline_keyboard: [[{ text: m.notification_open_app({}, { locale }), web_app: { url: message.url } }]],
+			inline_keyboard: [
+				[{ text: m.notification_open_app({}, { locale }), web_app: { url: message.url } }],
+			],
 		},
 	})
 

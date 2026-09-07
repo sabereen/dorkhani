@@ -53,13 +53,23 @@
 		{ href: localizeHref(`${base}/`), label: m.common_home(), icon: IconHome },
 		{ href: localizeHref(`${base}/add`), label: m.nav_create(), icon: IconAdd },
 		...(offlineKhatmAvailable
-			? [{ href: localizeHref(`${base}/offline-khatm`), label: m.nav_offline_khatm(), icon: IconOffline }]
+			? [
+					{
+						href: localizeHref(`${base}/offline-khatm`),
+						label: m.nav_offline_khatm(),
+						icon: IconOffline,
+					},
+				]
 			: []),
 		{ href: localizeHref(`${base}/list`), label: m.nav_khatms(), icon: IconList },
 		{ href: localizeHref(`${base}/history`), label: m.nav_history(), icon: IconHistory },
 		{ href: localizeHref(`${base}/settings`), label: m.nav_settings(), icon: IconSettings },
 		page.data.user
-			? { href: localizeHref(`${base}/account`), label: page.data.user.name || m.nav_account(), icon: IconAccount }
+			? {
+					href: localizeHref(`${base}/account`),
+					label: page.data.user.name || m.nav_account(),
+					icon: IconAccount,
+				}
 			: { href: localizeHref(`${base}/auth/login`), label: m.nav_login(), icon: IconLogin },
 	])
 
@@ -152,15 +162,23 @@
 						</span>
 					</summary>
 					<div class="ui-header-account-menu">
-						<a href={localizeHref(`${base}/account`)}><IconAccount /><span>{m.nav_account()}</span></a>
-						<a href={localizeHref(`${base}/settings`)}><IconSettings /><span>{m.nav_settings()}</span></a>
+						<a href={localizeHref(`${base}/account`)}
+							><IconAccount /><span>{m.nav_account()}</span></a
+						>
+						<a href={localizeHref(`${base}/settings`)}
+							><IconSettings /><span>{m.nav_settings()}</span></a
+						>
 						<button type="button" onclick={signOut}>
 							<IconLogout /><span>{m.nav_logout()}</span>
 						</button>
 					</div>
 				</details>
 			{:else}
-				<a class="ui-header-utility ui-desktop-only" href={localizeHref(`${base}/settings`)} aria-label={m.nav_settings()}>
+				<a
+					class="ui-header-utility ui-desktop-only"
+					href={localizeHref(`${base}/settings`)}
+					aria-label={m.nav_settings()}
+				>
 					<IconSettings />
 				</a>
 				<a class="ui-header-login ui-desktop-only" href={localizeHref(`${base}/auth/login`)}>
@@ -185,7 +203,12 @@
 					{#if start}
 						{@render start()}
 					{:else}
-						<button type="button" class="ui-header-back" aria-label={m.common_back()} onclick={back}>
+						<button
+							type="button"
+							class="ui-header-back"
+							aria-label={m.common_back()}
+							onclick={back}
+						>
 							<IconBack />
 						</button>
 					{/if}

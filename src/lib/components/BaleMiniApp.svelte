@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto, invalidateAll } from '$app/navigation'
+	import { base } from '$app/paths'
 	import { page } from '$app/state'
 	import { serverUrl } from '$lib/config/runtime'
 	import { claimCreatedKhatms } from '$lib/auth/claimCreatedKhatms'

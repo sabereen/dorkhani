@@ -1,4 +1,7 @@
-import { khatmDirectory_parseSearchParams, type KhatmDirectoryResult } from '$lib/entity/KhatmDirectory'
+import {
+	khatmDirectory_parseSearchParams,
+	type KhatmDirectoryResult,
+} from '$lib/entity/KhatmDirectory'
 import { loadApi } from '$lib/utility/request'
 import type { PageLoad } from './$types'
 

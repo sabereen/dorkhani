@@ -164,7 +164,7 @@ Route group با نام `(khatm)` در URL دیده نمی‌شود. matcherها
 | `/z{id}`                             | `[zekr=zekr]/+page.server.ts`, `+page.svelte`, `ZekrActions.svelte`                  | دریافت ذکر، ثبت تعداد تقبل‌شده و نمایش سهم شخصی از IndexedDB                                                                                                            |
 | `/admin`                             | `admin/+layout.server.ts`, `+page.svelte`                                            | حفاظت تمام زیرمسیرها با Basic Auth و نمایش ورودی ابزارهای مدیریت                                                                                                        |
 | `/admin/review`                      | `admin/review/+page.svelte`                                                          | دریافت فهرست pending/approved/rejected، تغییر `reviewStatus` و انتخاب/مرتب‌سازی حداکثر شش دنبالهٔ دائمی برای ویترین شاخص                                                |
-| `/admin/app-settings`                | `admin/app-settings/+page.server.ts`, `+page.svelte`                                 | مدیریت برندینگ، support link، notification و اجرای refresh وضعیت ختم‌ها                                                                                                  |
+| `/admin/app-settings`                | `admin/app-settings/+page.server.ts`, `+page.svelte`                                 | مدیریت برندینگ، support link، notification و اجرای refresh وضعیت ختم‌ها                                                                                                 |
 | `/admin/add-zekr`                    | `admin/add-zekr/+page.server.ts`, `+page.svelte`, `sucess-result.svelte`             | ساخت ذکر و ثبت آن به‌عنوان ذکر متعلق به کاربر در IndexedDB همان مرورگر                                                                                                  |
 | `/manifest.json`                     | `manifest.json/+server.ts`                                                           | manifest پویا و base-path-aware برای PWA                                                                                                                                |
 
@@ -396,28 +396,28 @@ repositoryهای Dexie فیلدهای snapshot، از جمله `pageProgress`، 
 | `postcss.config.js` | preset-env با غیرفعال‌بودن تبدیل logical properties                        |
 | `tsconfig.json`     | strict mode، bundler resolution، JSON و type آیکون‌های Svelte 5            |
 | `prisma.config.ts`  | مسیر schema/migration و ترجیح `DIRECT_DATABASE_URL` برای CLI در صورت وجود  |
-| `src/app.html`      | shell فارسی RTL، viewport و preload داده روی hover                          |
+| `src/app.html`      | shell فارسی RTL، viewport و preload داده روی hover                         |
 | `src/app.css`       | ورودی فونت و سیستم طراحی محلی؛ توکن‌ها، اجزا و layout در `src/lib/styles/` |
 | `src/app.d.ts`      | توسعهٔ `App.Error` با type دامنه‌ای `conflict-ranges`                      |
 | `static/*`          | fallback تصویر Hero و آیکن‌های PWA، favicon و robots.txt                   |
 
 متغیرهای محیطی مهم:
 
-| متغیر                      | مصرف                                                               |
-| -------------------------- | ------------------------------------------------------------------ |
-| `DATABASE_URL`             | اتصال runtime در `db.ts` و fallback ابزار Prisma                   |
-| `DIRECT_DATABASE_URL`      | اتصال مستقیم اختیاری فقط در `prisma.config.ts`                     |
-| `ADMIN_USER`, `ADMIN_PASS` | Basic Auth مدیریت؛ نبودن هرکدام مقدار تصادفی و غیرقابل حدس می‌سازد |
-| `PUBLIC_FONT_PROXY`        | فعال‌سازی endpoint فونت QPC و گزینه‌های UI مرتبط                   |
-| `BASE_PATH`                | prefix استقرار از `svelte.config.js`                               |
-| `ORIGIN`                   | تنظیم origin runtime adapter/SvelteKit در استقرار                  |
-| `BODY_SIZE_LIMIT`          | سقف بدنهٔ adapter-node؛ برای آپلود برندینگ حداقل `12M`              |
-| `PRIVATE_KHATM_SECRET`     | در `config.ts` export می‌شود اما در معماری فعلی مصرف نمی‌شود       |
-| `PUBLIC_BUILD_TARGET`      | انتخاب خروجی `web` یا `capacitor`                                  |
-| `PUBLIC_SERVER_ORIGIN`     | origin رسمی API و App Links در خروجی نیتیو                          |
-| `NATIVE_TRUSTED_ORIGINS`   | allowlist دقیق CORS و Better Auth برای originهای نیتیو              |
-| `ANDROID_SHA256_CERT_FINGERPRINTS` | fingerprintهای debug/release/Play برای `assetlinks.json`    |
-| `ANDROID_KEYSTORE_*`       | اطلاعات خصوصی امضای AAB؛ فقط هنگام `android:build`                   |
+| متغیر                              | مصرف                                                               |
+| ---------------------------------- | ------------------------------------------------------------------ |
+| `DATABASE_URL`                     | اتصال runtime در `db.ts` و fallback ابزار Prisma                   |
+| `DIRECT_DATABASE_URL`              | اتصال مستقیم اختیاری فقط در `prisma.config.ts`                     |
+| `ADMIN_USER`, `ADMIN_PASS`         | Basic Auth مدیریت؛ نبودن هرکدام مقدار تصادفی و غیرقابل حدس می‌سازد |
+| `PUBLIC_FONT_PROXY`                | فعال‌سازی endpoint فونت QPC و گزینه‌های UI مرتبط                   |
+| `BASE_PATH`                        | prefix استقرار از `svelte.config.js`                               |
+| `ORIGIN`                           | تنظیم origin runtime adapter/SvelteKit در استقرار                  |
+| `BODY_SIZE_LIMIT`                  | سقف بدنهٔ adapter-node؛ برای آپلود برندینگ حداقل `12M`             |
+| `PRIVATE_KHATM_SECRET`             | در `config.ts` export می‌شود اما در معماری فعلی مصرف نمی‌شود       |
+| `PUBLIC_BUILD_TARGET`              | انتخاب خروجی `web` یا `capacitor`                                  |
+| `PUBLIC_SERVER_ORIGIN`             | origin رسمی API و App Links در خروجی نیتیو                         |
+| `NATIVE_TRUSTED_ORIGINS`           | allowlist دقیق CORS و Better Auth برای originهای نیتیو             |
+| `ANDROID_SHA256_CERT_FINGERPRINTS` | fingerprintهای debug/release/Play برای `assetlinks.json`           |
+| `ANDROID_KEYSTORE_*`               | اطلاعات خصوصی امضای AAB؛ فقط هنگام `android:build`                 |
 
 ## ۱۴. تست‌ها و پوشش فعلی
 
@@ -529,10 +529,10 @@ endpointهای JSON زیر `/api` می‌آید؛ endpointها منطق و Prism
 
 `PUBLIC_BUILD_TARGET` یکی از `web` یا `capacitor` است و پیش‌فرض آن `web` باقی می‌ماند:
 
-| target | adapter | SSR | خروجی |
-| --- | --- | --- | --- |
-| `web` | `adapter-node` | فعال، جز مسیرهای client-only قبلی | `build/` |
-| `capacitor` | `adapter-static` با `index.html` fallback | غیرفعال | `build-capacitor/` |
+| target      | adapter                                   | SSR                               | خروجی              |
+| ----------- | ----------------------------------------- | --------------------------------- | ------------------ |
+| `web`       | `adapter-node`                            | فعال، جز مسیرهای client-only قبلی | `build/`           |
+| `capacitor` | `adapter-static` با `index.html` fallback | غیرفعال                           | `build-capacitor/` |
 
 بیلد CSR به `PUBLIC_SERVER_ORIGIN` مطلق و HTTPS نیاز دارد. `ApiClient` در وب URL نسبی و cookie، و
 در نیتیو URL مطلق و bearer token را استفاده می‌کند. `AuthTokenStore` پیش از bootstrap از secure

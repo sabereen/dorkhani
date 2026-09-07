@@ -19,9 +19,7 @@ type ImageFormat = 'png' | 'jpeg'
 function getImageFormat(buffer: Buffer): ImageFormat | undefined {
 	if (
 		buffer.length >= 8 &&
-		buffer
-			.subarray(0, 8)
-			.equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))
+		buffer.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))
 	) {
 		return 'png'
 	}
@@ -36,7 +34,8 @@ function exceedsPixelLimit(width: number, height: number) {
 
 function assertPixelLimit(buffer: Buffer, format: ImageFormat) {
 	if (format === 'png') {
-		if (buffer.length < 24 || buffer.toString('ascii', 12, 16) !== 'IHDR') throw new Error('Invalid PNG')
+		if (buffer.length < 24 || buffer.toString('ascii', 12, 16) !== 'IHDR')
+			throw new Error('Invalid PNG')
 		if (exceedsPixelLimit(buffer.readUInt32BE(16), buffer.readUInt32BE(20))) {
 			throw new Error('Image exceeds pixel limit')
 		}

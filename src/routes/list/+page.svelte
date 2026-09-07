@@ -317,9 +317,7 @@
 			<span aria-hidden="true"><IconSearch /></span>
 			<h3>{m.directory_not_found()}</h3>
 			<p>
-				{filtering
-					? m.directory_change_filter()
-					: m.directory_empty()}
+				{filtering ? m.directory_change_filter() : m.directory_empty()}
 			</p>
 			{#if filtering}
 				<button class="ui-btn ui-btn-soft ui-btn-sm" type="button" onclick={resetFilters}>

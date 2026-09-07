@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ExpandableText from '$lib/components/ExpandableText.svelte'
 	import KhatmShareModal from '$lib/components/KhatmShareModal.svelte'
-	import { toast } from '$lib/components/TheToast.svelte'
+	import { toast } from '$lib/components/toast.svelte'
 	import { CreatedKhatm } from '$lib/entity/CreatedKhatm'
 	import type { Khatm } from '$lib/entity/Khatm.svelte'
 	import RangeTypeIcon from '$lib/components/RangeTypeIcon.svelte'
@@ -78,9 +78,9 @@
 		<div class="success-mark" aria-hidden="true">
 			<IconCheck />
 		</div>
-	<p class="success-eyebrow">{m.success_ready()}</p>
-	<h2 id="success-title">{m.success_created()}</h2>
-	<p>{m.success_description()}</p>
+		<p class="success-eyebrow">{m.success_ready()}</p>
+		<h2 id="success-title">{m.success_created()}</h2>
+		<p>{m.success_description()}</p>
 	</section>
 
 	<section class="ui-card ui-card-bordered success-card" aria-label={m.success_details()}>
@@ -119,7 +119,9 @@
 						<p class="success-link-title">{m.success_invite_ready()}</p>
 						<p class="success-link-hint">{m.success_invite_hint()}</p>
 					</div>
-					<span class="ui-badge ui-badge-success success-link-badge">{m.success_ready_to_send()}</span>
+					<span class="ui-badge ui-badge-success success-link-badge"
+						>{m.success_ready_to_send()}</span
+					>
 				</div>
 
 				<div class="success-link-control">
@@ -174,9 +176,13 @@
 			<div class="success-actions">
 				<a href={khatm.link} class="ui-btn ui-btn-primary ui-btn-lg" target="_blank" rel="noopener">
 					<IconOpen aria-hidden="true" />
-						{m.success_open_khatm()}
+					{m.success_open_khatm()}
 				</a>
-				<button class="ui-btn ui-btn-soft ui-btn-lg" type="button" onclick={() => (shareOpen = true)}>
+				<button
+					class="ui-btn ui-btn-soft ui-btn-lg"
+					type="button"
+					onclick={() => (shareOpen = true)}
+				>
 					<IconShare aria-hidden="true" />
 					{m.common_share()}
 				</button>

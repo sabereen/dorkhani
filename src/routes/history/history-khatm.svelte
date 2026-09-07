@@ -55,7 +55,9 @@
 					<li>
 						<KhatmListCard
 							khatm={item.khatm}
-							meta={m.history_created_at({ date: item.khatm.plain.created.toLocaleDateString() })}
+							meta={m.history_created_at({
+								date: new Date(item.khatm.plain.created).toLocaleDateString(localeTag()),
+							})}
 						/>
 					</li>
 				{/each}

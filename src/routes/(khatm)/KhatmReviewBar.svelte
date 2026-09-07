@@ -4,7 +4,7 @@
 	import type { ReviewStatus } from '$lib/contracts/domain'
 	import type { Khatm } from '$lib/entity/Khatm.svelte'
 	import { featuredKhatm_set } from '$lib/entity/KhatmFeatured'
-	import { toast } from '$lib/components/TheToast.svelte'
+	import { toast } from '$lib/components/toast.svelte'
 	import IconApproved from '~icons/ic/sharp-check-circle-outline'
 	import IconRejected from '~icons/ic/baseline-remove-circle-outline'
 	import IconStar from '~icons/ic/round-star'
@@ -51,7 +51,10 @@
 		try {
 			await khatm.update({ reviewStatus })
 			if (reviewStatus === 'rejected') currentFeaturedOrder = null
-			message = reviewStatus === 'approved' ? m.khatm_review_approved_message() : m.khatm_review_rejected_message()
+			message =
+				reviewStatus === 'approved'
+					? m.khatm_review_approved_message()
+					: m.khatm_review_rejected_message()
 			toast('info', message)
 		} catch (cause) {
 			message = getErrorMessage(cause)
@@ -137,7 +140,11 @@
 			<div>
 				<strong>{m.khatm_feature_title()}</strong>
 				{#if currentFeaturedOrder != null}
-					<span>{m.khatm_feature_position({ position: currentFeaturedOrder.toLocaleString(localeTag()) })}</span>
+					<span
+						>{m.khatm_feature_position({
+							position: currentFeaturedOrder.toLocaleString(localeTag()),
+						})}</span
+					>
 				{:else if featureAllowed}
 					<span>{m.khatm_feature_ready()}</span>
 				{:else if canFeature}

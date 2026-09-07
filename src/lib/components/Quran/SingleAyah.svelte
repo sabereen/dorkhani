@@ -93,7 +93,10 @@
 			<span class="ui-text-muted">{m.quran_offline_audio_hint()}</span>
 		{/if}
 		<p class="ui-quran-ayah-meta">
-			{m.quran_ayah_meta({ number: ayah.number.toLocaleString(localeTag()), surah: surah_getName(ayah.surah) })}
+			{m.quran_ayah_meta({
+				number: ayah.number.toLocaleString(localeTag()),
+				surah: surah_getName(ayah.surah),
+			})}
 		</p>
 		{#if onlineActions && audioManager.audioDuration && !audioManager.paused && audioManager.playingIndex === ayah.index}
 			<progress

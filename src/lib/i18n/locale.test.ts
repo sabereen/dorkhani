@@ -1,9 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import {
-	findPreferredArabicLocale,
-	resolveClientLocale,
-	resolveRequestLocale,
-} from './locale'
+import { findPreferredArabicLocale, resolveClientLocale, resolveRequestLocale } from './locale'
 
 describe('locale resolution', () => {
 	it('forces admin to Persian', () => {

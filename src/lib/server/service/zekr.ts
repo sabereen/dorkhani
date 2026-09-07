@@ -21,7 +21,13 @@ export async function zekrService_countSitemapEntries() {
 	return db.tZekr.count()
 }
 
-export async function zekrService_getSitemapEntries({ skip, take }: { skip: number; take: number }) {
+export async function zekrService_getSitemapEntries({
+	skip,
+	take,
+}: {
+	skip: number
+	take: number
+}) {
 	return db.tZekr.findMany({
 		select: { id: true },
 		orderBy: { id: 'asc' },

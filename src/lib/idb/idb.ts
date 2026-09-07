@@ -1,10 +1,6 @@
 // db.ts
 import type { ZekrRecord } from '$lib/contracts/domain'
-import type {
-	KhatmData,
-	OfflineKhatmPartRecord,
-	OfflineKhatmRecord,
-} from '$lib/contracts/domain'
+import type { KhatmData, OfflineKhatmPartRecord, OfflineKhatmRecord } from '$lib/contracts/domain'
 import Dexie, { type EntityTable } from 'dexie'
 
 /** بازه‌ی انتخاب شده برای ختم */

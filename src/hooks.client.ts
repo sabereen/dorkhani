@@ -47,7 +47,9 @@ export const handleError: HandleClientError = ({ error, event, status, message }
 
 export const init: ClientInit = () => {
 	window.addEventListener('error', (event) => {
-		const details = getErrorDetails(event.error ?? new Error(event.message || 'Unknown browser error'))
+		const details = getErrorDetails(
+			event.error ?? new Error(event.message || 'Unknown browser error'),
+		)
 		reportClientError({
 			source: 'window.error',
 			status: 500,
@@ -79,7 +81,9 @@ export const init: ClientInit = () => {
 }
 
 function reportClientError(report: ClientErrorReport) {
-	const fingerprint = [report.source, report.name, report.message, report.stack, report.path].join('|')
+	const fingerprint = [report.source, report.name, report.message, report.stack, report.path].join(
+		'|',
+	)
 	if (reportedErrors.has(fingerprint)) return
 	reportedErrors.add(fingerprint)
 
@@ -102,11 +106,15 @@ function getErrorDetails(error: unknown) {
 	}
 
 	if (typeof error === 'object' && error !== null) {
-		const errorLike = error as { name?: unknown; message?: unknown; stack?: unknown; cause?: unknown }
+		const errorLike = error as {
+			name?: unknown
+			message?: unknown
+			stack?: unknown
+			cause?: unknown
+		}
 		return {
 			name: typeof errorLike.name === 'string' ? errorLike.name : 'UnknownError',
-			message:
-				typeof errorLike.message === 'string' ? errorLike.message : stringifyError(error),
+			message: typeof errorLike.message === 'string' ? errorLike.message : stringifyError(error),
 			stack: typeof errorLike.stack === 'string' ? errorLike.stack : null,
 			cause: serializeCause(errorLike.cause),
 		}

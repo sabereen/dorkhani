@@ -17,7 +17,7 @@
 	import IconStop from '~icons/ic/round-stop-circle'
 	import IconAddToHome from '~icons/ic/outline-add-to-home-screen'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
-	import { toast } from '$lib/components/TheToast.svelte'
+	import { toast } from '$lib/components/toast.svelte'
 	import Modal from '$lib/components/Modal.svelte'
 	import { setKhatmContext } from './khatm-context.svelte'
 	import { page } from '$app/state'
@@ -344,7 +344,10 @@
 		<section class="ui-khatm-view-switch" aria-label={m.khatm_view_switch_aria()}>
 			<div class="ui-khatm-view-copy">
 				<CurrentLayoutIcon />
-				<div><strong>{m.khatm_selection_method()}</strong><span>{m.khatm_selection_method_hint()}</span></div>
+				<div>
+					<strong>{m.khatm_selection_method()}</strong><span>{m.khatm_selection_method_hint()}</span
+					>
+				</div>
 			</div>
 			<div class="ui-khatm-view-tabs">
 				<Tab
@@ -356,8 +359,18 @@
 							title: m.khatm_layout_wizard(),
 							link: khatm.getLink('wizard'),
 						},
-						{ slug: 'list', icon: IconViewList, title: m.khatm_layout_list(), link: khatm.getLink('list') },
-						{ slug: 'grid', icon: IconViewTable, title: m.khatm_layout_grid(), link: khatm.getLink('grid') },
+						{
+							slug: 'list',
+							icon: IconViewList,
+							title: m.khatm_layout_list(),
+							link: khatm.getLink('list'),
+						},
+						{
+							slug: 'grid',
+							icon: IconViewTable,
+							title: m.khatm_layout_grid(),
+							link: khatm.getLink('grid'),
+						},
 					]}
 					bind:value={() => layout, () => {}}
 				/>
@@ -377,7 +390,9 @@
 				</p>
 				{#if khatm.isSerial}
 					{#if hasNextRound}
-						<button class="ui-btn ui-btn-outline" onclick={invalidateAll}>{m.khatm_start_new_round()}</button>
+						<button class="ui-btn ui-btn-outline" onclick={invalidateAll}
+							>{m.khatm_start_new_round()}</button
+						>
 					{:else}
 						<span class="ui-badge ui-badge-success">{m.khatm_last_round()}</span>
 					{/if}

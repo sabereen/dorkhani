@@ -18,7 +18,9 @@ const OFFLINE_KHATM_SHELLS = [
 ]
 
 worker.addEventListener('install', (event) => {
-	event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll([...PRECACHE, ...OFFLINE_KHATM_SHELLS])))
+	event.waitUntil(
+		caches.open(CACHE).then((cache) => cache.addAll([...PRECACHE, ...OFFLINE_KHATM_SHELLS])),
+	)
 })
 
 worker.addEventListener('activate', (event) => {
@@ -31,7 +33,7 @@ worker.addEventListener('activate', (event) => {
 						.filter((key) => key.startsWith(`${CACHE_PREFIX}-`) && key !== CACHE)
 						.map((key) => caches.delete(key)),
 				),
-		),
+			),
 	)
 })
 

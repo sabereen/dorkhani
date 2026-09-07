@@ -7,10 +7,8 @@
 	import IconLanguage from '~icons/ic/round-language'
 	import Modal from './Modal.svelte'
 
-	let {
-		open = $bindable(false),
-		mandatory = false,
-	}: { open?: boolean; mandatory?: boolean } = $props()
+	let { open = $bindable(false), mandatory = false }: { open?: boolean; mandatory?: boolean } =
+		$props()
 
 	const locale = $derived(getLocale())
 	const languages: { value: Locale; label: string }[] = [

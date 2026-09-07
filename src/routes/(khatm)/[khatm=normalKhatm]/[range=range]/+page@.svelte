@@ -24,11 +24,15 @@
 <Header title={range.getTitle()} />
 
 <main class="ui-container-reading ui-khatm-reading-shell">
-	<div class="ui-khatm-reading-marker"><IconBook /><span>{m.reading_start({ range: range.getTitle() })}</span></div>
+	<div class="ui-khatm-reading-marker">
+		<IconBook /><span>{m.reading_start({ range: range.getTitle() })}</span>
+	</div>
 	<section class="ui-khatm-panel">
 		<MultipleAyah ayahInfoList={data.ayat} />
 	</section>
-	<div class="ui-khatm-reading-marker"><IconDone /><span>{m.reading_end({ range: range.getTitle() })}</span></div>
+	<div class="ui-khatm-reading-marker">
+		<IconDone /><span>{m.reading_end({ range: range.getTitle() })}</span>
+	</div>
 	<a href={khatmUrl} class="ui-btn ui-btn-primary ui-btn-lg ui-btn-block">
 		<IconNextPlan class="size-6" />
 		{m.reading_back_to_khatm()}

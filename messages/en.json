@@ -494,405 +494,405 @@
 	"miniapp_link_current": "Link to current account",
 	"miniapp_create_separate": "Create a separate account for {provider}",
 	"miniapp_sign_in_provider": "Sign in to {provider} account",
-	"miniapp_continue_current": "Continue with current account"
-	,"common_share": "Share"
-	,"common_copy_link": "Copy link"
-	,"common_copy_error": "Copy failed."
-	,"zekr_share_copied": "Your dhikr khatm link was copied."
-	,"zekr_group_title": "Group dhikr khatm"
-	,"zekr_goal_completed": "This khatm's goal is complete"
-	,"zekr_target": "Target: {count} repetitions"
-	,"zekr_unlimited": "No repetition limit"
-	,"zekr_collective": "Group participation"
-	,"zekr_repetitions": "Dhikr repetitions"
-	,"zekr_progress": "{percent} progress"
-	,"zekr_target_completed": "Target complete"
-	,"zekr_remaining": "{count} repetitions to target"
-	,"zekr_start": "Start"
-	,"zekr_goal": "Target {count}"
-	,"zekr_open_message": "This khatm has no fixed limit; every participation adds to the group effort."
-	,"zekr_your_share": "Your share in this khatm"
-	,"zekr_reading_text": "Reading text"
-	,"zekr_this_text": "This khatm's dhikr"
-	,"zekr_empty_input": "The input is empty."
-	,"zekr_participation_eyebrow": "Record participation"
-	,"zekr_join_again": "Participate in this khatm again"
-	,"zekr_add_share": "Add your share to this khatm"
-	,"zekr_participation_description": "Choose how many repetitions you read; your participation is recorded immediately."
-	,"zekr_registered_count": "{count} repetitions recorded"
-	,"zekr_one_success": "One repetition recorded successfully"
-	,"zekr_one_said": "I recited the dhikr once"
-	,"zekr_custom_count": "Custom amount"
-	,"zekr_registering": "Recording {count} dhikr repetitions…"
-	,"zekr_wait": "Please wait a moment."
-	,"zekr_success_total": "Your total participation: {count} repetitions"
-	,"zekr_participation_failed": "Participation was not recorded"
-	,"zekr_check_connection": "Check your connection and try again."
-	,"zekr_stats_updated": "The page statistics update with every participation."
-	,"zekr_custom_participation": "Custom participation amount"
-	,"zekr_count_question": "How many times did you recite the dhikr?"
-	,"zekr_participation_count": "Participation amount"
-	,"zekr_example_100": "For example, 100"
-	,"zekr_positive_number": "Enter a number greater than zero."
-	,"zekr_registering_short": "Recording…"
-	,"zekr_register_participation": "Record participation"
-	,"add_title": "Create a new group khatm"
-	,"add_eyebrow": "One intention, one group effort"
-	,"add_heading": "Build your new khatm"
-	,"add_description": "Choose the details and division method; the invitation link will be ready right away."
-	,"add_details_title": "Khatm details"
-	,"add_details_hint": "Choose a short, memorable title."
-	,"add_khatm_title": "Khatm title"
-	,"add_title_placeholder": "For example, Quran khatm for family health"
-	,"add_description_label": "Description"
-	,"add_optional": "Optional"
-	,"add_description_placeholder": "Write the khatm intention or a short note for participants…"
-	,"add_range_title": "Reading division"
-	,"add_range_hint": "Set the size of each participant's share."
-	,"add_access_title": "Access and repetition"
-	,"add_access_hint": "Choose who can find the khatm and what happens after it ends."
-	,"add_private": "Private"
-	,"add_private_hint": "Only people with the link can access the khatm."
-	,"add_public": "Public"
-	,"add_public_hint": "The khatm can appear on the home page after admin approval."
-	,"add_serial": "Make this a continuing khatm"
-	,"add_serial_hint": "A new round starts automatically after each round ends."
-	,"add_submit_hint": "After creating it, you can send the invitation link to others."
-	,"add_creating": "Creating khatm…"
-	,"add_create": "Create khatm and get link"
-	,"add_ai_title": "The khatm title needs review"
-	,"add_ai_description": "You can revise the text or register the khatm at your own responsibility."
-	,"add_edit_text": "Edit text"
-	,"add_force_create": "Register despite warning"
-	,"success_ready": "Everything is ready"
-	,"success_created": "Your khatm was created successfully"
-	,"success_description": "Send the link below to participants to start the group reading."
-	,"success_details": "Created khatm details"
-	,"success_invite_ready": "Invitation link is ready"
-	,"success_invite_hint": "Send it to participants so they can join the khatm."
-	,"success_ready_to_send": "Ready to send"
-	,"success_open_link": "Open invitation link in a new page"
-	,"success_invite_copied": "Invitation link copied"
-	,"success_copy_invite": "Copy invitation link"
-	,"success_copied": "Copied"
-	,"success_open_khatm": "Open khatm page"
-	,"success_saved_note": "This khatm is also saved under “My activity”."
-	,"account_title": "My account"
-	,"account_sign_out": "Sign out"
-	,"account_notifications": "Notifications"
-	,"account_notifications_description": "Creation, share-selection, and completion messages are sent through the first available channel."
-	,"account_notifications_saved": "Notification settings saved."
-	,"account_notifications_error": "Notification settings could not be saved."
-	,"account_notifications_enabled": "Enable user notifications"
-	,"account_channels": "Channels"
-	,"account_ready": "Ready"
-	,"account_start_chat": "Start a chat"
-	,"account_unavailable": "Unavailable"
-	,"account_email": "Email"
-	,"account_email_unavailable": "No verified email or SMTP is available"
-	,"account_preferred_channel": "Preferred channel"
-	,"account_default_priority": "Default priority: Bale, Eitaa, email"
-	,"account_save_notifications": "Save notification settings"
-	,"account_my_khatms": "My khatms"
-	,"account_no_khatms": "No khatm is linked to this account yet."
-	,"account_private_khatm": "Private khatm"
-	,"account_public_khatm": "Public khatm"
-	,"account_view": "View"
-	,"account_edit": "Edit"
-	,"account_profile_eyebrow": "Profile and activity"
-	,"account_email_not_set": "No email is registered for this account"
-	,"account_overview": "Account overview"
-	,"account_khatms_total": "All khatms"
-	,"account_khatms_active": "In progress"
-	,"account_ready_channels": "Ready channels"
-	,"account_app_settings": "App settings"
-	,"account_notifications_master_description": "Control all messages about your activity and khatms in one place."
-	,"account_notifications_disabled_note": "Notifications are off. You will not receive messages until you turn them on again."
-	,"account_not_connected": "Not connected"
-	,"account_bale": "Bale"
-	,"account_eitaa": "Eitaa"
-	,"account_channel_ready_description": "This channel is connected and ready to receive notifications."
-	,"account_channel_setup_description": "Start a chat with the bot before receiving notifications here."
-	,"account_channel_unavailable_description": "This channel is not currently configured to send notifications."
-	,"account_email_ready_description": "Notifications are sent to your verified account email."
-	,"account_channel_enabled": "Use this channel"
-	,"account_preferred_channel_description": "Delivery starts with this channel when possible, then tries the remaining channels."
-	,"account_unsaved_changes": "You have unsaved changes"
-	,"account_discard_changes": "Discard changes"
-	,"account_saving": "Saving..."
-	,"account_khatms_description": "View, edit, and manage the khatms you have created."
-	,"account_create_khatm": "Create khatm"
-	,"account_no_khatms_description": "Create your first khatm to invite others and follow its progress."
-	,"account_create_first_khatm": "Create your first khatm"
-	,"account_sign_out_confirm_title": "Sign out of your account?"
-	,"account_sign_out_confirm_description": "You will need to sign in again to access your khatms and personal settings."
-	,"account_cancel": "Cancel"
-	,"account_signing_out": "Signing out..."
-	,"edit_khatm_title": "Edit khatm"
-	,"edit_save_error": "The changes could not be saved."
-	,"edit_delete_confirm": "Delete this khatm and all its participation?"
-	,"edit_delete_error": "The khatm could not be deleted."
-	,"edit_title": "Title"
-	,"edit_description": "Description"
-	,"edit_range_type": "Range type"
-	,"edit_range_locked": "The range type is locked because participation has been recorded."
-	,"edit_private": "Private"
-	,"edit_public": "Public"
-	,"edit_last_series": "Make the current round the last one"
-	,"edit_save": "Save changes"
-	,"edit_delete": "Delete khatm"
-	,"zekr_count_times": "{count} repetitions"
-	,"history_title": "Your activity history"
-	,"history_heading": "Your trail of participation"
-	,"history_description": "See the khatms you created, dhikr you joined, and reading shares you selected here."
-	,"history_created": "Created khatms"
-	,"history_created_empty": "You have not created a khatm yet."
-	,"history_zekr": "Your dhikr khatms"
-	,"history_zekr_empty": "There is no dhikr khatm in your history yet."
-	,"history_picked": "Reading participation"
-	,"history_picked_empty": "You have not selected a reading share yet."
-	,"history_started_groups": "Groups you started"
-	,"history_latest_picks": "Latest participation"
-	,"history_picked_description": "Shares you selected for reading"
-	,"history_zekr_description": "Dhikr circles you joined"
-	,"history_created_at": "Created on {date}"
-	,"history_from_khatm": "From “{title}” khatm"
-	,"history_private": "Private"
-	,"history_view": "View {title}"
-	,"history_count_target": "{count} times"
-	,"history_view_all": "View all"
-	,"directory_sort_recent": "Most recent"
-	,"directory_sort_recent_description": "The latest registered khatms"
-	,"directory_sort_progress": "Most progress"
-	,"directory_sort_progress_description": "Unfinished khatms closest to completion"
-	,"directory_sort_continuous": "Continuing khatms"
-	,"directory_sort_continuous_description": "The most completed rounds"
-	,"directory_range_free": "Free"
-	,"directory_range_page": "Page by page"
-	,"directory_range_hizb": "Hizb by hizb"
-	,"directory_range_surah": "Surah by surah"
-	,"directory_range_juz": "Juz by juz"
-	,"directory_range_ayah": "Verse by verse"
-	,"directory_load_more_error": "More items could not be loaded. Try again."
-	,"directory_read_count": "{count} verses read"
-	,"directory_round_count": "{count} completed rounds"
-	,"directory_ready": "Ready for your participation"
-	,"directory_title": "Registered khatms"
-	,"directory_kicker": "Search Quran groups"
-	,"directory_heading": "Find the right khatm for you"
-	,"directory_description": "Search public khatms, choose a division method, and see the highlights."
-	,"directory_toolbar_label": "Search and filter khatms"
-	,"directory_search_label": "Search titles and descriptions"
-	,"directory_search_placeholder": "For example, a khatm for health…"
-	,"directory_clear_search": "Clear search"
-	,"directory_range_label": "Range type"
-	,"directory_all_ranges": "All types"
-	,"directory_views_label": "Khatm sorting method"
-	,"directory_results_for": "Results related to “{query}”"
-	,"directory_choose_message": "Choose a khatm and select your reading share."
-	,"directory_clear_filters": "Clear filters"
-	,"directory_not_found": "No khatm found"
-	,"directory_change_filter": "Change the search term or range type and try again."
-	,"directory_empty": "There are no khatms to show in this category yet."
-	,"directory_show_all": "Show all khatms"
-	,"directory_retry": "Try again"
-	,"directory_loading": "Loading…"
-	,"directory_load_more": "Show more"
-	,"directory_range_results": "{rangeType} khatms"
-	,"offline_preparing": "Preparing offline khatm…"
-	,"offline_supported_title": "Offline khatm is available in the installed version"
-	,"offline_supported_description": "To safely store data on this device, this feature is available in the installed Capacitor app or PWA."
-	,"offline_back_home": "Back home"
-	,"offline_open_failed": "Offline khatms could not be loaded."
-	,"offline_read_failed": "The offline khatm could not be loaded."
-	,"offline_failure_title": "Offline khatm could not be opened"
-	,"offline_eyebrow": "No account, no internet"
-	,"offline_heading": "Continue your personal Quran khatm"
-	,"offline_description": "All data is stored only in this device's IndexedDB, and no sharing link is created."
-	,"offline_important": "Important:"
-	,"offline_data_warning": "Clearing app or browser data also deletes offline khatms; this version cannot recover or transfer them."
-	,"offline_list_title": "Your offline khatms"
-	,"offline_list_description": "The latest changes appear at the top of the list."
-	,"offline_completed": "Complete"
-	,"offline_progress": "{percent}% progress"
-	,"offline_round": "Round {count}"
-	,"offline_empty_title": "You do not have an offline khatm yet"
-	,"offline_empty_description": "Complete the form below to create your first personal khatm."
-	,"offline_save_error": "The offline khatm could not be saved."
-	,"offline_edit_title": "Edit offline khatm"
-	,"offline_create_title": "Create a new offline khatm"
-	,"offline_not_shareable": "This khatm cannot be shared."
-	,"offline_title_label": "Khatm title"
-	,"offline_title_placeholder": "For example, daily personal khatm"
-	,"offline_description_label": "Description (optional)"
-	,"offline_division": "Reading division"
-	,"offline_range_locked": "The division cannot be changed after the khatm starts."
-	,"offline_serial": "Make this a continuing khatm"
-	,"offline_serial_hint": "You can start the next round after each round ends."
-	,"offline_cancel": "Cancel"
-	,"offline_saving": "Saving…"
-	,"offline_save_changes": "Save changes"
-	,"offline_detail_eyebrow": "Personal khatm saved on this device"
-	,"offline_badge": "Offline"
-	,"offline_edit": "Edit"
-	,"offline_delete": "Delete"
-	,"offline_stop_round": "Stop after this round"
-	,"offline_progress_round": "Current-round progress"
-	,"offline_progress_label": "Khatm progress"
-	,"offline_verses_read": "{count} verses recorded"
-	,"offline_read_ranges": "Read ranges in this round"
-	,"offline_completed_rounds": "Completed rounds"
-	,"offline_round_label": "Round {count}"
-	,"offline_round_complete": "Round {count} complete"
-	,"offline_complete_title": "This Quran khatm is complete"
-	,"offline_complete_description": "All Quran verses have been recorded in this round."
-	,"offline_start_next_round": "Start a new round"
-	,"offline_next_share": "Next share from the khatm"
-	,"offline_next_share_description": "The next verses are recorded in order and shown for reading."
-	,"offline_accept_one": "Accept one verse"
-	,"offline_consecutive": "{count} consecutive verses"
-	,"offline_view_switch": "Range display method"
-	,"offline_view_step": "Step-by-step"
-	,"offline_view_list": "List"
-	,"offline_view_grid": "Grid"
-	,"offline_choose_next": "Choose the next reading section"
-	,"offline_choose_next_description": "Confirming the choice records this range in the khatm progress immediately."
-	,"offline_unit_size": "Share size"
-	,"offline_unit_page": "Page"
-	,"offline_unit_hizb": "Quarter hizb"
-	,"offline_unit_surah": "Surah"
-	,"offline_unit_juz": "Juz"
-	,"offline_read_status": "Read"
-	,"offline_partial_status": "Partly read"
-	,"offline_ready_status": "Ready to select"
-	,"offline_complete_badge": "Complete"
-	,"offline_select": "Select"
-	,"offline_range_saved": "Range recorded successfully"
-	,"offline_view_read": "View and read verses"
-	,"offline_choose_another": "Choose another section"
-	,"offline_mark_read": "Record this section as read?"
-	,"offline_registering": "Recording…"
-	,"offline_register_yes": "Yes, record it"
-	,"offline_delete_title": "Delete this offline khatm?"
-	,"offline_delete_description": "All rounds and recorded ranges will be permanently deleted from this device."
-	,"offline_delete_all": "Delete khatm completely"
-	,"offline_stop_title": "Make this round the last one?"
-	,"offline_stop_description": "The current round continues, but no new round will be created after it completes."
-	,"offline_stop_series": "Stop continuing khatm"
-	,"offline_reading_back": "Back to khatm"
-	,"offline_reading_start": "Start of {title}"
-	,"offline_reading_end": "End of {title}"
-	,"offline_reading_back_page": "Back to khatm page"
-	,"privacy_title": "Privacy"
-	,"privacy_eyebrow": "Transparent data practices"
-	,"privacy_summary": "This page explains which data is processed to provide the {name} experience and which choices are available to you."
-	,"privacy_purpose_title": "Purpose of this policy"
-	,"privacy_purpose_text": "We process only the data needed to create and manage khatms, record participation, sign in to accounts, and send the notifications you choose."
-	,"privacy_collected_title": "Data we collect"
-	,"privacy_collected_account": "Account information such as your name, email address, and chosen sign-in method."
-	,"privacy_collected_khatm": "Information you enter to create or join a khatm, such as its title, description, and selected ranges."
-	,"privacy_collected_notifications": "Notification settings and the address of a connected channel when you enable it."
-	,"privacy_collected_technical": "Technical data needed for session security and service performance, such as session identifiers and browser information."
-	,"privacy_use_title": "How we use data"
-	,"privacy_use_text": "We use data to provide the service, prevent abuse, respond to support requests, and send khatm-related notifications. Notifications can be managed from your account."
-	,"privacy_sharing_title": "Visibility and sharing"
-	,"privacy_sharing_text": "Information you record in a public khatm may be visible to other participants in that khatm. We do not sell your personal data or share it with third parties except to provide features you choose."
-	,"privacy_control_title": "Your choices and contacting us"
-	,"privacy_control_text": "You can change notification settings from your account. To request access to, correction of, or deletion of account data, contact us through the site's support section."
-	,"terms_title": "Terms of use"
-	,"terms_eyebrow": "Mindful participation"
-	,"terms_summary": "By using {name}, you confirm that you have read these terms and agree to follow them."
-	,"terms_acceptance_title": "Acceptance of terms"
-	,"terms_acceptance_text": "Using this system means accepting these terms and the privacy policy. If you disagree with any part, please do not use the service."
-	,"terms_use_title": "Responsible use"
-	,"terms_use_account": "Enter your account information accurately and prevent others from accessing it."
-	,"terms_use_respect": "Respect other users and the spiritual nature of the service when naming and describing khatms."
-	,"terms_use_abuse": "Do not use the service harmfully, send inappropriate content, or attempt to disrupt it."
-	,"terms_khatms_title": "Khatms and participation"
-	,"terms_khatms_text": "Each khatm creator is responsible for the information and invitation method used in that khatm. Recording a range indicates that you intend to read it; the service does not replace your personal commitment."
-	,"terms_availability_title": "Service availability"
-	,"terms_availability_text": "Parts of the service may change temporarily or become unavailable for maintenance, improvement, or security. We will try to communicate important changes appropriately."
-	,"terms_changes_title": "Changes and contact"
-	,"terms_changes_text": "These terms may be updated. The date at the top of the page shows when the text was last changed. Send questions and suggestions through the site's support section."
-	,"settings_font_default": "Default"
-	,"settings_font_madinah_1": "Madinah Mushaf 1"
-	,"settings_font_madinah_2": "Madinah Mushaf 2"
-	,"settings_reciter_parhizgar": "Parhizgar"
-	,"settings_reciter_minshawi": "Minshawi"
-	,"settings_reciter_husari": "Al-Husary"
-	,"settings_reciter_abdulbasit": "Abdul Basit"
-	,"home_statistics_description": "A look at the fruit of everyone who has read Quran in this service."
-	,"home_stats_recited_label": "Verses recited in the service"
-	,"home_stats_recited_description": "verses read through group participation"
-	,"home_stats_rounds_label": "Rounds completed in the service"
-	,"home_stats_rounds_description": "Quran khatm rounds completed"
-	,"home_daily_title": "Recitation pulse over the last seven days"
-	,"home_daily_description": "Daily service activity based on Tehran time"
-	,"home_weekly_ayahs": "verses this week"
-	,"home_chart_legend": "Chart guide"
-	,"home_legend_ayah": "Verses recited"
-	,"home_legend_created": "Khatm created"
-	,"home_legend_completed": "Round completed"
-	,"home_personal_kicker": "Your path"
-	,"home_personal_title": "Continue where you left off"
-	,"home_personal_description": "Your latest khatms and participation are kept on this device."
-	,"home_history_link": "Full history"
-	,"home_created_title": "Khatms you created"
-	,"home_no_created": "You have not created a khatm yet"
-	,"home_first_group": "Start your first Quran group today."
-	,"home_create_first": "Create your first khatm"
-	,"home_no_picked": "You have not selected a share yet"
-	,"home_join_public": "Join a public khatm and choose your share."
-	,"home_view_khatms": "View khatms"
-	,"home_view_all": "View all"
-	,"home_join_signin": "Sign in to participate"
-	,"home_public_kicker": "Bright groups"
-	,"home_public_title": "Join a khatm right now"
-	,"home_public_description": "Choose a public group and take your share in this journey."
-	,"home_featured_kicker": "Lasting intentions, lasting participation"
-	,"home_featured_description": "Continuing khatms for special causes; a new round starts whenever one ends."
-	,"home_featured_meta": "Featured continuing khatm"
-	,"home_showcase_title": "Most participation lately"
-	,"home_showcase_description": "This list is automatically sorted by the most verses read over the past three days."
-	,"home_recent_title": "Latest khatms"
-	,"home_recent_description": "Public and approved groups"
-	,"home_zekr_title": "Dhikr circles"
-	,"home_zekr_description": "Small, steady acts of remembrance"
-	,"home_zekr_count": "{count} repetitions"
-	,"home_zekr_registered": "Recorded amount"
-	,"home_how_kicker": "It is simple"
-	,"home_how_title": "Three steps to a group khatm"
-	,"home_how_description": "From creating a group to completing the reading, everything stays clear and easy."
-	,"home_step_create": "Create the khatm"
-	,"home_step_create_description": "Choose a title and set how verses, pages, or juz are divided."
-	,"home_step_invite": "Invite participants"
-	,"home_step_invite_description": "Share the khatm's private link with family, friends, or colleagues."
-	,"home_step_finish": "Complete it together"
-	,"home_step_finish_description": "Everyone reads their share, and group progress stays current for all."
-	,"home_cta_kicker": "One bright step"
-	,"home_cta_title": "Your Quran group can begin today"
-	,"home_cta_description": "Set your intention, create the khatm, and send the first invitation to a participant."
-	,"home_cta_action": "Start a new khatm"
-	,"share_dialog_title": "Share this khatm"
-	,"share_dialog_description": "Your invitation text, links, and postcard are ready to send."
-	,"share_preview_alt": "Invitation postcard for {title}"
-	,"share_generating_image": "Creating the postcard…"
-	,"share_image_error": "The image could not be created; the text and links are still shareable."
-	,"share_retry_image": "Try again"
-	,"share_share_card": "Share postcard"
-	,"share_share_text": "Share text and link"
-	,"share_download_card": "Download postcard"
-	,"share_copy_text": "Copy invitation text"
-	,"share_links_title": "Invitation links"
-	,"share_normal_link": "Regular web link"
-	,"share_direct_link": "Open directly in {provider}"
-	,"share_copy_link": "Copy link"
-	,"share_text_copied": "Invitation text copied"
-	,"share_link_copied": "Link copied"
-	,"share_download_started": "Postcard download started"
-	,"share_action_error": "Sharing was not completed"
-	,"share_card_eyebrow": "An invitation to read the Quran together"
-	,"share_card_invitation": "Choose a Quran passage and join this group khatm."
-	,"share_card_hint": "Open the link sent with this message to join"
-	,"success_miniapp_link_hint": "This link opens the khatm directly inside {provider}."
+	"miniapp_continue_current": "Continue with current account",
+	"common_share": "Share",
+	"common_copy_link": "Copy link",
+	"common_copy_error": "Copy failed.",
+	"zekr_share_copied": "Your dhikr khatm link was copied.",
+	"zekr_group_title": "Group dhikr khatm",
+	"zekr_goal_completed": "This khatm's goal is complete",
+	"zekr_target": "Target: {count} repetitions",
+	"zekr_unlimited": "No repetition limit",
+	"zekr_collective": "Group participation",
+	"zekr_repetitions": "Dhikr repetitions",
+	"zekr_progress": "{percent} progress",
+	"zekr_target_completed": "Target complete",
+	"zekr_remaining": "{count} repetitions to target",
+	"zekr_start": "Start",
+	"zekr_goal": "Target {count}",
+	"zekr_open_message": "This khatm has no fixed limit; every participation adds to the group effort.",
+	"zekr_your_share": "Your share in this khatm",
+	"zekr_reading_text": "Reading text",
+	"zekr_this_text": "This khatm's dhikr",
+	"zekr_empty_input": "The input is empty.",
+	"zekr_participation_eyebrow": "Record participation",
+	"zekr_join_again": "Participate in this khatm again",
+	"zekr_add_share": "Add your share to this khatm",
+	"zekr_participation_description": "Choose how many repetitions you read; your participation is recorded immediately.",
+	"zekr_registered_count": "{count} repetitions recorded",
+	"zekr_one_success": "One repetition recorded successfully",
+	"zekr_one_said": "I recited the dhikr once",
+	"zekr_custom_count": "Custom amount",
+	"zekr_registering": "Recording {count} dhikr repetitions…",
+	"zekr_wait": "Please wait a moment.",
+	"zekr_success_total": "Your total participation: {count} repetitions",
+	"zekr_participation_failed": "Participation was not recorded",
+	"zekr_check_connection": "Check your connection and try again.",
+	"zekr_stats_updated": "The page statistics update with every participation.",
+	"zekr_custom_participation": "Custom participation amount",
+	"zekr_count_question": "How many times did you recite the dhikr?",
+	"zekr_participation_count": "Participation amount",
+	"zekr_example_100": "For example, 100",
+	"zekr_positive_number": "Enter a number greater than zero.",
+	"zekr_registering_short": "Recording…",
+	"zekr_register_participation": "Record participation",
+	"add_title": "Create a new group khatm",
+	"add_eyebrow": "One intention, one group effort",
+	"add_heading": "Build your new khatm",
+	"add_description": "Choose the details and division method; the invitation link will be ready right away.",
+	"add_details_title": "Khatm details",
+	"add_details_hint": "Choose a short, memorable title.",
+	"add_khatm_title": "Khatm title",
+	"add_title_placeholder": "For example, Quran khatm for family health",
+	"add_description_label": "Description",
+	"add_optional": "Optional",
+	"add_description_placeholder": "Write the khatm intention or a short note for participants…",
+	"add_range_title": "Reading division",
+	"add_range_hint": "Set the size of each participant's share.",
+	"add_access_title": "Access and repetition",
+	"add_access_hint": "Choose who can find the khatm and what happens after it ends.",
+	"add_private": "Private",
+	"add_private_hint": "Only people with the link can access the khatm.",
+	"add_public": "Public",
+	"add_public_hint": "The khatm can appear on the home page after admin approval.",
+	"add_serial": "Make this a continuing khatm",
+	"add_serial_hint": "A new round starts automatically after each round ends.",
+	"add_submit_hint": "After creating it, you can send the invitation link to others.",
+	"add_creating": "Creating khatm…",
+	"add_create": "Create khatm and get link",
+	"add_ai_title": "The khatm title needs review",
+	"add_ai_description": "You can revise the text or register the khatm at your own responsibility.",
+	"add_edit_text": "Edit text",
+	"add_force_create": "Register despite warning",
+	"success_ready": "Everything is ready",
+	"success_created": "Your khatm was created successfully",
+	"success_description": "Send the link below to participants to start the group reading.",
+	"success_details": "Created khatm details",
+	"success_invite_ready": "Invitation link is ready",
+	"success_invite_hint": "Send it to participants so they can join the khatm.",
+	"success_ready_to_send": "Ready to send",
+	"success_open_link": "Open invitation link in a new page",
+	"success_invite_copied": "Invitation link copied",
+	"success_copy_invite": "Copy invitation link",
+	"success_copied": "Copied",
+	"success_open_khatm": "Open khatm page",
+	"success_saved_note": "This khatm is also saved under “My activity”.",
+	"account_title": "My account",
+	"account_sign_out": "Sign out",
+	"account_notifications": "Notifications",
+	"account_notifications_description": "Creation, share-selection, and completion messages are sent through the first available channel.",
+	"account_notifications_saved": "Notification settings saved.",
+	"account_notifications_error": "Notification settings could not be saved.",
+	"account_notifications_enabled": "Enable user notifications",
+	"account_channels": "Channels",
+	"account_ready": "Ready",
+	"account_start_chat": "Start a chat",
+	"account_unavailable": "Unavailable",
+	"account_email": "Email",
+	"account_email_unavailable": "No verified email or SMTP is available",
+	"account_preferred_channel": "Preferred channel",
+	"account_default_priority": "Default priority: Bale, Eitaa, email",
+	"account_save_notifications": "Save notification settings",
+	"account_my_khatms": "My khatms",
+	"account_no_khatms": "No khatm is linked to this account yet.",
+	"account_private_khatm": "Private khatm",
+	"account_public_khatm": "Public khatm",
+	"account_view": "View",
+	"account_edit": "Edit",
+	"account_profile_eyebrow": "Profile and activity",
+	"account_email_not_set": "No email is registered for this account",
+	"account_overview": "Account overview",
+	"account_khatms_total": "All khatms",
+	"account_khatms_active": "In progress",
+	"account_ready_channels": "Ready channels",
+	"account_app_settings": "App settings",
+	"account_notifications_master_description": "Control all messages about your activity and khatms in one place.",
+	"account_notifications_disabled_note": "Notifications are off. You will not receive messages until you turn them on again.",
+	"account_not_connected": "Not connected",
+	"account_bale": "Bale",
+	"account_eitaa": "Eitaa",
+	"account_channel_ready_description": "This channel is connected and ready to receive notifications.",
+	"account_channel_setup_description": "Start a chat with the bot before receiving notifications here.",
+	"account_channel_unavailable_description": "This channel is not currently configured to send notifications.",
+	"account_email_ready_description": "Notifications are sent to your verified account email.",
+	"account_channel_enabled": "Use this channel",
+	"account_preferred_channel_description": "Delivery starts with this channel when possible, then tries the remaining channels.",
+	"account_unsaved_changes": "You have unsaved changes",
+	"account_discard_changes": "Discard changes",
+	"account_saving": "Saving...",
+	"account_khatms_description": "View, edit, and manage the khatms you have created.",
+	"account_create_khatm": "Create khatm",
+	"account_no_khatms_description": "Create your first khatm to invite others and follow its progress.",
+	"account_create_first_khatm": "Create your first khatm",
+	"account_sign_out_confirm_title": "Sign out of your account?",
+	"account_sign_out_confirm_description": "You will need to sign in again to access your khatms and personal settings.",
+	"account_cancel": "Cancel",
+	"account_signing_out": "Signing out...",
+	"edit_khatm_title": "Edit khatm",
+	"edit_save_error": "The changes could not be saved.",
+	"edit_delete_confirm": "Delete this khatm and all its participation?",
+	"edit_delete_error": "The khatm could not be deleted.",
+	"edit_title": "Title",
+	"edit_description": "Description",
+	"edit_range_type": "Range type",
+	"edit_range_locked": "The range type is locked because participation has been recorded.",
+	"edit_private": "Private",
+	"edit_public": "Public",
+	"edit_last_series": "Make the current round the last one",
+	"edit_save": "Save changes",
+	"edit_delete": "Delete khatm",
+	"zekr_count_times": "{count} repetitions",
+	"history_title": "Your activity history",
+	"history_heading": "Your trail of participation",
+	"history_description": "See the khatms you created, dhikr you joined, and reading shares you selected here.",
+	"history_created": "Created khatms",
+	"history_created_empty": "You have not created a khatm yet.",
+	"history_zekr": "Your dhikr khatms",
+	"history_zekr_empty": "There is no dhikr khatm in your history yet.",
+	"history_picked": "Reading participation",
+	"history_picked_empty": "You have not selected a reading share yet.",
+	"history_started_groups": "Groups you started",
+	"history_latest_picks": "Latest participation",
+	"history_picked_description": "Shares you selected for reading",
+	"history_zekr_description": "Dhikr circles you joined",
+	"history_created_at": "Created on {date}",
+	"history_from_khatm": "From “{title}” khatm",
+	"history_private": "Private",
+	"history_view": "View {title}",
+	"history_count_target": "{count} times",
+	"history_view_all": "View all",
+	"directory_sort_recent": "Most recent",
+	"directory_sort_recent_description": "The latest registered khatms",
+	"directory_sort_progress": "Most progress",
+	"directory_sort_progress_description": "Unfinished khatms closest to completion",
+	"directory_sort_continuous": "Continuing khatms",
+	"directory_sort_continuous_description": "The most completed rounds",
+	"directory_range_free": "Free",
+	"directory_range_page": "Page by page",
+	"directory_range_hizb": "Hizb by hizb",
+	"directory_range_surah": "Surah by surah",
+	"directory_range_juz": "Juz by juz",
+	"directory_range_ayah": "Verse by verse",
+	"directory_load_more_error": "More items could not be loaded. Try again.",
+	"directory_read_count": "{count} verses read",
+	"directory_round_count": "{count} completed rounds",
+	"directory_ready": "Ready for your participation",
+	"directory_title": "Registered khatms",
+	"directory_kicker": "Search Quran groups",
+	"directory_heading": "Find the right khatm for you",
+	"directory_description": "Search public khatms, choose a division method, and see the highlights.",
+	"directory_toolbar_label": "Search and filter khatms",
+	"directory_search_label": "Search titles and descriptions",
+	"directory_search_placeholder": "For example, a khatm for health…",
+	"directory_clear_search": "Clear search",
+	"directory_range_label": "Range type",
+	"directory_all_ranges": "All types",
+	"directory_views_label": "Khatm sorting method",
+	"directory_results_for": "Results related to “{query}”",
+	"directory_choose_message": "Choose a khatm and select your reading share.",
+	"directory_clear_filters": "Clear filters",
+	"directory_not_found": "No khatm found",
+	"directory_change_filter": "Change the search term or range type and try again.",
+	"directory_empty": "There are no khatms to show in this category yet.",
+	"directory_show_all": "Show all khatms",
+	"directory_retry": "Try again",
+	"directory_loading": "Loading…",
+	"directory_load_more": "Show more",
+	"directory_range_results": "{rangeType} khatms",
+	"offline_preparing": "Preparing offline khatm…",
+	"offline_supported_title": "Offline khatm is available in the installed version",
+	"offline_supported_description": "To safely store data on this device, this feature is available in the installed Capacitor app or PWA.",
+	"offline_back_home": "Back home",
+	"offline_open_failed": "Offline khatms could not be loaded.",
+	"offline_read_failed": "The offline khatm could not be loaded.",
+	"offline_failure_title": "Offline khatm could not be opened",
+	"offline_eyebrow": "No account, no internet",
+	"offline_heading": "Continue your personal Quran khatm",
+	"offline_description": "All data is stored only in this device's IndexedDB, and no sharing link is created.",
+	"offline_important": "Important:",
+	"offline_data_warning": "Clearing app or browser data also deletes offline khatms; this version cannot recover or transfer them.",
+	"offline_list_title": "Your offline khatms",
+	"offline_list_description": "The latest changes appear at the top of the list.",
+	"offline_completed": "Complete",
+	"offline_progress": "{percent}% progress",
+	"offline_round": "Round {count}",
+	"offline_empty_title": "You do not have an offline khatm yet",
+	"offline_empty_description": "Complete the form below to create your first personal khatm.",
+	"offline_save_error": "The offline khatm could not be saved.",
+	"offline_edit_title": "Edit offline khatm",
+	"offline_create_title": "Create a new offline khatm",
+	"offline_not_shareable": "This khatm cannot be shared.",
+	"offline_title_label": "Khatm title",
+	"offline_title_placeholder": "For example, daily personal khatm",
+	"offline_description_label": "Description (optional)",
+	"offline_division": "Reading division",
+	"offline_range_locked": "The division cannot be changed after the khatm starts.",
+	"offline_serial": "Make this a continuing khatm",
+	"offline_serial_hint": "You can start the next round after each round ends.",
+	"offline_cancel": "Cancel",
+	"offline_saving": "Saving…",
+	"offline_save_changes": "Save changes",
+	"offline_detail_eyebrow": "Personal khatm saved on this device",
+	"offline_badge": "Offline",
+	"offline_edit": "Edit",
+	"offline_delete": "Delete",
+	"offline_stop_round": "Stop after this round",
+	"offline_progress_round": "Current-round progress",
+	"offline_progress_label": "Khatm progress",
+	"offline_verses_read": "{count} verses recorded",
+	"offline_read_ranges": "Read ranges in this round",
+	"offline_completed_rounds": "Completed rounds",
+	"offline_round_label": "Round {count}",
+	"offline_round_complete": "Round {count} complete",
+	"offline_complete_title": "This Quran khatm is complete",
+	"offline_complete_description": "All Quran verses have been recorded in this round.",
+	"offline_start_next_round": "Start a new round",
+	"offline_next_share": "Next share from the khatm",
+	"offline_next_share_description": "The next verses are recorded in order and shown for reading.",
+	"offline_accept_one": "Accept one verse",
+	"offline_consecutive": "{count} consecutive verses",
+	"offline_view_switch": "Range display method",
+	"offline_view_step": "Step-by-step",
+	"offline_view_list": "List",
+	"offline_view_grid": "Grid",
+	"offline_choose_next": "Choose the next reading section",
+	"offline_choose_next_description": "Confirming the choice records this range in the khatm progress immediately.",
+	"offline_unit_size": "Share size",
+	"offline_unit_page": "Page",
+	"offline_unit_hizb": "Quarter hizb",
+	"offline_unit_surah": "Surah",
+	"offline_unit_juz": "Juz",
+	"offline_read_status": "Read",
+	"offline_partial_status": "Partly read",
+	"offline_ready_status": "Ready to select",
+	"offline_complete_badge": "Complete",
+	"offline_select": "Select",
+	"offline_range_saved": "Range recorded successfully",
+	"offline_view_read": "View and read verses",
+	"offline_choose_another": "Choose another section",
+	"offline_mark_read": "Record this section as read?",
+	"offline_registering": "Recording…",
+	"offline_register_yes": "Yes, record it",
+	"offline_delete_title": "Delete this offline khatm?",
+	"offline_delete_description": "All rounds and recorded ranges will be permanently deleted from this device.",
+	"offline_delete_all": "Delete khatm completely",
+	"offline_stop_title": "Make this round the last one?",
+	"offline_stop_description": "The current round continues, but no new round will be created after it completes.",
+	"offline_stop_series": "Stop continuing khatm",
+	"offline_reading_back": "Back to khatm",
+	"offline_reading_start": "Start of {title}",
+	"offline_reading_end": "End of {title}",
+	"offline_reading_back_page": "Back to khatm page",
+	"privacy_title": "Privacy",
+	"privacy_eyebrow": "Transparent data practices",
+	"privacy_summary": "This page explains which data is processed to provide the {name} experience and which choices are available to you.",
+	"privacy_purpose_title": "Purpose of this policy",
+	"privacy_purpose_text": "We process only the data needed to create and manage khatms, record participation, sign in to accounts, and send the notifications you choose.",
+	"privacy_collected_title": "Data we collect",
+	"privacy_collected_account": "Account information such as your name, email address, and chosen sign-in method.",
+	"privacy_collected_khatm": "Information you enter to create or join a khatm, such as its title, description, and selected ranges.",
+	"privacy_collected_notifications": "Notification settings and the address of a connected channel when you enable it.",
+	"privacy_collected_technical": "Technical data needed for session security and service performance, such as session identifiers and browser information.",
+	"privacy_use_title": "How we use data",
+	"privacy_use_text": "We use data to provide the service, prevent abuse, respond to support requests, and send khatm-related notifications. Notifications can be managed from your account.",
+	"privacy_sharing_title": "Visibility and sharing",
+	"privacy_sharing_text": "Information you record in a public khatm may be visible to other participants in that khatm. We do not sell your personal data or share it with third parties except to provide features you choose.",
+	"privacy_control_title": "Your choices and contacting us",
+	"privacy_control_text": "You can change notification settings from your account. To request access to, correction of, or deletion of account data, contact us through the site's support section.",
+	"terms_title": "Terms of use",
+	"terms_eyebrow": "Mindful participation",
+	"terms_summary": "By using {name}, you confirm that you have read these terms and agree to follow them.",
+	"terms_acceptance_title": "Acceptance of terms",
+	"terms_acceptance_text": "Using this system means accepting these terms and the privacy policy. If you disagree with any part, please do not use the service.",
+	"terms_use_title": "Responsible use",
+	"terms_use_account": "Enter your account information accurately and prevent others from accessing it.",
+	"terms_use_respect": "Respect other users and the spiritual nature of the service when naming and describing khatms.",
+	"terms_use_abuse": "Do not use the service harmfully, send inappropriate content, or attempt to disrupt it.",
+	"terms_khatms_title": "Khatms and participation",
+	"terms_khatms_text": "Each khatm creator is responsible for the information and invitation method used in that khatm. Recording a range indicates that you intend to read it; the service does not replace your personal commitment.",
+	"terms_availability_title": "Service availability",
+	"terms_availability_text": "Parts of the service may change temporarily or become unavailable for maintenance, improvement, or security. We will try to communicate important changes appropriately.",
+	"terms_changes_title": "Changes and contact",
+	"terms_changes_text": "These terms may be updated. The date at the top of the page shows when the text was last changed. Send questions and suggestions through the site's support section.",
+	"settings_font_default": "Default",
+	"settings_font_madinah_1": "Madinah Mushaf 1",
+	"settings_font_madinah_2": "Madinah Mushaf 2",
+	"settings_reciter_parhizgar": "Parhizgar",
+	"settings_reciter_minshawi": "Minshawi",
+	"settings_reciter_husari": "Al-Husary",
+	"settings_reciter_abdulbasit": "Abdul Basit",
+	"home_statistics_description": "A look at the fruit of everyone who has read Quran in this service.",
+	"home_stats_recited_label": "Verses recited in the service",
+	"home_stats_recited_description": "verses read through group participation",
+	"home_stats_rounds_label": "Rounds completed in the service",
+	"home_stats_rounds_description": "Quran khatm rounds completed",
+	"home_daily_title": "Recitation pulse over the last seven days",
+	"home_daily_description": "Daily service activity based on Tehran time",
+	"home_weekly_ayahs": "verses this week",
+	"home_chart_legend": "Chart guide",
+	"home_legend_ayah": "Verses recited",
+	"home_legend_created": "Khatm created",
+	"home_legend_completed": "Round completed",
+	"home_personal_kicker": "Your path",
+	"home_personal_title": "Continue where you left off",
+	"home_personal_description": "Your latest khatms and participation are kept on this device.",
+	"home_history_link": "Full history",
+	"home_created_title": "Khatms you created",
+	"home_no_created": "You have not created a khatm yet",
+	"home_first_group": "Start your first Quran group today.",
+	"home_create_first": "Create your first khatm",
+	"home_no_picked": "You have not selected a share yet",
+	"home_join_public": "Join a public khatm and choose your share.",
+	"home_view_khatms": "View khatms",
+	"home_view_all": "View all",
+	"home_join_signin": "Sign in to participate",
+	"home_public_kicker": "Bright groups",
+	"home_public_title": "Join a khatm right now",
+	"home_public_description": "Choose a public group and take your share in this journey.",
+	"home_featured_kicker": "Lasting intentions, lasting participation",
+	"home_featured_description": "Continuing khatms for special causes; a new round starts whenever one ends.",
+	"home_featured_meta": "Featured continuing khatm",
+	"home_showcase_title": "Most participation lately",
+	"home_showcase_description": "This list is automatically sorted by the most verses read over the past three days.",
+	"home_recent_title": "Latest khatms",
+	"home_recent_description": "Public and approved groups",
+	"home_zekr_title": "Dhikr circles",
+	"home_zekr_description": "Small, steady acts of remembrance",
+	"home_zekr_count": "{count} repetitions",
+	"home_zekr_registered": "Recorded amount",
+	"home_how_kicker": "It is simple",
+	"home_how_title": "Three steps to a group khatm",
+	"home_how_description": "From creating a group to completing the reading, everything stays clear and easy.",
+	"home_step_create": "Create the khatm",
+	"home_step_create_description": "Choose a title and set how verses, pages, or juz are divided.",
+	"home_step_invite": "Invite participants",
+	"home_step_invite_description": "Share the khatm's private link with family, friends, or colleagues.",
+	"home_step_finish": "Complete it together",
+	"home_step_finish_description": "Everyone reads their share, and group progress stays current for all.",
+	"home_cta_kicker": "One bright step",
+	"home_cta_title": "Your Quran group can begin today",
+	"home_cta_description": "Set your intention, create the khatm, and send the first invitation to a participant.",
+	"home_cta_action": "Start a new khatm",
+	"share_dialog_title": "Share this khatm",
+	"share_dialog_description": "Your invitation text, links, and postcard are ready to send.",
+	"share_preview_alt": "Invitation postcard for {title}",
+	"share_generating_image": "Creating the postcard…",
+	"share_image_error": "The image could not be created; the text and links are still shareable.",
+	"share_retry_image": "Try again",
+	"share_share_card": "Share postcard",
+	"share_share_text": "Share text and link",
+	"share_download_card": "Download postcard",
+	"share_copy_text": "Copy invitation text",
+	"share_links_title": "Invitation links",
+	"share_normal_link": "Regular web link",
+	"share_direct_link": "Open directly in {provider}",
+	"share_copy_link": "Copy link",
+	"share_text_copied": "Invitation text copied",
+	"share_link_copied": "Link copied",
+	"share_download_started": "Postcard download started",
+	"share_action_error": "Sharing was not completed",
+	"share_card_eyebrow": "An invitation to read the Quran together",
+	"share_card_invitation": "Choose a Quran passage and join this group khatm.",
+	"share_card_hint": "Open the link sent with this message to join",
+	"success_miniapp_link_hint": "This link opens the khatm directly inside {provider}."
 }

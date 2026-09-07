@@ -21,15 +21,17 @@ const config: CapacitorConfig = {
 		androidScheme: 'https',
 	},
 	android: {
+		webContentsDebuggingEnabled: true,
+		appendUserAgent: 'Dorkhani',
 		buildOptions: hasSigningConfig
 			? {
-					keystorePath: process.env.ANDROID_KEYSTORE_PATH,
-					keystorePassword: process.env.ANDROID_KEYSTORE_PASSWORD,
-					keystoreAlias: process.env.ANDROID_KEY_ALIAS,
-					keystoreAliasPassword: process.env.ANDROID_KEY_PASSWORD,
-					releaseType: 'AAB',
-					signingType: 'apksigner',
-				}
+				keystorePath: process.env.ANDROID_KEYSTORE_PATH,
+				keystorePassword: process.env.ANDROID_KEYSTORE_PASSWORD,
+				keystoreAlias: process.env.ANDROID_KEY_ALIAS,
+				keystoreAliasPassword: process.env.ANDROID_KEY_PASSWORD,
+				releaseType: 'AAB',
+				signingType: 'apksigner',
+			}
 			: undefined,
 	},
 }

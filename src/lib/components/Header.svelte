@@ -28,6 +28,7 @@
 		link?: string
 		start?: Snippet
 		end?: Snippet
+		secondaryActions?: Snippet<[() => void]>
 	}
 
 	type NavLink = {
@@ -36,7 +37,7 @@
 		icon: Component
 	}
 
-	const { title, link, end, start }: Props = $props()
+	const { title, link, end, start, secondaryActions }: Props = $props()
 	const branding = $derived(
 		page.data.branding ?? getPublicBranding(DEFAULT_BRANDING_CONFIG, getLocale(), base),
 	)
@@ -44,17 +45,32 @@
 	let open = $state(false)
 	const menuId = $props.id()
 	let menuButton: HTMLButtonElement | undefined = $state()
-	let mobileMenu: HTMLElement | undefined = $state()
-	let accountMenu: HTMLDetailsElement | undefined = $state()
+	let menuPanel: HTMLElement | undefined = $state()
+	let desktop = $state(false)
+	let headerElement: HTMLElement | undefined = $state()
 	let offlineKhatmAvailable = $state(false)
 
 	onMount(() => {
 		offlineKhatmAvailable = isInstalledApp()
+		const media = window.matchMedia('(min-width: 1100px)')
+		const syncDesktop = () => {
+			closeMenu()
+			desktop = media.matches && (headerElement?.clientWidth ?? 0) >= 800
+		}
+		syncDesktop()
+		media.addListener(syncDesktop)
+		window.addEventListener('resize', syncDesktop)
+		const observer = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(syncDesktop) : null
+		if (headerElement) observer?.observe(headerElement)
+		return () => {
+			media.removeListener(syncDesktop)
+			window.removeEventListener('resize', syncDesktop)
+			observer?.disconnect()
+		}
 	})
 
 	afterNavigate(() => {
 		open = false
-		accountMenu?.removeAttribute('open')
 	})
 
 	const links = $derived<NavLink[]>([
@@ -92,7 +108,6 @@
 		await authClient.signOut().catch(() => undefined)
 		await clearAuthToken()
 		open = false
-		accountMenu?.removeAttribute('open')
 		await invalidateAll()
 		await goto(localizeHref(`${base}/`))
 	}
@@ -105,104 +120,88 @@
 		}
 	}
 
+	function closeMenu() {
+		if (!open) return
+		open = false
+		menuButton?.focus()
+	}
+
 	function handleKeyboard(event: KeyboardEvent) {
-		if (event.key === 'Escape') {
-			if (open) {
-				open = false
-				menuButton?.focus()
-			}
-			if (accountMenu?.open) {
-				accountMenu.removeAttribute('open')
-				accountMenu.querySelector('summary')?.focus()
-			}
+		if (event.key === 'Escape' && open) {
+			event.preventDefault()
+			closeMenu()
 		}
 	}
 
-	function handleDocumentClick(event: MouseEvent) {
+	function handleDocumentInteraction(event: MouseEvent | FocusEvent) {
 		const target = event.target as Node
-		if (open && !mobileMenu?.contains(target) && !menuButton?.contains(target)) {
+		if (open && !menuPanel?.contains(target) && !menuButton?.contains(target)) {
 			open = false
-		}
-		if (accountMenu && !accountMenu.contains(target)) {
-			accountMenu.removeAttribute('open')
 		}
 	}
 </script>
 
-<svelte:document onkeydown={handleKeyboard} onclick={handleDocumentClick} />
+<svelte:document
+	onkeydown={handleKeyboard}
+	onclick={handleDocumentInteraction}
+	onfocusin={handleDocumentInteraction}
+/>
 
-<header class="ui-header">
+<header class="ui-header" class:ui-header-wide={desktop} bind:this={headerElement}>
 	<div class="ui-header-inner">
-		<a
-			class="ui-header-brand"
-			href={localizeHref(`${base}/`)}
-			aria-label={branding.name}
-		>
-			<span class="ui-header-brand-mark">
-				<img src={branding.icon192Url} width="48" height="48" alt="" />
-			</span>
-			<span class="ui-header-brand-copy">
-				<small>{branding.tagline}</small>
+		{#if title}
+			<div class="ui-header-context">
+				{#if start}
+					{@render start()}
+				{:else}
+					<button
+						type="button"
+						class="ui-header-back"
+						aria-label={m.common_back()}
+						title={m.common_back()}
+						onclick={back}
+					>
+						<IconBack />
+					</button>
+				{/if}
+				<h1 class="ui-header-title" {title}>
+					{#if link}<a href={link}>{title}</a>{:else}{title}{/if}
+				</h1>
+			</div>
+		{:else}
+			<a class="ui-header-brand" href={localizeHref(`${base}/`)} aria-label={branding.name}>
+				<span class="ui-header-brand-mark">
+					<img src={branding.icon192Url} width="36" height="36" alt="" />
+				</span>
 				<strong>{branding.name}</strong>
-			</span>
-		</a>
+			</a>
+		{/if}
 
-		<nav class="ui-nav ui-desktop-only" aria-label={branding.name}>
-			{#each links.slice(0, offlineKhatmAvailable ? 5 : 4) as navLink}
-				{@const NavIcon = navLink.icon}
+		<div class="ui-header-controls">
+			{#if desktop && secondaryActions}
+				<div class="ui-header-actions">
+					{@render secondaryActions(closeMenu)}
+				</div>
+			{/if}
+			{#if end}
+				<div class="ui-header-actions">
+					{@render end()}
+				</div>
+			{:else if !title}
 				<a
-					class="ui-nav-link"
-					class:ui-nav-link-active={isActive(navLink.href)}
-					href={navLink.href}
-					aria-current={isActive(navLink.href) ? 'page' : undefined}
+					class="ui-header-page-action ui-header-page-action-primary"
+					href={localizeHref(`${base}/add`)}
+					aria-label={m.nav_create()}
+					title={m.nav_create()}
 				>
-					<NavIcon class="ui-nav-link-icon" />
-					<span>{navLink.label}</span>
-				</a>
-			{/each}
-		</nav>
-
-		<div class="ui-header-global">
-			<LanguageSwitcher compact />
-
-			{#if page.data.user}
-				<details class="ui-header-account ui-desktop-only" bind:this={accountMenu}>
-					<summary aria-label={m.nav_account()}>
-						<IconAccount />
-						<span>
-							<small>{m.nav_account()}</small>
-							<strong>{page.data.user.name || m.nav_account()}</strong>
-						</span>
-					</summary>
-					<div class="ui-header-account-menu">
-						<a href={localizeHref(`${base}/account`)}
-							><IconAccount /><span>{m.nav_account()}</span></a
-						>
-						<a href={localizeHref(`${base}/settings`)}
-							><IconSettings /><span>{m.nav_settings()}</span></a
-						>
-						<button type="button" onclick={signOut}>
-							<IconLogout /><span>{m.nav_logout()}</span>
-						</button>
-					</div>
-				</details>
-			{:else}
-				<a
-					class="ui-header-utility ui-desktop-only"
-					href={localizeHref(`${base}/settings`)}
-					aria-label={m.nav_settings()}
-				>
-					<IconSettings />
-				</a>
-				<a class="ui-header-login ui-desktop-only" href={localizeHref(`${base}/auth/login`)}>
-					<IconLogin /><span>{m.nav_login()}</span>
+					<IconAdd /><span>{m.nav_create()}</span>
 				</a>
 			{/if}
-
 			<button
 				type="button"
-				class="ui-header-menu-button ui-mobile-only"
+				class="ui-header-menu-button"
 				aria-label={open ? m.common_close() : m.common_more()}
+				title={open ? m.common_close() : m.common_more()}
 				aria-expanded={open}
 				aria-controls={menuId}
 				bind:this={menuButton}
@@ -211,67 +210,35 @@
 				{#if open}<IconClose />{:else}<IconMenu />{/if}
 			</button>
 		</div>
+	</div>
 
-		{#if open}
-			<nav
-				id={menuId}
-				class="ui-mobile-menu ui-mobile-only"
-				aria-label={branding.name}
-				bind:this={mobileMenu}
-			>
-				{#each links as navLink}
-					{@const NavIcon = navLink.icon}
-					<a
-						class="ui-nav-link"
-						class:ui-nav-link-active={isActive(navLink.href)}
-						href={navLink.href}
-						onclick={() => (open = false)}
-						aria-current={isActive(navLink.href) ? 'page' : undefined}
-					>
-						<span class="ui-mobile-nav-icon"><NavIcon /></span>
-						<span>{navLink.label}</span>
-					</a>
-				{/each}
-				{#if page.data.user}
-					<button class="ui-btn ui-btn-ghost ui-btn-block mt-1" type="button" onclick={signOut}>
-						<span class="ui-mobile-nav-icon"><IconLogout /></span>
-						<span>{m.nav_logout()}</span>
-					</button>
-				{/if}
-			</nav>
-		{/if}
-
-		{#if title}
-			<div class="ui-header-context-bar">
-				<div class="ui-header-context">
-					{#if start}
-						{@render start()}
-					{:else}
-						<button
-							type="button"
-							class="ui-header-back"
-							aria-label={m.common_back()}
-							onclick={back}
-						>
-							<IconBack />
-						</button>
-					{/if}
-
-					<div class="ui-header-page-copy">
-						<span>{m.common_view()}</span>
-						<h1 class="ui-header-title">
-							{#if link}<a href={link}>{title}</a>{:else}{title}{/if}
-						</h1>
-					</div>
-				</div>
-
-				{#if end}
-					<div class="ui-header-actions">
-						{@render end()}
-					</div>
-				{/if}
+	<div id={menuId} class="ui-header-menu" hidden={!open} bind:this={menuPanel}>
+		{#if !desktop && secondaryActions}
+			<div class="ui-header-menu-actions">
+				{@render secondaryActions(closeMenu)}
 			</div>
 		{/if}
-
+		<nav aria-label={branding.name}>
+			{#each links as navLink}
+				{@const NavIcon = navLink.icon}
+				<a
+					class="ui-nav-link"
+					class:ui-nav-link-active={isActive(navLink.href)}
+					href={navLink.href}
+					onclick={closeMenu}
+					aria-current={isActive(navLink.href) ? 'page' : undefined}
+				>
+					<NavIcon /><span>{navLink.label}</span>
+				</a>
+			{/each}
+		</nav>
+		<div class="ui-header-menu-preferences">
+			<LanguageSwitcher menuItem onopen={closeMenu} />
+			{#if page.data.user}
+				<button class="ui-nav-link" type="button" onclick={signOut}>
+					<IconLogout /><span>{m.nav_logout()}</span>
+				</button>
+			{/if}
+		</div>
 	</div>
 </header>

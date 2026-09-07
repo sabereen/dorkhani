@@ -80,7 +80,13 @@ long-form content, and Quran reading views. Build page spacing with `ui-page`, a
 
 Every route must use the shared `Header.svelte`. It owns the page title and actions together
 with the brand and global navigation; routes must not create another header or recreate the
-global navigation. Pass page-specific actions through its `end` snippet.
+global navigation. Pass always-visible page actions through its `end` snippet. Use
+`secondaryActions`, a snippet receiving a `closeMenu` callback, for actions that move into the
+menu on compact headers. Call `closeMenu` before opening a dialog or navigating from these
+secondary actions so focus can return to the menu trigger. The header renders secondary actions
+once: inline when the desktop viewport and header width allow it, otherwise inside the menu.
+Keep the header to one row; action labels are hidden in compact mode while accessible names
+and loading indicators remain available.
 
 Utilities may handle truly local alignment, width, and spacing. If the same combination occurs
 in several routes or represents a named design concept, move it to the appropriate stylesheet

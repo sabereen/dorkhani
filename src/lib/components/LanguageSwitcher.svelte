@@ -6,7 +6,11 @@
 	import LanguageModal from './LanguageModal.svelte'
 	import IconLanguage from '~icons/ic/round-language'
 
-	let { compact = false }: { compact?: boolean } = $props()
+	let {
+		compact = false,
+		menuItem = false,
+		onopen,
+	}: { compact?: boolean; menuItem?: boolean; onopen?: () => void } = $props()
 	const locale = $derived(getLocale())
 	const isAdmin = $derived(page.url.pathname.startsWith('/admin'))
 	let open = $state(false)
@@ -15,13 +19,17 @@
 {#if !isAdmin}
 	<div class:ui-language-switcher-compact={compact} class="ui-language-switcher">
 		<button
-			class="ui-language-switcher-button"
+			class={menuItem ? 'ui-nav-link' : 'ui-language-switcher-button'}
 			type="button"
 			aria-label={`${m.language_selector_label()}: ${localeLabel(locale)}`}
 			title={localeLabel(locale)}
-			onclick={() => (open = true)}
+			onclick={() => {
+				onopen?.()
+				open = true
+			}}
 		>
 			<IconLanguage class="ui-language-icon" aria-hidden="true" />
+			{#if menuItem}<span>{m.language_selector_label()}: {localeLabel(locale)}</span>{/if}
 		</button>
 	</div>
 	<LanguageModal bind:open />

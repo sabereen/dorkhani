@@ -206,7 +206,32 @@
 	}}
 />
 
-<Header title={khatm.title}>
+{#snippet secondaryActions(closeMenu: () => void)}
+	{#if data.canEdit}
+		<a href={editHref} class="ui-header-page-action" aria-label={m.khatm_edit_aria()} onclick={closeMenu}>
+			<IconEdit class="size-5" />
+			<span>{m.common_edit()}</span>
+		</a>
+	{:else if canManageAsGuest}
+		<button
+			type="button"
+			class="ui-header-page-action"
+			onclick={() => {
+				closeMenu()
+				showAuthPrompt = true
+			}}
+			aria-label={m.khatm_manage_aria()}
+		>
+			<IconEdit class="size-5" />
+			<span>{m.khatm_manage()}</span>
+		</button>
+	{/if}
+{/snippet}
+
+<Header
+	title={khatm.title}
+	secondaryActions={data.canEdit || canManageAsGuest ? secondaryActions : undefined}
+>
 	{#snippet end()}
 		{#if shortcutSupported}
 			<button
@@ -215,36 +240,23 @@
 				onclick={requestShortcut}
 				disabled={pinningShortcut}
 				aria-label={m.khatm_add_to_home_aria()}
+				title={m.khatm_add_to_home_aria()}
 			>
 				{#if pinningShortcut}
 					<span class="ui-spinner"></span>
 				{:else}
 					<IconAddToHome class="size-5" />
 				{/if}
-				<span>{m.khatm_home()}</span>
+				<span>{m.khatm_add_to_home_aria()}</span>
 			</button>
 		{/if}
-		{#if data.canEdit}
-			<a href={editHref} class="ui-header-page-action" aria-label={m.khatm_edit_aria()}>
-				<IconEdit class="size-5" />
-				<span>{m.common_edit()}</span>
-			</a>
-		{:else if canManageAsGuest}
-			<button
-				type="button"
-				class="ui-header-page-action"
-				onclick={() => (showAuthPrompt = true)}
-				aria-label={m.khatm_manage_aria()}
-			>
-				<IconEdit class="size-5" />
-				<span>{m.khatm_manage()}</span>
-			</button>
-		{/if}
+
 		<button
 			type="button"
 			class="ui-header-page-action ui-header-page-action-primary"
 			onclick={() => (showShare = true)}
 			aria-label={m.khatm_share()}
+			title={m.khatm_share()}
 		>
 			<IconShare class="size-5" />
 			<span>{m.khatm_share()}</span>

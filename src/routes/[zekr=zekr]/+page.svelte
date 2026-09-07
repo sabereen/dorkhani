@@ -82,6 +82,7 @@
 				class="ui-header-page-action ui-header-page-action-primary"
 				onclick={share}
 				aria-label={m.common_share()}
+				title={m.common_share()}
 			>
 				<IconShare class="size-5" />
 				<span>{m.common_share()}</span>
@@ -92,6 +93,7 @@
 				class="ui-header-page-action ui-header-page-action-primary"
 				onclick={copy}
 				aria-label={m.common_copy_link()}
+				title={m.common_copy_link()}
 			>
 				<IconCopy class="size-5" />
 				<span>{m.common_copy_link()}</span>

@@ -63,7 +63,9 @@ export const handle: Handle = async ({ resolve, event }) => {
 
 	const authSession = await auth.api.getSession({ headers: event.request.headers })
 	event.locals.session = authSession?.session ?? null
-	event.locals.user = authSession?.user ?? null
+	event.locals.user = authSession?.user
+		? { ...authSession.user, image: authSession.user.image ?? null }
+		: null
 
 	const cookieLocale = event.cookies.get(PARAGLIDE_LOCALE_COOKIE)
 	const clientLocale = event.request.headers.get('x-app-locale')
@@ -242,9 +244,8 @@ function getErrorDetails(error: unknown) {
 				name:
 					typeof errorLike.name === 'string'
 						? errorLike.name
-						: error.constructor?.name ?? 'UnknownError',
-				message:
-					typeof errorLike.message === 'string' ? errorLike.message : JSON.stringify(error),
+						: (error.constructor?.name ?? 'UnknownError'),
+				message: typeof errorLike.message === 'string' ? errorLike.message : JSON.stringify(error),
 				stack: typeof errorLike.stack === 'string' ? errorLike.stack : undefined,
 				cause: serializeCause(errorLike.cause),
 			}

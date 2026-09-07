@@ -24,10 +24,26 @@
 	<title>{meta.title}</title>
 	<meta name="description" content={meta.description} />
 	<link rel="canonical" href={canonical} />
-	<link rel="alternate" hreflang="fa" href={absolutePublicUrl(alternatePaths.fa, page.url.origin)} />
-	<link rel="alternate" hreflang="ar" href={absolutePublicUrl(alternatePaths.ar, page.url.origin)} />
-	<link rel="alternate" hreflang="en" href={absolutePublicUrl(alternatePaths.en, page.url.origin)} />
-	<link rel="alternate" hreflang="x-default" href={absolutePublicUrl(alternatePaths.fa, page.url.origin)} />
+	<link
+		rel="alternate"
+		hreflang="fa"
+		href={absolutePublicUrl(alternatePaths.fa, page.url.origin)}
+	/>
+	<link
+		rel="alternate"
+		hreflang="ar"
+		href={absolutePublicUrl(alternatePaths.ar, page.url.origin)}
+	/>
+	<link
+		rel="alternate"
+		hreflang="en"
+		href={absolutePublicUrl(alternatePaths.en, page.url.origin)}
+	/>
+	<link
+		rel="alternate"
+		hreflang="x-default"
+		href={absolutePublicUrl(alternatePaths.fa, page.url.origin)}
+	/>
 	{#if meta.robots}<meta name="robots" content={meta.robots} />{/if}
 	<meta property="og:type" content={meta.type || 'website'} />
 	<meta property="og:title" content={meta.title} />
@@ -45,5 +61,6 @@
 	<meta name="twitter:description" content={meta.description} />
 	<meta name="twitter:image" content={image} />
 	<meta name="twitter:image:alt" content={meta.imageAlt} />
-	{#if jsonLd}<script type="application/ld+json">{jsonLd}</script>{/if}
+	<!-- eslint-disable-next-line svelte/no-at-html-tags -- JSON-LD is escaped by serializeJsonLd. -->
+	{#if jsonLd}{@html `<script type="application/ld+json">${jsonLd}</scr${'ipt'}>`}{/if}
 </svelte:head>

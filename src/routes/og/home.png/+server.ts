@@ -1,5 +1,6 @@
 import { base } from '$app/paths'
-import { isLocale, type Locale } from '$lib/i18n/locale'
+import { isLocale } from '$lib/i18n/locale'
+import type { Locale } from '$lib/paraglide/runtime.js'
 import { getPublicBranding } from '$lib/entity/Branding'
 import { renderShareCard } from '$lib/server/seo/shareCard'
 import { appSettings_store } from '$service/appSettings'

@@ -1,34 +1,6 @@
 <script lang="ts" module>
 	import { fly } from 'svelte/transition'
-	import { browser } from '$app/environment'
-	import { untrack } from 'svelte'
-
-	type ToastType = 'info' | 'error'
-
-	let state = $state({
-		open: false,
-		message: '',
-		type: 'info' as ToastType,
-		counter: 0,
-		timer: NaN,
-	})
-
-	export function toast(type: ToastType, message: string) {
-		if (!browser) return
-
-		untrack(() => {
-			state.counter++
-			state.open = true
-			state.type = type
-			state.message = message
-
-			if (!isNaN(state.timer)) window.clearTimeout(state.timer)
-			state.timer = window.setTimeout(() => {
-				state.open = false
-				state.timer = NaN
-			}, 5_000)
-		})
-	}
+	import { toastState as state } from './toast.svelte'
 </script>
 
 {#key state.counter}

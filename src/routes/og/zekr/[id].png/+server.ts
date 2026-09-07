@@ -1,6 +1,7 @@
 import { base } from '$app/paths'
 import { error, type RequestHandler } from '@sveltejs/kit'
-import { isLocale, type Locale } from '$lib/i18n/locale'
+import { isLocale } from '$lib/i18n/locale'
+import type { Locale } from '$lib/paraglide/runtime.js'
 import { getPublicBranding } from '$lib/entity/Branding'
 import { renderShareCard } from '$lib/server/seo/shareCard'
 import { appSettings_store } from '$service/appSettings'
@@ -21,7 +22,13 @@ export const GET: RequestHandler = async ({ locals, params, url }) => {
 		description: zekr.description,
 		locale,
 		progress,
-		badge: finite ? undefined : locale === 'en' ? 'Open collective zikr' : locale === 'ar' ? 'ذكر جماعي مفتوح' : 'ذکر جمعی باز',
+		badge: finite
+			? undefined
+			: locale === 'en'
+				? 'Open collective zikr'
+				: locale === 'ar'
+					? 'ذكر جماعي مفتوح'
+					: 'ذکر جمعی باز',
 		completed: finite && progress === 100,
 	})
 	return new Response(image, {

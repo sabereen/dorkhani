@@ -77,7 +77,11 @@ const noopTokenStore: AuthTokenStore = {
 async function loadNativeSecureStorage(): Promise<AsyncTokenStorage> {
 	const { SecureStorage } = await import('@aparajita/capacitor-secure-storage')
 	await SecureStorage.setKeyPrefix('dorkhani_')
-	return SecureStorage
+	return {
+		getItem: (key) => SecureStorage.getItem(key),
+		setItem: (key, value) => SecureStorage.setItem(key, value),
+		removeItem: (key) => SecureStorage.removeItem(key),
+	}
 }
 
 export const authTokenStore =

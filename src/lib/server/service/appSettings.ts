@@ -33,9 +33,9 @@ export type Config = {
 }
 
 export type BrandingAssets = {
-	hero?: { data: Uint8Array; mimeType: 'image/png' | 'image/jpeg' }
-	icon192?: Uint8Array
-	icon512?: Uint8Array
+	hero?: { data: Buffer; mimeType: 'image/png' | 'image/jpeg' }
+	icon192?: Buffer
+	icon512?: Buffer
 }
 
 type Store = { config: Config }
@@ -117,19 +117,19 @@ export async function appSettingsService_setKey<T extends keyof Config>(key: T, 
 	store.config = newConfig
 }
 
-export async function appSettingsService_setConfig(
-	newConfig: Config,
-	assets: BrandingAssets = {},
-) {
+export async function appSettingsService_setConfig(newConfig: Config, assets: BrandingAssets = {}) {
 	await db.tAppSettings.update({
 		where: { id: 1 },
 		data: {
 			config: newConfig,
 			...(assets.hero
-				? { heroImage: assets.hero.data, heroImageMime: assets.hero.mimeType }
+				? {
+						heroImage: assets.hero.data as Uint8Array<ArrayBuffer>,
+						heroImageMime: assets.hero.mimeType,
+					}
 				: {}),
-			...(assets.icon192 ? { appIcon192: assets.icon192 } : {}),
-			...(assets.icon512 ? { appIcon512: assets.icon512 } : {}),
+			...(assets.icon192 ? { appIcon192: assets.icon192 as Uint8Array<ArrayBuffer> } : {}),
+			...(assets.icon512 ? { appIcon512: assets.icon512 as Uint8Array<ArrayBuffer> } : {}),
 		},
 	})
 	store.config = newConfig

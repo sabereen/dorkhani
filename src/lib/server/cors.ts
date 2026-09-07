@@ -1,5 +1,7 @@
+const DEFAULT_NATIVE_TRUSTED_ORIGINS = ['https://localhost']
+
 export function parseTrustedOrigins(value: string | undefined) {
-	const origins = new Set<string>()
+	const origins = new Set(DEFAULT_NATIVE_TRUSTED_ORIGINS)
 	for (const item of (value || '').split(',')) {
 		const candidate = item.trim()
 		if (!candidate) continue

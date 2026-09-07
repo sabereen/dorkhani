@@ -16,6 +16,12 @@ describe('native CORS policy', () => {
 		)
 	})
 
+	it('allows the Capacitor localhost origin without an environment entry', () => {
+		expect(getAllowedCorsOrigin('https://localhost', parseTrustedOrigins(undefined))).toBe(
+			'https://localhost',
+		)
+	})
+
 	it('exposes the bearer response header', () => {
 		const headers = createCorsHeaders('https://localhost')
 		expect(headers.get('access-control-allow-origin')).toBe('https://localhost')

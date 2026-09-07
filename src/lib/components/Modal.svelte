@@ -24,10 +24,15 @@
 		closeOnEscape = true,
 	}: Props = $props()
 	let modalBox = $state<HTMLElement>()
-	let returnFocus: HTMLElement | null = null
 
 	function mountToBody(node: HTMLElement) {
 		document.body.appendChild(node)
+		// Svelte's original DOM range no longer contains this portalled node.
+		return {
+			destroy() {
+				node.remove()
+			},
+		}
 	}
 
 	function close() {
@@ -74,14 +79,20 @@
 
 	$effect(() => {
 		if (!open) return
-		returnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null
+		const returnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null
+		let active = true
 		const previousOverflow = document.body.style.overflow
 		document.body.style.overflow = 'hidden'
-		tick().then(() => (getFocusableElements()[0] || modalBox)?.focus())
+		tick().then(() => {
+			if (active && open && modalBox?.isConnected) {
+				(getFocusableElements()[0] || modalBox).focus()
+			}
+		})
 
 		return () => {
+			active = false
 			document.body.style.overflow = previousOverflow
-			returnFocus?.focus()
+			if (returnFocus?.isConnected) returnFocus.focus()
 		}
 	})
 </script>

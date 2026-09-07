@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto, invalidateAll } from '$app/navigation'
+	import { afterNavigate, goto, invalidateAll } from '$app/navigation'
 	import { base } from '$app/paths'
 	import { navigating, page } from '$app/state'
 	import { authClient, clearAuthToken } from '$lib/auth-client'
@@ -42,11 +42,19 @@
 	)
 	const from = navigating.from
 	let open = $state(false)
+	const menuId = $props.id()
+	let menuButton: HTMLButtonElement | undefined = $state()
+	let mobileMenu: HTMLElement | undefined = $state()
 	let accountMenu: HTMLDetailsElement | undefined = $state()
 	let offlineKhatmAvailable = $state(false)
 
 	onMount(() => {
 		offlineKhatmAvailable = isInstalledApp()
+	})
+
+	afterNavigate(() => {
+		open = false
+		accountMenu?.removeAttribute('open')
 	})
 
 	const links = $derived<NavLink[]>([
@@ -74,8 +82,10 @@
 	])
 
 	function isActive(href: string) {
-		if (href === `${base}/`) return page.url.pathname === href
-		return page.url.pathname.startsWith(href)
+		const pathname = page.url.pathname.replace(/\/$/, '')
+		const target = href.replace(/\/$/, '')
+		if (href === localizeHref(`${base}/`)) return pathname === target
+		return pathname === target || pathname.startsWith(`${target}/`)
 	}
 
 	async function signOut() {
@@ -97,25 +107,34 @@
 
 	function handleKeyboard(event: KeyboardEvent) {
 		if (event.key === 'Escape') {
-			open = false
-			accountMenu?.removeAttribute('open')
+			if (open) {
+				open = false
+				menuButton?.focus()
+			}
+			if (accountMenu?.open) {
+				accountMenu.removeAttribute('open')
+				accountMenu.querySelector('summary')?.focus()
+			}
 		}
 	}
 
 	function handleDocumentClick(event: MouseEvent) {
-		if (accountMenu && !accountMenu.contains(event.target as Node)) {
+		const target = event.target as Node
+		if (open && !mobileMenu?.contains(target) && !menuButton?.contains(target)) {
+			open = false
+		}
+		if (accountMenu && !accountMenu.contains(target)) {
 			accountMenu.removeAttribute('open')
 		}
 	}
 </script>
 
-<svelte:document onkeyup={handleKeyboard} onclick={handleDocumentClick} />
+<svelte:document onkeydown={handleKeyboard} onclick={handleDocumentClick} />
 
-<header class="ui-header" class:ui-header-with-context={title}>
+<header class="ui-header">
 	<div class="ui-header-inner">
 		<a
 			class="ui-header-brand"
-			class:ui-header-brand-desktop={title}
 			href={localizeHref(`${base}/`)}
 			aria-label={branding.name}
 		>
@@ -128,7 +147,7 @@
 			</span>
 		</a>
 
-		<nav class="ui-nav ui-desktop-only" aria-label={m.language_selector_label()}>
+		<nav class="ui-nav ui-desktop-only" aria-label={branding.name}>
 			{#each links.slice(0, offlineKhatmAvailable ? 5 : 4) as navLink}
 				{@const NavIcon = navLink.icon}
 				<a
@@ -144,12 +163,6 @@
 		</nav>
 
 		<div class="ui-header-global">
-			{#if !title}
-				<a class="ui-header-create ui-desktop-only" href={localizeHref(`${base}/add`)}>
-					<span class="ui-header-create-icon"><IconAdd /></span>
-					<span><strong>{m.nav_create()}</strong></span>
-				</a>
-			{/if}
 			<LanguageSwitcher compact />
 
 			{#if page.data.user}
@@ -191,47 +204,21 @@
 				class="ui-header-menu-button ui-mobile-only"
 				aria-label={open ? m.common_close() : m.common_more()}
 				aria-expanded={open}
+				aria-controls={menuId}
+				bind:this={menuButton}
 				onclick={() => (open = !open)}
 			>
 				{#if open}<IconClose />{:else}<IconMenu />{/if}
 			</button>
 		</div>
 
-		{#if title}
-			<div class="ui-header-context-bar">
-				<div class="ui-header-context">
-					{#if start}
-						{@render start()}
-					{:else}
-						<button
-							type="button"
-							class="ui-header-back"
-							aria-label={m.common_back()}
-							onclick={back}
-						>
-							<IconBack />
-						</button>
-					{/if}
-
-					<div class="ui-header-page-copy">
-						<span>{m.common_view()}</span>
-						<h1 class="ui-header-title select-none">
-							{#if link}<a href={link}>{title}</a>{:else}{title}{/if}
-						</h1>
-					</div>
-				</div>
-
-				{#if end}
-					<div class="ui-header-actions">
-						{@render end()}
-					</div>
-				{/if}
-			</div>
-		{/if}
-
 		{#if open}
-			<nav class="ui-mobile-menu ui-mobile-only" aria-label={m.nav_khatms()}>
-				<LanguageSwitcher />
+			<nav
+				id={menuId}
+				class="ui-mobile-menu ui-mobile-only"
+				aria-label={branding.name}
+				bind:this={mobileMenu}
+			>
 				{#each links as navLink}
 					{@const NavIcon = navLink.icon}
 					<a
@@ -253,5 +240,38 @@
 				{/if}
 			</nav>
 		{/if}
+
+		{#if title}
+			<div class="ui-header-context-bar">
+				<div class="ui-header-context">
+					{#if start}
+						{@render start()}
+					{:else}
+						<button
+							type="button"
+							class="ui-header-back"
+							aria-label={m.common_back()}
+							onclick={back}
+						>
+							<IconBack />
+						</button>
+					{/if}
+
+					<div class="ui-header-page-copy">
+						<span>{m.common_view()}</span>
+						<h1 class="ui-header-title">
+							{#if link}<a href={link}>{title}</a>{:else}{title}{/if}
+						</h1>
+					</div>
+				</div>
+
+				{#if end}
+					<div class="ui-header-actions">
+						{@render end()}
+					</div>
+				{/if}
+			</div>
+		{/if}
+
 	</div>
 </header>

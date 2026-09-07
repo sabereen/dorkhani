@@ -99,6 +99,8 @@
 			: { href: localizeHref(`${base}/auth/login`), label: m.nav_login(), icon: IconLogin },
 	])
 
+	const accountLink = $derived(links[links.length - 1])
+
 	function isActive(href: string) {
 		const pathname = page.url.pathname.replace(/\/$/, '')
 		const target = href.replace(/\/$/, '')
@@ -249,7 +251,6 @@
 	</nav>
 
 	<div class="ui-header-menu-footer">
-		{@const accountLink = links[links.length - 1]}
 		<a class="ui-header-menu-account" href={accountLink.href} onclick={closeMenu}>
 			<span class="ui-header-menu-icon" aria-hidden="true">
 				{#if page.data.user}<IconAccount />{:else}<IconLogin />{/if}

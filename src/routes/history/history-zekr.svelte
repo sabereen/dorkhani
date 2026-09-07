@@ -6,7 +6,6 @@
 	import type { LocalZekr } from '$lib/idb/idb'
 	import { idb_localZekr_getList } from '$lib/idb/localZekr'
 	import { onMount, type Snippet } from 'svelte'
-	import { slide } from 'svelte/transition'
 	import IconArrow from '~icons/ic/round-arrow-back'
 	import * as m from '$lib/paraglide/messages.js'
 	import IconAutoAwesome from '~icons/ic/round-auto-awesome'
@@ -37,10 +36,7 @@
 </script>
 
 {#if history?.length}
-	<section
-		transition:slide={{ axis: 'y' }}
-		class="ui-card ui-card-bordered ui-activity-card ui-activity-card-zekr"
-	>
+	<section class="ui-card ui-card-bordered ui-activity-card ui-activity-card-zekr">
 		<div class="ui-card-body">
 			<header class="ui-activity-header">
 				<span class="ui-activity-header-icon"><IconAutoAwesome /></span>

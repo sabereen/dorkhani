@@ -5,7 +5,6 @@
 	import { PickedKhatmPart } from '$lib/entity/PickedKhatmPart'
 	import RangeTypeIcon from '$lib/components/RangeTypeIcon.svelte'
 	import { onMount, type Snippet } from 'svelte'
-	import { slide } from 'svelte/transition'
 	import IconCheck from '~icons/ic/round-check-circle'
 	import IconEye from '~icons/ic/outline-remove-red-eye'
 	import IconArrow from '~icons/ic/round-arrow-back'
@@ -37,10 +36,7 @@
 </script>
 
 {#if history?.length}
-	<section
-		transition:slide={{ axis: 'y' }}
-		class="ui-card ui-card-bordered ui-activity-card ui-activity-card-picked"
-	>
+	<section class="ui-card ui-card-bordered ui-activity-card ui-activity-card-picked">
 		<div class="ui-card-body">
 			<header class="ui-activity-header">
 				<span class="ui-activity-header-icon"><IconCheck /></span>

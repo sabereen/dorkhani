@@ -5,7 +5,6 @@
 	import KhatmListCard from '$lib/components/KhatmListCard.svelte'
 	import { CreatedKhatm } from '$lib/entity/CreatedKhatm'
 	import { onMount, type Snippet } from 'svelte'
-	import { slide } from 'svelte/transition'
 	import IconMenuBook from '~icons/ic/round-menu-book'
 	import IconArrow from '~icons/ic/round-arrow-back'
 	import * as m from '$lib/paraglide/messages.js'
@@ -36,10 +35,7 @@
 </script>
 
 {#if history?.length}
-	<section
-		transition:slide={{ axis: 'y' }}
-		class="ui-card ui-card-bordered ui-activity-card ui-activity-card-khatm"
-	>
+	<section class="ui-card ui-card-bordered ui-activity-card ui-activity-card-khatm">
 		<div class="ui-card-body">
 			<header class="ui-activity-header">
 				<span class="ui-activity-header-icon"><IconMenuBook /></span>

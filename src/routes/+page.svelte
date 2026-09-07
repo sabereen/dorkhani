@@ -129,7 +129,13 @@
 
 		<div class="landing-visual">
 			<div class="landing-image-frame">
-				<img src={branding.heroImageUrl} width="480" alt={branding.heroImageAlt} />
+				<img
+					src={branding.heroImageUrl}
+					width="480"
+					alt={branding.heroImageAlt}
+					decoding="async"
+					fetchpriority="high"
+				/>
 			</div>
 			<div class="landing-floating-card landing-floating-top">
 				<span class="landing-floating-icon"><IconGroups /></span>
@@ -510,7 +516,6 @@
 		position: absolute;
 		border-radius: 9999px;
 		background: var(--ui-color-landing-glow);
-		filter: blur(2px);
 		opacity: 0.34;
 	}
 
@@ -1504,6 +1509,15 @@
 
 	.landing-cta > div {
 		max-width: 42rem;
+	}
+
+	/* Keep the long landing page cheap to scroll without changing the Chrome 64 fallback. */
+	@supports (content-visibility: auto) {
+		.landing-section,
+		.landing-cta {
+			content-visibility: auto;
+			contain-intrinsic-size: 1px 40rem;
+		}
 	}
 
 	.landing-section-kicker-light,

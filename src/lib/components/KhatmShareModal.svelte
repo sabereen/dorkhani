@@ -17,6 +17,7 @@
 	import IconRefresh from '~icons/ic/round-refresh'
 	import IconShare from '~icons/ic/outline-share'
 	import * as m from '$lib/paraglide/messages.js'
+	import { PUBLIC_SERVER_ORIGIN } from '$env/static/public'
 
 	type Props = {
 		open?: boolean
@@ -44,7 +45,10 @@
 	const inviteText = $derived(`${shareText}\n${preferredUrl}`)
 	const shareSupported = browser && typeof (navigator as Partial<Navigator>).share === 'function'
 	const cardUrl = $derived.by(() => {
-		const url = new URL(`${base}/og/khatm/${page.params.khatm}.png`, page.url.origin)
+		const url = new URL(
+			`${base}/og/khatm/${page.params.khatm}.png`,
+			PUBLIC_SERVER_ORIGIN || page.url.origin,
+		)
 		url.searchParams.set('l', page.data.locale)
 		url.searchParams.set(
 			'v',

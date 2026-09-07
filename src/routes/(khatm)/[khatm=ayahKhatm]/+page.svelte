@@ -11,6 +11,7 @@
 	import { page } from '$app/state'
 	import { pushState } from '$app/navigation'
 	import { wait } from '$lib/utility/wait'
+	import { localeTag } from '$lib/i18n/format'
 	import { AudioManager } from '$lib/components/Quran/AudioManager.svelte'
 	import MultipleAyah from '$lib/components/Quran/MultipleAyah.svelte'
 	import IconSparkle from '~icons/ic/round-auto-awesome'

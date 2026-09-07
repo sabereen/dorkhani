@@ -8,11 +8,6 @@ body {
 	min-height: 100%;
 	margin: 0;
 	background-color: var(--ui-color-page);
-	background-image:
-		radial-gradient(circle at 88% -8%, var(--ui-color-primary-soft) 0, transparent 27rem),
-		radial-gradient(circle at 4% 42%, var(--ui-color-accent-soft) 0, transparent 24rem);
-	background-repeat: no-repeat;
-	background-size: 100% 52rem;
 	color: var(--ui-color-text);
 	font-family: var(--ui-font-sans);
 	line-height: 1.65;

@@ -1511,15 +1511,6 @@
 		max-width: 42rem;
 	}
 
-	/* Keep the long landing page cheap to scroll without changing the Chrome 64 fallback. */
-	@supports (content-visibility: auto) {
-		.landing-section,
-		.landing-cta {
-			content-visibility: auto;
-			contain-intrinsic-size: 1px 40rem;
-		}
-	}
-
 	.landing-section-kicker-light,
 	.landing-cta p {
 		color: var(--ui-color-landing-hero-muted);

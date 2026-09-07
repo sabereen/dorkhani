@@ -49,9 +49,9 @@
 	--ui-color-landing-accent-text: #211704;
 	--ui-color-landing-glow: #55c8a0;
 	--ui-color-overlay: rgba(7, 17, 15, 0.7);
-	--ui-shadow-sm: 0 1px 2px rgba(24, 35, 31, 0.05), 0 4px 14px rgba(24, 35, 31, 0.04);
-	--ui-shadow-md: 0 10px 30px rgba(24, 35, 31, 0.08);
-	--ui-shadow-lg: 0 24px 64px rgba(24, 35, 31, 0.13);
+	--ui-shadow-sm: 0 2px 8px rgba(24, 35, 31, 0.06);
+	--ui-shadow-md: 0 7px 18px rgba(24, 35, 31, 0.08);
+	--ui-shadow-lg: 0 14px 32px rgba(24, 35, 31, 0.11);
 	--ui-shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.68);
 	--ui-radius-sm: 0.45rem;
 	--ui-radius-md: 0.75rem;
@@ -112,9 +112,9 @@
 	--ui-color-landing-accent-text: #211704;
 	--ui-color-landing-glow: #55c8a0;
 	--ui-color-overlay: rgba(2, 10, 8, 0.82);
-	--ui-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.24), 0 6px 18px rgba(0, 0, 0, 0.12);
-	--ui-shadow-md: 0 12px 34px rgba(0, 0, 0, 0.3);
-	--ui-shadow-lg: 0 28px 72px rgba(0, 0, 0, 0.42);
+	--ui-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.22);
+	--ui-shadow-md: 0 7px 18px rgba(0, 0, 0, 0.28);
+	--ui-shadow-lg: 0 14px 32px rgba(0, 0, 0, 0.36);
 	--ui-shadow-inset: inset 0 1px 0 rgba(239, 248, 243, 0.045);
 }
 
@@ -169,9 +169,9 @@
 		--ui-color-landing-accent-text: #211704;
 		--ui-color-landing-glow: #55c8a0;
 		--ui-color-overlay: rgba(2, 10, 8, 0.82);
-		--ui-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.24), 0 6px 18px rgba(0, 0, 0, 0.12);
-		--ui-shadow-md: 0 12px 34px rgba(0, 0, 0, 0.3);
-		--ui-shadow-lg: 0 28px 72px rgba(0, 0, 0, 0.42);
+		--ui-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.22);
+		--ui-shadow-md: 0 7px 18px rgba(0, 0, 0, 0.28);
+		--ui-shadow-lg: 0 14px 32px rgba(0, 0, 0, 0.36);
 		--ui-shadow-inset: inset 0 1px 0 rgba(239, 248, 243, 0.045);
 	}
 }

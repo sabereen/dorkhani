@@ -3063,6 +3063,9 @@
 	border-radius: var(--ui-radius-lg);
 	background: var(--ui-color-surface-raised);
 	box-shadow: var(--ui-shadow-sm);
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+	transform: translateZ(0);
 }
 
 .ui-header::before {

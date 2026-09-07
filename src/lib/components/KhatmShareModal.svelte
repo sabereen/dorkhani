@@ -18,6 +18,13 @@
 	import IconShare from '~icons/ic/outline-share'
 	import * as m from '$lib/paraglide/messages.js'
 	import { PUBLIC_SERVER_ORIGIN } from '$env/static/public'
+	import { Share } from '@capacitor/share'
+	import {
+		cacheNativeImage,
+		isAndroidNativeApp,
+		isNativeApp,
+		saveNativeImage,
+	} from '$lib/native/media-store'
 
 	type Props = {
 		open?: boolean
@@ -29,6 +36,7 @@
 	let previewUrl = $state<string | null>(null)
 	let generating = $state(false)
 	let generationError = $state(false)
+	let savingImage = $state(false)
 	let generationVersion = 0
 
 	const platform = $derived(miniAppState.host)
@@ -43,7 +51,10 @@
 		m.share_khatm({ title: khatm.title, description: khatm.description }).trim(),
 	)
 	const inviteText = $derived(`${shareText}\n${preferredUrl}`)
-	const shareSupported = browser && typeof (navigator as Partial<Navigator>).share === 'function'
+	const nativeApp = isNativeApp()
+	const nativeAndroid = isAndroidNativeApp()
+	const shareSupported =
+		browser && (nativeApp || typeof (navigator as Partial<Navigator>).share === 'function')
 	const cardUrl = $derived.by(() => {
 		const url = new URL(
 			`${base}/og/khatm/${page.params.khatm}.png`,
@@ -125,23 +136,53 @@
 	}
 
 	async function share() {
-		if (!navigator.share) return
 		const file = getShareFile()
 		try {
+			if (nativeApp) {
+				const cachedImage = nativeAndroid && imageBlob
+					? await cacheNativeImage(imageBlob, `khatm-${khatm.id}.png`)
+					: null
+				await Share.share({
+					title: khatm.title,
+					text: shareText,
+					url: preferredUrl,
+					files: cachedImage ? [cachedImage.uri] : undefined,
+					dialogTitle: m.common_share(),
+				})
+				return
+			}
+			if (!navigator.share) return
 			if (canShareFile(file)) {
 				await navigator.share({ files: [file!], text: shareText, url: preferredUrl })
 			} else {
 				await navigator.share({ text: shareText, url: preferredUrl })
 			}
 		} catch (error) {
-			if (error instanceof DOMException && error.name === 'AbortError') return
+			if (
+				(error instanceof DOMException && error.name === 'AbortError') ||
+				(error instanceof Error && error.message === 'Share canceled')
+			)
+				return
 			console.error(error)
 			toast('error', m.share_action_error())
 		}
 	}
 
-	function downloadImage() {
+	async function downloadImage() {
 		if (!imageBlob || !previewUrl) return
+		if (nativeAndroid) {
+			savingImage = true
+			try {
+				await saveNativeImage(imageBlob, `khatm-${khatm.id}.png`)
+				toast('info', m.share_saved_to_gallery())
+			} catch (error) {
+				console.error(error)
+				toast('error', m.share_save_error())
+			} finally {
+				savingImage = false
+			}
+			return
+		}
 		const anchor = document.createElement('a')
 		anchor.download = `khatm-${khatm.id}.png`
 		anchor.href = previewUrl
@@ -199,7 +240,7 @@
 						onclick={share}
 					>
 						<IconShare />
-						{imageBlob && canShareFile(getShareFile())
+						{imageBlob && (nativeAndroid || canShareFile(getShareFile()))
 							? m.share_share_card()
 							: m.share_share_text()}
 					</button>
@@ -208,9 +249,9 @@
 					class="ui-btn ui-btn-soft whitespace-nowrap text-xs"
 					type="button"
 					onclick={downloadImage}
-					disabled={!imageBlob}
+					disabled={!imageBlob || savingImage}
 				>
-					<IconDownload />
+					{#if savingImage}<span class="ui-spinner" aria-hidden="true"></span>{:else}<IconDownload />{/if}
 					{m.share_download_card()}
 				</button>
 				<button

@@ -890,6 +890,8 @@
 	"share_text_copied": "Invitation text copied",
 	"share_link_copied": "Link copied",
 	"share_download_started": "Postcard download started",
+	"share_saved_to_gallery": "Postcard saved to your gallery",
+	"share_save_error": "The postcard could not be saved to your gallery",
 	"share_action_error": "Sharing was not completed",
 	"share_card_eyebrow": "An invitation to read the Quran together",
 	"share_card_invitation": "Choose a Quran passage and join this group khatm.",

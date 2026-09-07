@@ -3050,7 +3050,7 @@
 	right: 1rem;
 	inset-inline-start: 1rem;
 	bottom: 1rem;
-	z-index: 1100;
+	z-index: 2147483647;
 	width: calc(100% - 2rem);
 	max-width: 24rem;
 }

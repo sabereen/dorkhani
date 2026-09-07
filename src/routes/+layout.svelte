@@ -108,8 +108,6 @@
 
 <TheBProgress />
 
-<div class="z-1000 relative">
-	<TheToast />
-</div>
+<TheToast />
 
 <TheFooter class="mt-5" supportLink={data.supportLink} />

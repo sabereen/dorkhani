@@ -26,6 +26,10 @@
 	let modalBox = $state<HTMLElement>()
 	let returnFocus: HTMLElement | null = null
 
+	function mountToBody(node: HTMLElement) {
+		document.body.appendChild(node)
+	}
+
 	function close() {
 		open = false
 	}
@@ -85,7 +89,7 @@
 <svelte:document onkeydown={handleKeyboard} />
 
 {#if open}
-	<div class={['ui-modal', className]} out:fade role="presentation">
+	<div use:mountToBody class={['ui-modal', className]} out:fade role="presentation">
 		<button
 			in:fade|global
 			type="button"

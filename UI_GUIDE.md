@@ -82,9 +82,12 @@ Every route must use the shared `Header.svelte`. It owns the page title and acti
 with the brand and global navigation; routes must not create another header or recreate the
 global navigation. Pass always-visible page actions through its `end` snippet. Use
 `secondaryActions`, a snippet receiving a `closeMenu` callback, for actions that move into the
-menu on compact headers. Call `closeMenu` before opening a dialog or navigating from these
-secondary actions so focus can return to the menu trigger. The header renders secondary actions
-once: inline when the desktop viewport and header width allow it, otherwise inside the menu.
+menu on compact headers. Await `closeMenu()` before opening another dialog from these secondary actions so the
+navigation modal can release its focus and scroll lock first. Links can use it as their click
+handler. The header renders secondary actions
+once: inline when the desktop viewport and header width allow it, otherwise inside the shared
+`Modal.svelte` navigation dialog. Do not close navigation in response to resize notifications.
+The header owns the minimum spacing before page content.
 Keep the header to one row; action labels are hidden in compact mode while accessible names
 and loading indicators remain available.
 

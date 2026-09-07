@@ -206,7 +206,7 @@
 	}}
 />
 
-{#snippet secondaryActions(closeMenu: () => void)}
+{#snippet secondaryActions(closeMenu: () => Promise<void>)}
 	{#if data.canEdit}
 		<a href={editHref} class="ui-header-page-action" aria-label={m.khatm_edit_aria()} onclick={closeMenu}>
 			<IconEdit class="size-5" />
@@ -216,8 +216,8 @@
 		<button
 			type="button"
 			class="ui-header-page-action"
-			onclick={() => {
-				closeMenu()
+			onclick={async () => {
+				await closeMenu()
 				showAuthPrompt = true
 			}}
 			aria-label={m.khatm_manage_aria()}

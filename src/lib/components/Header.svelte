@@ -8,8 +8,11 @@
 	import { localizeHref } from '$lib/paraglide/runtime.js'
 	import * as m from '$lib/paraglide/messages.js'
 	import { isInstalledApp } from '$lib/config/installedApp'
-	import LanguageSwitcher from './LanguageSwitcher.svelte'
-	import { onMount, type Component, type Snippet } from 'svelte'
+	import Modal from './Modal.svelte'
+	import LanguageModal from './LanguageModal.svelte'
+	import { localeLabel } from '$lib/i18n/client'
+	import IconLanguage from '~icons/ic/round-language'
+	import { onMount, tick, type Component, type Snippet } from 'svelte'
 	import IconAdd from '~icons/ic/round-add-circle-outline'
 	import IconAccount from '~icons/ic/round-account-circle'
 	import IconBack from '~icons/ic/round-arrow-forward-ios'
@@ -28,7 +31,7 @@
 		link?: string
 		start?: Snippet
 		end?: Snippet
-		secondaryActions?: Snippet<[() => void]>
+		secondaryActions?: Snippet<[() => Promise<void>]>
 	}
 
 	type NavLink = {
@@ -45,7 +48,7 @@
 	let open = $state(false)
 	const menuId = $props.id()
 	let menuButton: HTMLButtonElement | undefined = $state()
-	let menuPanel: HTMLElement | undefined = $state()
+	let languageOpen = $state(false)
 	let desktop = $state(false)
 	let headerElement: HTMLElement | undefined = $state()
 	let offlineKhatmAvailable = $state(false)
@@ -54,7 +57,6 @@
 		offlineKhatmAvailable = isInstalledApp()
 		const media = window.matchMedia('(min-width: 1100px)')
 		const syncDesktop = () => {
-			closeMenu()
 			desktop = media.matches && (headerElement?.clientWidth ?? 0) >= 800
 		}
 		syncDesktop()
@@ -120,32 +122,17 @@
 		}
 	}
 
-	function closeMenu() {
+	async function closeMenu() {
 		if (!open) return
 		open = false
-		menuButton?.focus()
+		await tick()
 	}
 
-	function handleKeyboard(event: KeyboardEvent) {
-		if (event.key === 'Escape' && open) {
-			event.preventDefault()
-			closeMenu()
-		}
-	}
-
-	function handleDocumentInteraction(event: MouseEvent | FocusEvent) {
-		const target = event.target as Node
-		if (open && !menuPanel?.contains(target) && !menuButton?.contains(target)) {
-			open = false
-		}
+	async function openLanguage() {
+		await closeMenu()
+		languageOpen = true
 	}
 </script>
-
-<svelte:document
-	onkeydown={handleKeyboard}
-	onclick={handleDocumentInteraction}
-	onfocusin={handleDocumentInteraction}
-/>
 
 <header class="ui-header" class:ui-header-wide={desktop} bind:this={headerElement}>
 	<div class="ui-header-inner">
@@ -203,37 +190,84 @@
 				aria-label={open ? m.common_close() : m.common_more()}
 				title={open ? m.common_close() : m.common_more()}
 				aria-expanded={open}
-				aria-controls={menuId}
+				aria-haspopup="dialog"
 				bind:this={menuButton}
-				onclick={() => (open = !open)}
+				onclick={() => {
+					menuButton?.focus()
+					open = true
+				}}
 			>
 				{#if open}<IconClose />{:else}<IconMenu />{/if}
 			</button>
 		</div>
 	</div>
 
-	<div id={menuId} class="ui-header-menu" hidden={!open} bind:this={menuPanel}>
-		{#if !desktop && secondaryActions}
+</header>
+
+<Modal bind:open contentClass="ui-header-menu-modal" labelledBy={menuId}>
+	<div class="ui-header-menu-heading">
+		<span class="ui-header-menu-brand" aria-hidden="true">
+			<img src={branding.icon192Url} width="48" height="48" alt="" />
+		</span>
+		<div class="ui-header-menu-copy">
+			<h2 id={menuId}>{branding.name}</h2>
+			<p>{branding.tagline}</p>
+		</div>
+		<button
+			type="button"
+			class="ui-btn ui-btn-ghost ui-btn-icon ui-header-menu-close"
+			aria-label={m.common_close()}
+			onclick={closeMenu}
+		>
+			<IconClose />
+		</button>
+	</div>
+
+	{#if !desktop && secondaryActions}
+		<section class="ui-header-menu-context" aria-labelledby={`${menuId}-context`}>
+			<h3 id={`${menuId}-context`}>{title}</h3>
 			<div class="ui-header-menu-actions">
 				{@render secondaryActions(closeMenu)}
 			</div>
-		{/if}
-		<nav aria-label={branding.name}>
-			{#each links as navLink}
-				{@const NavIcon = navLink.icon}
-				<a
-					class="ui-nav-link"
-					class:ui-nav-link-active={isActive(navLink.href)}
-					href={navLink.href}
-					onclick={closeMenu}
-					aria-current={isActive(navLink.href) ? 'page' : undefined}
-				>
-					<NavIcon /><span>{navLink.label}</span>
-				</a>
-			{/each}
-		</nav>
+		</section>
+	{/if}
+
+	<nav class="ui-header-menu-grid" aria-label={branding.name}>
+		{#each links.slice(0, -2) as navLink}
+			{@const NavIcon = navLink.icon}
+			<a
+				class="ui-header-menu-tile"
+				class:ui-header-menu-tile-active={isActive(navLink.href)}
+				href={navLink.href}
+				onclick={closeMenu}
+				aria-current={isActive(navLink.href) ? 'page' : undefined}
+			>
+				<span class="ui-header-menu-icon" aria-hidden="true"><NavIcon /></span>
+				<span>{navLink.label}</span>
+			</a>
+		{/each}
+	</nav>
+
+	<div class="ui-header-menu-footer">
+		{@const accountLink = links[links.length - 1]}
+		<a class="ui-header-menu-account" href={accountLink.href} onclick={closeMenu}>
+			<span class="ui-header-menu-icon" aria-hidden="true">
+				{#if page.data.user}<IconAccount />{:else}<IconLogin />{/if}
+			</span>
+			<span>
+				{#if page.data.user}<small>{m.nav_account()}</small>{/if}
+				<strong>{accountLink.label}</strong>
+			</span>
+		</a>
 		<div class="ui-header-menu-preferences">
-			<LanguageSwitcher menuItem onopen={closeMenu} />
+			<a class="ui-nav-link" href={localizeHref(`${base}/settings`)} onclick={closeMenu}>
+				<IconSettings /><span>{m.nav_settings()}</span>
+			</a>
+			{#if !page.url.pathname.startsWith('/admin')}
+				<button class="ui-nav-link" type="button" onclick={openLanguage}>
+					<IconLanguage /><span>{m.language_selector_label()}: {localeLabel(getLocale())}</span>
+				</button>
+			{/if}
 			{#if page.data.user}
 				<button class="ui-nav-link" type="button" onclick={signOut}>
 					<IconLogout /><span>{m.nav_logout()}</span>
@@ -241,4 +275,6 @@
 			{/if}
 		</div>
 	</div>
-</header>
+</Modal>
+
+<LanguageModal bind:open={languageOpen} />

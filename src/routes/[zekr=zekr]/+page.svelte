@@ -15,7 +15,7 @@
 	import { page } from '$app/state'
 	import ExpandableText from '$lib/components/ExpandableText.svelte'
 	import ZekrActions from './ZekrActions.svelte'
-	import { idb_localZekr_get } from '$lib/idb/localZekr'
+	import { clientStorage } from '$lib/storage/client'
 	import { slide } from 'svelte/transition'
 	import * as m from '$lib/paraglide/messages.js'
 	import SeoHead from '$lib/components/SeoHead.svelte'
@@ -28,7 +28,7 @@
 
 	let myCount = $state(0)
 	$effect(() => {
-		idb_localZekr_get(zekr.id).then((result) => {
+		clientStorage.localZekrs.get(zekr.id).then((result) => {
 			myCount = result?.myCount || 0
 		})
 	})

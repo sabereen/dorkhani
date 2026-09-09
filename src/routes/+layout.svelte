@@ -44,7 +44,7 @@
 			.catch(() => undefined)
 		if (data.user) void claimCreatedKhatms()
 		if (!data.needsLocaleChoice) {
-			localSettings.update({ locale: data.locale }, { bypassLocalStore: false })
+			void localSettings.update({ locale: data.locale }, { bypassLocalStore: false })
 		}
 		return () => {
 			mounted = false

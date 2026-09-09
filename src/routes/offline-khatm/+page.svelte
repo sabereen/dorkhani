@@ -8,10 +8,10 @@
 	import type { OfflineKhatmPartRecord, OfflineKhatmRecord } from '$lib/contracts/domain'
 	import { QuranRange } from '$lib/entity/Range'
 	import {
-		idb_offlineKhatm_get,
-		idb_offlineKhatm_getList,
-		idb_offlineKhatm_getParts,
-	} from '$lib/idb/offlineKhatm'
+		offlineKhatm_get,
+		offlineKhatm_getList,
+		offlineKhatm_getParts,
+	} from '$lib/storage/offlineKhatm'
 	import { localizeHref } from '$lib/paraglide/runtime.js'
 	import * as m from '$lib/paraglide/messages.js'
 	import { onMount } from 'svelte'
@@ -76,7 +76,7 @@
 		loading = true
 		loadError = ''
 		try {
-			list = await idb_offlineKhatm_getList()
+			list = await offlineKhatm_getList()
 		} catch (cause) {
 			loadError = cause instanceof Error ? cause.message : m.offline_open_failed()
 		} finally {
@@ -89,8 +89,8 @@
 		loading = true
 		loadError = ''
 		try {
-			const khatm = await idb_offlineKhatm_get(id)
-			const currentParts = await idb_offlineKhatm_getParts(id, khatm.roundNumber)
+			const khatm = await offlineKhatm_get(id)
+			const currentParts = await offlineKhatm_getParts(id, khatm.roundNumber)
 			if (id === selectedId) {
 				selected = khatm
 				parts = currentParts

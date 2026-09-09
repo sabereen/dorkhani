@@ -1,7 +1,7 @@
 <script lang="ts">
 	import RangeTypePicker from '$lib/components/RangeTypePicker.svelte'
 	import type { OfflineKhatmRecord, RangeType } from '$lib/contracts/domain'
-	import { idb_offlineKhatm_create, idb_offlineKhatm_update } from '$lib/idb/offlineKhatm'
+	import { offlineKhatm_create, offlineKhatm_update } from '$lib/storage/offlineKhatm'
 	import * as m from '$lib/paraglide/messages.js'
 	import IconBook from '~icons/ic/round-menu-book'
 	import IconSave from '~icons/ic/round-save'
@@ -29,8 +29,8 @@
 		errorMessage = ''
 		try {
 			const saved = khatm
-				? await idb_offlineKhatm_update(khatm.id, { title, description, rangeType })
-				: await idb_offlineKhatm_create({ title, description, rangeType, series })
+				? await offlineKhatm_update(khatm.id, { title, description, rangeType })
+				: await offlineKhatm_create({ title, description, rangeType, series })
 			onSaved(saved)
 		} catch (cause) {
 			errorMessage = cause instanceof Error ? cause.message : m.offline_save_error()

@@ -3,8 +3,7 @@
 	import { base } from '$app/paths'
 	import { localizeHref } from '$lib/paraglide/runtime.js'
 	import { Zekr } from '$lib/entity/Zekr.svelte'
-	import type { LocalZekr } from '$lib/idb/idb'
-	import { idb_localZekr_getList } from '$lib/idb/localZekr'
+	import { clientStorage, type LocalZekrRecord } from '$lib/storage/client'
 	import { onMount, type Snippet } from 'svelte'
 	import IconArrow from '~icons/ic/round-arrow-back'
 	import * as m from '$lib/paraglide/messages.js'
@@ -21,11 +20,11 @@
 
 	let loading = $state(true)
 	let hasMore = $state(false)
-	let history = $state<LocalZekr[]>()
+	let history = $state<LocalZekrRecord[]>()
 
 	onMount(async () => {
 		const limit = props.limit ? props.limit + 1 : undefined
-		const list = await idb_localZekr_getList(limit)
+		const list = await clientStorage.localZekrs.getList(limit)
 		loading = false
 		if (props.limit && list.length > props.limit) {
 			list.length = props.limit

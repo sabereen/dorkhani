@@ -26,7 +26,7 @@
 	import { localizeHref } from '$lib/paraglide/runtime.js'
 	import ExpandableText from '$lib/components/ExpandableText.svelte'
 	import { invalidateAll } from '$app/navigation'
-	import { idb_createdKhatm_hasClaim } from '$lib/idb/createdKhatm'
+	import { clientStorage } from '$lib/storage/client'
 	import KhatmParticipation from './KhatmParticipation.svelte'
 	import KhatmReviewBar from './KhatmReviewBar.svelte'
 	import RangeTypeIcon from '$lib/components/RangeTypeIcon.svelte'
@@ -167,7 +167,8 @@
 		canManageAsGuest = false
 
 		if (!data.isAuthenticated && !data.isAdmin) {
-			idb_createdKhatm_hasClaim(khatmId, seriesId)
+			clientStorage.createdKhatms
+				.hasClaim(khatmId, seriesId)
 				.then((hasClaim) => {
 					if (!cancelled) canManageAsGuest = hasClaim
 				})

@@ -21,7 +21,7 @@ flowchart LR
     Services[Server services]
     Prisma[Prisma Client + MariaDB adapter]
     DB[(MariaDB)]
-    Local[(LocalStorage / Cookie / IndexedDB)]
+    Local[(ClientStorage: Dexie یا Android SQLite)]
     Quran[@ghoran packages]
     Eitaa[Eitaa API]
     Fonts[Remote QPC font files]
@@ -48,8 +48,8 @@ flowchart LR
 | پایگاه‌داده    | MariaDB                              | منبع حقیقت ختم‌ها، بازه‌های خوانده‌شده، ذکرها و تنظیمات عمومی            |
 | ORM            | Prisma 7 + `@prisma/adapter-mariadb` | schema، migration و دسترسی تایپ‌دار به MariaDB                           |
 | دادهٔ قرآن     | بسته‌های `@ghoran/*`                 | metadata، entityهای آیه/سوره/جزء/صفحه/حزب، متن و ترجمه                   |
-| ذخیرهٔ مرورگر  | Dexie/IndexedDB                      | تاریخچهٔ ختم ساخته‌شده، بازهٔ انتخاب‌شده و سهم شخصی ذکر                  |
-| تنظیمات مرورگر | LocalStorage + Cookie                | تنظیمات کامل در LocalStorage؛ theme و translation موردنیاز SSR در Cookie |
+| ذخیرهٔ کلاینت  | ClientStorage + Dexie/Android SQLite | Repository مشترک؛ Dexie در وب و SQLite داخلی Android در Capacitor        |
+| تنظیمات کلاینت | LocalStorage/SharedPreferences + Cookie | تنظیمات در وب/Android؛ theme و translation موردنیاز SSR در Cookie      |
 | UI             | UnoCSS + سیستم طراحی محلی            | utility classها، primitiveهای `ui-*`، پوسته‌ها و RTL                     |
 | آیکون          | `unplugin-icons`                     | import آیکون‌ها با alias مجازی `~icons/...`                              |
 | تست            | Vitest + Testing Library + jsdom     | workspace جدا برای تست‌های client و server                               |
@@ -67,6 +67,8 @@ flowchart LR
 │   │   ├── entity/            # مدل دامنهٔ سمت UI و تبدیل داده‌ها
 │   │   ├── hooks/             # helperهای reactive مبتنی بر runes
 │   │   ├── idb/               # schema و repositoryهای IndexedDB
+│   │   ├── storage/           # قراردادها و adapterهای Dexie/SQLite/تنظیمات
+│   │   ├── native/            # قرارداد TypeScript پلاگین‌های Capacitor
 │   │   ├── server/            # کد صرفاً سروری
 │   │   │   └── service/       # منطق کسب‌وکار و دسترسی به DB/سرویس بیرونی
 │   │   └── utility/           # helperهای کوچک و بدون دامنه یا UI
@@ -83,7 +85,8 @@ flowchart LR
 1. فایل‌های `src/lib/server/**` فقط از routeهای سروری، hook سرور یا دیگر فایل‌های server import می‌شوند.
 2. صفحه‌ها و componentها از کلاس‌های `src/lib/entity/**` برای رفتار دامنه و وضعیت reactive استفاده می‌کنند.
 3. entityهای `Khatm`، `Zekr` و `Showcase` با `src/lib/utility/request.ts` به `/api/**` متصل می‌شوند؛ صفحه‌ها معمولاً URLهای API را مستقیم نمی‌سازند.
-4. repositoryهای `src/lib/idb/**` فقط تاریخچه و دادهٔ شخصی مرورگر را نگه می‌دارند و منبع حقیقت مشترک نیستند.
+4. UI و entityها فقط `ClientStorage` را می‌بینند؛ adapter وب از `src/lib/idb/**` و adapter Android از
+   bridge عمومی و پارامتری `NativeDatabase` استفاده می‌کند. هیچ‌کدام منبع حقیقت مشترک سرور نیستند.
 5. typeهای تولیدشدهٔ Prisma با importهای type-only در بخشی از کد کلاینت هم استفاده می‌شوند؛ اجرای Prisma فقط در `src/lib/server/**` است.
 6. `MultipleAyah.svelte` برای دسترسی اختیاری به ختم جاری مستقیماً `khatm-context.svelte.ts` را از پوشهٔ route import می‌کند. این یک وابستگی معکوس شناخته‌شده از component عمومی به route است و هنگام جابه‌جایی هرکدام باید در نظر گرفته شود.
 
@@ -112,9 +115,10 @@ flowchart LR
 ### راه‌اندازی کلاینت
 
 1. `src/hooks.client.ts`، `src/polyfill.ts` را برای مرورگرهای قدیمی بارگذاری می‌کند.
-2. `src/routes/+layout.svelte`، `LocalSettings.provide()` را فراخوانی می‌کند و context تنظیمات را برای کل درخت component می‌سازد.
-3. تنظیمات از LocalStorage بازیابی می‌شوند؛ تغییر theme روی `document.documentElement.dataset.theme` اعمال می‌شود.
-4. toast، footer و progress bar ناوبری در layout ریشه mount می‌شوند. progress bar به‌صورت dynamic import بارگذاری می‌شود.
+2. `hooks.client.ts:init` پیش از bootstrap، `ClientStorage` و secure auth token را hydrate می‌کند.
+3. `src/routes/+layout.svelte`، `LocalSettings.provide()` را فراخوانی می‌کند و context تنظیمات را برای کل درخت component می‌سازد.
+4. تنظیمات وب از LocalStorage و تنظیمات Android از SharedPreferences خوانده می‌شوند؛ تغییر theme روی `document.documentElement.dataset.theme` اعمال می‌شود.
+5. toast، footer و progress bar ناوبری در layout ریشه mount می‌شوند. progress bar به‌صورت dynamic import بارگذاری می‌شود.
 
 ### مسیر عمومی داده
 
@@ -153,19 +157,19 @@ Route group با نام `(khatm)` در URL دیده نمی‌شود. matcherها
 | ------------------------------------ | ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/`                                  | `routes/+page.server.ts`, `+page.svelte`                                             | دریافت موازی ختم‌های شاخص دائمی، showcase خودکارِ پرمشارکت، فهرست عمومی، ذکرها و آمار تجمیعی هفت‌روزه؛ تبدیل plain data به `Khatm` و `Zekr`؛ نمایش خلاصهٔ تاریخچهٔ محلی |
 | `/list`                              | `routes/list/+page.server.ts`, `+page.svelte`                                        | فهرست صفحه‌بندی‌شدهٔ ختم‌های approved؛ صفحه‌های بعدی از `Khatm.getList()` و API گرفته می‌شوند                                                                           |
-| `/add`                               | `routes/add/+page.server.ts`, `+page.svelte`, `sucess-result.svelte`                 | ساخت ختم از form action؛ در صورت سریالی بودن ساخت `TKhatmSeries`؛ notification برای ختم عمومی؛ ذخیرهٔ ختم ساخته‌شده در IndexedDB                                        |
-| `/history`                           | `routes/history/+page.svelte`, `history-khatm.svelte`, `history-picked-range.svelte` | خواندن تاریخچهٔ محلی ختم‌های ساخته‌شده و بازه‌های انتخاب‌شده از Dexie؛ تاریخچهٔ ذکر فعلاً با `history-zekr.svelte` در صفحهٔ اصلی نمایش داده می‌شود                      |
+| `/add`                               | `routes/add/+page.server.ts`, `+page.svelte`, `sucess-result.svelte`                 | ساخت ختم از form action؛ در صورت سریالی بودن ساخت `TKhatmSeries`؛ notification برای ختم عمومی؛ ذخیرهٔ ختم ساخته‌شده در ClientStorage                                    |
+| `/history`                           | `routes/history/+page.svelte`, `history-khatm.svelte`, `history-picked-range.svelte` | خواندن تاریخچهٔ محلی ختم‌های ساخته‌شده و بازه‌های انتخاب‌شده از ClientStorage؛ تاریخچهٔ ذکر نیز در `history-zekr.svelte` نمایش داده می‌شود                             |
 | `/settings`                          | `routes/settings/+page.ts`, `+page.svelte`, `Settings*.svelte`                       | صفحهٔ client-only برای theme، فونت، ترجمه و قاری                                                                                                                        |
 | `/k{id}` و `/ks{seriesId}`           | `(khatm)/+layout.server.ts`, `+layout.svelte`, `[normalKhatm]/(wizard)/+page.svelte` | بارگذاری ختم و access token، ایجاد context مشترک، انتخاب مرحله‌ای بازه و نمایش progress                                                                                 |
 | `/k{id}/list` و `/ks{seriesId}/list` | `[normalKhatm]/list/+page.svelte`                                                    | نمایش سلسله‌مراتبی جزءها و زیر‌بازه‌ها و انتخاب بخش آزاد                                                                                                                |
 | `/k{id}/grid` و `/ks{seriesId}/grid` | `[normalKhatm]/grid/+page.svelte`                                                    | نمایش شبکه‌ای سوره/صفحه/حزب و محاسبهٔ زیر‌بازه‌های آزاد                                                                                                                 |
 | `/k{id}/{range}`                     | `[range]/+page.server.ts`, `+page@.svelte`                                           | validate بازه، محدودیت تقریبی ۵۰ صفحه، خواندن ترجمه از Cookie و نمایش متن آیات بیرون از layout ختم                                                                      |
 | `/a{id}` و `/as{seriesId}`           | `(khatm)/+layout.*`, `[ayahKhatm]/+page.svelte`                                      | دریافت ترتیبی آیات بعدی، تنظیم تعداد، نمایش متن/ترجمه و کنترل صوت                                                                                                       |
-| `/z{id}`                             | `[zekr=zekr]/+page.server.ts`, `+page.svelte`, `ZekrActions.svelte`                  | دریافت ذکر، ثبت تعداد تقبل‌شده و نمایش سهم شخصی از IndexedDB                                                                                                            |
+| `/z{id}`                             | `[zekr=zekr]/+page.server.ts`, `+page.svelte`, `ZekrActions.svelte`                  | دریافت ذکر، ثبت تعداد تقبل‌شده و نمایش سهم شخصی از ClientStorage                                                                                                        |
 | `/admin`                             | `admin/+layout.server.ts`, `+page.svelte`                                            | حفاظت تمام زیرمسیرها با Basic Auth و نمایش ورودی ابزارهای مدیریت                                                                                                        |
 | `/admin/review`                      | `admin/review/+page.svelte`                                                          | دریافت فهرست pending/approved/rejected، تغییر `reviewStatus` و انتخاب/مرتب‌سازی حداکثر شش دنبالهٔ دائمی برای ویترین شاخص                                                |
 | `/admin/app-settings`                | `admin/app-settings/+page.server.ts`, `+page.svelte`                                 | مدیریت برندینگ، support link، notification و اجرای refresh وضعیت ختم‌ها                                                                                                 |
-| `/admin/add-zekr`                    | `admin/add-zekr/+page.server.ts`, `+page.svelte`, `sucess-result.svelte`             | ساخت ذکر و ثبت آن به‌عنوان ذکر متعلق به کاربر در IndexedDB همان مرورگر                                                                                                  |
+| `/admin/add-zekr`                    | `admin/add-zekr/+page.server.ts`, `+page.svelte`, `sucess-result.svelte`             | ساخت ذکر و ثبت آن به‌عنوان ذکر متعلق به کاربر در ClientStorage                                                                                                          |
 | `/manifest.json`                     | `manifest.json/+server.ts`                                                           | manifest پویا و base-path-aware برای PWA                                                                                                                                |
 
 `src/routes/(khatm)/+layout.server.ts` دو قرارداد امنیتی/مسیری را هم اعمال می‌کند: access token خصوصی از query parameter با نام `t` خوانده می‌شود، و URL سریالی فقط به ختم دارای `seriesId` و در حال اجرا resolve می‌شود. نوع ختم نیز باید با matcher پیشوند `k` یا `a` هم‌خوان باشد.
@@ -352,16 +356,17 @@ erDiagram
 - `TSystemStatistics(id=1)` و `TDailyStatistics(day)` شمارنده‌های ازپیش‌تجمیع‌شده‌اند؛ دیتابیس منبع حقیقت است و cache روی `globalThis` پس از commit به‌صورت write-through به‌روز می‌شود.
 - migrationهای timestamped در `prisma/migrations/` تاریخچهٔ افزودن بسم‌الله، app settings، ذکر، سری ختم و review status را نگه می‌دارند.
 
-### داده‌های مرورگر
+### داده‌های محلی کلاینت
 
 | storage           | key/table              | محتوا                                   | نویسنده/خواننده                             |
 | ----------------- | ---------------------- | --------------------------------------- | ------------------------------------------- |
-| LocalStorage      | `app_v1_localSettings` | تنظیمات شخصی کامل                       | `LocalSettings` و `localStore.ts`           |
+| Settings adapter  | `app_v1_localSettings` | LocalStorage وب یا SharedPreferences Android | `LocalSettings` و `storage/settings.ts` |
 | Cookie            | `colorScheme`          | پوستهٔ دستی لازم برای SSR بدون flash    | `LocalSettings` → `hooks.server.ts`         |
 | Cookie            | `translation`          | ترجمهٔ لازم برای server load نمایش بازه | `LocalSettings` → `[range]/+page.server.ts` |
-| IndexedDB `Khatm` | `pickedKhatmParts`     | snapshot ختم، بازه و زمان انتخاب        | `Khatm.pickRange()` و صفحات history         |
-| IndexedDB `Khatm` | `createdKhatms`        | snapshot ختم ساخته‌شده                  | نتیجهٔ `/add` و history                     |
-| IndexedDB `Khatm` | `localZekr`            | snapshot ذکر، مالکیت و `myCount`        | ساخت/انتخاب ذکر و history                   |
+| ClientStorage     | `pickedKhatmParts`     | snapshot ختم، بازه و زمان انتخاب        | `Khatm.pickRange()`، history و widget        |
+| ClientStorage     | `createdKhatms`        | snapshot ختم ساخته‌شده                  | نتیجهٔ `/add`، history و widget              |
+| ClientStorage     | `localZekr`            | snapshot ذکر، مالکیت و `myCount`        | ساخت/انتخاب ذکر، history و widget            |
+| ClientStorage     | `offlineKhatms/parts`  | ختم‌ها، دورها و بازه‌های کاملاً آفلاین | مسیر `/offline-khatm` و widget               |
 
 repositoryهای Dexie فیلدهای snapshot، از جمله `pageProgress`، را صریح کپی می‌کنند تا داده‌های سنگین یا رابطه‌های ناخواسته وارد IndexedDB نشوند. snapshotهای قدیمی فاقد این فیلد هنگام ساخت entity با مقدار صفر normalize می‌شوند و چون index جدیدی لازم نیست، نسخهٔ schema افزایش نمی‌یابد.
 
@@ -439,12 +444,12 @@ repositoryهای Dexie فیلدهای snapshot، از جمله `pageProgress`، 
 | محاسبهٔ پیشرفت          | `Khatm.svelte.ts`                                | layout ختم، `TKhatm.versesRead` و رفتار تکمیل/سری                                 |
 | متن/ترجمهٔ قرآن         | `service/quran.ts`                               | type `AyahInfo`، `pickNext`، range server load و componentهای Quran               |
 | فونت قرآن               | `FontManager.svelte.ts`                          | `/api/font`، `PUBLIC_FONT_PROXY`، settings و CSP/شبکهٔ استقرار                    |
-| تنظیمات شخصی            | `LocalSettings.svelte.ts`                        | settings UI، root layout، Cookieهای SSR و migration دادهٔ LocalStorage            |
+| تنظیمات شخصی            | `LocalSettings.svelte.ts`, `storage/settings.ts` | settings UI، root layout، Cookieهای SSR و adapter بومی Android                     |
 | schema دیتابیس          | `prisma/schema.prisma`                           | migration جدید، serviceها، snapshotهای Dexie و typeهای تولیدی                     |
 | تنظیمات عمومی           | `appSettings.ts`                                 | `TAppSettings.config`، admin form، root layout و notification provider            |
 | ختم‌های شاخص            | `TKhatmSeries.featuredOrder`, `service/khatm.ts` | migration، صفحهٔ اصلی، review ادمین، نوار جزئیات، تکمیل/توقف/حذف سری و پاک‌سازی   |
 | احراز هویت مدیر         | `auth.ts`                                        | admin layout و تمام endpointهای مدیریتی                                           |
-| تاریخچهٔ محلی           | `idb/idb.ts`                                     | افزایش نسخهٔ Dexie، repository مربوط و componentهای history                       |
+| تاریخچهٔ محلی           | `storage/**`, `idb/idb.ts`, `AppDatabase.java`   | قرارداد Repository، نسخهٔ Dexie/SQLite و widget                                   |
 | base path استقرار       | `svelte.config.js`                               | `request.ts`، `path.ts`، manifest، asset/font URLها و لینک‌های route              |
 
 ## ۱۶. قراردادهای مهم برای توسعه
@@ -487,10 +492,10 @@ Basic Auth صحیح هیچ دسترسی مدیریتی اعطا نمی‌کند.
 می‌مانند. تغییر دسترسی روی همه دورهای سری اعمال می‌شود و توقف سری، `maxRounds` را روی دور جاری
 قرار می‌دهد.
 
-برای ختم مهمان، سرور یک راز تصادفی می‌سازد، فقط SHA-256 آن را در MariaDB و مقدار خام را در جدول
-`createdKhatms` در IndexedDB نگه می‌دارد. پس از ورود، کلاینت claimها را به `/api/khatm/claim`
+برای ختم مهمان، سرور یک راز تصادفی می‌سازد، فقط SHA-256 آن را در MariaDB و مقدار خام را در Repository
+محلی `createdKhatms` نگه می‌دارد. پس از ورود، کلاینت claimها را به `/api/khatm/claim`
 می‌فرستد؛ update اتمیک فقط رکورد بدون مالک و دارای هش یکسان را منتقل می‌کند و سپس فقط توکن‌های
-پذیرفته‌شده از IndexedDB پاک می‌شوند. دور بعدی یک دنباله، مالک یا هش claim دور جاری را به ارث
+پذیرفته‌شده از ClientStorage پاک می‌شوند. دور بعدی یک دنباله، مالک یا هش claim دور جاری را به ارث
 می‌برد.
 
 حذف مالک یا مدیر، تمام دورها و `TKhatmPart`های وابسته را در یک تراکنش پاک می‌کند. جدول
@@ -569,3 +574,14 @@ worker در target `capacitor` غیرفعال است تا lifecycle کش وب ب
 `id/seriesId` می‌سازد. Intent همان `publicLink` را باز می‌کند؛ در ختم خصوصی این URL شامل access token
 است. UI این قابلیت را فقط روی Android و launcher پشتیبانی‌شده نشان می‌دهد و میان‌بر حذف‌شده یا مقصد
 قطعی 404/410 را disable می‌کند. ورود Google در target نیتیو غیرفعال و auth ایمیلی فعال است.
+
+دادهٔ ساختاریافتهٔ target اندروید در `dorkhani.db` و با `SQLiteOpenHelper` نگهداری می‌شود؛ هیچ
+کتابخانهٔ SQLite دارای binary معماری‌محور بسته‌بندی نمی‌شود. پلاگین محلی `NativeDatabase` API نسخه‌دار
+`query`، `execute` و batch transaction را با bind parameter در اختیار JavaScript مورداعتماد قرار
+می‌دهد و SQL Repository اندروید در bundle جاوااسکریپت باقی می‌ماند. `js_schema_version` مستقل از
+نسخهٔ native schema است و migrationهای JS باید افزایشی و سازگار با projection ثابت ویجت باشند.
+
+`ActivityWidgetProvider` با RemoteViews یک خلاصهٔ resizeable از آخرین ختم آفلاین، ختم ساخته‌شده،
+بازهٔ خوانده‌شده و ذکر محلی می‌سازد. DAO ویجت مستقیماً فقط ستون‌های غیرامن SQLite را می‌خواند؛
+توکن‌ها و hashها وارد مدل ویجت نمی‌شوند. refresh پس از writeهای SQLite/SharedPreferences و
+callbackهای استاندارد ویجت انجام می‌شود و job دوره‌ای ندارد.

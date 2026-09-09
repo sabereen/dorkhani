@@ -1,21 +1,20 @@
-import type { CreatedKhatm as IDB_CreatedKhatm } from '$lib/idb/idb'
-import { idb_createdKhatm_add, idb_createdKhatm_getList } from '$lib/idb/createdKhatm'
+import { clientStorage, type CreatedKhatmRecord } from '$lib/storage/client'
 import { Khatm } from './Khatm.svelte'
 
 export class CreatedKhatm {
-	plain: IDB_CreatedKhatm
+	plain: CreatedKhatmRecord
 	private _khatm?: Khatm
 
-	constructor(plain: IDB_CreatedKhatm) {
+	constructor(plain: CreatedKhatmRecord) {
 		this.plain = plain
 	}
 
-	static fromPlainList(list: IDB_CreatedKhatm[]) {
+	static fromPlainList(list: CreatedKhatmRecord[]) {
 		return list.map((p) => new CreatedKhatm(p))
 	}
 
 	static async getList(limit?: number) {
-		const list = await idb_createdKhatm_getList(limit)
+		const list = await clientStorage.createdKhatms.getList(limit)
 		return this.fromPlainList(list)
 	}
 
@@ -31,6 +30,6 @@ export class CreatedKhatm {
 	}
 
 	save() {
-		return idb_createdKhatm_add(this.plain)
+		return clientStorage.createdKhatms.add(this.plain)
 	}
 }

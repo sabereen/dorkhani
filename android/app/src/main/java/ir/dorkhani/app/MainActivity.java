@@ -8,6 +8,8 @@ public class MainActivity extends BridgeActivity {
     protected void onCreate(Bundle savedInstanceState) {
         registerPlugin(KhatmShortcutsPlugin.class);
         registerPlugin(MediaStorePlugin.class);
+        registerPlugin(NativeDatabasePlugin.class);
+        registerPlugin(NativePreferencesPlugin.class);
         super.onCreate(savedInstanceState);
     }
 }

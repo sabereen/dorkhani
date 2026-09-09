@@ -1,6 +1,9 @@
 import { COUNT_OF_AYAHS } from '@ghoran/metadata/constants'
 import type { OfflineKhatmPartRecord } from '$lib/contracts/domain'
-import { calculateOfflineKhatmProgress, offlineKhatmRangesOverlap } from './offlineKhatm'
+import {
+	calculateOfflineKhatmProgress,
+	offlineKhatmRangesOverlap,
+} from '$lib/storage/offline-domain'
 import { describe, expect, it } from 'vitest'
 
 function part(start: number, end: number): OfflineKhatmPartRecord {

@@ -3,6 +3,8 @@ import './polyfill'
 import '$lib/i18n/client'
 import { apiUrl } from '$lib/config/runtime'
 import type { ClientInit, HandleClientError } from '@sveltejs/kit'
+import { clientStorage } from '$lib/storage/client'
+import { authTokenStore } from '$lib/auth-token'
 
 type ClientErrorReport = {
 	source: 'sveltekit' | 'window.error' | 'unhandledrejection'
@@ -45,7 +47,8 @@ export const handleError: HandleClientError = ({ error, event, status, message }
 	}
 }
 
-export const init: ClientInit = () => {
+export const init: ClientInit = async () => {
+	await Promise.all([clientStorage.ready(), authTokenStore.ready()])
 	window.addEventListener('error', (event) => {
 		const details = getErrorDetails(
 			event.error ?? new Error(event.message || 'Unknown browser error'),

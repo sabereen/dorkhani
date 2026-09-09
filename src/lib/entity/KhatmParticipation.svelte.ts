@@ -51,7 +51,6 @@ export class KhatmParticipation {
 
 	add(range: QuranRange, khatm = this.getKhatm()) {
 		const item = new PickedKhatmPart({
-			id: undefined as unknown as number,
 			date: new Date(),
 			start: range.start,
 			end: range.end,

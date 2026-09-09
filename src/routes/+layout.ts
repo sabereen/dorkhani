@@ -7,6 +7,7 @@ import { loadApi } from '$lib/utility/request'
 import { DEFAULT_BRANDING_CONFIG, getPublicBranding } from '$lib/entity/Branding'
 import { isInstalledApp } from '$lib/config/installedApp'
 import { isLocale } from '$lib/i18n/locale'
+import { settingsStore } from '$lib/storage/client'
 
 export const ssr = PUBLIC_BUILD_TARGET !== 'capacitor'
 
@@ -25,12 +26,8 @@ export const load: LayoutLoad = async ({ fetch, url, depends }) => {
 
 function offlineBootstrap(): AppBootstrap {
 	let locale: AppBootstrap['locale'] = 'fa'
-	try {
-		const stored = JSON.parse(localStorage.getItem('app_v1_localSettings') || '{}')
-		if (isLocale(stored?.locale)) locale = stored.locale
-	} catch {
-		// Invalid local settings must not block the offline shell.
-	}
+	const stored = settingsStore.getOrDefault<Record<string, unknown>>('localSettings', {})
+	if (isLocale(stored.locale)) locale = stored.locale
 	const branding = getPublicBranding(DEFAULT_BRANDING_CONFIG, locale, base)
 	return {
 		locale,

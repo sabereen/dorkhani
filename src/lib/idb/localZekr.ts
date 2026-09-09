@@ -1,5 +1,5 @@
 import type { ZekrRecord } from '$lib/contracts/domain'
-import type { LocalZekr } from './idb'
+import type { LocalZekrRecord } from '$lib/storage/types'
 
 export async function idb_localZekr_get(id: number) {
 	const { db } = await import('./idb')
@@ -7,7 +7,7 @@ export async function idb_localZekr_get(id: number) {
 	return localZekr
 }
 
-export async function idb_localZekr_add(item: Omit<LocalZekr, 'id'>) {
+export async function idb_localZekr_add(item: Omit<LocalZekrRecord, 'id'>) {
 	const { db } = await import('./idb')
 
 	await db.localZekr.add({

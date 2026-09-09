@@ -102,7 +102,7 @@
 			disabled={!editor.dirty}
 			class="ui-btn ui-btn-primary"
 			type="button"
-			onclick={() => editor.commit()}
+			onclick={() => void editor.commit()}
 		>
 			<IconSave aria-hidden="true" />
 			{editor.dirty ? m.settings_save_changes() : m.settings_saved()}

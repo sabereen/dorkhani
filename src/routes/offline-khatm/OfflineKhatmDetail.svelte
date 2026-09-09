@@ -9,12 +9,12 @@
 	import { QuranRange } from '$lib/entity/Range'
 	import { surah_toRange } from '$lib/entity/Surah'
 	import {
-		idb_offlineKhatm_delete,
-		idb_offlineKhatm_pickNextAyat,
-		idb_offlineKhatm_pickRange,
-		idb_offlineKhatm_startNextRound,
-		idb_offlineKhatm_stopSeries,
-	} from '$lib/idb/offlineKhatm'
+		offlineKhatm_delete,
+		offlineKhatm_pickNextAyat,
+		offlineKhatm_pickRange,
+		offlineKhatm_startNextRound,
+		offlineKhatm_stopSeries,
+	} from '$lib/storage/offlineKhatm'
 	import { formatPercent, localeTag } from '$lib/i18n/format'
 	import * as m from '$lib/paraglide/messages.js'
 	import OfflineKhatmForm from './OfflineKhatmForm.svelte'
@@ -121,7 +121,7 @@
 		working = true
 		actionError = ''
 		try {
-			await idb_offlineKhatm_pickRange(khatm.id, selected)
+			await offlineKhatm_pickRange(khatm.id, selected)
 			picked = true
 			await onReload()
 		} catch (cause) {
@@ -136,7 +136,7 @@
 		working = true
 		actionError = ''
 		try {
-			const result = await idb_offlineKhatm_pickNextAyat(khatm.id, count)
+			const result = await offlineKhatm_pickNextAyat(khatm.id, count)
 			await onReload()
 			onRead(result.range)
 		} catch (cause) {
@@ -149,7 +149,7 @@
 	async function startNextRound() {
 		working = true
 		try {
-			await idb_offlineKhatm_startNextRound(khatm.id)
+			await offlineKhatm_startNextRound(khatm.id)
 			await onReload()
 		} catch (cause) {
 			actionError = cause instanceof Error ? cause.message : m.error_generic()
@@ -161,7 +161,7 @@
 	async function stopSeries() {
 		working = true
 		try {
-			await idb_offlineKhatm_stopSeries(khatm.id)
+			await offlineKhatm_stopSeries(khatm.id)
 			stopOpen = false
 			await onReload()
 		} finally {
@@ -172,7 +172,7 @@
 	async function removeKhatm() {
 		working = true
 		try {
-			await idb_offlineKhatm_delete(khatm.id)
+			await offlineKhatm_delete(khatm.id)
 			onDeleted()
 		} finally {
 			working = false

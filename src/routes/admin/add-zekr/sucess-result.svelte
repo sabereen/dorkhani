@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { browser } from '$app/environment'
 	import ExpandableText from '$lib/components/ExpandableText.svelte'
-	import { toast } from '$lib/components/TheToast.svelte'
+	import { toast } from '$lib/components/toast.svelte'
 	import type { Zekr } from '$lib/entity/Zekr.svelte'
-	import { idb_localZekr_add } from '$lib/idb/localZekr'
+	import { clientStorage } from '$lib/storage/client'
 	import { onMount } from 'svelte'
 	import IconCheck from '~icons/ic/round-check-circle'
 	import IconCopy from '~icons/ic/outline-copy-all'
@@ -37,7 +37,7 @@
 	}
 
 	onMount(() => {
-		idb_localZekr_add({
+		void clientStorage.localZekrs.add({
 			isMine: true,
 			myCount: 0,
 			zekr: zekr.plain,

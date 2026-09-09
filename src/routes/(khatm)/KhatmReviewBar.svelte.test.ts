@@ -8,7 +8,7 @@ import KhatmReviewBar from './KhatmReviewBar.svelte'
 
 const toastMock = vi.hoisted(() => vi.fn())
 const featuredMock = vi.hoisted(() => vi.fn())
-vi.mock('$lib/components/TheToast.svelte', () => ({ toast: toastMock }))
+vi.mock('$lib/components/toast.svelte', () => ({ toast: toastMock }))
 vi.mock('$lib/entity/KhatmFeatured', () => ({ featuredKhatm_set: featuredMock }))
 
 function createKhatm(id: number, reviewStatus: ReviewStatus, seriesId: number | null = null) {

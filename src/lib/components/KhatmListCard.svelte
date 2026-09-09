@@ -62,8 +62,12 @@
 			{@render actions()}
 		</div>
 	{:else}
-		<a class="ui-khatm-list-card-arrow" href={khatm.link} aria-label={m.khatm_view_label({ title: khatm.title })}>
-			<IconArrow />
+		<a
+			class="ui-khatm-list-card-arrow"
+			href={khatm.link}
+			aria-label={m.khatm_view_label({ title: khatm.title })}
+		>
+			<IconArrow class="ltr:mirror" />
 		</a>
 	{/if}
 </article>

@@ -4,6 +4,7 @@ import type { AppBootstrap } from '$lib/contracts/api'
 import { getPublicBranding } from '$lib/entity/Branding'
 import { appSettings_store } from '$service/appSettings'
 import { json, type RequestHandler } from '@sveltejs/kit'
+import { normalizeMiniAppBaseUrl } from '$lib/miniapp/links'
 
 export const GET: RequestHandler = ({ locals, url }) => {
 	const { supportLink, branding } = appSettings_store.config
@@ -32,6 +33,10 @@ export const GET: RequestHandler = ({ locals, url }) => {
 			google: Boolean(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET),
 			eitaa: Boolean(env.EITAA_APP_TOKEN),
 			bale: Boolean(env.BALE_BOT_TOKEN),
+		},
+		miniAppUrls: {
+			bale: normalizeMiniAppBaseUrl(env.BALE_MINI_APP_URL),
+			eitaa: normalizeMiniAppBaseUrl(env.EITAA_MINI_APP_URL),
 		},
 	} satisfies AppBootstrap)
 }

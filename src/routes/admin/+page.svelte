@@ -59,7 +59,9 @@
 					<strong>بررسی ختم‌ها</strong>
 					<small>مشاهده، تأیید یا رد ختم‌های ثبت‌شده</small>
 				</span>
-				<span class="ui-admin-action-arrow" aria-hidden="true"><IconArrow /></span>
+				<span class="ui-admin-action-arrow" aria-hidden="true"
+					><IconArrow class="ltr:mirror" /></span
+				>
 			</a>
 
 			<a class="ui-admin-action-card ui-admin-action-card-zekr" href={`${base}/admin/add-zekr`}>
@@ -68,7 +70,9 @@
 					<strong>افزودن ختم ذکر</strong>
 					<small>ساخت یک ختم ذکر تازه و دریافت لینک اشتراک</small>
 				</span>
-				<span class="ui-admin-action-arrow" aria-hidden="true"><IconArrow /></span>
+				<span class="ui-admin-action-arrow" aria-hidden="true"
+					><IconArrow class="ltr:mirror" /></span
+				>
 			</a>
 
 			<a
@@ -80,7 +84,9 @@
 					<strong>تنظیمات سامانه</strong>
 					<small>مدیریت برندینگ، نگهداری داده‌ها، پشتیبانی و اعلان‌ها</small>
 				</span>
-				<span class="ui-admin-action-arrow" aria-hidden="true"><IconArrow /></span>
+				<span class="ui-admin-action-arrow" aria-hidden="true"
+					><IconArrow class="ltr:mirror" /></span
+				>
 			</a>
 		</div>
 	</section>

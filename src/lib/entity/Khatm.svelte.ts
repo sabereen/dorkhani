@@ -16,6 +16,7 @@ import type { AdminKhatmListItem } from './KhatmFeatured'
 import { formatNumber } from '$lib/i18n/format'
 import * as m from '$lib/paraglide/messages.js'
 import { publicWebUrl } from '$lib/config/runtime'
+import { getKhatmPath, type KhatmLayout } from '$lib/utility/khatmPath'
 
 const cache = new Map<number, Khatm>()
 
@@ -239,14 +240,12 @@ export class Khatm {
 		return m.round_number({ number: formatNumber(this.roundNumber) })
 	}
 
-	getLink(layout: 'wizard' | 'grid' | 'list' = 'wizard') {
-		let prefix = this.isAyahOriented ? 'a' : 'k'
-		if (this.isSerial) prefix += 's'
-		const id = this.isSerial ? this.seriesId : this.id
-		const layoutPart = layout === 'wizard' ? '' : `/${layout}`
-		return rebaseFullPath(
-			`${prefix}${id}${layoutPart}${this.accessToken ? `?t=${this.accessToken}` : ''}`,
-		)
+	getPath(layout: KhatmLayout = 'wizard') {
+		return getKhatmPath(this.plain, layout)
+	}
+
+	getLink(layout: KhatmLayout = 'wizard') {
+		return rebaseFullPath(this.getPath(layout))
 	}
 
 	get link() {
@@ -302,10 +301,14 @@ export class Khatm {
 	}
 
 	async refresh() {
-		const result = await request<{ khatm: KhatmData & { parts?: KhatmPartData[] } }>('get', '/khatm', {
-			khatmId: this.id,
-			accessToken: this.accessToken || '',
-		})
+		const result = await request<{ khatm: KhatmData & { parts?: KhatmPartData[] } }>(
+			'get',
+			'/khatm',
+			{
+				khatmId: this.id,
+				accessToken: this.accessToken || '',
+			},
+		)
 		this.plain = result.khatm
 		this.plainParts = result.khatm.parts || []
 	}

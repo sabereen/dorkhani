@@ -22,6 +22,7 @@ export type AppBootstrap = {
 	branding: PublicBranding
 	user: PublicUser | null
 	authProviders: { google: boolean; eitaa: boolean; bale: boolean }
+	miniAppUrls: { bale: string | null; eitaa: string | null }
 }
 
 export type HomeData = {

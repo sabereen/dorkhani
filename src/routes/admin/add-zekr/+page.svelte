@@ -4,7 +4,7 @@
 	import AdminNav from '$lib/components/AdminNav.svelte'
 	import Header from '$lib/components/Header.svelte'
 	import PageTitle from '$lib/components/PageTitle.svelte'
-	import { toast } from '$lib/components/TheToast.svelte'
+	import { toast } from '$lib/components/toast.svelte'
 	import { Zekr } from '$lib/entity/Zekr.svelte'
 	import type { SubmitFunction } from '@sveltejs/kit'
 	import type { PageProps } from './$types'

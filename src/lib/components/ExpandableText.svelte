@@ -1,4 +1,6 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages.js'
+
 	type Props = {
 		text: string
 		maxLength?: number
@@ -19,9 +21,9 @@
 	<details bind:open class="inline">
 		<summary class="ui-link inline-block text-sm">
 			{#if open}
-				کمتر
+				{m.common_less()}
 			{:else}
-				ادامه
+				{m.common_continue()}
 			{/if}
 		</summary>
 		{#if !open}

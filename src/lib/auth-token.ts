@@ -77,7 +77,13 @@ const noopTokenStore: AuthTokenStore = {
 async function loadNativeSecureStorage(): Promise<AsyncTokenStorage> {
 	const { SecureStorage } = await import('@aparajita/capacitor-secure-storage')
 	await SecureStorage.setKeyPrefix('dorkhani_')
-	return SecureStorage
+	// Capacitor plugin proxies expose every property as a native method. Returning the proxy
+	// from an async function makes Promise resolution call a nonexistent `then` plugin method.
+	return {
+		getItem: (key) => SecureStorage.getItem(key),
+		setItem: (key, value) => SecureStorage.setItem(key, value),
+		removeItem: (key) => SecureStorage.removeItem(key),
+	}
 }
 
 export const authTokenStore =

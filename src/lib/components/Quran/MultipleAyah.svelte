@@ -12,8 +12,15 @@
 	type Props = {
 		ayahInfoList: AyahInfo[]
 		audioManager?: AudioManager
+		font?: QuranFont
+		onlineActions?: boolean
 	}
-	const { ayahInfoList: selectedAyat, audioManager = new AudioManager() }: Props = $props()
+	const {
+		ayahInfoList: selectedAyat,
+		audioManager = new AudioManager(),
+		font: forcedFont,
+		onlineActions = true,
+	}: Props = $props()
 
 	const settingsEditor = SettingsEditor.use()
 	settingsEditor.live = true
@@ -31,7 +38,7 @@
 		}
 	}
 
-	const font = $derived<QuranFont>(settingsEditor.config.quranFont)
+	const font = $derived<QuranFont>(forcedFont || settingsEditor.config.quranFont)
 	const fontManager = $derived(getFontManager(font))
 
 	watchEager(
@@ -64,6 +71,6 @@
 	{/key}
 
 	{#each selectedAyat as ayahInfo (ayahInfo.index)}
-		<SingleAyah {font} {ayahInfo} {fontManager} {audioManager} />
+		<SingleAyah {font} {ayahInfo} {fontManager} {audioManager} {onlineActions} />
 	{/each}
 </div>

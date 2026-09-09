@@ -6,7 +6,7 @@
 	import PageTitle from '$lib/components/PageTitle.svelte'
 	import KhatmListCard from '$lib/components/KhatmListCard.svelte'
 	import Tab from '$lib/components/Tab.svelte'
-	import { toast } from '$lib/components/TheToast.svelte'
+	import { toast } from '$lib/components/toast.svelte'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import {
 		featuredKhatm_getList,
@@ -357,11 +357,7 @@
 				<ul class="ui-khatm-card-list">
 					{#each khatms as item (item.khatm.id)}
 						<li class:ui-admin-review-item-loading={updatingIds.includes(item.khatm.id)}>
-							<KhatmListCard
-								khatm={item.khatm}
-								meta={getReviewMeta(item.khatm)}
-								showDescription
-							>
+							<KhatmListCard khatm={item.khatm} meta={getReviewMeta(item.khatm)} showDescription>
 								{#snippet actions()}
 									<a
 										class="ui-btn ui-btn-sm ui-btn-icon ui-btn-ghost"

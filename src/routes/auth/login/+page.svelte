@@ -46,10 +46,12 @@
 	async function signInGoogle() {
 		loading = true
 		errorMessage = ''
-		await authClient.signIn.social({ provider: 'google', callbackURL: localizeHref(`${base}/account`) })
+		await authClient.signIn.social({
+			provider: 'google',
+			callbackURL: localizeHref(`${base}/account`),
+		})
 		loading = false
 	}
-
 </script>
 
 <PageTitle title={m.auth_login_title()} />
@@ -84,7 +86,9 @@
 		<div class="ui-auth-field">
 			<div class="ui-auth-label-row">
 				<label class="ui-field-label" for="login-password"><IconLock /> {m.auth_password()}</label>
-				<a class="ui-link" href={localizeHref(`${base}/auth/forgot-password`)}>{m.auth_forgot_link()}</a>
+				<a class="ui-link" href={localizeHref(`${base}/auth/forgot-password`)}
+					>{m.auth_forgot_link()}</a
+				>
 			</div>
 			<div class="ui-auth-password-wrap" data-ui-validation-host>
 				<input
@@ -133,6 +137,7 @@
 	{/if}
 
 	<p class="ui-auth-switch">
-		{m.auth_no_account()} <a href={localizeHref(`${base}/auth/register`)}>{m.auth_create_account()}</a>
+		{m.auth_no_account()}
+		<a href={localizeHref(`${base}/auth/register`)}>{m.auth_create_account()}</a>
 	</p>
 </AuthShell>

@@ -1,5 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 
+vi.mock('$env/dynamic/private', () => ({ env: {} }))
+
 vi.mock('$service/appSettings', () => ({
 	appSettings_store: {
 		config: {
@@ -46,6 +48,10 @@ describe('bootstrap API contract', () => {
 				google: expect.any(Boolean),
 				eitaa: expect.any(Boolean),
 				bale: expect.any(Boolean),
+			},
+			miniAppUrls: {
+				bale: null,
+				eitaa: null,
 			},
 		})
 	})

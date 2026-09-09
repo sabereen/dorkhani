@@ -1,38 +1,32 @@
-import type { PickedKhatmPart as IDB_PickedKhatmPart } from '$lib/idb/idb'
-import {
-	idb_pickedKhatmPart_add,
-	idb_pickedKhatmPart_getByKhatmId,
-	idb_pickedKhatmPart_getBySeriesId,
-	idb_pickedKhatmPart_getList,
-} from '$lib/idb/pickedKhatmPart'
+import { clientStorage, type PickedKhatmPartRecord } from '$lib/storage/client'
 import { Khatm } from './Khatm.svelte'
 import { QuranRange } from './Range'
 
 export class PickedKhatmPart {
-	plain: IDB_PickedKhatmPart
+	plain: PickedKhatmPartRecord
 	private _range?: QuranRange
 	private _khatm?: Khatm
 
-	static fromPlainList(list: IDB_PickedKhatmPart[]) {
+	static fromPlainList(list: PickedKhatmPartRecord[]) {
 		return list.map((p) => new PickedKhatmPart(p))
 	}
 
 	static async getList(limit?: number) {
-		const list = await idb_pickedKhatmPart_getList(limit)
+		const list = await clientStorage.pickedKhatmParts.getList(limit)
 		return this.fromPlainList(list)
 	}
 
 	static async getByKhatmId(khatmId: number) {
-		const list = await idb_pickedKhatmPart_getByKhatmId(khatmId)
+		const list = await clientStorage.pickedKhatmParts.getByKhatmId(khatmId)
 		return this.fromPlainList(list)
 	}
 
 	static async getBySeriesId(seriesId: number) {
-		const list = await idb_pickedKhatmPart_getBySeriesId(seriesId)
+		const list = await clientStorage.pickedKhatmParts.getBySeriesId(seriesId)
 		return this.fromPlainList(list)
 	}
 
-	constructor(plain: IDB_PickedKhatmPart) {
+	constructor(plain: PickedKhatmPartRecord) {
 		this.plain = plain
 	}
 
@@ -55,6 +49,6 @@ export class PickedKhatmPart {
 	}
 
 	save() {
-		return idb_pickedKhatmPart_add(this.plain)
+		return clientStorage.pickedKhatmParts.add(this.plain)
 	}
 }

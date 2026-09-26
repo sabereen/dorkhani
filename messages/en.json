@@ -373,7 +373,7 @@
 	"wizard_hide_completed": "Hide completed",
 	"wizard_range_list": "{rangeType} list",
 	"wizard_includes_my_share": "Includes your share",
-	"wizard_partial_free": "Partially available",
+	"wizard_partial_free": "Available part",
 	"wizard_completed": "Completed",
 	"wizard_selected_percent": "{percent} selected",
 	"wizard_no_free_share": "No available share",
@@ -400,7 +400,6 @@
 	"wizard_partial_back": "Back to available parts",
 	"wizard_partial_eyebrow": "Choose from a partially completed range",
 	"wizard_partial_title": "Take the available part that suits you",
-	"wizard_partial_free": "Available part",
 	"wizard_partial_selected": "{percent} of this range was already selected",
 	"wizard_partial_instruction": "Choose a row marked “Available”. Faded parts were already taken.",
 	"wizard_partial_list": "Parts in this range",
@@ -896,5 +895,6 @@
 	"share_card_eyebrow": "An invitation to read the Quran together",
 	"share_card_invitation": "Choose a Quran passage and join this group khatm.",
 	"share_card_hint": "Open the link sent with this message to join",
-	"success_miniapp_link_hint": "This link opens the khatm directly inside {provider}."
+	"success_miniapp_link_hint": "This link opens the khatm directly inside {provider}.",
+	"account_soroush": "Soroush Plus"
 }

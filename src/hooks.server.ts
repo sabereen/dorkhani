@@ -128,7 +128,7 @@ export const handle: Handle = async ({ resolve, event }) => {
 	if (!response.headers.has('content-security-policy')) {
 		response.headers.set(
 			'content-security-policy',
-			"frame-ancestors 'self' https://*.bale.ai; frame-src 'self' https://*.bale.ai",
+			"frame-ancestors 'self' https://*.bale.ai https://splus.ir https://webapp.splus.ir; frame-src 'self' https://*.bale.ai https://webapp.splus.ir",
 		)
 	}
 	if (corsOrigin) {

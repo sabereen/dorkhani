@@ -11,6 +11,7 @@ import { sveltekitCookies } from 'better-auth/svelte-kit'
 import { authEmail_send } from './email'
 import { baleAuthPlugin } from './bale'
 import { eitaaAuthPlugin } from './eitaa'
+import { soroushAuthPlugin } from './soroush'
 import { getLocale, isLocale } from '$lib/paraglide/runtime.js'
 import * as m from '$lib/paraglide/messages.js'
 import { parseTrustedOrigins } from '$lib/server/cors'
@@ -97,6 +98,7 @@ export const auth = betterAuth({
 		bearer(),
 		baleAuthPlugin(),
 		eitaaAuthPlugin(),
+		soroushAuthPlugin(),
 		...(building ? [] : [sveltekitCookies(getRequestEvent)]),
 	],
 })

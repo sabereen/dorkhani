@@ -30,10 +30,16 @@
 	let shareOpen = $state(false)
 	const platform = $derived(miniAppState.host)
 	const platformName = $derived(
-		platform === 'bale' ? m.account_bale() : platform === 'eitaa' ? m.account_eitaa() : '',
+		platform === 'bale'
+			? m.account_bale()
+			: platform === 'eitaa'
+				? m.account_eitaa()
+				: platform === 'soroush'
+					? m.account_soroush()
+					: '',
 	)
 	const platformUrl = $derived(
-		platform ? createMiniAppLink(page.data.miniAppUrls[platform], khatm.getPath()) : null,
+		platform ? createMiniAppLink(page.data.miniAppUrls[platform], khatm.getPath(), platform) : null,
 	)
 
 	async function copy() {

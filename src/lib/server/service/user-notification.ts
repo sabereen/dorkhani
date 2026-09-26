@@ -9,7 +9,7 @@ import { isLocale, localizeUrl, type Locale } from '$lib/paraglide/runtime.js'
 import * as m from '$lib/paraglide/messages.js'
 import { createMiniAppLink } from '$lib/miniapp/links'
 
-export type UserNotificationChannel = 'bale' | 'eitaa' | 'email'
+export type UserNotificationChannel = 'bale' | 'eitaa' | 'soroush' | 'email'
 
 export type UserNotificationEvent =
 	| {
@@ -55,10 +55,11 @@ type NotificationSettingsInput = {
 	preferredChannel: UserNotificationChannel | null
 	baleEnabled: boolean
 	eitaaEnabled: boolean
+	soroushEnabled: boolean
 	emailEnabled: boolean
 }
 
-const defaultPriority: UserNotificationChannel[] = ['bale', 'eitaa', 'email']
+const defaultPriority: UserNotificationChannel[] = ['bale', 'eitaa', 'soroush', 'email']
 const PROVIDER_TIMEOUT_MS = 5000
 
 function fullUrl(path: string, locale: Locale) {
@@ -132,8 +133,9 @@ function toMessage(event: UserNotificationEvent, locale: Locale): NotificationMe
 function getForwardMessage(
 	forward: NonNullable<NotificationMessage['forward']>,
 	miniAppUrl: string | undefined,
+	host: 'bale' | 'eitaa' | 'soroush' = 'bale',
 ) {
-	const url = createMiniAppLink(miniAppUrl, forward.khatmPath) || forward.url
+	const url = createMiniAppLink(miniAppUrl, forward.khatmPath, host) || forward.url
 	return {
 		url,
 		text: forward.text.replace(forward.url, url),
@@ -184,6 +186,37 @@ async function sendBale(address: string, message: NotificationMessage, locale: L
 			})
 		} catch (error) {
 			console.error('Failed to send Bale khatm forwarding message.', error)
+		}
+	}
+}
+
+async function sendSoroush(address: string, message: NotificationMessage, locale: Locale) {
+	if (!env.SOROUSH_BOT_TOKEN) throw new Error('SOROUSH_BOT_TOKEN is not configured.')
+	const endpoint = `https://bot.splus.ir/api/v1/bot${env.SOROUSH_BOT_TOKEN}/sendMessage`
+	await requestJson(endpoint, {
+		chat_id: address,
+		text: `${message.subject}\n\n${message.text}`,
+		reply_markup: {
+			inline_keyboard: [
+				[{ text: m.notification_open_app({}, { locale }), web_app: { url: message.url } }],
+			],
+		},
+	})
+
+	if (message.forward) {
+		try {
+			const forward = getForwardMessage(message.forward, env.SOROUSH_MINI_APP_URL, 'soroush')
+			await requestJson(endpoint, {
+				chat_id: address,
+				text: forward.text,
+				reply_markup: {
+					inline_keyboard: [
+						[{ text: m.notification_join_khatm({}, { locale }), url: forward.url }],
+					],
+				},
+			})
+		} catch (error) {
+			console.error('Failed to send Soroush Plus khatm forwarding message.', error)
 		}
 	}
 }
@@ -240,6 +273,11 @@ export async function userNotification_getSettings(userId: string) {
 				enabled: preference?.eitaaEnabled ?? true,
 				available: Boolean(endpoints.get('eitaa')?.canSend && env.EITAA_APP_TOKEN),
 				connected: endpoints.has('eitaa'),
+			},
+			soroush: {
+				enabled: preference?.soroushEnabled ?? true,
+				available: Boolean(endpoints.get('soroush')?.canSend && env.SOROUSH_BOT_TOKEN),
+				connected: endpoints.has('soroush'),
 			},
 			email: {
 				enabled: preference?.emailEnabled ?? true,
@@ -314,6 +352,7 @@ export async function userNotification_send(userId: string, event: UserNotificat
 	const enabled = {
 		bale: preference?.baleEnabled ?? true,
 		eitaa: preference?.eitaaEnabled ?? true,
+		soroush: preference?.soroushEnabled ?? true,
 		email: preference?.emailEnabled ?? true,
 	}
 
@@ -330,6 +369,10 @@ export async function userNotification_send(userId: string, event: UserNotificat
 				const endpoint = endpoints.get('eitaa')
 				if (!endpoint?.canSend) continue
 				await sendEitaa(endpoint.address, message)
+			} else if (channel === 'soroush') {
+				const endpoint = endpoints.get('soroush')
+				if (!endpoint?.canSend) continue
+				await sendSoroush(endpoint.address, message, locale)
 			} else {
 				if (
 					!user.emailVerified ||

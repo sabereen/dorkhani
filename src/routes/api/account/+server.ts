@@ -24,6 +24,9 @@ export const GET: RequestHandler = async ({ locals }) => {
 			eitaa: env.EITAA_BOT_USERNAME
 				? `https://eitaa.com/${env.EITAA_BOT_USERNAME.replace(/^@/, '')}`
 				: null,
+			soroush: env.SOROUSH_BOT_USERNAME
+				? `https://splus.ir/${env.SOROUSH_BOT_USERNAME.replace(/^@/, '')}`
+				: null,
 		},
 	} satisfies AccountData)
 }

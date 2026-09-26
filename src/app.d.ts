@@ -23,6 +23,26 @@ declare global {
 				}
 			}
 		}
+		Splus?: {
+			WebApp?: {
+				initData?: string
+				colorScheme?: 'light' | 'dark'
+				ready?: () => void
+				expand?: () => void
+				BackButton?: {
+					show?: () => void
+					hide?: () => void
+					onClick?: (callback: () => void) => void
+					offClick?: (callback: () => void) => void
+				}
+				SettingsButton?: {
+					show?: () => void
+					hide?: () => void
+					onClick?: (callback: () => void) => void
+					offClick?: (callback: () => void) => void
+				}
+			}
+		}
 		Bale?: {
 			WebApp?: {
 				initData?: string

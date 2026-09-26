@@ -41,10 +41,16 @@
 
 	const platform = $derived(miniAppState.host)
 	const platformName = $derived(
-		platform === 'bale' ? m.account_bale() : platform === 'eitaa' ? m.account_eitaa() : '',
+		platform === 'bale'
+			? m.account_bale()
+			: platform === 'eitaa'
+				? m.account_eitaa()
+				: platform === 'soroush'
+					? m.account_soroush()
+					: '',
 	)
 	const platformUrl = $derived(
-		platform ? createMiniAppLink(page.data.miniAppUrls[platform], khatm.getPath()) : null,
+		platform ? createMiniAppLink(page.data.miniAppUrls[platform], khatm.getPath(), platform) : null,
 	)
 	const preferredUrl = $derived(platformUrl || khatm.publicLink)
 	const shareText = $derived(
@@ -139,9 +145,10 @@
 		const file = getShareFile()
 		try {
 			if (nativeApp) {
-				const cachedImage = nativeAndroid && imageBlob
-					? await cacheNativeImage(imageBlob, `khatm-${khatm.id}.png`)
-					: null
+				const cachedImage =
+					nativeAndroid && imageBlob
+						? await cacheNativeImage(imageBlob, `khatm-${khatm.id}.png`)
+						: null
 				await Share.share({
 					title: khatm.title,
 					text: shareText,
@@ -251,7 +258,8 @@
 					onclick={downloadImage}
 					disabled={!imageBlob || savingImage}
 				>
-					{#if savingImage}<span class="ui-spinner" aria-hidden="true"></span>{:else}<IconDownload />{/if}
+					{#if savingImage}<span class="ui-spinner" aria-hidden="true"></span>{:else}<IconDownload
+						/>{/if}
 					{m.share_download_card()}
 				</button>
 				<button

@@ -48,10 +48,12 @@ describe('bootstrap API contract', () => {
 				google: expect.any(Boolean),
 				eitaa: expect.any(Boolean),
 				bale: expect.any(Boolean),
+				soroush: expect.any(Boolean),
 			},
 			miniAppUrls: {
 				bale: null,
 				eitaa: null,
+				soroush: null,
 			},
 		})
 	})

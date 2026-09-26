@@ -40,7 +40,7 @@ function offlineBootstrap(): AppBootstrap {
 			icon512Url: `${base}/icon-512.png`,
 		},
 		user: null,
-		authProviders: { google: false, eitaa: false, bale: false },
-		miniAppUrls: { bale: null, eitaa: null },
+		authProviders: { google: false, eitaa: false, bale: false, soroush: false },
+		miniAppUrls: { bale: null, eitaa: null, soroush: null },
 	}
 }

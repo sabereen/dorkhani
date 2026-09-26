@@ -100,6 +100,9 @@ BALE_BOT_TOKEN="token-issued-by-botfather"
 BALE_BOT_USERNAME="bot_username"
 BALE_WEBHOOK_SECRET="a-long-random-url-secret"
 EITAA_BOT_USERNAME="eitaa_bot_username"
+SOROUSH_BOT_TOKEN="token-issued-by-soroush-bot-service"
+SOROUSH_BOT_USERNAME="soroush_bot_username"
+SOROUSH_MINI_APP_URL="https://splus.ir/soroush_bot_username"
 ```
 
 وب‌هوک بله را یک بار با متد `setWebhook` روی آدرس زیر ثبت کنید. در صورت استفاده از `BASE_PATH`،
@@ -110,6 +113,15 @@ https://example.com/api/bale/webhook/<BALE_WEBHOOK_SECRET>
 ```
 
 در reverse proxy نباید هدر `X-Frame-Options` مسدودکننده اضافه شود و CSP باید embedding از
-`https://*.bale.ai` را مجاز بداند. ورود و کوکی iframe فقط روی HTTPS پشتیبانی می‌شود. همان
+`https://*.bale.ai`، `https://splus.ir` و `https://webapp.splus.ir` را مجاز بداند. ورود و کوکی iframe فقط روی HTTPS پشتیبانی می‌شود. همان
 `EITAA_APP_TOKEN` ورود ایتا برای اعلان خصوصی کاربر نیز استفاده می‌شود؛ بنابراین بازوی ایتا باید
 اجازه ارسال پیام به کاربری را داشته باشد که مینی‌اپ را باز می‌کند.
+
+## مینی‌اپ سروش‌پلاس
+
+برای ورود مینی‌اپ سروش‌پلاس، `SOROUSH_BOT_TOKEN` را فقط در محیط سرور و
+`SOROUSH_BOT_USERNAME` و `SOROUSH_MINI_APP_URL` را مطابق بازوی ثبت‌شده تنظیم کنید. دادهٔ
+راه‌اندازی با کلید حاصل از SHA-256 توکن و HMAC-SHA-256 اعتبارسنجی می‌شود؛ توکن یا secret را در
+کد سمت کاربر قرار ندهید. URL باید HTTPS و متعلق به مینی‌اپ ثبت‌شده باشد. پس از ورود معتبر،
+شناسهٔ گفت‌وگو به‌عنوان مسیر اعلان ثبت می‌شود و سروش‌پلاس مانند بله در اولویت، کانال ترجیحی و
+لینک مستقیم دعوت قابل انتخاب است.

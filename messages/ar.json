@@ -400,7 +400,6 @@
 	"wizard_partial_back": "العودة إلى الأجزاء المتاحة",
 	"wizard_partial_eyebrow": "الاختيار من مقطع غير مكتمل",
 	"wizard_partial_title": "اختر الجزء المتاح الذي يناسبك",
-	"wizard_partial_free": "جزء متاح",
 	"wizard_partial_selected": "تم اختيار {percent} من هذا المقطع مسبقًا",
 	"wizard_partial_instruction": "اختر صفًا يحمل علامة «متاح». الأجزاء الباهتة اختيرت مسبقًا.",
 	"wizard_partial_list": "أجزاء هذا المقطع",
@@ -896,5 +895,6 @@
 	"share_card_eyebrow": "دعوة لقراءة القرآن معًا",
 	"share_card_invitation": "اختر نصيبًا من القرآن وشارك في هذه الختمة الجماعية.",
 	"share_card_hint": "افتح الرابط المرفق مع الرسالة للانضمام",
-	"success_miniapp_link_hint": "يفتح هذا الرابط الختمة مباشرة داخل {provider}."
+	"success_miniapp_link_hint": "يفتح هذا الرابط الختمة مباشرة داخل {provider}.",
+	"account_soroush": "سروش بلس"
 }

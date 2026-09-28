@@ -5,15 +5,18 @@
 	import { localizeHref } from '$lib/paraglide/runtime.js'
 	import { withBasePath } from '$lib/config/runtime'
 	import { decodeMiniAppTarget, type MiniAppHostName } from '$lib/miniapp/links'
+	import { detectMiniAppHost, hasBaleInitData, hasEitaaInitData, hasSoroushInitData } from '$lib/miniapp/host'
 	import { miniAppState } from '$lib/miniapp/state.svelte'
 
 	type Props = {
 		baleEnabled: boolean
 		eitaaEnabled: boolean
+		soroushEnabled: boolean
 	}
 
 	const baleSdkUrl = 'https://tapi.bale.ai/miniapp.js?3'
 	const eitaaSdkUrl = 'https://developer.eitaa.com/eitaa-web-app.js'
+	const soroushSdkUrl = 'https://webapp.splus.ir/sdk/soroush-web-app.js'
 
 	function loadSdk(
 		src: string,
@@ -46,33 +49,19 @@
 		})
 	}
 
-	function hasEitaaInitData(initData: string | undefined) {
-		if (!initData) return false
-		const params = new URLSearchParams(initData)
-		return params.has('device_id') && params.has('auth_date') && params.has('hash')
-	}
-
-	function hasBaleInitData(initData: string | undefined) {
-		if (!initData) return false
-		const params = new URLSearchParams(initData)
-		return params.has('auth_date') && params.has('hash') && !params.has('device_id')
-	}
-
 	function detectLaunchHost(): MiniAppHostName | null {
-		if (hasEitaaInitData(window.Eitaa?.WebApp?.initData)) return 'eitaa'
-		if (hasBaleInitData(window.Bale?.WebApp?.initData)) return 'bale'
-
 		const hash = location.hash.replace(/^#/, '')
 		const queryIndex = hash.indexOf('?')
 		const launchParams = new URLSearchParams(queryIndex >= 0 ? hash.slice(queryIndex + 1) : hash)
-		const initData = launchParams.get('tgWebAppData') || undefined
-
-		if (hasEitaaInitData(initData)) return 'eitaa'
-		if (hasBaleInitData(initData)) return 'bale'
-		return null
+		return detectMiniAppHost({
+			soroush: window.Splus?.WebApp?.initData,
+			eitaa: window.Eitaa?.WebApp?.initData,
+			bale: window.Bale?.WebApp?.initData,
+			launch: launchParams.get('tgWebAppData') || undefined,
+		})
 	}
 
-	const { baleEnabled, eitaaEnabled }: Props = $props()
+	const { baleEnabled, eitaaEnabled, soroushEnabled }: Props = $props()
 	let host = $state<MiniAppHostName | null>(null)
 	let ActiveMiniApp = $state<Component<{ enabled: boolean }>>()
 
@@ -99,6 +88,23 @@
 
 		async function detectHost() {
 			const launchHost = detectLaunchHost()
+			if (launchHost === 'soroush' && soroushEnabled) {
+				try {
+					await loadSdk(
+						soroushSdkUrl,
+						'soroush-miniapp-sdk',
+						() => Boolean(window.Splus?.WebApp),
+						'Soroush Plus SDK failed to load',
+					)
+					if (hasSoroushInitData(window.Splus?.WebApp?.initData)) {
+						const { default: component } = await import('./SoroushMiniApp.svelte')
+						if (!cancelled) activateHost('soroush', window.Splus?.WebApp?.initData, component)
+					}
+				} catch {
+					// Mini App integration is optional when its SDK is unavailable.
+				}
+			}
+
 			if (launchHost === 'bale' && baleEnabled) {
 				try {
 					await loadSdk(

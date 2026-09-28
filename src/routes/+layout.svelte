@@ -98,7 +98,11 @@
 	{#if routeRobots}<meta name="robots" content={routeRobots} />{/if}
 </svelte:head>
 
-<MiniAppHost baleEnabled={data.authProviders.bale} eitaaEnabled={data.authProviders.eitaa} />
+<MiniAppHost
+	baleEnabled={data.authProviders.bale}
+	eitaaEnabled={data.authProviders.eitaa}
+	soroushEnabled={data.authProviders.soroush}
+/>
 
 <LocaleChooser unresolved={data.needsLocaleChoice} />
 

@@ -373,7 +373,7 @@
 	"wizard_hide_completed": "پنهان‌کردن تکمیل‌شده‌ها",
 	"wizard_range_list": "فهرست {rangeType}ها",
 	"wizard_includes_my_share": "شامل سهم شما",
-	"wizard_partial_free": "بخشی آزاد است",
+	"wizard_partial_free": "بخش آزاد",
 	"wizard_completed": "تکمیل‌شده",
 	"wizard_selected_percent": "{percent} انتخاب شده",
 	"wizard_no_free_share": "بدون سهم آزاد",
@@ -400,7 +400,6 @@
 	"wizard_partial_back": "بازگشت به بخش‌های آزاد",
 	"wizard_partial_eyebrow": "انتخاب از یک بازه نیمه‌تکمیل",
 	"wizard_partial_title": "بخش آزاد دل‌خواهتان را بردارید",
-	"wizard_partial_free": "بخش آزاد",
 	"wizard_partial_selected": "{percent} از این بازه پیش‌تر انتخاب شده است",
 	"wizard_partial_instruction": "یک ردیف با نشان «آزاد» را انتخاب کنید. بخش‌های کم‌رنگ پیش‌تر برداشته شده‌اند.",
 	"wizard_partial_list": "بخش‌های این بازه",
@@ -896,5 +895,6 @@
 	"share_card_eyebrow": "دعوت به یک همراهی قرآنی",
 	"share_card_invitation": "با انتخاب بخشی از قرآن، در این ختم جمعی همراه شوید.",
 	"share_card_hint": "برای پیوستن، لینک همراه پیام را باز کنید",
-	"success_miniapp_link_hint": "این لینک، ختم را مستقیم داخل {provider} باز می‌کند."
+	"success_miniapp_link_hint": "این لینک، ختم را مستقیم داخل {provider} باز می‌کند.",
+	"account_soroush": "سروش‌پلاس"
 }

@@ -31,6 +31,7 @@
 		preferredChannel: NotificationChannel | null
 		baleEnabled: boolean
 		eitaaEnabled: boolean
+		soroushEnabled: boolean
 		emailEnabled: boolean
 	}
 
@@ -51,6 +52,7 @@
 			preferredChannel: data.notificationSettings?.preferredChannel ?? null,
 			baleEnabled: data.notificationSettings?.channels.bale.enabled ?? true,
 			eitaaEnabled: data.notificationSettings?.channels.eitaa.enabled ?? true,
+			soroushEnabled: data.notificationSettings?.channels.soroush.enabled ?? true,
 			emailEnabled: data.notificationSettings?.channels.email.enabled ?? true,
 		}
 	}
@@ -305,6 +307,49 @@
 						</article>
 
 						<article
+							class:account-channel-ready={data.notificationSettings?.channels.soroush.available}
+							class="account-channel"
+						>
+							<div class="account-channel-heading">
+								<span class="account-channel-icon"><IconChat /></span>
+								<div>
+									<strong>{m.account_soroush()}</strong>
+									<span
+										class:ui-badge-success={data.notificationSettings?.channels.soroush.available}
+										class="ui-badge ui-badge-xs"
+									>
+										{data.notificationSettings?.channels.soroush.available
+											? m.account_ready()
+											: m.account_not_connected()}
+									</span>
+								</div>
+							</div>
+							<p>
+								{data.notificationSettings?.channels.soroush.available
+									? m.account_channel_ready_description()
+									: data.messengerLinks.soroush
+										? m.account_channel_setup_description()
+										: m.account_channel_unavailable_description()}
+							</p>
+							<div class="account-channel-footer">
+								<label>
+									<input
+										class="ui-checkbox"
+										type="checkbox"
+										bind:checked={notificationForm.soroushEnabled}
+										onchange={clearNotificationStatus}
+									/>
+									<span>{m.account_channel_enabled()}</span>
+								</label>
+								{#if !data.notificationSettings?.channels.soroush.available && data.messengerLinks.soroush}
+									<a href={data.messengerLinks.soroush} target="_blank" rel="noreferrer">
+										{m.account_start_chat()}
+									</a>
+								{/if}
+							</div>
+						</article>
+
+						<article
 							class:account-channel-ready={data.notificationSettings?.channels.email.available}
 							class="account-channel"
 						>
@@ -360,6 +405,12 @@
 						</option>
 						<option value="eitaa" disabled={!eitaaAvailable}>
 							{m.account_eitaa()}
+						</option>
+						<option
+							value="soroush"
+							disabled={!data.notificationSettings?.channels.soroush.available}
+						>
+							{m.account_soroush()}
 						</option>
 						<option value="email" disabled={!data.notificationSettings?.channels.email.available}>
 							{m.account_email()}

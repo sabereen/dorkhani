@@ -5,10 +5,10 @@
 	import { PickedKhatmPart } from '$lib/entity/PickedKhatmPart'
 	import RangeTypeIcon from '$lib/components/RangeTypeIcon.svelte'
 	import { onMount, type Snippet } from 'svelte'
-	import { slide } from 'svelte/transition'
 	import IconCheck from '~icons/ic/round-check-circle'
 	import IconEye from '~icons/ic/outline-remove-red-eye'
 	import IconArrow from '~icons/ic/round-arrow-back'
+	import * as m from '$lib/paraglide/messages.js'
 
 	type Props = {
 		/** حداکثر چند آیتم رندر شود؟ */
@@ -36,16 +36,13 @@
 </script>
 
 {#if history?.length}
-	<section
-		transition:slide={{ axis: 'y' }}
-		class="ui-card ui-card-bordered ui-activity-card ui-activity-card-picked"
-	>
+	<section class="ui-card ui-card-bordered ui-activity-card ui-activity-card-picked">
 		<div class="ui-card-body">
 			<header class="ui-activity-header">
 				<span class="ui-activity-header-icon"><IconCheck /></span>
 				<div class="ui-activity-heading">
-					<h2>{props.title || 'آخرین مشارکت‌ها'}</h2>
-					<p>سهم‌هایی که برای قرائت برداشته‌اید</p>
+					<h2>{props.title || m.history_latest_picks()}</h2>
+					<p>{m.history_picked_description()}</p>
 				</div>
 				<span class="ui-activity-count">{history.length.toLocaleString(localeTag())}</span>
 			</header>
@@ -58,12 +55,12 @@
 							<span class="ui-activity-content">
 								<strong>{item.range.getTitle()}</strong>
 								<a class="ui-activity-subtitle" href={item.khatm.link}
-									>از ختم «{item.khatm.title}»</a
+									>{m.history_from_khatm({ title: item.khatm.title })}</a
 								>
 								<span class="ui-activity-meta">
 									<span>{item.date.toLocaleDateString('fa-IR')}</span>
 									{#if item.khatm.private}
-										<span class="ui-badge ui-badge-xs ui-badge-info">خصوصی</span>
+										<span class="ui-badge ui-badge-xs ui-badge-info">{m.history_private()}</span>
 									{/if}
 									{#if !item.khatm.isFree}
 										<span class="ui-badge ui-badge-xs ui-range-type-badge">
@@ -78,7 +75,7 @@
 								target="_blank"
 								rel="noopener"
 								href={item.range.getLink(item.khatm)}
-								aria-label={`مشاهده ${item.range.getTitle()}`}
+								aria-label={m.history_view({ title: item.range.getTitle() })}
 							>
 								<IconEye />
 							</a>
@@ -90,8 +87,8 @@
 			{#if hasMore}
 				<div class="ui-activity-footer">
 					<a class="ui-btn ui-btn-ghost ui-btn-sm" href={localizeHref(`${base}/history`)}>
-						دیدن همه
-						<IconArrow />
+						{m.history_view_all()}
+						<IconArrow class="ltr:mirror" />
 					</a>
 				</div>
 			{/if}

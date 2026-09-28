@@ -4,4 +4,15 @@
     <string name="title_activity_main">دورخوانی</string>
     <string name="package_name">ir.dorkhani.app</string>
     <string name="custom_url_scheme">ir.dorkhani.app</string>
+    <string name="widget_description">A summary of your recitation activity</string>
+    <string name="widget_activity_title">Activity summary</string>
+    <string name="widget_offline">Offline</string>
+    <string name="widget_created">Created</string>
+    <string name="widget_picked">Recited</string>
+    <string name="widget_zekr">Dhikr</string>
+    <string name="widget_empty">Open the app to start your first activity.</string>
+    <string name="widget_no_activity">—</string>
+    <string name="widget_offline_meta">Round %1$s · %2$s%%</string>
+    <string name="widget_range_meta">%1$s–%2$s · %3$s</string>
+    <string name="widget_count_meta">%1$s repetitions</string>
 </resources>

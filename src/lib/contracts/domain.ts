@@ -35,6 +35,39 @@ export type KhatmData = Omit<KhatmRecord, 'aiReviewStatus' | 'aiReviewReason'> &
 	aiReviewReason?: string | null
 }
 
+export type OfflineKhatmRound = {
+	roundNumber: number
+	created: Date
+	completed: Date
+}
+
+export type OfflineKhatmRecord = {
+	id: string
+	title: string
+	description: string
+	rangeType: RangeType
+	series: boolean
+	seriesStopped: boolean
+	roundNumber: number
+	roundCreated: Date
+	status: KhatmStatus
+	versesRead: number
+	pageProgress: number
+	created: Date
+	updated: Date
+	endDate: Date | null
+	completedRounds: OfflineKhatmRound[]
+}
+
+export type OfflineKhatmPartRecord = {
+	id: string
+	khatmId: string
+	roundNumber: number
+	start: number
+	end: number
+	created: Date
+}
+
 export type PublicBranding = {
 	name: string
 	tagline: string

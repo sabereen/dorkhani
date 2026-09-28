@@ -15,7 +15,8 @@ export const POST: RequestHandler = async ({ locals, params }) => {
 		if (!stopped) error(409, { message: 'این ختم از نوع تمام‌نشدنی نیست.' })
 		return json({ stopped: true })
 	} catch (cause) {
-		if (cause instanceof KhatmOwnershipError) error(403, { message: 'اجازه توقف این ختم را ندارید.' })
+		if (cause instanceof KhatmOwnershipError)
+			error(403, { message: 'اجازه توقف این ختم را ندارید.' })
 		if (cause instanceof KhatmHistoricalRoundError) {
 			error(409, { message: 'فقط از دور جاری می‌توان ختم را متوقف کرد.' })
 		}

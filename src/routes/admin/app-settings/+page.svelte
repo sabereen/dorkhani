@@ -5,7 +5,7 @@
 	import AdminNav from '$lib/components/AdminNav.svelte'
 	import Header from '$lib/components/Header.svelte'
 	import PageTitle from '$lib/components/PageTitle.svelte'
-	import { toast } from '$lib/components/TheToast.svelte'
+	import { toast } from '$lib/components/toast.svelte'
 	import { Khatm } from '$lib/entity/Khatm.svelte'
 	import { watch } from '$lib/hooks/watch.svelte'
 	import type { SubmitFunction } from '@sveltejs/kit'
@@ -23,8 +23,14 @@
 
 	const { data, form }: PageProps = $props()
 
-	const { notification, supportLink, staleKhatmRetentionDays, aiKhatmReview, branding, brandingAssets } =
-		/* svelte-ignore state_referenced_locally */ data
+	const {
+		notification,
+		supportLink,
+		staleKhatmRetentionDays,
+		aiKhatmReview,
+		branding,
+		brandingAssets,
+	} = /* svelte-ignore state_referenced_locally */ data
 	const brandingLocales = [
 		{ locale: 'fa', label: 'فارسی', dir: 'rtl' },
 		{ locale: 'ar', label: 'عربی', dir: 'rtl' },
@@ -147,7 +153,8 @@
 			formData.eitaaToken = form?.eitaaToken || ''
 			formData.eitaaChatId = form?.eitaaChatId || ''
 			formData.aiKhatmReviewEnabled = form?.aiKhatmReview?.enabled ?? data.aiKhatmReview.enabled
-			formData.aiKhatmReviewBaseUrl = form?.aiKhatmReview?.baseUrl || data.aiKhatmReview.baseUrl || ''
+			formData.aiKhatmReviewBaseUrl =
+				form?.aiKhatmReview?.baseUrl || data.aiKhatmReview.baseUrl || ''
 			formData.aiKhatmReviewModel = form?.aiKhatmReview?.model || data.aiKhatmReview.model || ''
 			formData.aiKhatmReviewApiKey = form?.aiKhatmReview?.apiKey || ''
 			if (form?.branding) {
@@ -214,8 +221,8 @@
 							class:ui-tab-active={activeBrandingLocale === item.locale}
 							role="tab"
 							aria-selected={activeBrandingLocale === item.locale}
-							onclick={() => (activeBrandingLocale = item.locale)}
-						>{item.label}</button>
+							onclick={() => (activeBrandingLocale = item.locale)}>{item.label}</button
+						>
 					{/each}
 				</div>
 
@@ -223,42 +230,130 @@
 					<div hidden={activeBrandingLocale !== item.locale} dir={item.dir} lang={item.locale}>
 						<div class="ui-admin-field-grid">
 							<div class="ui-admin-field">
-								<label for={`input-brand-${item.locale}-name`} class="ui-field-label">نام برنامه</label>
-								<input bind:value={formData.branding[item.locale].name} class="ui-input" type="text" name={`branding_${item.locale}_name`} id={`input-brand-${item.locale}-name`} maxlength="60" data-ui-validate required />
+								<label for={`input-brand-${item.locale}-name`} class="ui-field-label"
+									>نام برنامه</label
+								>
+								<input
+									bind:value={formData.branding[item.locale].name}
+									class="ui-input"
+									type="text"
+									name={`branding_${item.locale}_name`}
+									id={`input-brand-${item.locale}-name`}
+									maxlength="60"
+									data-ui-validate
+									required
+								/>
 							</div>
 							<div class="ui-admin-field">
-								<label for={`input-brand-${item.locale}-tagline`} class="ui-field-label">شعار کوتاه</label>
-								<input bind:value={formData.branding[item.locale].tagline} class="ui-input" type="text" name={`branding_${item.locale}_tagline`} id={`input-brand-${item.locale}-tagline`} maxlength="100" data-ui-validate required />
+								<label for={`input-brand-${item.locale}-tagline`} class="ui-field-label"
+									>شعار کوتاه</label
+								>
+								<input
+									bind:value={formData.branding[item.locale].tagline}
+									class="ui-input"
+									type="text"
+									name={`branding_${item.locale}_tagline`}
+									id={`input-brand-${item.locale}-tagline`}
+									maxlength="100"
+									data-ui-validate
+									required
+								/>
 							</div>
 							<div class="ui-admin-field">
-								<label for={`input-brand-${item.locale}-hero-title`} class="ui-field-label">خط اول عنوان Hero</label>
-								<input bind:value={formData.branding[item.locale].heroTitle} class="ui-input" type="text" name={`branding_${item.locale}_heroTitle`} id={`input-brand-${item.locale}-hero-title`} maxlength="120" data-ui-validate required />
+								<label for={`input-brand-${item.locale}-hero-title`} class="ui-field-label"
+									>خط اول عنوان Hero</label
+								>
+								<input
+									bind:value={formData.branding[item.locale].heroTitle}
+									class="ui-input"
+									type="text"
+									name={`branding_${item.locale}_heroTitle`}
+									id={`input-brand-${item.locale}-hero-title`}
+									maxlength="120"
+									data-ui-validate
+									required
+								/>
 							</div>
 							<div class="ui-admin-field">
-								<label for={`input-brand-${item.locale}-hero-highlight`} class="ui-field-label">خط برجستهٔ عنوان Hero</label>
-								<input bind:value={formData.branding[item.locale].heroHighlight} class="ui-input" type="text" name={`branding_${item.locale}_heroHighlight`} id={`input-brand-${item.locale}-hero-highlight`} maxlength="120" data-ui-validate required />
+								<label for={`input-brand-${item.locale}-hero-highlight`} class="ui-field-label"
+									>خط برجستهٔ عنوان Hero</label
+								>
+								<input
+									bind:value={formData.branding[item.locale].heroHighlight}
+									class="ui-input"
+									type="text"
+									name={`branding_${item.locale}_heroHighlight`}
+									id={`input-brand-${item.locale}-hero-highlight`}
+									maxlength="120"
+									data-ui-validate
+									required
+								/>
 							</div>
 						</div>
 
 						<div class="ui-admin-field">
-							<label for={`input-brand-${item.locale}-hero-description`} class="ui-field-label">توضیح Hero</label>
-							<textarea bind:value={formData.branding[item.locale].heroDescription} class="ui-textarea" name={`branding_${item.locale}_heroDescription`} id={`input-brand-${item.locale}-hero-description`} maxlength="500" rows="3" data-ui-validate required></textarea>
+							<label for={`input-brand-${item.locale}-hero-description`} class="ui-field-label"
+								>توضیح Hero</label
+							>
+							<textarea
+								bind:value={formData.branding[item.locale].heroDescription}
+								class="ui-textarea"
+								name={`branding_${item.locale}_heroDescription`}
+								id={`input-brand-${item.locale}-hero-description`}
+								maxlength="500"
+								rows="3"
+								data-ui-validate
+								required
+							></textarea>
 						</div>
 
 						<div class="ui-admin-field-grid">
 							<div class="ui-admin-field">
-								<label for={`input-brand-${item.locale}-seo-title`} class="ui-field-label">عنوان SEO صفحهٔ اصلی</label>
-								<input bind:value={formData.branding[item.locale].seoTitle} class="ui-input" type="text" name={`branding_${item.locale}_seoTitle`} id={`input-brand-${item.locale}-seo-title`} maxlength="120" data-ui-validate required />
+								<label for={`input-brand-${item.locale}-seo-title`} class="ui-field-label"
+									>عنوان SEO صفحهٔ اصلی</label
+								>
+								<input
+									bind:value={formData.branding[item.locale].seoTitle}
+									class="ui-input"
+									type="text"
+									name={`branding_${item.locale}_seoTitle`}
+									id={`input-brand-${item.locale}-seo-title`}
+									maxlength="120"
+									data-ui-validate
+									required
+								/>
 							</div>
 							<div class="ui-admin-field">
-								<label for={`input-brand-${item.locale}-seo-description`} class="ui-field-label">توضیح SEO صفحهٔ اصلی</label>
-								<textarea bind:value={formData.branding[item.locale].seoDescription} class="ui-textarea" name={`branding_${item.locale}_seoDescription`} id={`input-brand-${item.locale}-seo-description`} maxlength="200" rows="3" data-ui-validate required></textarea>
+								<label for={`input-brand-${item.locale}-seo-description`} class="ui-field-label"
+									>توضیح SEO صفحهٔ اصلی</label
+								>
+								<textarea
+									bind:value={formData.branding[item.locale].seoDescription}
+									class="ui-textarea"
+									name={`branding_${item.locale}_seoDescription`}
+									id={`input-brand-${item.locale}-seo-description`}
+									maxlength="200"
+									rows="3"
+									data-ui-validate
+									required
+								></textarea>
 							</div>
 						</div>
 
 						<div class="ui-admin-field">
-							<label for={`input-brand-${item.locale}-hero-image-alt`} class="ui-field-label">متن جایگزین تصویر Hero</label>
-							<input bind:value={formData.branding[item.locale].heroImageAlt} class="ui-input" type="text" name={`branding_${item.locale}_heroImageAlt`} id={`input-brand-${item.locale}-hero-image-alt`} maxlength="160" data-ui-validate required />
+							<label for={`input-brand-${item.locale}-hero-image-alt`} class="ui-field-label"
+								>متن جایگزین تصویر Hero</label
+							>
+							<input
+								bind:value={formData.branding[item.locale].heroImageAlt}
+								class="ui-input"
+								type="text"
+								name={`branding_${item.locale}_heroImageAlt`}
+								id={`input-brand-${item.locale}-hero-image-alt`}
+								maxlength="160"
+								data-ui-validate
+								required
+							/>
 						</div>
 					</div>
 				{/each}
@@ -266,15 +361,37 @@
 				<div class="ui-admin-brand-assets">
 					<div class="ui-admin-field">
 						<label for="input-hero-image" class="ui-field-label">تصویر Hero</label>
-						<div class="ui-admin-brand-preview ui-admin-brand-preview-hero"><img src={heroPreview} alt="پیش‌نمایش تصویر Hero" /></div>
-						<input class="ui-input" type="file" name="heroImage" id="input-hero-image" accept="image/png,image/jpeg" onchange={(event) => previewImage(event, 'hero')} />
-						<small class="ui-admin-field-hint">PNG یا JPEG، حداکثر ۵ مگابایت و حداقل ۴۸۰×۳۲۰ پیکسل.</small>
+						<div class="ui-admin-brand-preview ui-admin-brand-preview-hero">
+							<img src={heroPreview} alt="پیش‌نمایش تصویر Hero" />
+						</div>
+						<input
+							class="ui-input"
+							type="file"
+							name="heroImage"
+							id="input-hero-image"
+							accept="image/png,image/jpeg"
+							onchange={(event) => previewImage(event, 'hero')}
+						/>
+						<small class="ui-admin-field-hint"
+							>PNG یا JPEG، حداکثر ۵ مگابایت و حداقل ۴۸۰×۳۲۰ پیکسل.</small
+						>
 					</div>
 					<div class="ui-admin-field">
 						<label for="input-app-icon" class="ui-field-label">آیکن برنامه</label>
-						<div class="ui-admin-brand-preview ui-admin-brand-preview-icon"><img src={iconPreview} alt="پیش‌نمایش آیکن برنامه" /></div>
-						<input class="ui-input" type="file" name="appIcon" id="input-app-icon" accept="image/png,image/jpeg" onchange={(event) => previewImage(event, 'icon')} />
-						<small class="ui-admin-field-hint">تصویر مربعی PNG یا JPEG، حداکثر ۵ مگابایت و حداقل ۵۱۲×۵۱۲ پیکسل.</small>
+						<div class="ui-admin-brand-preview ui-admin-brand-preview-icon">
+							<img src={iconPreview} alt="پیش‌نمایش آیکن برنامه" />
+						</div>
+						<input
+							class="ui-input"
+							type="file"
+							name="appIcon"
+							id="input-app-icon"
+							accept="image/png,image/jpeg"
+							onchange={(event) => previewImage(event, 'icon')}
+						/>
+						<small class="ui-admin-field-hint"
+							>تصویر مربعی PNG یا JPEG، حداکثر ۵ مگابایت و حداقل ۵۱۲×۵۱۲ پیکسل.</small
+						>
 					</div>
 				</div>
 			</section>
@@ -340,31 +457,72 @@
 					<span class="ui-admin-settings-icon-warm"><IconPsychology /></span>
 					<div>
 						<h2 id="ai-review-settings-title">بررسی AI ختم‌ها</h2>
-						<p>عنوان و توضیح ختم‌ها را برای راهنمایی کاربر و تأیید خودکار ختم‌های عمومی بررسی کنید.</p>
+						<p>
+							عنوان و توضیح ختم‌ها را برای راهنمایی کاربر و تأیید خودکار ختم‌های عمومی بررسی کنید.
+						</p>
 					</div>
 				</div>
 
 				<label class="ui-admin-toggle-card">
-					<input class="ui-checkbox" type="checkbox" name="aiKhatmReviewEnabled" bind:checked={formData.aiKhatmReviewEnabled} />
+					<input
+						class="ui-checkbox"
+						type="checkbox"
+						name="aiKhatmReviewEnabled"
+						bind:checked={formData.aiKhatmReviewEnabled}
+					/>
 					<span class="ui-admin-toggle-copy">
 						<strong>بررسی AI فعال باشد</strong>
 						<small>در صورت کندی یا خطای سرویس، ثبت ختم متوقف نمی‌شود.</small>
 					</span>
-					<span class="ui-admin-toggle-status">{formData.aiKhatmReviewEnabled ? 'فعال' : 'غیرفعال'}</span>
+					<span class="ui-admin-toggle-status"
+						>{formData.aiKhatmReviewEnabled ? 'فعال' : 'غیرفعال'}</span
+					>
 				</label>
 
-				<div class="ui-admin-field-grid" class:ui-admin-fields-muted={!formData.aiKhatmReviewEnabled}>
+				<div
+					class="ui-admin-field-grid"
+					class:ui-admin-fields-muted={!formData.aiKhatmReviewEnabled}
+				>
 					<div class="ui-admin-field">
-						<label for="input-ai-review-base-url" class="ui-field-label">نشانی پایهٔ OpenAI-compatible</label>
-						<input bind:value={formData.aiKhatmReviewBaseUrl} class="ui-input" type="url" name="aiKhatmReviewBaseUrl" dir="ltr" id="input-ai-review-base-url" placeholder="https://api.example.com/v1" required={formData.aiKhatmReviewEnabled} />
+						<label for="input-ai-review-base-url" class="ui-field-label"
+							>نشانی پایهٔ OpenAI-compatible</label
+						>
+						<input
+							bind:value={formData.aiKhatmReviewBaseUrl}
+							class="ui-input"
+							type="url"
+							name="aiKhatmReviewBaseUrl"
+							dir="ltr"
+							id="input-ai-review-base-url"
+							placeholder="https://api.example.com/v1"
+							required={formData.aiKhatmReviewEnabled}
+						/>
 					</div>
 					<div class="ui-admin-field">
 						<label for="input-ai-review-model" class="ui-field-label">نام مدل</label>
-						<input bind:value={formData.aiKhatmReviewModel} class="ui-input" type="text" name="aiKhatmReviewModel" dir="ltr" id="input-ai-review-model" placeholder="gpt-4o-mini" required={formData.aiKhatmReviewEnabled} />
+						<input
+							bind:value={formData.aiKhatmReviewModel}
+							class="ui-input"
+							type="text"
+							name="aiKhatmReviewModel"
+							dir="ltr"
+							id="input-ai-review-model"
+							placeholder="gpt-4o-mini"
+							required={formData.aiKhatmReviewEnabled}
+						/>
 					</div>
 					<div class="ui-admin-field">
 						<label for="input-ai-review-api-key" class="ui-field-label">کلید API</label>
-						<input bind:value={formData.aiKhatmReviewApiKey} class="ui-input" type="password" name="aiKhatmReviewApiKey" autocomplete="off" dir="ltr" id="input-ai-review-api-key" required={formData.aiKhatmReviewEnabled} />
+						<input
+							bind:value={formData.aiKhatmReviewApiKey}
+							class="ui-input"
+							type="password"
+							name="aiKhatmReviewApiKey"
+							autocomplete="off"
+							dir="ltr"
+							id="input-ai-review-api-key"
+							required={formData.aiKhatmReviewEnabled}
+						/>
 						<small class="ui-admin-field-hint">برای حفظ کلید فعلی، این مقدار را تغییر ندهید.</small>
 					</div>
 				</div>

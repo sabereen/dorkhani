@@ -20,9 +20,7 @@ describe('logical CSS contract', () => {
 		const files = readdirSync(sourceRoot, { recursive: true })
 			.map(String)
 			.filter((file) => ['.css', '.svelte'].includes(extname(file)))
-		const source = files
-			.map((file) => readFileSync(resolve(sourceRoot, file), 'utf8'))
-			.join('\n')
+		const source = files.map((file) => readFileSync(resolve(sourceRoot, file), 'utf8')).join('\n')
 		expect(source).not.toMatch(/(?:margin|padding)-(?:right|left)\s*:/)
 	})
 })

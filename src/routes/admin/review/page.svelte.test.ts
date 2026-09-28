@@ -16,7 +16,7 @@ vi.mock('$lib/entity/KhatmFeatured', () => ({
 	featuredKhatm_set: featuredMock.set,
 	featuredKhatm_reorder: featuredMock.reorder,
 }))
-vi.mock('$lib/components/TheToast.svelte', () => ({ toast: vi.fn() }))
+vi.mock('$lib/components/toast.svelte', () => ({ toast: vi.fn() }))
 
 const featuredKhatm = {
 	id: 52,

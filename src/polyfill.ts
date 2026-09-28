@@ -8,5 +8,5 @@ import 'core-js/modules/es.promise.all-settled'
 import 'core-js/modules/web.queue-microtask'
 
 window.AbortController ||= class {
-	abort() { }
+	abort() {}
 } as any

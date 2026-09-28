@@ -21,7 +21,8 @@ export type AppBootstrap = {
 	supportLink?: string | null
 	branding: PublicBranding
 	user: PublicUser | null
-	authProviders: { google: boolean; eitaa: boolean; bale: boolean }
+	authProviders: { google: boolean; eitaa: boolean; bale: boolean; soroush: boolean }
+	miniAppUrls: { bale: string | null; eitaa: string | null; soroush: string | null }
 }
 
 export type HomeData = {
@@ -51,7 +52,7 @@ export type KhatmEditData = {
 	isAdmin: boolean
 }
 
-export type NotificationChannel = 'bale' | 'eitaa' | 'email'
+export type NotificationChannel = 'bale' | 'eitaa' | 'soroush' | 'email'
 export type NotificationSettings = {
 	enabled: boolean
 	preferredChannel: NotificationChannel | null
@@ -65,7 +66,7 @@ export type AccountData = {
 	user: { name: string; email: string | null }
 	khatms: KhatmData[]
 	notificationSettings: NotificationSettings
-	messengerLinks: { bale: string | null; eitaa: string | null }
+	messengerLinks: { bale: string | null; eitaa: string | null; soroush: string | null }
 }
 
 export type PickAyahResult = {

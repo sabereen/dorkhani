@@ -21,6 +21,8 @@ const config: CapacitorConfig = {
 		androidScheme: 'https',
 	},
 	android: {
+		webContentsDebuggingEnabled: true,
+		appendUserAgent: 'Dorkhani',
 		buildOptions: hasSigningConfig
 			? {
 					keystorePath: process.env.ANDROID_KEYSTORE_PATH,

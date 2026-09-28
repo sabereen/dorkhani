@@ -18,7 +18,11 @@ export const GET: RequestHandler = async ({ url }) => {
 			})
 		}
 		if (deletionReason === 'owner') {
-			throw error(410, { message: m.error_khatm_deleted(), code: 'khatm_deleted', type: 'khatm-deleted' })
+			throw error(410, {
+				message: m.error_khatm_deleted(),
+				code: 'khatm_deleted',
+				type: 'khatm-deleted',
+			})
 		}
 		throw error(404, { message: m.error_khatm_not_found(), code: 'khatm_not_found' })
 	}

@@ -7,8 +7,9 @@ import { getBrandingText } from '$lib/entity/Branding'
 import { formatNumber } from '$lib/i18n/format'
 import { isLocale, localizeUrl, type Locale } from '$lib/paraglide/runtime.js'
 import * as m from '$lib/paraglide/messages.js'
+import { createMiniAppLink } from '$lib/miniapp/links'
 
-export type UserNotificationChannel = 'bale' | 'eitaa' | 'email'
+export type UserNotificationChannel = 'bale' | 'eitaa' | 'soroush' | 'email'
 
 export type UserNotificationEvent =
 	| {
@@ -45,6 +46,7 @@ type NotificationMessage = {
 	forward?: {
 		text: string
 		url: string
+		khatmPath: string
 	}
 }
 
@@ -53,10 +55,11 @@ type NotificationSettingsInput = {
 	preferredChannel: UserNotificationChannel | null
 	baleEnabled: boolean
 	eitaaEnabled: boolean
+	soroushEnabled: boolean
 	emailEnabled: boolean
 }
 
-const defaultPriority: UserNotificationChannel[] = ['bale', 'eitaa', 'email']
+const defaultPriority: UserNotificationChannel[] = ['bale', 'eitaa', 'soroush', 'email']
 const PROVIDER_TIMEOUT_MS = 5000
 
 function fullUrl(path: string, locale: Locale) {
@@ -83,6 +86,7 @@ function toMessage(event: UserNotificationEvent, locale: Locale): NotificationMe
 				url: fullUrl(`/account/khatms/${event.khatmId}/edit`, locale),
 				forward: {
 					url: khatmUrl,
+					khatmPath: event.khatmPath,
 					text: [
 						m.notification_invite_title({ name: branding.name }, { locale }),
 						'',
@@ -126,6 +130,18 @@ function toMessage(event: UserNotificationEvent, locale: Locale): NotificationMe
 	}
 }
 
+function getForwardMessage(
+	forward: NonNullable<NotificationMessage['forward']>,
+	miniAppUrl: string | undefined,
+	host: 'bale' | 'eitaa' | 'soroush' = 'bale',
+) {
+	const url = createMiniAppLink(miniAppUrl, forward.khatmPath, host) || forward.url
+	return {
+		url,
+		text: forward.text.replace(forward.url, url),
+	}
+}
+
 async function requestJson(url: string, body: object) {
 	const controller = new AbortController()
 	const timer = setTimeout(() => controller.abort(), PROVIDER_TIMEOUT_MS)
@@ -150,21 +166,57 @@ async function sendBale(address: string, message: NotificationMessage, locale: L
 		chat_id: address,
 		text: `${message.subject}\n\n${message.text}`,
 		reply_markup: {
-			inline_keyboard: [[{ text: m.notification_open_app({}, { locale }), web_app: { url: message.url } }]],
+			inline_keyboard: [
+				[{ text: m.notification_open_app({}, { locale }), web_app: { url: message.url } }],
+			],
 		},
 	})
 
 	if (message.forward) {
 		try {
+			const forward = getForwardMessage(message.forward, env.BALE_MINI_APP_URL)
 			await requestJson(`https://tapi.bale.ai/bot${env.BALE_BOT_TOKEN}/sendMessage`, {
 				chat_id: address,
-				text: message.forward.text,
+				text: forward.text,
 				reply_markup: {
-					inline_keyboard: [[{ text: m.notification_join_khatm({}, { locale }), url: message.forward.url }]],
+					inline_keyboard: [
+						[{ text: m.notification_join_khatm({}, { locale }), url: forward.url }],
+					],
 				},
 			})
 		} catch (error) {
 			console.error('Failed to send Bale khatm forwarding message.', error)
+		}
+	}
+}
+
+async function sendSoroush(address: string, message: NotificationMessage, locale: Locale) {
+	if (!env.SOROUSH_BOT_TOKEN) throw new Error('SOROUSH_BOT_TOKEN is not configured.')
+	const endpoint = `https://bot.splus.ir/api/v1/bot${env.SOROUSH_BOT_TOKEN}/sendMessage`
+	await requestJson(endpoint, {
+		chat_id: address,
+		text: `${message.subject}\n\n${message.text}`,
+		reply_markup: {
+			inline_keyboard: [
+				[{ text: m.notification_open_app({}, { locale }), web_app: { url: message.url } }],
+			],
+		},
+	})
+
+	if (message.forward) {
+		try {
+			const forward = getForwardMessage(message.forward, env.SOROUSH_MINI_APP_URL, 'soroush')
+			await requestJson(endpoint, {
+				chat_id: address,
+				text: forward.text,
+				reply_markup: {
+					inline_keyboard: [
+						[{ text: m.notification_join_khatm({}, { locale }), url: forward.url }],
+					],
+				},
+			})
+		} catch (error) {
+			console.error('Failed to send Soroush Plus khatm forwarding message.', error)
 		}
 	}
 }
@@ -178,9 +230,10 @@ async function sendEitaa(address: string, message: NotificationMessage) {
 
 	if (message.forward) {
 		try {
+			const forward = getForwardMessage(message.forward, env.EITAA_MINI_APP_URL)
 			await requestJson(`https://eitaayar.ir/api/${env.EITAA_APP_TOKEN}/sendMessage`, {
 				chat_id: address,
-				text: message.forward.text,
+				text: forward.text,
 			})
 		} catch (error) {
 			console.error('Failed to send Eitaa khatm forwarding message.', error)
@@ -221,6 +274,11 @@ export async function userNotification_getSettings(userId: string) {
 				available: Boolean(endpoints.get('eitaa')?.canSend && env.EITAA_APP_TOKEN),
 				connected: endpoints.has('eitaa'),
 			},
+			soroush: {
+				enabled: preference?.soroushEnabled ?? true,
+				available: Boolean(endpoints.get('soroush')?.canSend && env.SOROUSH_BOT_TOKEN),
+				connected: endpoints.has('soroush'),
+			},
 			email: {
 				enabled: preference?.emailEnabled ?? true,
 				available: emailAvailable,
@@ -254,6 +312,17 @@ export async function userNotification_upsertEndpoint(
 	})
 }
 
+export async function userNotification_setEndpointCanSend(
+	userId: string,
+	channel: Exclude<UserNotificationChannel, 'email'>,
+	canSend: boolean,
+) {
+	return db.notificationEndpoint.updateMany({
+		where: { userId, channel },
+		data: { canSend },
+	})
+}
+
 export async function userNotification_enableEndpointFromProvider(
 	channel: Exclude<UserNotificationChannel, 'email'>,
 	address: string,
@@ -283,6 +352,7 @@ export async function userNotification_send(userId: string, event: UserNotificat
 	const enabled = {
 		bale: preference?.baleEnabled ?? true,
 		eitaa: preference?.eitaaEnabled ?? true,
+		soroush: preference?.soroushEnabled ?? true,
 		email: preference?.emailEnabled ?? true,
 	}
 
@@ -299,6 +369,10 @@ export async function userNotification_send(userId: string, event: UserNotificat
 				const endpoint = endpoints.get('eitaa')
 				if (!endpoint?.canSend) continue
 				await sendEitaa(endpoint.address, message)
+			} else if (channel === 'soroush') {
+				const endpoint = endpoints.get('soroush')
+				if (!endpoint?.canSend) continue
+				await sendSoroush(endpoint.address, message, locale)
 			} else {
 				if (
 					!user.emailVerified ||

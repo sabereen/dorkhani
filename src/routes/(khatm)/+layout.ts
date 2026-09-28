@@ -17,7 +17,7 @@ export const load: LayoutLoad = async ({ fetch, params, url }) => {
 	} catch (cause) {
 		const status =
 			typeof cause === 'object' && cause && 'status' in cause ? Number(cause.status) : undefined
-		if (status === 404 || status === 410) {
+		if ((status === 404 || status === 410) && params.khatm) {
 			await disableKhatmShortcut(params.khatm).catch(() => undefined)
 		}
 		throw cause

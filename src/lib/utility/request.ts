@@ -1,5 +1,6 @@
 import { apiUrl } from '$lib/config/runtime'
 import { authTokenStore, type AuthTokenStore } from '$lib/auth-token'
+import { settingsStore } from '$lib/storage/client'
 import { error } from '@sveltejs/kit'
 
 export class ApiError extends Error {
@@ -34,15 +35,9 @@ export async function apiRequest<T>(
 	await tokenStore.ready()
 	const token = tokenStore.get()
 	if (token) headers.set('authorization', `Bearer ${token}`)
-	if (typeof localStorage !== 'undefined') {
-		try {
-			const settings = JSON.parse(localStorage.getItem('app_v1_localSettings') || '{}')
-			if (settings.locale === 'fa' || settings.locale === 'ar' || settings.locale === 'en') {
-				headers.set('x-app-locale', settings.locale)
-			}
-		} catch {
-			// Invalid local preferences must not block a request.
-		}
+	const settings = settingsStore.getOrDefault<Record<string, unknown>>('localSettings', {})
+	if (settings.locale === 'fa' || settings.locale === 'ar' || settings.locale === 'en') {
+		headers.set('x-app-locale', settings.locale)
 	}
 
 	let requestBody: BodyInit | null = null

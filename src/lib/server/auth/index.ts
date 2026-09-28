@@ -11,6 +11,7 @@ import { sveltekitCookies } from 'better-auth/svelte-kit'
 import { authEmail_send } from './email'
 import { baleAuthPlugin } from './bale'
 import { eitaaAuthPlugin } from './eitaa'
+import { soroushAuthPlugin } from './soroush'
 import { getLocale, isLocale } from '$lib/paraglide/runtime.js'
 import * as m from '$lib/paraglide/messages.js'
 import { parseTrustedOrigins } from '$lib/server/cors'
@@ -18,6 +19,11 @@ import { parseTrustedOrigins } from '$lib/server/cors'
 const authBaseUrl = env.BETTER_AUTH_URL || env.ORIGIN
 const isSecureOrigin = authBaseUrl?.startsWith('https://')
 const nativeTrustedOrigins = [...parseTrustedOrigins(env.NATIVE_TRUSTED_ORIGINS)]
+
+function getUserLocale(user: object) {
+	const locale = 'locale' in user ? user.locale : undefined
+	return isLocale(locale) ? locale : getLocale()
+}
 
 export const auth = betterAuth({
 	appName: DEFAULT_BRANDING_CONFIG.texts.fa.name,
@@ -49,7 +55,7 @@ export const auth = betterAuth({
 		requireEmailVerification: true,
 		minPasswordLength: 8,
 		sendResetPassword: async ({ user, url }) => {
-			const locale = isLocale(user.locale) ? user.locale : getLocale()
+			const locale = getUserLocale(user)
 			const branding = getBrandingText(appSettings_store.config.branding, locale)
 			await authEmail_send(
 				user.email,
@@ -62,7 +68,7 @@ export const auth = betterAuth({
 		sendOnSignUp: true,
 		autoSignInAfterVerification: true,
 		sendVerificationEmail: async ({ user, url }) => {
-			const locale = isLocale(user.locale) ? user.locale : getLocale()
+			const locale = getUserLocale(user)
 			const branding = getBrandingText(appSettings_store.config.branding, locale)
 			await authEmail_send(
 				user.email,
@@ -92,6 +98,7 @@ export const auth = betterAuth({
 		bearer(),
 		baleAuthPlugin(),
 		eitaaAuthPlugin(),
+		soroushAuthPlugin(),
 		...(building ? [] : [sveltekitCookies(getRequestEvent)]),
 	],
 })

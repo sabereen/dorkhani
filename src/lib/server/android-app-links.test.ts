@@ -11,9 +11,9 @@ const fingerprint = Array.from({ length: 32 }, (_, index) =>
 
 describe('Android App Links contract', () => {
 	it('normalizes and deduplicates certificate fingerprints', () => {
-		expect(parseAndroidCertificateFingerprints(`${fingerprint}, ${fingerprint.toUpperCase()}`)).toEqual([
-			fingerprint.toUpperCase(),
-		])
+		expect(
+			parseAndroidCertificateFingerprints(`${fingerprint}, ${fingerprint.toUpperCase()}`),
+		).toEqual([fingerprint.toUpperCase()])
 	})
 
 	it('rejects malformed certificate fingerprints', () => {

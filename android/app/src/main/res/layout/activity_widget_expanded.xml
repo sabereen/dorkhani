@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="14dp">
+
+    <TextView
+        android:id="@+id/widget_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/widget_empty"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:maxLines="2"
+        android:textSize="12sp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingEnd="8dp">
+            <TextView android:id="@+id/widget_offline_label" android:layout_width="match_parent" android:layout_height="wrap_content" android:maxLines="1" android:textSize="10sp" android:textStyle="bold" />
+            <TextView android:id="@+id/widget_offline_value" android:layout_width="match_parent" android:layout_height="wrap_content" android:ellipsize="end" android:maxLines="1" android:textSize="12sp" android:textStyle="bold" />
+            <TextView android:id="@+id/widget_offline_meta" android:layout_width="match_parent" android:layout_height="wrap_content" android:ellipsize="end" android:maxLines="1" android:textSize="9sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView android:id="@+id/widget_created_label" android:layout_width="match_parent" android:layout_height="wrap_content" android:maxLines="1" android:textSize="10sp" android:textStyle="bold" />
+            <TextView android:id="@+id/widget_created_value" android:layout_width="match_parent" android:layout_height="wrap_content" android:ellipsize="end" android:maxLines="1" android:textSize="12sp" android:textStyle="bold" />
+            <TextView android:id="@+id/widget_created_meta" android:layout_width="match_parent" android:layout_height="wrap_content" android:ellipsize="end" android:maxLines="1" android:textSize="9sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="5dp"
+        android:layout_weight="1"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingEnd="8dp">
+            <TextView android:id="@+id/widget_picked_label" android:layout_width="match_parent" android:layout_height="wrap_content" android:maxLines="1" android:textSize="10sp" android:textStyle="bold" />
+            <TextView android:id="@+id/widget_picked_value" android:layout_width="match_parent" android:layout_height="wrap_content" android:ellipsize="end" android:maxLines="1" android:textSize="12sp" android:textStyle="bold" />
+            <TextView android:id="@+id/widget_picked_meta" android:layout_width="match_parent" android:layout_height="wrap_content" android:ellipsize="end" android:maxLines="1" android:textSize="9sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView android:id="@+id/widget_zekr_label" android:layout_width="match_parent" android:layout_height="wrap_content" android:maxLines="1" android:textSize="10sp" android:textStyle="bold" />
+            <TextView android:id="@+id/widget_zekr_value" android:layout_width="match_parent" android:layout_height="wrap_content" android:ellipsize="end" android:maxLines="1" android:textSize="12sp" android:textStyle="bold" />
+            <TextView android:id="@+id/widget_zekr_meta" android:layout_width="match_parent" android:layout_height="wrap_content" android:ellipsize="end" android:maxLines="1" android:textSize="9sp" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

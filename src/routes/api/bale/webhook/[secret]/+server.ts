@@ -44,7 +44,9 @@ async function sendWelcome(chatId: string, locale: Locale) {
 			chat_id: chatId,
 			text: m.notification_welcome({ name: branding.name }, { locale }),
 			reply_markup: {
-				inline_keyboard: [[{ text: m.notification_open_app({}, { locale }), web_app: { url: appUrl } }]],
+				inline_keyboard: [
+					[{ text: m.notification_open_app({}, { locale }), web_app: { url: appUrl } }],
+				],
 			},
 		}),
 	})

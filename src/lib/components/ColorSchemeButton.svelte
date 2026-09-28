@@ -13,7 +13,7 @@
 	function handleClick() {
 		const editor = settings.edit()
 		editor.config.colorScheme = scheme
-		editor.commit()
+		void editor.commit()
 	}
 </script>
 

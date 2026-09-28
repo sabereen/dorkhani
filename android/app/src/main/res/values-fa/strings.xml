@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_description">خلاصه فعالیت‌های قرآنی شما</string>
+    <string name="widget_activity_title">خلاصه فعالیت‌ها</string>
+    <string name="widget_offline">ختم آفلاین</string>
+    <string name="widget_created">ساخته‌شده</string>
+    <string name="widget_picked">خوانده‌شده</string>
+    <string name="widget_zekr">ذکر</string>
+    <string name="widget_empty">برای شروع نخستین فعالیت، برنامه را باز کنید.</string>
+    <string name="widget_no_activity">—</string>
+    <string name="widget_offline_meta">دور %1$s · %2$s٪</string>
+    <string name="widget_range_meta">%1$s تا %2$s · %3$s</string>
+    <string name="widget_count_meta">%1$s مرتبه</string>
+</resources>

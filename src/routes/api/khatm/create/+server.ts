@@ -31,7 +31,9 @@ export const POST: RequestHandler = async (event) => {
 		return json({ errorMessage: 'عنوان اجباری است.' } satisfies CreateKhatmResult, { status: 400 })
 	}
 	if (!rangeTypes.has(rangeType as RangeType)) {
-		return json({ errorMessage: 'نوع بازه معتبر نیست.' } satisfies CreateKhatmResult, { status: 400 })
+		return json({ errorMessage: 'نوع بازه معتبر نیست.' } satisfies CreateKhatmResult, {
+			status: 400,
+		})
 	}
 
 	const reviewInput = { title, description }
@@ -42,11 +44,16 @@ export const POST: RequestHandler = async (event) => {
 		const warning = await aiKhatmReview_consumeWarning(aiReviewId, reviewInput)
 		if (!warning) {
 			return json(
-				{ errorMessage: 'نتیجهٔ بررسی منقضی شده است؛ دوباره تلاش کنید.' } satisfies CreateKhatmResult,
+				{
+					errorMessage: 'نتیجهٔ بررسی منقضی شده است؛ دوباره تلاش کنید.',
+				} satisfies CreateKhatmResult,
 				{ status: 409 },
 			)
 		}
-		aiResult = { status: 'warning', reason: warning.reason || 'عنوان یا توضیح ختم نیاز به اصلاح دارد.' }
+		aiResult = {
+			status: 'warning',
+			reason: warning.reason || 'عنوان یا توضیح ختم نیاز به اصلاح دارد.',
+		}
 		forcedReviewId = warning.id
 	} else {
 		const pendingReview = aiKhatmReview_review(reviewInput, {

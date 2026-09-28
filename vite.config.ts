@@ -12,6 +12,7 @@ export default defineConfig({
 		paraglideVitePlugin({
 			project: './project.inlang',
 			outdir: './src/lib/paraglide',
+			outputStructure: 'message-modules',
 			emitTsDeclarations: true,
 			strategy: ['cookie', 'custom-preference', 'url', 'baseLocale'],
 			trailingSlash: 'never',
@@ -32,6 +33,17 @@ export default defineConfig({
 
 	build: {
 		target: packageJson.browserslist.split(', ').map((b) => b.replaceAll('>=', '')),
+	},
+
+	// Takumi loads a platform-native renderer only inside server-side OG endpoints.
+	// Keeping it out of Vite's browser optimizer avoids startup stalls and prevents
+	// the native binding from being considered client code.
+	optimizeDeps: {
+		exclude: ['takumi-js', 'takumi-js/node', 'takumi-js/helpers/html'],
+	},
+
+	ssr: {
+		external: ['takumi-js', 'takumi-js/node', 'takumi-js/helpers/html'],
 	},
 
 	test: {

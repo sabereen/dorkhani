@@ -31,7 +31,8 @@ export const POST: RequestHandler = async (event) => {
 
 	const origin = env.ORIGIN || env.BETTER_AUTH_URL
 	const secret = env.BALE_WEBHOOK_SECRET
-	if (!origin) return json({ message: 'ORIGIN یا BETTER_AUTH_URL تنظیم نشده است.' }, { status: 400 })
+	if (!origin)
+		return json({ message: 'ORIGIN یا BETTER_AUTH_URL تنظیم نشده است.' }, { status: 400 })
 	if (!secret || Buffer.byteLength(secret) < 32) {
 		return json({ message: 'BALE_WEBHOOK_SECRET باید حداقل ۳۲ کاراکتر باشد.' }, { status: 400 })
 	}

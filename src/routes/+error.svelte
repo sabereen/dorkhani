@@ -85,7 +85,10 @@
 </script>
 
 <svelte:head>
-	<title>{page.status} | {technicalType}: {technicalMessage} | {page.data.branding?.name || getBrandingText(DEFAULT_BRANDING_CONFIG, getLocale()).name}</title>
+	<title
+		>{page.status} | {technicalType}: {technicalMessage} | {page.data.branding?.name ||
+			getBrandingText(DEFAULT_BRANDING_CONFIG, getLocale()).name}</title
+	>
 	<meta name="robots" content="noindex" />
 </svelte:head>
 
@@ -96,7 +99,10 @@
 	<div class="error-orb error-orb-two" aria-hidden="true"></div>
 
 	<div class="error-copy">
-		<div class="error-status" aria-label={m.error_code({ status: page.status.toLocaleString(localeTag()) })}>
+		<div
+			class="error-status"
+			aria-label={m.error_code({ status: page.status.toLocaleString(localeTag()) })}
+		>
 			<span aria-hidden="true"></span>
 			{m.error_code({ status: page.status.toLocaleString(localeTag()) })}
 		</div>
@@ -112,7 +118,7 @@
 			</a>
 			{#if isNotFound}
 				<button class="ui-btn ui-btn-outline ui-btn-lg" type="button" onclick={goBack}>
-					<IconArrow />
+					<IconArrow class="ltr:mirror" />
 					{m.common_back()}
 				</button>
 			{:else}

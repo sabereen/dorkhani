@@ -4,38 +4,39 @@
 	import IconHistory from '~icons/ic/round-history'
 	import HistoryKhatm from './history-khatm.svelte'
 	import HistoryPickedRange from './history-picked-range.svelte'
+	import * as m from '$lib/paraglide/messages.js'
 	import HistoryZekr from './history-zekr.svelte'
 </script>
 
-<PageTitle title="تاریخچه فعالیت‌های شما" />
+<PageTitle title={m.history_title()} />
 
-<Header title="تاریخچه فعالیت‌های شما" />
+<Header title={m.history_title()} />
 
 <div class="history-page">
 	<section class="history-intro">
 		<span class="history-intro-icon"><IconHistory /></span>
 		<div>
-			<h2>رد پای همراهی شما</h2>
-			<p>ختم‌هایی که ساخته‌اید، ذکرهایی که همراه شده‌اید و سهم‌های قرائت‌شده را اینجا می‌بینید.</p>
+			<h2>{m.history_heading()}</h2>
+			<p>{m.history_description()}</p>
 		</div>
 	</section>
 
 	<div class="history-grid">
-		<HistoryKhatm title="ختم‌های ساخته‌شده">
+		<HistoryKhatm title={m.history_created()}>
 			{#snippet fallback()}
-				<div class="history-empty">هنوز ختمی ایجاد نکرده‌اید.</div>
+				<div class="history-empty">{m.history_created_empty()}</div>
 			{/snippet}
 		</HistoryKhatm>
 
-		<HistoryZekr title="ختم‌های ذکر شما">
+		<HistoryZekr title={m.history_zekr()}>
 			{#snippet fallback()}
-				<div class="history-empty">هنوز ختم ذکری در سابقه‌ی شما نیست.</div>
+				<div class="history-empty">{m.history_zekr_empty()}</div>
 			{/snippet}
 		</HistoryZekr>
 
-		<HistoryPickedRange title="مشارکت‌های قرائت">
+		<HistoryPickedRange title={m.history_picked()}>
 			{#snippet fallback()}
-				<div class="history-empty">هنوز سهمی برای قرائت انتخاب نکرده‌اید.</div>
+				<div class="history-empty">{m.history_picked_empty()}</div>
 			{/snippet}
 		</HistoryPickedRange>
 	</div>

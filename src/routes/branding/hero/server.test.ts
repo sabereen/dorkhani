@@ -19,7 +19,9 @@ describe('branding hero endpoint', () => {
 			heroImage: new Uint8Array([1, 2, 3]),
 			heroImageMime: 'image/png',
 		})
-		const response = await GET({ request: new Request('http://localhost/branding/hero?v=1') } as never)
+		const response = await GET({
+			request: new Request('http://localhost/branding/hero?v=1'),
+		} as never)
 
 		expect(response.status).toBe(200)
 		expect(response.headers.get('content-type')).toBe('image/png')

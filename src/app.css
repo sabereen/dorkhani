@@ -1,5 +1,4 @@
 @import 'vazirmatn/misc/UI/Vazirmatn-UI-font-face.css';
 @import './lib/styles/tokens.css';
 @import './lib/styles/base.css';
-@import './lib/styles/layout.css';
-@import './lib/styles/components.css';
+@import './lib/styles/animations.css';

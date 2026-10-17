@@ -25,23 +25,3 @@
 
 <!-- eslint-disable-next-line svelte/no-at-html-tags -- SVGs are local static imports. -->
 <span class="ui-range-type-icon" aria-hidden="true">{@html icons[type]}</span>
-
-<style>
-	.ui-range-type-icon {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		color: inherit;
-	}
-
-	.ui-range-type-icon :global(svg) {
-		display: block;
-		width: 100%;
-		height: 100%;
-		fill: currentColor;
-	}
-
-	.ui-range-type-icon :global(svg[fill='none']) {
-		fill: none;
-	}
-</style>

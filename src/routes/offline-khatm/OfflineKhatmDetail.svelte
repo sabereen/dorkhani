@@ -185,12 +185,12 @@
 	}
 </script>
 
-<div class="offline-detail">
-	<section class="ui-khatm-hero offline-hero" aria-labelledby="offline-detail-title">
+<div class="ui-offline-detail">
+	<section class="ui-khatm-hero ui-offline-hero" aria-labelledby="offline-detail-title">
 		<div class="ui-khatm-hero-copy">
 			<div class="ui-khatm-eyebrow"><IconBook /><span>{m.offline_detail_eyebrow()}</span></div>
 			<h1 id="offline-detail-title" class="ui-khatm-title">{khatm.title}</h1>
-			<div class="offline-badges">
+			<div class="ui-offline-badges">
 				<span class="ui-badge ui-badge-info"
 					><RangeTypeIcon type={khatm.rangeType} />{rangeTypeTitle}</span
 				>
@@ -199,8 +199,10 @@
 						>{m.offline_round({ count: khatm.roundNumber.toLocaleString(localeTag()) })}</span
 					>{/if}
 			</div>
-			{#if khatm.description}<p class="offline-description" dir="auto">{khatm.description}</p>{/if}
-			<div class="offline-actions">
+			{#if khatm.description}<p class="ui-offline-description" dir="auto">
+					{khatm.description}
+				</p>{/if}
+			<div class="ui-offline-actions">
 				<button
 					class="ui-btn ui-btn-ghost ui-btn-sm"
 					type="button"
@@ -222,7 +224,7 @@
 		</div>
 		<div class="ui-khatm-progress-card">
 			<strong>{m.offline_progress_round()}</strong>
-			<div class="offline-progress-value">{formatPercent(khatm.pageProgress)}</div>
+			<div class="ui-offline-progress-value">{formatPercent(khatm.pageProgress)}</div>
 			<progress
 				class="ui-progress ui-progress-success"
 				max="100"
@@ -237,7 +239,7 @@
 	{#if actionError}<div class="ui-alert ui-alert-error" role="alert">{actionError}</div>{/if}
 
 	{#if parts.length}
-		<section class="ui-card ui-card-bordered offline-parts">
+		<section class="ui-card ui-card-bordered ui-offline-parts">
 			<div class="ui-card-body">
 				<h2>{m.offline_read_ranges()}</h2>
 				<ul class="ui-list">
@@ -252,7 +254,7 @@
 	{/if}
 
 	{#if khatm.completedRounds.length}
-		<section class="ui-card ui-card-bordered offline-round-history">
+		<section class="ui-card ui-card-bordered ui-offline-round-history">
 			<div class="ui-card-body">
 				<h2>{m.offline_completed_rounds()}</h2>
 				<ul class="ui-list">
@@ -275,7 +277,7 @@
 	{/if}
 
 	{#if khatm.status === 'completed'}
-		<section class="ui-alert ui-alert-success offline-completed">
+		<section class="ui-alert ui-alert-success ui-offline-completed">
 			<IconCheck />
 			<div>
 				<h2>
@@ -299,7 +301,7 @@
 			<div class="ui-card-body">
 				<h2>{m.offline_next_share()}</h2>
 				<p class="ui-text-muted">{m.offline_next_share_description()}</p>
-				<div class="offline-ayah-actions">
+				<div class="ui-offline-ayah-actions">
 					<button
 						class="ui-btn ui-btn-primary ui-btn-lg"
 						type="button"
@@ -320,7 +322,7 @@
 		</section>
 	{:else}
 		{#if khatm.rangeType === 'free'}
-			<section class="offline-view-switch" aria-label={m.offline_view_switch()}>
+			<section class="ui-offline-view-switch" aria-label={m.offline_view_switch()}>
 				<div>
 					<button
 						class={['ui-btn', view === 'wizard' ? 'ui-btn-primary' : 'ui-btn-ghost']}
@@ -348,7 +350,7 @@
 			</header>
 
 			{#if khatm.rangeType === 'free'}
-				<div class="offline-unit-picker" role="group" aria-label={m.offline_unit_size()}>
+				<div class="ui-offline-unit-picker" role="group" aria-label={m.offline_unit_size()}>
 					{#each ['page', 'hizbQuarter', 'surah', 'juz'] as type}
 						<button
 							class={[
@@ -366,10 +368,13 @@
 				</div>
 			{/if}
 
-			<div class:offline-range-grid={view === 'grid'} class:offline-range-list={view !== 'grid'}>
+			<div
+				class:ui-offline-range-grid={view === 'grid'}
+				class:ui-offline-range-list={view !== 'grid'}
+			>
 				{#each visibleRangeItems as item (item.range.start + ':' + item.range.end)}
 					{@const completed = item.available.length === 0}
-					<article class="offline-range-item" class:offline-range-item-completed={completed}>
+					<article class="ui-offline-range-item" class:ui-offline-range-item-completed={completed}>
 						<div>
 							<strong>{item.range.title || item.range.getTitleSurahOrinted()}</strong>
 							<small
@@ -385,7 +390,7 @@
 								><IconCheck />{m.offline_complete_badge()}</span
 							>
 						{:else}
-							<div class="offline-range-actions">
+							<div class="ui-offline-range-actions">
 								{#each item.available as range (range.start + ':' + range.end)}
 									<button
 										class="ui-btn ui-btn-soft ui-btn-sm"
@@ -410,8 +415,8 @@
 <Modal bind:open={confirmOpen} contentClass="offline-confirm-dialog">
 	{#if selected}
 		{#if picked}
-			<div class="offline-dialog-content">
-				<IconCheck class="offline-dialog-icon" />
+			<div class="ui-offline-dialog-content">
+				<IconCheck class="ui-offline-dialog-icon" />
 				<h2>{m.offline_range_saved()}</h2>
 				<p>{selected.getTitle()}</p>
 				<button
@@ -426,8 +431,8 @@
 				>
 			</div>
 		{:else}
-			<div class="offline-dialog-content">
-				<IconBook class="offline-dialog-icon" />
+			<div class="ui-offline-dialog-content">
+				<IconBook class="ui-offline-dialog-icon" />
 				<h2>{m.offline_mark_read()}</h2>
 				<p>{selected.getTitle()}</p>
 				{#if actionError}<div class="ui-alert ui-alert-error">{actionError}</div>{/if}
@@ -449,13 +454,13 @@
 	{/if}
 </Modal>
 
-<Modal bind:open={editOpen} contentClass="offline-edit-dialog">
+<Modal bind:open={editOpen} contentClass="ui-offline-edit-dialog">
 	<OfflineKhatmForm {khatm} onSaved={savedEdit} onCancel={() => (editOpen = false)} />
 </Modal>
 
 <Modal bind:open={deleteOpen} contentClass="offline-confirm-dialog">
-	<div class="offline-dialog-content">
-		<IconDelete class="offline-dialog-icon offline-dialog-icon-danger" />
+	<div class="ui-offline-dialog-content">
+		<IconDelete class="ui-offline-dialog-icon ui-offline-dialog-icon-danger" />
 		<h2>{m.offline_delete_title()}</h2>
 		<p>{m.offline_delete_description()}</p>
 		<button
@@ -474,8 +479,8 @@
 </Modal>
 
 <Modal bind:open={stopOpen} contentClass="offline-confirm-dialog">
-	<div class="offline-dialog-content">
-		<IconStop class="offline-dialog-icon offline-dialog-icon-danger" />
+	<div class="ui-offline-dialog-content">
+		<IconStop class="ui-offline-dialog-icon ui-offline-dialog-icon-danger" />
 		<h2>{m.offline_stop_title()}</h2>
 		<p>{m.offline_stop_description()}</p>
 		<button
@@ -492,165 +497,3 @@
 		>
 	</div>
 </Modal>
-
-<style>
-	.offline-detail > * + * {
-		margin-top: 1rem;
-	}
-	.offline-hero {
-		display: grid;
-		grid-template-columns: minmax(0, 1.5fr) minmax(15rem, 0.75fr);
-		grid-gap: 1rem;
-	}
-	.offline-badges,
-	.offline-actions,
-	.offline-unit-picker,
-	.offline-range-actions,
-	.offline-ayah-actions {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-	}
-	.offline-badges > * + *,
-	.offline-actions > * + *,
-	.offline-unit-picker > * + *,
-	.offline-range-actions > * + *,
-	.offline-ayah-actions > * + * {
-		margin-inline-start: 0.5rem;
-	}
-	.offline-badges,
-	.offline-actions {
-		margin-top: 0.75rem;
-	}
-	.offline-description {
-		color: var(--ui-color-text-muted);
-		line-height: 1.9;
-	}
-	.offline-progress-value {
-		margin: 0.75rem 0;
-		font-size: 2rem;
-		font-weight: 950;
-	}
-	.offline-parts h2 {
-		margin-top: 0;
-	}
-	.offline-round-history h2 {
-		margin-top: 0;
-	}
-	.offline-parts :global(.ui-list-row),
-	.offline-round-history :global(.ui-list-row) {
-		display: flex;
-		align-items: center;
-	}
-	.offline-parts :global(.ui-list-row > * + *),
-	.offline-round-history :global(.ui-list-row > * + *) {
-		margin-inline-start: 0.5rem;
-	}
-	.offline-round-history time {
-		margin-inline-start: auto;
-		color: var(--ui-color-text-muted);
-	}
-	.offline-completed {
-		display: flex;
-		align-items: center;
-	}
-	.offline-completed > * + * {
-		margin-inline-start: 0.75rem;
-	}
-	.offline-completed h2,
-	.offline-completed p {
-		margin: 0;
-	}
-	.offline-view-switch {
-		display: flex;
-		justify-content: flex-end;
-	}
-	.offline-unit-picker {
-		margin: 1rem 0;
-	}
-	.offline-range-list,
-	.offline-range-grid {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr);
-		grid-gap: 0.6rem;
-	}
-	.offline-range-grid {
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-	}
-	.offline-range-item {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 0.8rem;
-		border: 1px solid var(--ui-color-border);
-		border-radius: var(--ui-radius-md);
-		background: var(--ui-color-surface-raised);
-	}
-	.offline-range-item > * + * {
-		margin-inline-start: 0.75rem;
-	}
-	.offline-range-item strong,
-	.offline-range-item small {
-		display: block;
-	}
-	.offline-range-item small {
-		margin-top: 0.2rem;
-		color: var(--ui-color-text-muted);
-	}
-	.offline-range-item-completed {
-		background: var(--ui-color-surface-muted);
-	}
-	.offline-dialog-content {
-		text-align: center;
-	}
-	.offline-dialog-content h2 {
-		margin: 0.75rem 0 0;
-	}
-	.offline-dialog-content p {
-		color: var(--ui-color-text-muted);
-		line-height: 1.8;
-	}
-	.offline-dialog-content :global(.ui-btn) + :global(.ui-btn) {
-		margin-top: 0.5rem;
-	}
-	:global(.offline-dialog-icon) {
-		width: 3rem;
-		height: 3rem;
-		color: var(--ui-color-success);
-	}
-	:global(.offline-dialog-icon-danger) {
-		color: var(--ui-color-error);
-	}
-	:global(.offline-edit-dialog) {
-		width: 95vw;
-		max-width: 44rem;
-	}
-	@media (max-width: 767px) {
-		.offline-hero,
-		.offline-range-grid {
-			grid-template-columns: minmax(0, 1fr);
-		}
-		.offline-range-item {
-			align-items: stretch;
-			flex-direction: column;
-		}
-		.offline-range-item > * + * {
-			margin-top: 0.65rem;
-			margin-inline-start: 0;
-		}
-		.offline-actions,
-		.offline-unit-picker,
-		.offline-range-actions,
-		.offline-ayah-actions {
-			align-items: stretch;
-			flex-direction: column;
-		}
-		.offline-actions > * + *,
-		.offline-unit-picker > * + *,
-		.offline-range-actions > * + *,
-		.offline-ayah-actions > * + * {
-			margin-top: 0.5rem;
-			margin-inline-start: 0;
-		}
-	}
-</style>

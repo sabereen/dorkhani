@@ -201,27 +201,27 @@
 <Modal bind:open contentClass="ui-khatm-share-dialog" labelledBy="khatm-share-title">
 	<button
 		type="button"
-		class="ui-btn ui-btn-icon ui-btn-ghost share-close"
+		class="ui-btn ui-btn-icon ui-btn-ghost ui-share-close"
 		onclick={() => (open = false)}
 		aria-label={m.common_close()}
 	>
 		<IconClose />
 	</button>
 
-	<header class="share-heading">
-		<div class="share-heading-icon" aria-hidden="true"><IconShare /></div>
+	<header class="ui-share-heading">
+		<div class="ui-share-heading-icon" aria-hidden="true"><IconShare /></div>
 		<div>
 			<h2 id="khatm-share-title">{m.share_dialog_title()}</h2>
 			<p>{m.share_dialog_description()}</p>
 		</div>
 	</header>
 
-	<div class="share-layout">
-		<div class="share-preview" aria-live="polite">
+	<div class="ui-share-layout">
+		<div class="ui-share-preview" aria-live="polite">
 			{#if previewUrl}
 				<img src={previewUrl} alt={m.share_preview_alt({ title: khatm.title })} />
 			{:else}
-				<div class="share-preview-placeholder">
+				<div class="ui-share-preview-placeholder">
 					<div>
 						{#if generating}
 							<span class="ui-spinner" aria-hidden="true"></span>
@@ -238,11 +238,11 @@
 			{/if}
 		</div>
 
-		<div class="share-controls">
-			<div class="share-primary-actions">
+		<div class="ui-share-controls">
+			<div class="ui-share-primary-actions">
 				{#if shareSupported}
 					<button
-						class="ui-btn ui-btn-primary ui-btn-lg share-action-main"
+						class="ui-btn ui-btn-primary ui-btn-lg ui-share-action-main"
 						type="button"
 						onclick={share}
 					>
@@ -272,11 +272,11 @@
 				</button>
 			</div>
 
-			<section class="share-links" aria-label={m.share_links_title()}>
-				<p class="share-links-title">{m.share_links_title()}</p>
-				<div class="share-link-row">
-					<span class="share-link-icon" aria-hidden="true"><IconLink /></span>
-					<div class="share-link-copy">
+			<section class="ui-share-links" aria-label={m.share_links_title()}>
+				<p class="ui-share-links-title">{m.share_links_title()}</p>
+				<div class="ui-share-link-row">
+					<span class="ui-share-link-icon" aria-hidden="true"><IconLink /></span>
+					<div class="ui-share-link-copy">
 						<strong>{m.share_normal_link()}</strong>
 						<a href={khatm.publicLink} target="_blank" rel="noopener" dir="ltr">
 							{khatm.publicLink}
@@ -293,9 +293,9 @@
 				</div>
 
 				{#if platformUrl}
-					<div class="share-link-row share-link-row-direct">
-						<span class="share-link-icon" aria-hidden="true"><IconShare /></span>
-						<div class="share-link-copy">
+					<div class="ui-share-link-row ui-share-link-row-direct">
+						<span class="ui-share-link-icon" aria-hidden="true"><IconShare /></span>
+						<div class="ui-share-link-copy">
 							<strong>{m.share_direct_link({ provider: platformName })}</strong>
 							<a href={platformUrl} target="_blank" rel="noopener" dir="ltr">
 								{platformUrl}
@@ -436,222 +436,3 @@
 		</div>
 	</article>
 </div>
-
-<style>
-	:global(.ui-khatm-share-dialog) {
-		max-width: 62rem;
-		padding: 1.25rem;
-	}
-
-	.share-close {
-		position: absolute;
-		top: 0.75rem;
-		left: 0.75rem;
-	}
-
-	:global(html[dir='ltr']) .share-close {
-		left: auto;
-		right: 0.75rem;
-	}
-
-	.share-heading {
-		display: flex;
-		align-items: center;
-		margin-bottom: 1rem;
-		padding-inline-end: 2.75rem;
-	}
-
-	.share-heading > * + * {
-		margin-inline-start: 0.8rem;
-	}
-
-	.share-heading-icon {
-		display: flex;
-		width: 3rem;
-		height: 3rem;
-		flex: 0 0 3rem;
-		align-items: center;
-		justify-content: center;
-		border-radius: 1rem;
-		background: var(--ui-color-primary-soft);
-		color: var(--ui-color-primary);
-		font-size: 1.45rem;
-	}
-
-	.share-heading h2,
-	.share-heading p,
-	.share-preview-placeholder p {
-		margin: 0;
-	}
-
-	.share-heading h2 {
-		font-size: 1.15rem;
-		font-weight: 900;
-	}
-
-	.share-heading p {
-		margin-top: 0.15rem;
-		color: var(--ui-color-text-muted);
-		font-size: 0.76rem;
-		line-height: 1.7;
-	}
-
-	.share-layout {
-		display: grid;
-		grid-template-columns: minmax(0, 1.45fr) minmax(18rem, 0.8fr);
-		grid-gap: 1rem;
-		align-items: start;
-	}
-
-	.share-preview {
-		min-width: 0;
-		border: 1px solid var(--ui-color-border);
-		border-radius: var(--ui-radius-lg);
-		background: var(--ui-color-surface-inset);
-		box-shadow: var(--ui-shadow-md);
-		overflow: hidden;
-	}
-
-	.share-preview img {
-		display: block;
-		width: 100%;
-		height: auto;
-	}
-
-	.share-preview-placeholder {
-		position: relative;
-		padding-top: 56.25%;
-	}
-
-	.share-preview-placeholder > div {
-		position: absolute;
-		top: 50%;
-		left: 1rem;
-		right: 1rem;
-		color: var(--ui-color-text-muted);
-		text-align: center;
-		transform: translateY(-50%);
-	}
-
-	.share-preview-placeholder p {
-		margin-top: 0.55rem;
-		margin-bottom: 0.65rem;
-		font-size: 0.78rem;
-	}
-
-	.share-controls {
-		padding: 0.85rem;
-		border: 1px solid var(--ui-color-border);
-		border-radius: var(--ui-radius-lg);
-		background: var(--ui-color-surface-muted);
-	}
-
-	.share-primary-actions {
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		grid-gap: 0.55rem;
-	}
-
-	.share-action-main {
-		grid-column: 1 / -1;
-	}
-
-	.share-links {
-		margin-top: 0.8rem;
-		padding-top: 0.75rem;
-		border-top: 1px solid var(--ui-color-border);
-	}
-
-	.share-links-title {
-		margin: 0 0 0.45rem;
-		color: var(--ui-color-text-muted);
-		font-size: 0.68rem;
-		font-weight: 800;
-	}
-
-	.share-link-row {
-		display: grid;
-		grid-template-columns: auto minmax(0, 1fr) auto;
-		grid-gap: 0.65rem;
-		align-items: center;
-		padding: 0.65rem;
-		border: 1px solid var(--ui-color-border);
-		border-radius: var(--ui-radius-md);
-		background: var(--ui-color-surface-muted);
-	}
-
-	.share-link-row + .share-link-row {
-		margin-top: 0.5rem;
-	}
-
-	.share-link-row-direct {
-		border-inline-start: 0.2rem solid var(--ui-color-primary);
-		background: var(--ui-color-primary-softer);
-	}
-
-	.share-link-icon {
-		display: flex;
-		width: 2.25rem;
-		height: 2.25rem;
-		align-items: center;
-		justify-content: center;
-		border-radius: 9999px;
-		background: var(--ui-color-primary-soft);
-		color: var(--ui-color-primary);
-	}
-
-	.share-link-copy {
-		min-width: 0;
-	}
-
-	.share-link-copy strong,
-	.share-link-copy a {
-		display: block;
-	}
-
-	.share-link-copy strong {
-		font-size: 0.76rem;
-	}
-
-	.share-link-copy a {
-		margin-top: 0.1rem;
-		color: var(--ui-color-primary);
-		font-size: 0.68rem;
-		line-height: 1.6;
-		word-break: break-all;
-	}
-
-	@media (max-width: 700px) {
-		.share-layout {
-			grid-template-columns: minmax(0, 1fr);
-		}
-
-		.share-controls {
-			padding: 0.85rem;
-		}
-	}
-
-	@media (max-width: 520px) {
-		:global(.ui-khatm-share-dialog) {
-			padding: 0.9rem;
-		}
-
-		.share-heading-icon {
-			width: 2.6rem;
-			height: 2.6rem;
-			flex-basis: 2.6rem;
-		}
-
-		.share-primary-actions {
-			grid-template-columns: minmax(0, 1fr);
-		}
-
-		.share-action-main {
-			grid-column: auto;
-		}
-
-		.share-link-row {
-			padding: 0.6rem;
-		}
-	}
-</style>

@@ -242,13 +242,13 @@
 	</section>
 
 	<section
-		class="ui-card ui-card-bordered admin-featured-panel"
+		class="ui-card ui-card-bordered ui-admin-featured-panel"
 		aria-labelledby="admin-featured-title"
 	>
 		<div class="ui-card-body">
-			<div class="admin-featured-heading">
+			<div class="ui-admin-featured-heading">
 				<div>
-					<span class="admin-featured-kicker"><IconStar /> ویترین دائمی صفحهٔ اصلی</span>
+					<span class="ui-admin-featured-kicker"><IconStar /> ویترین دائمی صفحهٔ اصلی</span>
 					<h2 id="admin-featured-title" class="ui-card-title">ختم‌های شاخص</h2>
 					<p>حداکثر شش ختم عمومی و نامحدود را انتخاب و ترتیب نمایش آن‌ها را مشخص کنید.</p>
 				</div>
@@ -258,7 +258,7 @@
 			</div>
 
 			{#if featuredLoading}
-				<div class="admin-featured-loading" role="status">
+				<div class="ui-admin-featured-loading" role="status">
 					<span class="ui-spinner"></span>
 					در حال دریافت ختم‌های شاخص…
 				</div>
@@ -268,7 +268,7 @@
 					<span>هنوز ختمی انتخاب نشده است؛ از زبانهٔ «تأیید شده» یک ختم دائمی را برگزینید.</span>
 				</div>
 			{:else}
-				<ol class="ui-khatm-card-list admin-featured-list">
+				<ol class="ui-khatm-card-list ui-admin-featured-list">
 					{#each featuredItems as item, index (item.khatm.id)}
 						<li>
 							<KhatmListCard
@@ -311,7 +311,7 @@
 				</ol>
 			{/if}
 
-			<p class="admin-featured-message" aria-live="polite">{featuredMessage}</p>
+			<p class="ui-admin-featured-message" aria-live="polite">{featuredMessage}</p>
 		</div>
 	</section>
 
@@ -447,85 +447,3 @@
 		</div>
 	</section>
 </div>
-
-<style>
-	.admin-featured-panel {
-		margin-top: 1rem;
-		border-color: var(--ui-color-border-strong);
-		background: linear-gradient(
-			145deg,
-			var(--ui-color-warning-soft),
-			var(--ui-color-surface) 18rem
-		);
-	}
-
-	.admin-featured-heading {
-		display: flex;
-		align-items: flex-start;
-		justify-content: space-between;
-		min-width: 0;
-		flex-wrap: wrap;
-	}
-
-	.admin-featured-heading > div {
-		min-width: 0;
-		flex: 1 1 14rem;
-	}
-
-	.admin-featured-heading > .ui-badge {
-		flex: 0 0 auto;
-		margin-top: 0.25rem;
-	}
-
-	.admin-featured-heading > * + * {
-		margin-inline-start: 1rem;
-	}
-
-	.admin-featured-kicker {
-		display: flex;
-		align-items: center;
-		color: var(--ui-color-warning);
-		font-size: 0.76rem;
-		font-weight: 900;
-	}
-
-	.admin-featured-kicker :global(svg) {
-		width: 1rem;
-		height: 1rem;
-		margin-inline-end: 0.35rem;
-	}
-
-	.admin-featured-heading h2 {
-		margin-top: 0.35rem;
-	}
-
-	.admin-featured-heading p,
-	.admin-featured-message {
-		color: var(--ui-color-text-muted);
-		font-size: 0.82rem;
-	}
-
-	.admin-featured-heading p {
-		margin: 0.3rem 0 0;
-	}
-
-	.admin-featured-list {
-		margin-top: 1rem;
-	}
-
-	.admin-featured-loading {
-		display: flex;
-		align-items: center;
-		min-height: 4rem;
-		color: var(--ui-color-text-muted);
-	}
-
-	.admin-featured-loading > :global(*) + :global(*) {
-		margin-inline-start: 0.5rem;
-	}
-
-	.admin-featured-message {
-		min-height: 1.25rem;
-		margin: 0.75rem 0 0;
-	}
-</style>

@@ -37,8 +37,8 @@
 	})
 </script>
 
-<div class="offline-reading">
-	<div class="offline-reading-toolbar">
+<div class="ui-offline-reading">
+	<div class="ui-offline-reading-toolbar">
 		<button class="ui-btn ui-btn-ghost" type="button" onclick={onBack}
 			><IconBack />{m.offline_reading_back()}</button
 		>
@@ -57,23 +57,3 @@
 		{m.offline_reading_back_page()}
 	</button>
 </div>
-
-<style>
-	.offline-reading {
-		width: 100%;
-		max-width: 52rem;
-		margin-inline-start: auto;
-		margin-inline-end: auto;
-	}
-
-	.offline-reading-toolbar {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		margin-bottom: 1rem;
-	}
-
-	.offline-reading-toolbar > * + * {
-		margin-inline-start: 0.75rem;
-	}
-</style>

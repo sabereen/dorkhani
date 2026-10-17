@@ -1,3 +1,5 @@
+/** @unocss-include */
+
 import type { Action } from 'svelte/action'
 import { formatNumber } from '$lib/i18n/format'
 import * as m from '$lib/paraglide/messages.js'

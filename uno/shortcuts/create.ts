@@ -1,0 +1,128 @@
+import type { UiShortcut } from '../types'
+
+export default [
+	['ui-add-shell', '[&&]:(w-full max-w-176 ms-auto me-auto)'],
+	['ui-add-ai-warning-dialog', '[&&_h2]:(mt-0)'],
+	['ui-add-ai-warning-dialog', '[&&_p]:(mt-0)'],
+	['ui-add-ai-warning-dialog', '[&&_p]:(leading-[1.8])'],
+	['ui-add-ai-warning-actions', '[&&]:(flex justify-start mt-4)'],
+	['ui-add-ai-warning-actions', '[&&>*+*]:(ms-2)'],
+	[
+		'ui-add-intro',
+		'[&&]:(mb-[0.85rem] p-[1.1rem] [border:1px_solid_var(--ui-color-border)] rounded-ui-lg [background:linear-gradient(_135deg,_var(--ui-color-primary-softer),_var(--ui-color-surface-raised)_62%,_var(--ui-color-accent-soft)_)] shadow-ui-sm ui-row)',
+	],
+	['ui-add-intro', '[&&>*+*]:(ms-4)'],
+	[
+		'ui-add-intro-icon',
+		'[&&]:(w-[3.35rem] h-[3.35rem] [flex:0_0_3.35rem] rounded-[1.25rem] [border:1px_solid_var(--ui-color-accent)] surface-accent-soft text-ui-accent text-[1.7rem] shadow-ui-sm [transform:rotate(-4deg)] center)',
+	],
+	['ui-add-intro', '[&&_h2]:(m-0)'],
+	['ui-add-intro', '[&&_p]:(m-0)'],
+	['ui-add-section-heading', '[&&_h3]:(m-0)'],
+	['ui-add-section-heading', '[&&_p]:(m-0)'],
+	['ui-add-submit', '[&&_p]:(m-0)'],
+	['ui-add-intro', '[&&_h2]:(mt-[0.1rem] text-[1.25rem] font-900)'],
+	[
+		'ui-add-intro',
+		'[&&>div:last-child>p:last-child]:(mt-[0.2rem] text-ui-text-muted text-[0.8rem] leading-[1.7])',
+	],
+	['ui-add-eyebrow', '[&&]:(text-ui-primary text-[0.72rem] font-800)'],
+	[
+		'ui-add-form',
+		'[&&]:(border-ui-control-border [border-top:3px_solid_var(--ui-color-primary)] surface-surface-raised shadow-ui-md)',
+	],
+	['ui-add-form', '[&&_.ui-card-body]:(p-0)'],
+	['ui-add-section', '[&&]:(p-[1.15rem] surface-surface-raised)'],
+	['ui-add-section', '[&&+.ui-add-section]:([border-top:1px_solid_var(--ui-color-border)])'],
+	['ui-add-section-heading', '[&&]:(flex items-start mb-4)'],
+	['ui-add-section-heading', '[&&>*+*]:(ms-[0.6rem])'],
+	[
+		'ui-add-step',
+		'[&&]:(w-[1.8rem] h-[1.8rem] [flex:0_0_1.8rem] rounded-[0.7rem] surface-primary-soft text-ui-primary text-[0.8rem] font-900 [box-shadow:inset_0_0_0_1px_var(--ui-color-border)] center)',
+	],
+	['ui-add-section', '[&&:nth-of-type(2)_.ui-add-step]:(surface-info-soft text-ui-info)'],
+	['ui-add-section', '[&&:nth-of-type(3)_.ui-add-step]:(surface-accent-soft text-ui-accent)'],
+	['ui-add-section-heading', '[&&_h3]:(text-[1rem] font-900)'],
+	[
+		'ui-add-section-heading',
+		'[&&_p]:(mt-[0.1rem] text-ui-text-muted text-[0.75rem] leading-[1.6])',
+	],
+	['ui-add-fields', '[&&]:(ui-grid gap-[0.35rem])'],
+	['ui-add-fields', '[&&_.ui-field-label]:(text-ui-text-soft text-[0.76rem])'],
+	['ui-add-fields', '[&&_.ui-input]:(rounded-[0.9rem])'],
+	['ui-add-fields', '[&&_.ui-textarea]:(rounded-[0.9rem])'],
+	['ui-add-fields', '[&&_.ui-input]:(h-13)'],
+	['ui-add-fields', '[&&_.ui-textarea]:(min-h-24)'],
+	[
+		'ui-add-optional',
+		'[&&]:(ms-[0.45rem] py-[0.1rem] ps-[0.4rem] pe-[0.4rem] rounded-full surface-accent-soft text-ui-accent text-[0.65rem] font-800)',
+	],
+	[
+		'ui-add-form',
+		'[&&_.ui-range-type-picker-option]:(border-ui-control-border surface-control-surface shadow-ui-inset)',
+	],
+	[
+		'ui-add-form',
+		'[&&_.ui-range-type-picker-option:hover]:(border-ui-primary surface-primary-softer)',
+	],
+	[
+		'ui-add-form',
+		"[&&_.ui-range-type-picker-option[data-selected='true']]:(surface-primary-softer)",
+	],
+	[
+		'ui-add-form',
+		'[&&_.ui-range-type-picker-icon]:([border:1px_solid_var(--ui-color-border)] surface-surface-muted)',
+	],
+	[
+		'ui-add-form',
+		"[&&_.ui-range-type-picker-option[data-selected='true']_.ui-range-type-picker-icon]:(border-ui-primary surface-primary)",
+	],
+	['ui-add-choice-grid', '[&&]:(ui-grid gap-2)'],
+	[
+		'ui-add-choice',
+		'[&&]:(p-[0.7rem] [border:1px_solid_var(--ui-color-control-border)] rounded-ui-md surface-control-surface shadow-ui-inset cursor-pointer [transition:border-color_160ms_ease,_background-color_160ms_ease,_box-shadow_160ms_ease] ui-row)',
+	],
+	[
+		'ui-add-series',
+		'[&&]:(p-[0.7rem] [border:1px_solid_var(--ui-color-control-border)] rounded-ui-md surface-control-surface shadow-ui-inset cursor-pointer [transition:border-color_160ms_ease,_background-color_160ms_ease,_box-shadow_160ms_ease] ui-row)',
+	],
+	['ui-add-choice', '[&&:hover]:(border-ui-primary surface-primary-softer)'],
+	['ui-add-series', '[&&:hover]:(border-ui-primary surface-primary-softer)'],
+	[
+		'ui-add-choice',
+		"[&&[data-selected='true']]:(border-ui-primary surface-primary-softer [box-shadow:0_0_0_2px_var(--ui-color-focus)])",
+	],
+	[
+		'ui-add-series',
+		"[&&[data-selected='true']]:(border-ui-primary surface-primary-softer [box-shadow:0_0_0_2px_var(--ui-color-focus)])",
+	],
+	['ui-add-choice', '[&&>*+*]:(ms-[0.55rem])'],
+	['ui-add-series', '[&&>*+*]:(ms-[0.55rem])'],
+	[
+		'ui-add-choice-icon',
+		'[&&]:(w-8 h-8 [flex:0_0_2rem] rounded-[0.7rem] [border:1px_solid_var(--ui-color-border)] surface-surface-muted text-ui-primary text-[1.05rem] center)',
+	],
+	[
+		'ui-add-choice',
+		"[&&[data-selected='true']_.ui-add-choice-icon]:(border-ui-primary surface-primary text-ui-on-primary shadow-ui-sm)",
+	],
+	[
+		'ui-add-series',
+		"[&&[data-selected='true']_.ui-add-choice-icon]:(border-ui-primary surface-primary text-ui-on-primary shadow-ui-sm)",
+	],
+	['ui-add-choice-copy', '[&&]:(min-w-0 [flex:1_1_auto] ui-stack)'],
+	['ui-add-choice-copy', '[&&_strong]:(text-[0.85rem] font-900)'],
+	['ui-add-choice-copy', '[&&_small]:(mt-[0.1rem] text-ui-text-muted text-[0.7rem] leading-[1.6])'],
+	['ui-add-series', '[&&]:(mt-2)'],
+	[
+		'ui-add-submit',
+		'[&&]:(p-4 [border-top:1px_solid_var(--ui-color-border)] surface-surface-muted)',
+	],
+	['ui-add-submit', '[&&_.ui-btn-primary]:([box-shadow:0_8px_22px_var(--ui-color-focus)])'],
+	['ui-add-submit', '[&&_p]:(mb-2 text-[0.72rem] text-center)'],
+	['ui-add-section', '[@media(min-width:640px)]:[&&]:(p-[1.35rem])'],
+	['ui-add-choice-grid', '[@media(min-width:640px)]:[&&]:(grid-cols-2)'],
+	['ui-add-submit', '[@media(min-width:640px)]:[&&]:(pt-4 ps-[1.2rem] pe-[1.2rem] pb-[1.2rem])'],
+	['ui-add-intro-icon', '[@media(max-width:420px)]:[&&]:(w-13 h-13 basis-13 text-[1.6rem])'],
+	['ui-add-intro', '[@media(max-width:420px)]:[&&_h2]:(text-[1.15rem])'],
+] satisfies UiShortcut[]

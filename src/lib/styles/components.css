@@ -8598,7 +8598,6 @@ html[dir='ltr'] .ui-khatm-range-search > div > svg {
 .ui-khatm-commitment {
 	position: relative;
 	display: flex;
-	min-height: 5.4rem;
 	align-items: center;
 	padding: 0.85rem;
 	border: 1px solid var(--ui-color-border);
@@ -8622,15 +8621,9 @@ html[dir='ltr'] .ui-khatm-range-search > div > svg {
 	transform: translateY(-1px);
 }
 
-.ui-khatm-commitment:hover .ui-khatm-commitment-icon,
-.ui-khatm-commitment:hover .ui-khatm-commitment-meta {
+.ui-khatm-commitment:hover .ui-khatm-commitment-icon {
 	background: var(--ui-color-surface-raised);
 	box-shadow: inset 0 0 0 1px var(--ui-color-border);
-}
-
-.ui-khatm-commitment:hover .ui-khatm-commitment-copy > span:last-child,
-.ui-khatm-commitment:hover .ui-khatm-commitment-meta {
-	color: var(--ui-color-text-soft);
 }
 
 .ui-khatm-commitment:active {
@@ -8695,36 +8688,9 @@ html[dir='ltr'] .ui-khatm-range-search > div > svg {
 }
 
 .ui-khatm-commitment-title {
-	display: flex !important;
-	align-items: center;
-	flex-wrap: wrap;
-}
-
-.ui-khatm-commitment-title > * + * {
-	margin-inline-start: 0.45rem;
-}
-
-.ui-khatm-commitment-title strong {
+	display: block;
 	font-size: 0.9rem;
 	font-weight: 950;
-}
-
-.ui-khatm-commitment-copy > span:last-child {
-	margin-top: 0.2rem;
-	color: var(--ui-color-text-muted);
-	font-size: 0.7rem;
-	line-height: 1.7;
-}
-
-.ui-khatm-commitment-meta {
-	flex: 0 0 auto;
-	margin-inline-start: 0.65rem;
-	padding: 0.35rem 0.55rem;
-	border-radius: 9999px;
-	background: var(--ui-color-surface-muted);
-	color: var(--ui-color-text-muted);
-	font-size: 0.65rem;
-	font-weight: 900;
 }
 
 .ui-khatm-commitment-arrow {
@@ -9463,10 +9429,6 @@ html[dir='ltr'] .ui-khatm-range-search > div > svg {
 		width: 2.65rem;
 		height: 2.65rem;
 		flex-basis: 2.65rem;
-	}
-
-	.ui-khatm-commitment-meta {
-		display: none;
 	}
 
 	.ui-khatm-range-card-main {

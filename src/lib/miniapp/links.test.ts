@@ -27,4 +27,13 @@ describe('Mini App links', () => {
 		expect(url.searchParams.get('mode')).toBe('app')
 		expect(decodeMiniAppTarget(url.searchParams.get('startapp'))).toBe('/ks42?t=token')
 	})
+
+	it('creates Soroush Plus public and private Mini App links', () => {
+		for (const path of ['/k12', '/as34?t=private-token_1']) {
+			const result = createMiniAppLink('https://splus.ir/quran-bot?mode=app', path, 'soroush')
+			const url = new URL(result!)
+			expect(url.searchParams.get('mode')).toBe('app')
+			expect(decodeMiniAppTarget(url.searchParams.get('startapp'))).toBe(path)
+		}
+	})
 })

@@ -6,7 +6,7 @@ export const PUT: RequestHandler = async ({ locals, request }) => {
 	if (!locals.user) error(401, { message: 'ابتدا وارد حساب کاربری شوید.' })
 	const body = await request.json().catch(() => null)
 	const preferredChannel = body?.preferredChannel || null
-	if (preferredChannel != null && !['bale', 'eitaa', 'email'].includes(preferredChannel)) {
+	if (preferredChannel != null && !['bale', 'eitaa', 'soroush', 'email'].includes(preferredChannel)) {
 		error(400, { message: 'کانال ترجیحی معتبر نیست.' })
 	}
 	await userNotification_saveSettings(locals.user.id, {
@@ -14,6 +14,7 @@ export const PUT: RequestHandler = async ({ locals, request }) => {
 		preferredChannel: preferredChannel as NotificationChannel | null,
 		baleEnabled: body?.baleEnabled === true,
 		eitaaEnabled: body?.eitaaEnabled === true,
+		soroushEnabled: body?.soroushEnabled === true,
 		emailEnabled: body?.emailEnabled === true,
 	})
 	return json({ saved: true })

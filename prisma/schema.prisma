@@ -50,6 +50,7 @@ enum KhatmDeletionReason {
 enum NotificationChannel {
   bale
   eitaa
+  soroush
   email
 }
 
@@ -257,6 +258,7 @@ model NotificationPreference {
   preferredChannel NotificationChannel? @map("preferred_channel")
   baleEnabled      Boolean              @default(true) @map("bale_enabled")
   eitaaEnabled     Boolean              @default(true) @map("eitaa_enabled")
+  soroushEnabled   Boolean              @default(true) @map("soroush_enabled")
   emailEnabled     Boolean              @default(true) @map("email_enabled")
   createdAt        DateTime             @default(now()) @map("created_at")
   updatedAt        DateTime             @updatedAt @map("updated_at")

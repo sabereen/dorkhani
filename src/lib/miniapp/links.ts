@@ -1,4 +1,10 @@
-export type MiniAppHostName = 'bale' | 'eitaa'
+export type MiniAppHostName = 'bale' | 'eitaa' | 'soroush'
+
+const startParameterByHost: Record<MiniAppHostName, string> = {
+	bale: 'startapp',
+	eitaa: 'startapp',
+	soroush: 'startapp',
+}
 
 const khatmTargetPattern = /^\/(?:a|k)s?\d+(?:\?t=[A-Za-z0-9_-]+)?$/
 
@@ -47,11 +53,15 @@ export function decodeMiniAppTarget(payload: string | undefined | null) {
 	}
 }
 
-export function createMiniAppLink(baseUrl: string | undefined | null, khatmPath: string) {
+export function createMiniAppLink(
+	baseUrl: string | undefined | null,
+	khatmPath: string,
+	host: MiniAppHostName = 'bale',
+) {
 	const normalizedBaseUrl = normalizeMiniAppBaseUrl(baseUrl)
 	const payload = encodeMiniAppTarget(khatmPath)
 	if (!normalizedBaseUrl || !payload) return null
 	const url = new URL(normalizedBaseUrl)
-	url.searchParams.set('startapp', payload)
+	url.searchParams.set(startParameterByHost[host], payload)
 	return url.href
 }

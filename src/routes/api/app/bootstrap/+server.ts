@@ -33,10 +33,12 @@ export const GET: RequestHandler = ({ locals, url }) => {
 			google: Boolean(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET),
 			eitaa: Boolean(env.EITAA_APP_TOKEN),
 			bale: Boolean(env.BALE_BOT_TOKEN),
+			soroush: Boolean(env.SOROUSH_BOT_TOKEN),
 		},
 		miniAppUrls: {
 			bale: normalizeMiniAppBaseUrl(env.BALE_MINI_APP_URL),
 			eitaa: normalizeMiniAppBaseUrl(env.EITAA_MINI_APP_URL),
+			soroush: normalizeMiniAppBaseUrl(env.SOROUSH_MINI_APP_URL),
 		},
 	} satisfies AppBootstrap)
 }

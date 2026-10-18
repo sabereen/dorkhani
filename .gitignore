@@ -42,3 +42,8 @@ prisma/dev2.db
 src/lib/server/generated/prisma
 
 .pnpm-store
+
+# Browser regression artifacts
+/work/
+/playwright-report/
+/test-results/

@@ -4,7 +4,8 @@ export default [
 	['ui-offline-dashboard', '[&&]:(w-full max-w-208 ms-auto me-auto)'],
 	['ui-offline-unsupported', '[&&]:(w-full max-w-208 ms-auto me-auto)'],
 	['ui-offline-loading', '[&&]:(w-full max-w-208 ms-auto me-auto)'],
-	['ui-offline-dashboard', '[&&>*+*]:(mt-4)'],
+	// The form is a child component; the former page-scoped sibling rule did not reach its root.
+	['ui-offline-dashboard', '[&&>*+*:not(.ui-offline-form)]:(mt-4)'],
 	['ui-offline-loading', '[&&]:(min-h-56 center)'],
 	['ui-offline-loading', '[&&>*+*]:(ms-[0.6rem])'],
 	['ui-offline-unsupported', '[&&]:(text-center)'],

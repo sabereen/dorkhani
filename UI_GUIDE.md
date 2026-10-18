@@ -45,6 +45,14 @@ patterns. Use `text-ui-*`, `border-ui-*`, `rounded-ui-*`, and `shadow-ui-*` for 
 `surface-*` sets the background shorthand, so switching surfaces also clears any old gradient;
 `bg-ui-*` changes only the background color. Preserve `[&&]` in migrated route shortcuts:
 it retains the extra class specificity previously provided by Svelte's scoped styles.
+It does not reproduce Svelte's descendant boundaries: use explicit component targets so a
+page's sibling/descendant spacing does not accidentally reach a child component's root.
+
+Uno sorts utilities inside each entry. When a shorthand and a longhand overlap (for example
+`border-color` and `border-top`), put the overriding declaration in a later entry or use
+compatible directional utilities. Matching declaration values alone does not verify the cascade.
+Keep every dynamic class variant literal in source, for example with Svelte `class:` directives;
+constructing a class name with interpolation prevents Uno from discovering its variants.
 
 `designSystem()` uses Uno's internal ordering layers, with CSS layer output disabled for
 Chrome 64. Keep ordinary utilities after the design system so local adjustments can override
@@ -209,3 +217,5 @@ unless an equally visible `:focus` replacement is provided.
 - Keep readable content in `ui-container-reading` and list/dashboard content in `ui-container`.
 - Do not introduce Daisy names, external UI dependencies, or CSS features outside the Chrome
   64 compatibility contract.
+- Run the real-browser regression matrix described in `tests/visual/README.md`. Compare
+  screenshots with the previous build for style refactors, including dialogs and loading states.

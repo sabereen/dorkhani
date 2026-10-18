@@ -253,7 +253,7 @@
 					</button>
 				{/if}
 				<button
-					class="ui-btn ui-btn-soft whitespace-nowrap text-xs"
+					class="ui-btn ui-btn-soft whitespace-nowrap text-xs leading-none"
 					type="button"
 					onclick={downloadImage}
 					disabled={!imageBlob || savingImage}
@@ -263,7 +263,7 @@
 					{m.share_download_card()}
 				</button>
 				<button
-					class="ui-btn ui-btn-outline whitespace-nowrap text-xs"
+					class="ui-btn ui-btn-outline whitespace-nowrap text-xs leading-none"
 					type="button"
 					onclick={() => writeText(inviteText, m.share_text_copied())}
 				>

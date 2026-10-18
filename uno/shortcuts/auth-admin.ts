@@ -90,10 +90,7 @@ export default [
 	['ui-auth-hint', 'block mt-[0.35rem] text-ui-text-muted text-[0.65rem] leading-[1.7]'],
 	['ui-auth-form', '[&>.ui-btn]:(mt-[0.15rem] rounded-[0.95rem] shadow-ui-md)'],
 	['ui-auth-form', '[&>.ui-btn_svg]:(w-5 h-5)'],
-	[
-		'ui-auth-form',
-		'[&_.ui-btn-primary_.ui-spinner]:(border-ui-on-primary [border-top-color:transparent])',
-	],
+	['ui-auth-form', '[&_.ui-btn-primary_.ui-spinner]:(border-ui-on-primary border-t-transparent)'],
 	['ui-auth-divider', 'mt-5 text-ui-text-muted text-[0.65rem] font-800 ui-row'],
 	['ui-auth-divider', "[&:before]:(h-px [flex:1_1_auto] surface-border [content:''])"],
 	['ui-auth-divider', "[&:after]:(h-px [flex:1_1_auto] surface-border [content:''])"],
@@ -410,11 +407,11 @@ export default [
 	],
 	[
 		'ui-admin-form-actions',
-		'[&_.ui-btn-primary_.ui-spinner]:(border-ui-on-primary [border-top-color:transparent])',
+		'[&_.ui-btn-primary_.ui-spinner]:(border-ui-on-primary border-t-transparent)',
 	],
 	[
 		'ui-admin-settings-actions',
-		'[&_.ui-btn-primary_.ui-spinner]:(border-ui-on-primary [border-top-color:transparent])',
+		'[&_.ui-btn-primary_.ui-spinner]:(border-ui-on-primary border-t-transparent)',
 	],
 	[
 		'ui-admin-side-card',

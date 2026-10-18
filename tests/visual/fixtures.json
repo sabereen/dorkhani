@@ -1,0 +1,310 @@
+{
+	"branding": {
+		"name": "ختم جمعی قرآن",
+		"tagline": "هر آیه، یک قدم روشن",
+		"heroTitle": "هر آیه، یک قدم؛",
+		"heroHighlight": "هر همراه، یک نور",
+		"heroDescription": "یک ختم گروهی بسازید، آن را با عزیزانتان به اشتراک بگذارید و قدم‌به‌قدم تا پایان قرآن کنار هم بمانید.",
+		"heroImageAlt": "دروازه‌ای نورانی به سوی قرآن",
+		"seoTitle": "ختم جمعی قرآن",
+		"seoDescription": "ختم قرآن با دوستان و خانواده",
+		"revision": "default",
+		"heroImageUrl": "/hero.png",
+		"icon192Url": "/icon-192.png",
+		"icon512Url": "/icon-512.png"
+	},
+	"khatms": [
+		{
+			"id": 1,
+			"title": "ختم قرآن برای سلامتی و آرامش",
+			"description": "با نیت سلامتی عزیزان، در این ختم جمعی قرآن همراه می‌شویم.",
+			"rangeType": "free",
+			"versesRead": 240,
+			"pageProgress": 8.5,
+			"private": false,
+			"accessToken": null,
+			"created": "2026-10-10T12:00:00.000Z",
+			"endDate": null,
+			"status": "inProgress",
+			"reviewStatus": "approved",
+			"roundNumber": 1,
+			"seriesId": null
+		},
+		{
+			"id": 2,
+			"title": "هر روز چند آیه، یک قدم روشن",
+			"description": "با نیت سلامتی عزیزان، در این ختم جمعی قرآن همراه می‌شویم.",
+			"rangeType": "ayah",
+			"versesRead": 1600,
+			"pageProgress": 27,
+			"private": false,
+			"accessToken": null,
+			"created": "2026-10-10T12:00:00.000Z",
+			"endDate": null,
+			"status": "inProgress",
+			"reviewStatus": "approved",
+			"roundNumber": 1,
+			"seriesId": null
+		},
+		{
+			"id": 4,
+			"title": "ختم هفتگی قرآن کریم",
+			"description": "با نیت سلامتی عزیزان، در این ختم جمعی قرآن همراه می‌شویم.",
+			"rangeType": "juz",
+			"versesRead": 240,
+			"pageProgress": 8.5,
+			"private": false,
+			"accessToken": null,
+			"created": "2026-10-10T12:00:00.000Z",
+			"endDate": null,
+			"status": "inProgress",
+			"reviewStatus": "approved",
+			"roundNumber": 3,
+			"seriesId": 5
+		}
+	],
+	"parts": [
+		{
+			"id": 1,
+			"khatmId": 1,
+			"start": 0,
+			"end": 7,
+			"created": "2026-10-10T12:00:00.000Z"
+		},
+		{
+			"id": 2,
+			"khatmId": 1,
+			"start": 100,
+			"end": 200,
+			"created": "2026-10-10T12:00:00.000Z"
+		}
+	],
+	"zekr": {
+		"id": 3,
+		"title": "صلوات برای آرامش دل‌ها",
+		"description": "با هم صلوات می‌فرستیم",
+		"zekrText": "اللهم صل علی محمد و آل محمد",
+		"count": 1234,
+		"targetCount": 10000,
+		"created": "2026-10-10T12:00:00.000Z"
+	},
+	"account": {
+		"user": {
+			"name": "کاربر آزمایشی",
+			"email": "reader@example.com"
+		},
+		"khatms": [
+			{
+				"id": 1,
+				"title": "ختم قرآن برای سلامتی و آرامش",
+				"description": "با نیت سلامتی عزیزان، در این ختم جمعی قرآن همراه می‌شویم.",
+				"rangeType": "free",
+				"versesRead": 240,
+				"pageProgress": 8.5,
+				"private": false,
+				"accessToken": null,
+				"created": "2026-10-10T12:00:00.000Z",
+				"endDate": null,
+				"status": "inProgress",
+				"reviewStatus": "approved",
+				"roundNumber": 1,
+				"seriesId": null
+			},
+			{
+				"id": 2,
+				"title": "هر روز چند آیه، یک قدم روشن",
+				"description": "با نیت سلامتی عزیزان، در این ختم جمعی قرآن همراه می‌شویم.",
+				"rangeType": "ayah",
+				"versesRead": 1600,
+				"pageProgress": 27,
+				"private": false,
+				"accessToken": null,
+				"created": "2026-10-10T12:00:00.000Z",
+				"endDate": null,
+				"status": "inProgress",
+				"reviewStatus": "approved",
+				"roundNumber": 1,
+				"seriesId": null
+			},
+			{
+				"id": 4,
+				"title": "ختم هفتگی قرآن کریم",
+				"description": "با نیت سلامتی عزیزان، در این ختم جمعی قرآن همراه می‌شویم.",
+				"rangeType": "juz",
+				"versesRead": 240,
+				"pageProgress": 8.5,
+				"private": false,
+				"accessToken": null,
+				"created": "2026-10-10T12:00:00.000Z",
+				"endDate": null,
+				"status": "inProgress",
+				"reviewStatus": "approved",
+				"roundNumber": 3,
+				"seriesId": 5
+			}
+		],
+		"notificationSettings": {
+			"enabled": true,
+			"preferredChannel": "email",
+			"channels": {
+				"bale": {
+					"enabled": true,
+					"available": false,
+					"connected": false
+				},
+				"eitaa": {
+					"enabled": true,
+					"available": false,
+					"connected": false
+				},
+				"soroush": {
+					"enabled": true,
+					"available": false,
+					"connected": false
+				},
+				"email": {
+					"enabled": true,
+					"available": true,
+					"connected": true
+				}
+			}
+		},
+		"messengerLinks": {
+			"bale": null,
+			"eitaa": null,
+			"soroush": null
+		}
+	},
+	"home": {
+		"khatms": [
+			{
+				"id": 1,
+				"title": "ختم قرآن برای سلامتی و آرامش",
+				"description": "با نیت سلامتی عزیزان، در این ختم جمعی قرآن همراه می‌شویم.",
+				"rangeType": "free",
+				"versesRead": 240,
+				"pageProgress": 8.5,
+				"private": false,
+				"accessToken": null,
+				"created": "2026-10-10T12:00:00.000Z",
+				"endDate": null,
+				"status": "inProgress",
+				"reviewStatus": "approved",
+				"roundNumber": 1,
+				"seriesId": null
+			},
+			{
+				"id": 2,
+				"title": "هر روز چند آیه، یک قدم روشن",
+				"description": "با نیت سلامتی عزیزان، در این ختم جمعی قرآن همراه می‌شویم.",
+				"rangeType": "ayah",
+				"versesRead": 1600,
+				"pageProgress": 27,
+				"private": false,
+				"accessToken": null,
+				"created": "2026-10-10T12:00:00.000Z",
+				"endDate": null,
+				"status": "inProgress",
+				"reviewStatus": "approved",
+				"roundNumber": 1,
+				"seriesId": null
+			},
+			{
+				"id": 4,
+				"title": "ختم هفتگی قرآن کریم",
+				"description": "با نیت سلامتی عزیزان، در این ختم جمعی قرآن همراه می‌شویم.",
+				"rangeType": "juz",
+				"versesRead": 240,
+				"pageProgress": 8.5,
+				"private": false,
+				"accessToken": null,
+				"created": "2026-10-10T12:00:00.000Z",
+				"endDate": null,
+				"status": "inProgress",
+				"reviewStatus": "approved",
+				"roundNumber": 3,
+				"seriesId": 5
+			}
+		],
+		"featuredKhatms": [
+			{
+				"id": 4,
+				"title": "ختم هفتگی قرآن کریم",
+				"description": "با نیت سلامتی عزیزان، در این ختم جمعی قرآن همراه می‌شویم.",
+				"rangeType": "juz",
+				"versesRead": 240,
+				"pageProgress": 8.5,
+				"private": false,
+				"accessToken": null,
+				"created": "2026-10-10T12:00:00.000Z",
+				"endDate": null,
+				"status": "inProgress",
+				"reviewStatus": "approved",
+				"roundNumber": 3,
+				"seriesId": 5
+			}
+		],
+		"showcase": [],
+		"zekrList": [
+			{
+				"id": 3,
+				"title": "صلوات برای آرامش دل‌ها",
+				"description": "با هم صلوات می‌فرستیم",
+				"zekrText": "اللهم صل علی محمد و آل محمد",
+				"count": 1234,
+				"targetCount": 10000,
+				"created": "2026-10-10T12:00:00.000Z"
+			}
+		],
+		"statistics": {
+			"totals": {
+				"recitedAyahs": 123456,
+				"completedRounds": 42
+			},
+			"daily": [
+				{
+					"date": "2026-10-10",
+					"recitedAyahs": 150,
+					"createdKhatms": 2,
+					"completedRounds": 0
+				},
+				{
+					"date": "2026-10-11",
+					"recitedAyahs": 275,
+					"createdKhatms": 3,
+					"completedRounds": 1
+				},
+				{
+					"date": "2026-10-12",
+					"recitedAyahs": 400,
+					"createdKhatms": 4,
+					"completedRounds": 2
+				},
+				{
+					"date": "2026-10-13",
+					"recitedAyahs": 525,
+					"createdKhatms": 5,
+					"completedRounds": 0
+				},
+				{
+					"date": "2026-10-14",
+					"recitedAyahs": 650,
+					"createdKhatms": 6,
+					"completedRounds": 1
+				},
+				{
+					"date": "2026-10-15",
+					"recitedAyahs": 775,
+					"createdKhatms": 7,
+					"completedRounds": 2
+				},
+				{
+					"date": "2026-10-16",
+					"recitedAyahs": 900,
+					"createdKhatms": 8,
+					"completedRounds": 0
+				}
+			]
+		}
+	}
+}

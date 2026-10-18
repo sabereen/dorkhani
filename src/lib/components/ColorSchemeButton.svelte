@@ -24,7 +24,12 @@
 	onclick={handleClick}
 	aria-pressed={settings.config.colorScheme === scheme}
 >
-	<span class={`ui-scheme-preview ui-scheme-preview-${scheme}`} aria-hidden="true">
+	<span
+		class="ui-scheme-preview"
+		class:ui-scheme-preview-dark={scheme === 'dark'}
+		class:ui-scheme-preview-system={scheme === 'system'}
+		aria-hidden="true"
+	>
 		<span></span>
 		<span></span>
 		<span></span>

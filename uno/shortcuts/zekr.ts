@@ -153,10 +153,7 @@ export default [
 	['ui-zekr-primary-action', 'w-full rounded-[1rem] shadow-ui-md'],
 	['ui-zekr-primary-action', '[&_svg]:(w-[1.2rem] h-[1.2rem])'],
 	['ui-zekr-quick-button', '[&_svg]:(w-[1.2rem] h-[1.2rem])'],
-	[
-		'ui-zekr-primary-action',
-		'[&_.ui-spinner]:(border-ui-on-primary [border-top-color:transparent])',
-	],
+	['ui-zekr-primary-action', '[&_.ui-spinner]:(border-ui-on-primary border-t-transparent)'],
 	['ui-zekr-quick-actions', 'grid grid-cols-2 gap-[0.55rem]'],
 	['ui-zekr-quick-button', 'min-w-0 rounded-[0.85rem] text-[0.78rem]'],
 	['ui-zekr-action-complete', 'border-ui-success surface-success text-ui-on-success'],
@@ -202,7 +199,7 @@ export default [
 	['ui-zekr-modal-form', '[&>.ui-btn-block]:(rounded-[0.9rem])'],
 	[
 		'ui-zekr-modal-form',
-		'[&>.ui-btn-block_.ui-spinner]:(border-ui-on-primary [border-top-color:transparent])',
+		'[&>.ui-btn-block_.ui-spinner]:(border-ui-on-primary border-t-transparent)',
 	],
 	['ui-zekr-page', '[@media(min-width:768px)]:(gap-5)'],
 	[

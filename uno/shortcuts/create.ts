@@ -27,10 +27,8 @@ export default [
 		'[&&>div:last-child>p:last-child]:(mt-[0.2rem] text-ui-text-muted text-[0.8rem] leading-[1.7])',
 	],
 	['ui-add-eyebrow', '[&&]:(text-ui-primary text-[0.72rem] font-800)'],
-	[
-		'ui-add-form',
-		'[&&]:(border-ui-control-border [border-top:3px_solid_var(--ui-color-primary)] surface-surface-raised shadow-ui-md)',
-	],
+	['ui-add-form', '[&&]:(border-ui-control-border surface-surface-raised shadow-ui-md)'],
+	['ui-add-form', '[&&]:[border-top:3px_solid_var(--ui-color-primary)]'],
 	['ui-add-form', '[&&_.ui-card-body]:(p-0)'],
 	['ui-add-section', '[&&]:(p-[1.15rem] surface-surface-raised)'],
 	['ui-add-section', '[&&+.ui-add-section]:([border-top:1px_solid_var(--ui-color-border)])'],

@@ -47,7 +47,7 @@
 			</div>
 		{/if}
 		<p
-			class={['ui-quran-ayah-text transition-opacity', fontManager.className]}
+			class="ui-quran-ayah-text transition-opacity"
 			lang="ar"
 			dir="rtl"
 			class:opacity-0={fontManager.isLoading(ayah)}
@@ -101,7 +101,7 @@
 		{#if onlineActions && audioManager.audioDuration && !audioManager.paused && audioManager.playingIndex === ayah.index}
 			<progress
 				transition:fade
-				class="ui-progress rounded-0 absolute bottom-0 left-0 right-0 h-1 w-full"
+				class="ui-progress absolute bottom-0 left-0 right-0 w-full"
 				value={audioManager.audioCurrentTime}
 				max={audioManager.audioDuration}
 			></progress>

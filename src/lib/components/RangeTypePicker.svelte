@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { RangeType } from '$lib/contracts/domain'
 	import RangeTypeIcon from '$lib/components/RangeTypeIcon.svelte'
+	import * as m from '$lib/paraglide/messages.js'
 
 	type Props = {
 		name?: string
@@ -17,16 +18,16 @@
 	}: Props = $props()
 
 	const details: Record<RangeType, string> = {
-		free: 'آزاد',
-		page: 'صفحه‌به‌صفحه',
-		hizbQuarter: 'رُبعِ حزب',
-		surah: 'سوره‌به‌سوره',
-		juz: 'جزءبه‌جزء',
-		ayah: 'ختم آیه‌ای',
+		free: m.range_free(),
+		page: m.range_page(),
+		hizbQuarter: m.range_hizb(),
+		surah: m.range_surah(),
+		juz: m.range_juz(),
+		ayah: m.range_ayah(),
 	}
 </script>
 
-<div class="ui-range-type-picker" role="radiogroup" aria-label="انتخاب نوع بازه‌بندی">
+<div class="ui-range-type-picker" role="radiogroup" aria-label={m.range_picker_aria()}>
 	{#if options.includes('free')}
 		<label
 			class="ui-range-type-picker-option ui-range-type-picker-option-free"
@@ -38,7 +39,7 @@
 			>
 			<span class="ui-range-type-picker-copy">
 				<strong>{details.free}</strong>
-				<small>هر همراه می‌تواند به اندازهٔ فرصت خودش، از بخش‌های آزاد قرآن انتخاب کند.</small>
+				<small>{m.range_picker_free_hint()}</small>
 			</span>
 		</label>
 	{/if}
@@ -72,10 +73,7 @@
 			>
 			<span class="ui-range-type-picker-copy">
 				<strong>{details.ayah}</strong>
-				<small>
-					آیه‌ها به‌ترتیب میان همراهان پخش می‌شوند؛ در این مدل، هر نفر یک بازهٔ دلخواه انتخاب
-					نمی‌کند.
-				</small>
+				<small>{m.range_picker_ayah_hint()}</small>
 			</span>
 		</label>
 	{/if}

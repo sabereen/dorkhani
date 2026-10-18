@@ -4,7 +4,7 @@ import copy from 'clipboard-copy'
 import { rebaseFullPath } from '$lib/utility/path'
 import { browser } from '$app/environment'
 import { request } from '$lib/utility/request'
-import { idb_localZekr_increaseMyCount } from '$lib/idb/localZekr'
+import { clientStorage } from '$lib/storage/client'
 import * as m from '$lib/paraglide/messages.js'
 import { publicWebUrl } from '$lib/config/runtime'
 
@@ -100,7 +100,7 @@ export class Zekr {
 			count,
 		})
 		this.plain.count += count
-		idb_localZekr_increaseMyCount(this.plain, count)
+		void clientStorage.localZekrs.increaseMyCount(this.plain, count)
 	}
 
 	async share() {

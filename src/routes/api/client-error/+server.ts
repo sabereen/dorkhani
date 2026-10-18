@@ -17,9 +17,11 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	console.error('Unhandled client error:', report)
 
-	getNotificationProvider().sendError(`Client ${report.status} ${report.message}`, report).catch((error) => {
-		console.error('Failed to send client-error notification:', error)
-	})
+	getNotificationProvider()
+		.sendError(`Client ${report.status} ${report.message}`, report)
+		.catch((error) => {
+			console.error('Failed to send client-error notification:', error)
+		})
 
 	return json({ ok: true })
 }

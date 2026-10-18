@@ -1,10 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import {
-	createCorsHeaders,
-	getAllowedCorsOrigin,
-	isSameOrigin,
-	parseTrustedOrigins,
-} from './cors'
+import { createCorsHeaders, getAllowedCorsOrigin, isSameOrigin, parseTrustedOrigins } from './cors'
 
 describe('native CORS policy', () => {
 	const trusted = parseTrustedOrigins('https://localhost, https://native.example.test/')
@@ -18,6 +13,12 @@ describe('native CORS policy', () => {
 		)
 		expect(isSameOrigin('https://evil.example.test', new URL('https://api.example.test/api'))).toBe(
 			false,
+		)
+	})
+
+	it('allows the Capacitor localhost origin without an environment entry', () => {
+		expect(getAllowedCorsOrigin('https://localhost', parseTrustedOrigins(undefined))).toBe(
+			'https://localhost',
 		)
 	})
 

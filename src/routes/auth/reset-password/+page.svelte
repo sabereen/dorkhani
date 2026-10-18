@@ -45,7 +45,9 @@
 			<span class="ui-auth-success-icon"><IconCheck /></span>
 			<h3>{m.auth_reset_completed_title()}</h3>
 			<p>{m.auth_reset_completed_text()}</p>
-			<a class="ui-btn ui-btn-primary ui-btn-block" href={localizeHref(`${base}/auth/login`)}>{m.auth_login_action()}</a>
+			<a class="ui-btn ui-btn-primary ui-btn-block" href={localizeHref(`${base}/auth/login`)}
+				>{m.auth_login_action()}</a
+			>
 		</div>
 	{:else}
 		<div class="ui-form-status-slot" aria-live="polite">
@@ -56,7 +58,8 @@
 
 		<form use:validateForm novalidate class="ui-auth-form" onsubmit={submit} aria-busy={loading}>
 			<div class="ui-auth-field">
-				<label class="ui-field-label" for="new-password"><IconLock /> {m.auth_new_password()}</label>
+				<label class="ui-field-label" for="new-password"><IconLock /> {m.auth_new_password()}</label
+				>
 				<div class="ui-auth-password-wrap" data-ui-validation-host>
 					<input
 						id="new-password"

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_description">ملخص نشاطاتك القرآنية</string>
+    <string name="widget_activity_title">ملخص النشاطات</string>
+    <string name="widget_offline">الختمة دون اتصال</string>
+    <string name="widget_created">المنشأة</string>
+    <string name="widget_picked">المقروءة</string>
+    <string name="widget_zekr">الذكر</string>
+    <string name="widget_empty">افتح التطبيق لبدء نشاطك الأول.</string>
+    <string name="widget_no_activity">—</string>
+    <string name="widget_offline_meta">الدورة %1$s · %2$s٪</string>
+    <string name="widget_range_meta">%1$s–%2$s · %3$s</string>
+    <string name="widget_count_meta">%1$s مرة</string>
+</resources>

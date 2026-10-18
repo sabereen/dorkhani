@@ -7,9 +7,7 @@ import { json, type RequestHandler } from '@sveltejs/kit'
 
 export const GET: RequestHandler = () => {
 	try {
-		const fingerprints = parseAndroidCertificateFingerprints(
-			env.ANDROID_SHA256_CERT_FINGERPRINTS,
-		)
+		const fingerprints = parseAndroidCertificateFingerprints(env.ANDROID_SHA256_CERT_FINGERPRINTS)
 		if (fingerprints.length === 0) {
 			return json({ message: 'Android App Links are not configured.' }, { status: 503 })
 		}

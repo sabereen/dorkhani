@@ -31,7 +31,8 @@ function readId(value: string | undefined) {
 }
 
 function managementError(cause: unknown): never {
-	if (cause instanceof KhatmOwnershipError) error(403, { message: 'اجازه مدیریت این ختم را ندارید.' })
+	if (cause instanceof KhatmOwnershipError)
+		error(403, { message: 'اجازه مدیریت این ختم را ندارید.' })
 	if (cause instanceof KhatmHistoricalRoundError) {
 		error(409, { message: 'دورهای پایان‌یافته برای حفظ سابقه قابل تغییر نیستند.' })
 	}

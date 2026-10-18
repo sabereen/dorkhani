@@ -1,6 +1,6 @@
-import type { CreatedKhatm } from './idb'
+import type { CreatedKhatmRecord } from '$lib/storage/types'
 
-export async function idb_createdKhatm_add(item: Omit<CreatedKhatm, 'id'>) {
+export async function idb_createdKhatm_add(item: Omit<CreatedKhatmRecord, 'id'>) {
 	const { db } = await import('./idb')
 
 	await db.createdKhatms.add({
@@ -38,7 +38,7 @@ export async function idb_createdKhatm_getClaims() {
 	const { db } = await import('./idb')
 	const list = await db.createdKhatms.toArray()
 	return list
-		.filter((item): item is CreatedKhatm & { id: number; claimToken: string } =>
+		.filter((item): item is CreatedKhatmRecord & { id: number; claimToken: string } =>
 			Boolean(item.id && item.claimToken),
 		)
 		.map((item) => ({ id: item.id, token: item.claimToken }))

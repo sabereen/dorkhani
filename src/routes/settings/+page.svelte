@@ -27,6 +27,6 @@
 		<p>{m.settings_language_description()}</p>
 		<LanguageSwitcher />
 	</fieldset>
-	<SettingsTheme class="mt-3 w-full!" />
+	<SettingsTheme class="w-full! mt-3" />
 	<SettingsAyahKhatm class="mt-3" legend={m.settings_quran()} />
 </form>

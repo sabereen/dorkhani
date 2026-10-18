@@ -8,6 +8,27 @@ declare global {
 				colorScheme?: 'light' | 'dark'
 				ready?: () => void
 				expand?: () => void
+				requestWriteAccess?: (callback?: (granted: boolean) => void) => void
+				BackButton?: {
+					show?: () => void
+					hide?: () => void
+					onClick?: (callback: () => void) => void
+					offClick?: (callback: () => void) => void
+				}
+				SettingsButton?: {
+					show?: () => void
+					hide?: () => void
+					onClick?: (callback: () => void) => void
+					offClick?: (callback: () => void) => void
+				}
+			}
+		}
+		Splus?: {
+			WebApp?: {
+				initData?: string
+				colorScheme?: 'light' | 'dark'
+				ready?: () => void
+				expand?: () => void
 				BackButton?: {
 					show?: () => void
 					hide?: () => void

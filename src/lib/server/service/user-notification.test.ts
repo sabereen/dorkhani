@@ -14,6 +14,10 @@ vi.mock('$env/dynamic/private', () => ({
 		ORIGIN: 'https://example.com',
 		BALE_BOT_TOKEN: 'bale-token',
 		EITAA_APP_TOKEN: 'eitaa-token',
+		SOROUSH_BOT_TOKEN: 'soroush-token',
+		BALE_MINI_APP_URL: 'https://ble.ir/khatm-app',
+		EITAA_MINI_APP_URL: 'https://eitaa.com/khatm-app/main',
+		SOROUSH_MINI_APP_URL: 'https://splus.ir/khatm-app',
 	},
 }))
 vi.mock('$lib/server/db', () => ({ db: dbMock }))
@@ -22,7 +26,7 @@ vi.mock('$lib/server/auth/email', () => ({
 	authEmail_send: emailMock.send,
 }))
 
-import { userNotification_send } from './user-notification'
+import { userNotification_getSettings, userNotification_send } from './user-notification'
 
 const event = {
 	type: 'participationPicked' as const,
@@ -41,11 +45,13 @@ function userResult(overrides: Record<string, unknown> = {}) {
 			preferredChannel: null,
 			baleEnabled: true,
 			eitaaEnabled: true,
+			soroushEnabled: true,
 			emailEnabled: true,
 		},
 		notificationEndpoints: [
 			{ channel: 'bale', address: '10', canSend: true },
 			{ channel: 'eitaa', address: '20', canSend: true },
+			{ channel: 'soroush', address: '30', canSend: true },
 		],
 		...overrides,
 	}
@@ -57,7 +63,19 @@ describe('userNotification_send', () => {
 		emailMock.isConfigured.mockReturnValue(true)
 	})
 
-	it('uses the fixed Bale, Eitaa, email priority by default', async () => {
+	it('reports a configured Soroush Plus endpoint as an available channel', async () => {
+		dbMock.user.findUnique.mockResolvedValue(userResult())
+
+		const settings = await userNotification_getSettings('user-1')
+
+		expect(settings?.channels.soroush).toEqual({
+			enabled: true,
+			available: true,
+			connected: true,
+		})
+	})
+
+	it('uses the fixed Bale, Eitaa, Soroush Plus, email priority by default', async () => {
 		dbMock.user.findUnique.mockResolvedValue(userResult())
 		const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ ok: true }) })
 		vi.stubGlobal('fetch', fetchMock)
@@ -96,5 +114,85 @@ describe('userNotification_send', () => {
 
 		expect(fetchMock).not.toHaveBeenCalled()
 		expect(emailMock.send).not.toHaveBeenCalled()
+	})
+
+	it('uses the Bale Mini App link in the forwarding message and button', async () => {
+		dbMock.user.findUnique.mockResolvedValue(userResult())
+		const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ ok: true }) })
+		vi.stubGlobal('fetch', fetchMock)
+
+		await userNotification_send('user-1', {
+			type: 'khatmCreated',
+			khatmId: 42,
+			title: 'Test khatm',
+			private: true,
+			khatmPath: '/k42?t=private-token',
+		})
+
+		const forwardBody = JSON.parse(String(fetchMock.mock.calls[1][1]?.body))
+		expect(forwardBody.text).toContain('https://ble.ir/khatm-app?startapp=')
+		expect(forwardBody.reply_markup.inline_keyboard[0][0].url).toContain(
+			'https://ble.ir/khatm-app?startapp=',
+		)
+	})
+
+	it('uses the Eitaa Mini App link in its forwarding message', async () => {
+		dbMock.user.findUnique.mockResolvedValue(
+			userResult({
+				notificationPreference: {
+					enabled: true,
+					preferredChannel: 'eitaa',
+					baleEnabled: true,
+					eitaaEnabled: true,
+			soroushEnabled: true,
+					emailEnabled: true,
+				},
+			}),
+		)
+		const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ ok: true }) })
+		vi.stubGlobal('fetch', fetchMock)
+
+		await userNotification_send('user-1', {
+			type: 'khatmCreated',
+			khatmId: 42,
+			title: 'Test khatm',
+			private: false,
+			khatmPath: '/a42',
+		})
+
+		const forwardBody = JSON.parse(String(fetchMock.mock.calls[1][1]?.body))
+		expect(forwardBody.text).toContain('https://eitaa.com/khatm-app/main?startapp=')
+	})
+
+	it('sends Soroush Plus notifications and direct Mini App forwarding links', async () => {
+		dbMock.user.findUnique.mockResolvedValue(
+			userResult({
+				notificationPreference: {
+					enabled: true,
+					preferredChannel: 'soroush',
+					baleEnabled: true,
+					eitaaEnabled: true,
+					soroushEnabled: true,
+					emailEnabled: true,
+				},
+			}),
+		)
+		const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ ok: true }) })
+		vi.stubGlobal('fetch', fetchMock)
+
+		await userNotification_send('user-1', {
+			type: 'khatmCreated',
+			khatmId: 42,
+			title: 'Test khatm',
+			private: true,
+			khatmPath: '/ks42?t=private-token',
+		})
+
+		expect(fetchMock.mock.calls[0][0]).toContain('bot.splus.ir')
+		const forwardBody = JSON.parse(String(fetchMock.mock.calls[1][1]?.body))
+		expect(forwardBody.text).toContain('https://splus.ir/khatm-app?startapp=')
+		expect(forwardBody.reply_markup.inline_keyboard[0][0].url).toContain(
+			'https://splus.ir/khatm-app?startapp=',
+		)
 	})
 })

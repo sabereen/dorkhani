@@ -3,11 +3,10 @@
 	import { base } from '$app/paths'
 	import { localizeHref } from '$lib/paraglide/runtime.js'
 	import { Zekr } from '$lib/entity/Zekr.svelte'
-	import type { LocalZekr } from '$lib/idb/idb'
-	import { idb_localZekr_getList } from '$lib/idb/localZekr'
+	import { clientStorage, type LocalZekrRecord } from '$lib/storage/client'
 	import { onMount, type Snippet } from 'svelte'
-	import { slide } from 'svelte/transition'
 	import IconArrow from '~icons/ic/round-arrow-back'
+	import * as m from '$lib/paraglide/messages.js'
 	import IconAutoAwesome from '~icons/ic/round-auto-awesome'
 
 	type Props = {
@@ -21,11 +20,11 @@
 
 	let loading = $state(true)
 	let hasMore = $state(false)
-	let history = $state<LocalZekr[]>()
+	let history = $state<LocalZekrRecord[]>()
 
 	onMount(async () => {
 		const limit = props.limit ? props.limit + 1 : undefined
-		const list = await idb_localZekr_getList(limit)
+		const list = await clientStorage.localZekrs.getList(limit)
 		loading = false
 		if (props.limit && list.length > props.limit) {
 			list.length = props.limit
@@ -36,16 +35,13 @@
 </script>
 
 {#if history?.length}
-	<section
-		transition:slide={{ axis: 'y' }}
-		class="ui-card ui-card-bordered ui-activity-card ui-activity-card-zekr"
-	>
+	<section class="ui-card ui-card-bordered ui-activity-card ui-activity-card-zekr">
 		<div class="ui-card-body">
 			<header class="ui-activity-header">
 				<span class="ui-activity-header-icon"><IconAutoAwesome /></span>
 				<div class="ui-activity-heading">
-					<h2>{props.title || 'ختم‌های ذکر شما'}</h2>
-					<p>حلقه‌های ذکری که همراهی کرده‌اید</p>
+					<h2>{props.title || m.history_zekr()}</h2>
+					<p>{m.history_zekr_description()}</p>
 				</div>
 				<span class="ui-activity-count">{history.length.toLocaleString(localeTag())}</span>
 			</header>
@@ -59,15 +55,17 @@
 							<span class="ui-activity-content">
 								<strong>{zekr.title}</strong>
 								<span class="ui-activity-meta">
-									<span>{zekr.plain.created.toLocaleDateString('fa-IR')}</span>
+									<span>{new Date(zekr.plain.created).toLocaleDateString(localeTag())}</span>
 									{#if zekr.isFinite}
 										<span class="ui-badge ui-badge-xs ui-badge-info"
-											>{zekr.targetCount.toLocaleString(localeTag())} تایی</span
+											>{m.history_count_target({
+												count: zekr.targetCount.toLocaleString(localeTag()),
+											})}</span
 										>
 									{/if}
 								</span>
 							</span>
-							<span class="ui-activity-arrow"><IconArrow /></span>
+							<span class="ui-activity-arrow"><IconArrow class="ltr:mirror" /></span>
 						</a>
 					</li>
 				{/each}
@@ -76,8 +74,8 @@
 			{#if hasMore}
 				<div class="ui-activity-footer">
 					<a class="ui-btn ui-btn-ghost ui-btn-sm" href={localizeHref(`${base}/history`)}>
-						دیدن همه
-						<IconArrow />
+						{m.history_view_all()}
+						<IconArrow class="ltr:mirror" />
 					</a>
 				</div>
 			{/if}

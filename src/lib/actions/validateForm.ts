@@ -83,10 +83,7 @@ export const validateForm: Action<HTMLFormElement> = (form) => {
 		(element): element is ValidatableControl =>
 			element instanceof Element && isValidatableControl(element) && hasValidationRule(element),
 	)
-	const errorElements = new Map<
-		ValidatableControl,
-		{ root: HTMLElement; content: HTMLElement }
-	>()
+	const errorElements = new Map<ValidatableControl, { root: HTMLElement; content: HTMLElement }>()
 	const touched = new Set<ValidatableControl>()
 	let submitted = false
 

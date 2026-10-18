@@ -1,6 +1,6 @@
 import { browser } from '$app/environment'
 import { isEmptyObject } from '$lib/utility/isEmptyObject'
-import { localStore } from '$lib/utility/localStore'
+import { settingsStore } from '$lib/storage/client'
 import { setCookie } from '$lib/utility/setCookie'
 import { getContext, setContext } from 'svelte'
 import type { ColorScheme } from './Theme'
@@ -58,10 +58,10 @@ export class LocalSettings {
 			...config,
 		}
 		if (!bypassLocalStore) {
-			localStore.set(localStoreKey, finalConfig)
 			this.updateCookies(config)
 		}
 		this.storedConfig = finalConfig
+		return bypassLocalStore ? Promise.resolve() : settingsStore.set(localStoreKey, finalConfig)
 	}
 
 	/**
@@ -86,8 +86,8 @@ export class LocalSettings {
 
 	updateByLocalStore() {
 		if (!browser) return
-		const storedSettings = normalizeSettings(localStore.getOrDefault(localStoreKey, {}))
-		this.update(storedSettings, { bypassLocalStore: true })
+		const storedSettings = normalizeSettings(settingsStore.getOrDefault(localStoreKey, {}))
+		void this.update(storedSettings, { bypassLocalStore: true })
 	}
 
 	edit() {
@@ -99,7 +99,8 @@ export class LocalSettings {
 		if (!browser) return
 		this.updateByLocalStore()
 		window.addEventListener('storage', (event) => {
-			if (event.key === localStore.prepareKey(localStoreKey)) {
+			if (event.key === settingsStore.prepareKey(localStoreKey)) {
+				settingsStore.reloadFromBrowser(localStoreKey)
 				this.updateByLocalStore()
 			}
 		})
@@ -186,7 +187,7 @@ export class SettingsEditor {
 		this.config = new Proxy(localSettings.config, {
 			set: (_target, p: SettingKey, newValue) => {
 				this.tempConfig[p] = newValue
-				if (this.live) this.commit()
+				if (this.live) void this.commit()
 				return true
 			},
 			get: (_target, p: SettingKey) => {
@@ -203,8 +204,9 @@ export class SettingsEditor {
 	}
 
 	commit() {
-		this.localSettings.update($state.snapshot(this.tempConfig))
+		const persistence = this.localSettings.update($state.snapshot(this.tempConfig))
 		this.tempConfig = {}
+		return persistence
 	}
 
 	cancel() {

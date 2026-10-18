@@ -1,6 +1,6 @@
-import type { PickedKhatmPart } from './idb'
+import type { PickedKhatmPartRecord } from '$lib/storage/types'
 
-export async function idb_pickedKhatmPart_add(item: Omit<PickedKhatmPart, 'id'>) {
+export async function idb_pickedKhatmPart_add(item: Omit<PickedKhatmPartRecord, 'id'>) {
 	const { db } = await import('./idb')
 	// هدف از اینکه فیلدها را جداگانه نسبت دادیم این است که فیلد اضافی درون ایندکس‌دی‌بی ذخیره نکنیم
 	// برای مثال تمام پارت‌های خوانده شده ختم نرود در دیتابیس لوکال ذخیره شود

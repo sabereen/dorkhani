@@ -9,7 +9,8 @@ export const GET: RequestHandler = ({ url, cookies }) => {
 	if (range.getPageCount() > 50) {
 		error(400, { message: `بازه‌های خیلی بزرگ قابل نمایش نیست. بازه‌ی شما: ${range.getTitle()}` })
 	}
-	const requestedTranslation = (url.searchParams.get('translation') || cookies.get('translation')) as Translation | null
+	const requestedTranslation = (url.searchParams.get('translation') ||
+		cookies.get('translation')) as Translation | null
 	const translation: Translation =
 		requestedTranslation === 'makarem' || requestedTranslation === 'gharaati'
 			? requestedTranslation

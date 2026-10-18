@@ -1,4 +1,4 @@
-import { toast } from '$lib/components/TheToast.svelte'
+import { toast } from '$lib/components/toast.svelte'
 
 export function handleError(error: unknown) {
 	console.dir(error)

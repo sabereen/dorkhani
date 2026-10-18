@@ -21,9 +21,19 @@
 		<span class="ui-badge ui-badge-info">{m.settings_applies_immediately()}</span>
 	</div>
 
-	<div class="ui-scheme-options ui-settings-scheme-options" aria-label={m.settings_theme_selector()}>
-		{#each colorSchemes as { name, slug }}
-			<ColorSchemeButton scheme={slug} title={slug === 'system' ? m.theme_system() : slug === 'light' ? m.theme_light() : m.theme_dark()} />
+	<div
+		class="ui-scheme-options ui-settings-scheme-options"
+		aria-label={m.settings_theme_selector()}
+	>
+		{#each colorSchemes as { slug }}
+			<ColorSchemeButton
+				scheme={slug}
+				title={slug === 'system'
+					? m.theme_system()
+					: slug === 'light'
+						? m.theme_light()
+						: m.theme_dark()}
+			/>
 		{/each}
 	</div>
 </fieldset>

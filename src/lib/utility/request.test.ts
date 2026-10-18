@@ -36,9 +36,9 @@ describe('ApiClient retries', () => {
 			set: vi.fn(async () => {}),
 			clear: vi.fn(async () => {}),
 		}
-		const fetcher = vi.fn<typeof fetch>().mockResolvedValue(
-			Response.json({ message: 'Unauthorized' }, { status: 401 }),
-		)
+		const fetcher = vi
+			.fn<typeof fetch>()
+			.mockResolvedValue(Response.json({ message: 'Unauthorized' }, { status: 401 }))
 
 		await expect(
 			apiRequest('GET', '/account', {

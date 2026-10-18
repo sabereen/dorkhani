@@ -61,6 +61,11 @@ export function resolveRequestLocale(input: {
 	if (isAdminPath(input.pathname)) {
 		return { locale: 'fa', source: 'admin', needsLocaleChoice: false }
 	}
+	const urlLocale = localeFromPathname(input.pathname)
+	if (urlLocale) return { locale: urlLocale, source: 'url', needsLocaleChoice: false }
+	if (!input.pathname.startsWith('/api/')) {
+		return { locale: 'fa', source: 'url', needsLocaleChoice: false }
+	}
 	if (isLocale(input.cookieLocale)) {
 		return { locale: input.cookieLocale, source: 'cookie', needsLocaleChoice: false }
 	}
@@ -70,8 +75,6 @@ export function resolveRequestLocale(input: {
 	if (isLocale(input.accountLocale)) {
 		return { locale: input.accountLocale, source: 'account', needsLocaleChoice: false }
 	}
-	const urlLocale = localeFromPathname(input.pathname)
-	if (urlLocale) return { locale: urlLocale, source: 'url', needsLocaleChoice: false }
 	const browserLocale = findPreferredArabicLocale(parseAcceptLanguage(input.acceptLanguage ?? null))
 	if (browserLocale) {
 		return { locale: browserLocale, source: 'browser', needsLocaleChoice: false }

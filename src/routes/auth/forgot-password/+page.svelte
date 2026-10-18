@@ -43,7 +43,9 @@
 			<span class="ui-auth-success-icon"><IconCheck /></span>
 			<h3>{m.auth_recovery_sent_title()}</h3>
 			<p>{m.auth_recovery_sent_text()}</p>
-			<a class="ui-btn ui-btn-primary ui-btn-block" href={localizeHref(`${base}/auth/login`)}>{m.auth_back_to_login()}</a>
+			<a class="ui-btn ui-btn-primary ui-btn-block" href={localizeHref(`${base}/auth/login`)}
+				>{m.auth_back_to_login()}</a
+			>
 		</div>
 	{:else}
 		<div class="ui-form-status-slot" aria-live="polite">
@@ -54,7 +56,9 @@
 
 		<form use:validateForm novalidate class="ui-auth-form" onsubmit={submit} aria-busy={loading}>
 			<div class="ui-auth-field">
-				<label class="ui-field-label" for="recovery-email"><IconEmail /> {m.auth_account_email()}</label>
+				<label class="ui-field-label" for="recovery-email"
+					><IconEmail /> {m.auth_account_email()}</label
+				>
 				<input
 					id="recovery-email"
 					class="ui-input"
@@ -74,7 +78,9 @@
 		</form>
 
 		<p class="ui-auth-switch">
-			<a href={localizeHref(`${base}/auth/login`)}><IconArrow /> {m.auth_back_to_login()}</a>
+			<a href={localizeHref(`${base}/auth/login`)}
+				><IconArrow class="ltr:mirror" /> {m.auth_back_to_login()}</a
+			>
 		</p>
 	{/if}
 </AuthShell>

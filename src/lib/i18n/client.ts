@@ -1,12 +1,12 @@
-import { localStore } from '$lib/utility/localStore'
+import { settingsStore } from '$lib/storage/client'
 import { defineCustomClientStrategy, type Locale } from '$lib/paraglide/runtime.js'
 import { apiRequest } from '$lib/utility/request'
 
 defineCustomClientStrategy('custom-preference', {
 	getLocale: () => undefined,
 	setLocale: async (locale) => {
-		const settings = localStore.getOrDefault<Record<string, unknown>>('localSettings', {})
-		localStore.set('localSettings', { ...settings, locale })
+		const settings = settingsStore.getOrDefault<Record<string, unknown>>('localSettings', {})
+		await settingsStore.set('localSettings', { ...settings, locale })
 		try {
 			await apiRequest('POST', '/locale', { body: { locale }, origin: location.origin })
 		} catch {

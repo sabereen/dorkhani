@@ -77,6 +77,7 @@
 		"@capacitor/android": "8",
 		"@capacitor/app": "8",
 		"@capacitor/core": "8",
+		"@capacitor/share": "8",
 		"@ghoran/entity": "^0.2.1",
 		"@ghoran/metadata": "^0.0.7",
 		"@ghoran/text": "^0.0.8",
@@ -96,19 +97,10 @@
 		"module": "^1.2.5",
 		"nodemailer": "^9.0.5",
 		"prisma": "7.9.1",
+		"takumi-js": "^2.12.0",
 		"uuid": "^11.1.0",
 		"vazirmatn": "^33.0.3",
 		"zod": "^4.4.3"
 	},
-	"packageManager": "pnpm@10.8.0+sha512.0e82714d1b5b43c74610193cb20734897c1d00de89d0e18420aebc5977fa13d780a9cb05734624e81ebd81cc876cd464794850641c48b9544326b5622ca29971",
-	"pnpm": {
-		"onlyBuiltDependencies": [
-			"@prisma/client",
-			"@prisma/engines",
-			"core-js",
-			"esbuild",
-			"prisma",
-			"sharp"
-		]
-	}
+	"packageManager": "pnpm@10.8.0+sha512.0e82714d1b5b43c74610193cb20734897c1d00de89d0e18420aebc5977fa13d780a9cb05734624e81ebd81cc876cd464794850641c48b9544326b5622ca29971"
 }

@@ -202,21 +202,21 @@
 
 <Header title={m.directory_title()} />
 
-<section class="directory-intro" aria-labelledby="directory-title">
+<section class="ui-directory-intro" aria-labelledby="directory-title">
 	<div>
-		<span class="directory-kicker"><IconSearch /> {m.directory_kicker()}</span>
+		<span class="ui-directory-kicker"><IconSearch /> {m.directory_kicker()}</span>
 		<h2 id="directory-title">{m.directory_heading()}</h2>
 		<p>{m.directory_description()}</p>
 	</div>
 </section>
 
-<section class="directory-toolbar" aria-label={m.directory_toolbar_label()}>
+<section class="ui-directory-toolbar" aria-label={m.directory_toolbar_label()}>
 	<div class="directory-search-control">
-		<label for="khatm-search" class="directory-control-label">
+		<label for="khatm-search" class="ui-directory-control-label">
 			<IconSearch aria-hidden="true" />
 			<span>{m.directory_search_label()}</span>
 		</label>
-		<div class="directory-search-input">
+		<div class="ui-directory-search-input">
 			<input
 				id="khatm-search"
 				class="ui-input"
@@ -234,7 +234,7 @@
 	</div>
 
 	<div class="directory-type-control">
-		<label for="khatm-range-type" class="directory-control-label">
+		<label for="khatm-range-type" class="ui-directory-control-label">
 			<IconFilter aria-hidden="true" />
 			<span>{m.directory_range_label()}</span>
 		</label>
@@ -255,16 +255,16 @@
 	</div>
 </section>
 
-<div class="directory-views" role="group" aria-label={m.directory_views_label()}>
+<div class="ui-directory-views" role="group" aria-label={m.directory_views_label()}>
 	{#each viewOptions as option}
 		{@const ViewIcon = option.icon}
 		<button
 			type="button"
 			aria-pressed={data.filters.view === option.value}
-			class:directory-view-active={data.filters.view === option.value}
+			class:ui-directory-view-active={data.filters.view === option.value}
 			onclick={() => updateUrl({ view: option.value })}
 		>
-			<span class="directory-view-icon"><ViewIcon /></span>
+			<span class="ui-directory-view-icon"><ViewIcon /></span>
 			<span>
 				<strong>{option.label}</strong>
 				<small>{option.description}</small>
@@ -275,12 +275,12 @@
 
 <section
 	id="khatm-results"
-	class:directory-results-loading={filterLoading}
-	class="ui-khatm-collection directory-results"
+	class:ui-directory-results-loading={filterLoading}
+	class="ui-khatm-collection ui-directory-results"
 	aria-busy={filterLoading}
 	aria-live="polite"
 >
-	<header class="ui-khatm-collection-header directory-results-header">
+	<header class="ui-khatm-collection-header ui-directory-results-header">
 		<div>
 			<h2>{viewOptions.find((option) => option.value === data.filters.view)?.label}</h2>
 			<p>
@@ -313,7 +313,7 @@
 			{/each}
 		</ul>
 	{:else}
-		<div class="directory-empty">
+		<div class="ui-directory-empty">
 			<span aria-hidden="true"><IconSearch /></span>
 			<h3>{m.directory_not_found()}</h3>
 			<p>
@@ -328,7 +328,7 @@
 	{/if}
 
 	{#if loadError}
-		<div class="ui-alert ui-alert-error directory-load-error" role="alert">
+		<div class="ui-alert ui-alert-error ui-directory-load-error" role="alert">
 			<span>{loadError}</span>
 			<button class="ui-btn ui-btn-outline ui-btn-sm" type="button" onclick={nextPage}
 				>{m.directory_retry()}</button
@@ -344,318 +344,3 @@
 		</div>
 	{/if}
 </section>
-
-<style>
-	.directory-intro {
-		position: relative;
-		margin-top: 1rem;
-		padding: 1.5rem;
-		border: 1px solid var(--ui-color-border);
-		border-radius: 1.5rem;
-		background: linear-gradient(135deg, var(--ui-color-primary-soft), var(--ui-color-surface));
-		overflow: hidden;
-	}
-
-	.directory-intro:after {
-		position: absolute;
-		top: -4rem;
-		left: -3rem;
-		width: 10rem;
-		height: 10rem;
-		border-radius: 9999px;
-		background: var(--ui-color-primary-soft);
-		content: '';
-		opacity: 0.75;
-	}
-
-	.directory-intro > div {
-		position: relative;
-		z-index: 1;
-	}
-
-	.directory-intro h2,
-	.directory-intro p {
-		margin: 0;
-	}
-
-	.directory-intro h2 {
-		margin-top: 0.55rem;
-		font-size: 1.35rem;
-		font-weight: 950;
-	}
-
-	.directory-intro p {
-		margin-top: 0.35rem;
-		color: var(--ui-color-text-muted);
-		font-size: 0.85rem;
-		line-height: 1.8;
-	}
-
-	.directory-kicker,
-	.directory-control-label {
-		display: flex;
-		align-items: center;
-		color: var(--ui-color-primary);
-		font-size: 0.75rem;
-		font-weight: 900;
-	}
-
-	.directory-kicker > :global(*) + :global(*),
-	.directory-control-label > :global(*) + :global(*) {
-		margin-inline-start: 0.35rem;
-	}
-
-	.directory-kicker :global(svg),
-	.directory-control-label :global(svg) {
-		width: 1.05rem;
-		height: 1.05rem;
-	}
-
-	.directory-toolbar {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(12rem, 0.35fr);
-		grid-gap: 0.8rem;
-		margin-top: 1rem;
-		padding: 1rem;
-		border: 1px solid var(--ui-color-border);
-		border-radius: 1.25rem;
-		background: var(--ui-color-surface-raised);
-		box-shadow: var(--ui-shadow-sm);
-	}
-
-	.directory-control-label {
-		margin-bottom: 0.45rem;
-		color: var(--ui-color-text-muted);
-	}
-
-	.directory-search-input {
-		position: relative;
-	}
-
-	.directory-search-input .ui-input {
-		padding-inline-end: 3rem;
-	}
-
-	.directory-search-input button {
-		position: absolute;
-		top: 0.45rem;
-		bottom: 0.45rem;
-		left: 0.45rem;
-		display: flex;
-		width: 2.1rem;
-		align-items: center;
-		justify-content: center;
-		border: 0;
-		border-radius: 0.6rem;
-		background: var(--ui-color-surface-muted);
-		color: var(--ui-color-text-muted);
-		cursor: pointer;
-	}
-
-	.directory-search-input button:hover {
-		background: var(--ui-color-primary-soft);
-		color: var(--ui-color-primary);
-	}
-
-	.directory-search-input button:focus {
-		outline: 3px solid var(--ui-color-focus);
-		outline-offset: 1px;
-	}
-
-	.directory-search-input button :global(svg) {
-		width: 1.1rem;
-		height: 1.1rem;
-	}
-
-	.directory-views {
-		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-		grid-gap: 0.65rem;
-		margin-top: 1rem;
-	}
-
-	.directory-views > button {
-		display: flex;
-		min-width: 0;
-		align-items: center;
-		padding: 0.8rem;
-		border: 1px solid var(--ui-color-border);
-		border-radius: 1rem;
-		background: var(--ui-color-surface-raised);
-		color: var(--ui-color-text);
-		text-align: start;
-		box-shadow: var(--ui-shadow-sm);
-		cursor: pointer;
-		transition:
-			border-color 160ms ease,
-			background-color 160ms ease,
-			transform 100ms ease;
-	}
-
-	.directory-views > button:hover {
-		border-color: var(--ui-color-border-strong);
-		transform: translateY(-1px);
-	}
-
-	.directory-views > button:focus {
-		outline: 3px solid var(--ui-color-focus);
-		outline-offset: 2px;
-	}
-
-	.directory-views > .directory-view-active {
-		border-color: var(--ui-color-primary);
-		background: var(--ui-color-primary-soft);
-	}
-
-	.directory-view-icon {
-		display: flex;
-		width: 2.4rem;
-		height: 2.4rem;
-		flex: 0 0 2.4rem;
-		align-items: center;
-		justify-content: center;
-		margin-inline-end: 0.65rem;
-		border-radius: 0.8rem;
-		background: var(--ui-color-surface-muted);
-		color: var(--ui-color-primary);
-	}
-
-	.directory-view-active .directory-view-icon {
-		background: var(--ui-color-primary);
-		color: var(--ui-color-on-primary);
-	}
-
-	.directory-view-icon :global(svg) {
-		width: 1.25rem;
-		height: 1.25rem;
-	}
-
-	.directory-views strong,
-	.directory-views small {
-		display: block;
-	}
-
-	.directory-views strong {
-		font-size: 0.82rem;
-		font-weight: 900;
-	}
-
-	.directory-views small {
-		margin-top: 0.15rem;
-		color: var(--ui-color-text-muted);
-		font-size: 0.65rem;
-		line-height: 1.5;
-	}
-
-	.directory-results {
-		margin-top: 1rem;
-		transition: opacity 160ms ease;
-	}
-
-	.directory-results-loading {
-		opacity: 0.58;
-		pointer-events: none;
-	}
-
-	.directory-results-header > .ui-btn {
-		flex: 0 0 auto;
-		margin-inline-start: 1rem;
-	}
-
-	.directory-empty {
-		padding: 3rem 1rem;
-		border: 1px dashed var(--ui-color-border-strong);
-		border-radius: 1rem;
-		background: var(--ui-color-surface-raised);
-		text-align: center;
-	}
-
-	.directory-empty > span {
-		display: flex;
-		width: 3.5rem;
-		height: 3.5rem;
-		align-items: center;
-		justify-content: center;
-		margin: 0 auto;
-		border-radius: 9999px;
-		background: var(--ui-color-primary-soft);
-		color: var(--ui-color-primary);
-	}
-
-	.directory-empty > span :global(svg) {
-		width: 1.7rem;
-		height: 1.7rem;
-	}
-
-	.directory-empty h3,
-	.directory-empty p {
-		margin: 0;
-	}
-
-	.directory-empty h3 {
-		margin-top: 0.85rem;
-		font-size: 1rem;
-		font-weight: 900;
-	}
-
-	.directory-empty p {
-		margin-top: 0.35rem;
-		color: var(--ui-color-text-muted);
-		font-size: 0.78rem;
-		line-height: 1.8;
-	}
-
-	.directory-empty .ui-btn {
-		margin-top: 1rem;
-	}
-
-	.directory-load-error {
-		justify-content: space-between;
-		margin-top: 0.75rem;
-	}
-
-	.directory-load-error > * + * {
-		margin-inline-start: 1rem;
-	}
-
-	@media (max-width: 767px) {
-		.directory-intro {
-			padding: 1.25rem;
-		}
-
-		.directory-toolbar,
-		.directory-views {
-			grid-template-columns: minmax(0, 1fr);
-		}
-
-		.directory-views > button {
-			padding: 0.7rem;
-		}
-	}
-
-	@media (max-width: 479px) {
-		.directory-intro h2 {
-			font-size: 1.15rem;
-		}
-
-		.directory-results-header {
-			align-items: flex-start;
-			flex-direction: column;
-		}
-
-		.directory-results-header > .ui-btn {
-			margin-top: 0.65rem;
-			margin-inline-start: 0;
-		}
-
-		.directory-load-error {
-			align-items: stretch;
-			flex-direction: column;
-		}
-
-		.directory-load-error > * + * {
-			margin-top: 0.65rem;
-			margin-inline-start: 0;
-		}
-	}
-</style>

@@ -59,8 +59,8 @@
 <div
 	bind:this={tablist}
 	id={`${id}-tablist`}
-	class="ui-tabs select-none"
-	style:grid-template-columns={`repeat(${Math.max(tabs.length, 1)}, minmax(0, 1fr))`}
+	class="ui-tabs select-none grid-cols-[repeat(var(--tab-count),minmax(0,1fr))]"
+	style:--tab-count={Math.max(tabs.length, 1)}
 	role="tablist"
 	aria-orientation="horizontal"
 	tabindex="-1"
@@ -68,9 +68,9 @@
 >
 	{#if tabs.length > 0}
 		<div
-			style:width={`${100 / tabs.length}%`}
-			style:transform={`translate3d(${-100 * Math.max(selectedIndex, 0)}%, 0, 0)`}
-			class="ui-tab-indicator"
+			style:--tab-width={`${100 / tabs.length}%`}
+			style:--tab-offset={`${-100 * Math.max(selectedIndex, 0)}%`}
+			class="ui-tab-indicator w-[var(--tab-width)] [transform:translate3d(var(--tab-offset),0,0)]"
 			class:ui-tab-indicator-hidden={selectedIndex < 0}
 			aria-hidden="true"
 		>

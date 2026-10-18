@@ -75,7 +75,7 @@
 
 <form use:validateForm novalidate class="mx-auto max-w-md" aria-busy={submitting} onsubmit={save}>
 	<fieldset class="ui-card ui-card-bordered">
-		<div class="ui-card-body grid gap-3">
+		<div class="ui-card-body gap-3">
 			<label class="grid gap-1"
 				>{m.edit_title()}<input
 					class="ui-input"

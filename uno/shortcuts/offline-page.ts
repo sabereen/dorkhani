@@ -1,0 +1,58 @@
+import type { UiShortcut } from '../types'
+
+export default [
+	['ui-offline-dashboard', '[&&]:(w-full max-w-208 ms-auto me-auto)'],
+	['ui-offline-unsupported', '[&&]:(w-full max-w-208 ms-auto me-auto)'],
+	['ui-offline-loading', '[&&]:(w-full max-w-208 ms-auto me-auto)'],
+	// The form is a child component; the former page-scoped sibling rule did not reach its root.
+	['ui-offline-dashboard', '[&&>*+*:not(.ui-offline-form)]:(mt-4)'],
+	['ui-offline-loading', '[&&]:(min-h-56 center)'],
+	['ui-offline-loading', '[&&>*+*]:(ms-[0.6rem])'],
+	['ui-offline-unsupported', '[&&]:(text-center)'],
+	['ui-offline-unsupported', '[&&_h2]:(mt-4 ms-0 me-0 mb-0)'],
+	[
+		'ui-offline-unsupported',
+		'[&&_p]:(max-w-136 mt-[0.6rem] ms-auto me-auto mb-4 text-ui-text-muted leading-[1.9])',
+	],
+	[
+		'ui-offline-intro',
+		'[&&]:(p-5 [border:1px_solid_var(--ui-color-border)] rounded-ui-xl [background:linear-gradient(_135deg,_var(--ui-color-primary-soft),_var(--ui-color-surface-raised)_)] ui-row)',
+	],
+	['ui-offline-intro', '[&&>*+*]:(ms-4)'],
+	[
+		'ui-offline-main-icon',
+		'[&&]:(w-16 h-16 [flex:0_0_4rem] ms-auto me-auto rounded-[1.25rem] surface-primary text-ui-on-primary text-[2rem] center)',
+	],
+	['ui-offline-intro', '[&&_.ui-offline-main-icon]:(m-0)'],
+	['ui-offline-intro', '[&&_h2]:(m-0)'],
+	['ui-offline-intro', '[&&_p]:(m-0)'],
+	['ui-offline-section-heading', '[&&_h2]:(m-0)'],
+	['ui-offline-section-heading', '[&&_p]:(m-0)'],
+	['ui-offline-intro', '[&&>div>p:last-child]:(mt-1 text-ui-text-muted leading-[1.8])'],
+	['ui-offline-section-heading', '[&&_p]:(mt-1 text-ui-text-muted leading-[1.8])'],
+	['ui-offline-eyebrow', '[&&]:(text-ui-primary text-[0.75rem] font-900)'],
+	['ui-offline-section-heading', '[&&]:(justify-between ui-row)'],
+	['ui-offline-khatm-list', '[&&]:(mt-4 ms-0 me-0 mb-0 p-0 [list-style:none])'],
+	['ui-offline-khatm-list', '[&&_li+li]:([border-top:1px_solid_var(--ui-color-border)])'],
+	['ui-offline-khatm-list', '[&&_a]:(p-[0.8rem] rounded-ui-md text-ui-text no-underline ui-row)'],
+	['ui-offline-khatm-list', '[&&_a:hover]:(surface-primary-soft)'],
+	['ui-offline-khatm-list', '[&&_a>*+*]:(ms-[0.65rem])'],
+	[
+		'ui-offline-list-icon',
+		'[&&]:(w-10 h-10 [flex:0_0_2.5rem] rounded-[0.8rem] surface-primary-soft text-ui-primary center)',
+	],
+	['ui-offline-list-copy', '[&&]:(min-w-0 [flex:1_1_auto])'],
+	['ui-offline-list-copy', '[&&_strong]:(block)'],
+	['ui-offline-list-copy', '[&&_small]:(block)'],
+	['ui-offline-list-copy', '[&&_small]:(mt-[0.15rem] text-ui-text-muted)'],
+	[
+		'ui-offline-empty',
+		'[&&]:(p-8 [border:1px_dashed_var(--ui-color-border-strong)] rounded-ui-lg surface-surface-muted text-center)',
+	],
+	['ui-offline-empty', '[&&_svg]:(w-10 h-10 text-ui-primary)'],
+	['ui-offline-empty', '[&&_h2]:(mt-3 ms-0 me-0 mb-0)'],
+	['ui-offline-empty', '[&&_p]:(mt-[0.3rem] ms-0 me-0 mb-0 text-ui-text-muted)'],
+	['ui-offline-intro', '[@media(max-width:600px)]:[&&]:(items-start)'],
+	['ui-offline-main-icon', '[@media(max-width:600px)]:[&&]:(w-13 h-13 basis-13)'],
+	['ui-offline-khatm-list', '[@media(max-width:600px)]:[&&_a]:(items-start)'],
+] satisfies UiShortcut[]

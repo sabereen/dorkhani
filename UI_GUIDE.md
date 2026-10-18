@@ -7,8 +7,8 @@ or changing a page, shared component, theme behavior, or visual primitive.
 
 - Use the local `ui-*` design system. Do not add DaisyUI classes, aliases, presets, or another
   component library.
-- UnoCSS utilities are appropriate for page-specific layout and spacing. Reusable visual
-  contracts belong in a semantic `ui-*` class instead of a long repeated utility string.
+- Use UnoCSS utilities for local layout and spacing. Reusable visual contracts belong in
+  semantic `ui-*` shortcuts instead of repeated utility strings or handwritten CSS.
 - Keep simple controls as native HTML with `ui-*` classes. Create or reuse a Svelte component
   when behavior, shared state, focus management, or ARIA logic needs an owner.
 - Preserve RTL behavior and Chrome 64 compatibility. Modern browsers must be an enhancement,
@@ -18,12 +18,53 @@ or changing a page, shared component, theme behavior, or visual primitive.
 
 ## Sources of truth
 
-The design system is loaded through `src/app.css` and split by responsibility:
+The design system is configured in `uno.config.ts` and split by responsibility:
 
 - `src/lib/styles/tokens.css`: colors, typography, spacing, radii, shadows, and theme values.
-- `src/lib/styles/base.css`: document defaults and small semantic helpers.
-- `src/lib/styles/layout.css`: application containers and page-level layout primitives.
-- `src/lib/styles/components.css`: reusable controls and visual components.
+- `uno/shortcuts/`: atomic shortcuts for layout, controls, shared components, and route visuals.
+- `uno/design-system.ts`: shortcut composition and ordering of base, state, and responsive rules.
+- `src/lib/styles/base.css`: document selectors and browser pseudo-elements, using `@apply`.
+- `src/lib/styles/animations.css`: keyframes; these and theme/font declarations are CSS exceptions.
+
+Do not add component `<style>` blocks or static inline styles. Use ordinary utilities for
+one-off styling, or add a shortcut to the relevant module. Arbitrary utilities are available
+for precise design values, gradients, and properties without a built-in utility.
+
+Shortcut modules export ordered `[name, utilities]` entries. Repeated names compose a single
+shortcut; keep overrides after their base entry. Use Uno variants for state, descendants, and
+media queries, for example:
+
+```ts
+['ui-example', 'ui-row rounded-ui-md surface-surface text-ui-text'],
+['ui-example', 'hover:(surface-primary-soft text-ui-primary)'],
+['ui-example', '[@media(min-width:768px)]:(ps-6 pe-6)'],
+```
+
+`ui-row`, `center`, `ui-inline-center`, `ui-stack`, and `ui-grid` compose common alignment
+patterns. Use `text-ui-*`, `border-ui-*`, `rounded-ui-*`, and `shadow-ui-*` for theme tokens.
+`surface-*` sets the background shorthand, so switching surfaces also clears any old gradient;
+`bg-ui-*` changes only the background color. Preserve `[&&]` in migrated route shortcuts:
+it retains the extra class specificity previously provided by Svelte's scoped styles.
+It does not reproduce Svelte's descendant boundaries: use explicit component targets so a
+page's sibling/descendant spacing does not accidentally reach a child component's root.
+
+Uno sorts utilities inside each entry. When a shorthand and a longhand overlap (for example
+`border-color` and `border-top`), put the overriding declaration in a later entry or use
+compatible directional utilities. Matching declaration values alone does not verify the cascade.
+Keep every dynamic class variant literal in source, for example with Svelte `class:` directives;
+constructing a class name with interpolation prevents Uno from discovering its variants.
+
+`designSystem()` uses Uno's internal ordering layers, with CSS layer output disabled for
+Chrome 64. Keep ordinary utilities after the design system so local adjustments can override
+primitive defaults. The document shell and imperative form-validation classes are included
+explicitly in Uno's content scan. TypeScript files containing class names also need the
+`/** @unocss-include */` marker to pass Uno's pipeline filter.
+
+Runtime geometry belongs in CSS custom properties, with the property declaration in an atomic
+class or shortcut. For example, use `style:--bar-height` with `h-[var(--bar-height)]`; never
+construct a utility name from runtime values. Dynamically loaded Quran font families remain
+an inline exception. Standalone server-rendered share images and the offline fallback document
+have independent styling because they are served outside the application bundle.
 
 Shared behavioral components live in `src/lib/components/`. Reuse `Modal.svelte`, `Tab.svelte`,
 `Accardeon.svelte`, `TheToast.svelte`, `Header.svelte`, and `ColorSchemeButton.svelte` rather
@@ -92,8 +133,8 @@ Keep the header to one row; action labels are hidden in compact mode while acces
 and loading indicators remain available.
 
 Utilities may handle truly local alignment, width, and spacing. If the same combination occurs
-in several routes or represents a named design concept, move it to the appropriate stylesheet
-as a `ui-*` primitive.
+in several routes or represents a named design concept, move it to the appropriate shortcut
+module as a `ui-*` primitive.
 
 ## Themes and tokens
 
@@ -176,3 +217,5 @@ unless an equally visible `:focus` replacement is provided.
 - Keep readable content in `ui-container-reading` and list/dashboard content in `ui-container`.
 - Do not introduce Daisy names, external UI dependencies, or CSS features outside the Chrome
   64 compatibility contract.
+- Run the real-browser regression matrix described in `tests/visual/README.md`. Compare
+  screenshots with the previous build for style refactors, including dialogs and loading states.

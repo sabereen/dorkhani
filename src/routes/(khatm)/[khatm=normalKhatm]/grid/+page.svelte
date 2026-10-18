@@ -132,7 +132,10 @@
 			<div class="ui-khatm-map-head" aria-hidden="true">
 				<span>{m.grid_juz()}</span><span>{m.grid_surah()}</span><span>{m.grid_page()}</span>
 			</div>
-			<div class="ui-khatm-map-grid" style:grid-template-rows={gridTemplateRows}>
+			<div
+				class="ui-khatm-map-grid [grid-template-rows:var(--map-rows,none)]"
+				style:--map-rows={gridTemplateRows}
+			>
 				{#snippet renderSelectableRanges(ranges: { start: number; end: number }[], column: number)}
 					{#each ranges as range (range.start + ':' + range.end)}
 						{@const start = Ayah.get(range.start)}
@@ -140,13 +143,13 @@
 						{@const label = getRangeLabel(range.start, range.end)}
 						<button
 							type="button"
-							class="ui-khatm-map-selectable col-start-1"
+							class="ui-khatm-map-selectable ui-grid-range ui-grid-column"
 							aria-label={label}
 							title={label}
-							style:grid-column-start={column}
-							style:grid-row-start={range.start + 1}
-							style:grid-row-end={range.end + 1}
-							style:min-height={hideFinishedIntervals ? '0' : null}
+							style:--range-column={column}
+							style:--range-start={range.start + 1}
+							style:--range-end={range.end + 1}
+							class:min-h-0={hideFinishedIntervals}
 							onclick={() => openModal(range.start, range.end)}
 						>
 							{#if showBadges}
@@ -166,12 +169,12 @@
 				{#snippet renderRanges(list: QuranRange[], column: number)}
 					{#each list as range (range.title)}
 						<div
-							class="ui-khatm-map-range"
+							class="ui-khatm-map-range ui-grid-range ui-grid-column"
 							title={range.title}
-							style:grid-column-start={column}
-							style:grid-row-start={range.start + 1}
-							style:grid-row-end={range.end + 1}
-							style:min-height={hideFinishedIntervals ? '0' : null}
+							style:--range-column={column}
+							style:--range-start={range.start + 1}
+							style:--range-end={range.end + 1}
+							class:min-h-0={hideFinishedIntervals}
 						>
 							{range.title}
 						</div>
@@ -188,12 +191,12 @@
 						{@const range = part.getRange()}
 						{@const label = range.getTitle()}
 						<div
-							class="ui-khatm-map-picked col-span-3 col-start-1"
+							class="ui-khatm-map-picked ui-grid-range col-span-3 col-start-1"
 							class:ui-khatm-map-finished={!mine}
 							class:ui-khatm-map-mine={mine}
 							title={`${mine ? m.wizard_my_share() : m.grid_read()}: ${label}`}
-							style:grid-row-start={part.start + 1}
-							style:grid-row-end={part.end + 1}
+							style:--range-start={part.start + 1}
+							style:--range-end={part.end + 1}
 						>
 							<span class="select-none">
 								<strong>{mine ? m.wizard_my_share() : m.grid_read()}</strong>

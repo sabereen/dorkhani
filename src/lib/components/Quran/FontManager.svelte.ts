@@ -1,5 +1,3 @@
-/** @unocss-include */
-
 import '@ghoran/text/fonts/uthmanic-hafs/style.css'
 import { noop } from '$lib/utility/noop'
 import type { Ayah } from '@ghoran/entity'
@@ -9,7 +7,6 @@ import { apiUrl } from '$lib/config/runtime'
 
 export interface FontManager {
 	readonly font: QuranFont
-	get className(): string
 	preloadAyah(ayah: Ayah): Promise<void>
 	getFontFamily(ayah: Ayah): string
 	isLoading(ayah: Ayah): boolean
@@ -29,10 +26,6 @@ export function getFontManager(font: QuranFont): FontManager {
 export class HafsFontManager implements FontManager {
 	font: QuranFont = 'hafs'
 	loading = $state(false)
-
-	get className() {
-		return 'text-3xl'
-	}
 
 	isLoading() {
 		return this.loading
@@ -56,7 +49,6 @@ export class HafsFontManager implements FontManager {
 abstract class QPCFontManager implements FontManager {
 	abstract readonly version: 1 | 2
 	abstract readonly font: 'qpc1' | 'qpc2'
-	abstract get className(): string
 
 	private loadingPages = $state(new SvelteSet<number>())
 	private loadedPages = $state(new SvelteSet<number>())
@@ -94,15 +86,9 @@ abstract class QPCFontManager implements FontManager {
 export class QPCFontManagerV1 extends QPCFontManager {
 	readonly version = 1
 	readonly font = 'qpc1'
-	get className() {
-		return 'text-[34px] break-all'
-	}
 }
 
 export class QPCFontManagerV2 extends QPCFontManager {
 	readonly version = 2
 	readonly font = 'qpc2'
-	get className() {
-		return 'text-3xl break-all'
-	}
 }

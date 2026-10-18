@@ -79,7 +79,7 @@ export default [
 	['ui-khatm-commitments', 'ui-grid gap-[0.65rem] max-w-160 mt-5 ms-auto me-auto mb-0'],
 	[
 		'ui-khatm-commitment',
-		'relative min-h-[5.4rem] p-[0.85rem] [border:1px_solid_var(--ui-color-border)] rounded-[1.1rem] surface-surface text-ui-text [font:inherit] text-start cursor-pointer [transition:border-color_150ms_ease,_background-color_150ms_ease,_box-shadow_150ms_ease,_transform_100ms_ease] ui-row',
+		'relative p-[0.85rem] [border:1px_solid_var(--ui-color-border)] rounded-[1.1rem] surface-surface text-ui-text [font:inherit] text-start cursor-pointer [transition:border-color_150ms_ease,_background-color_150ms_ease,_box-shadow_150ms_ease,_transform_100ms_ease] ui-row',
 	],
 	[
 		'ui-khatm-commitment',
@@ -89,15 +89,6 @@ export default [
 		'ui-khatm-commitment',
 		'[&:hover_.ui-khatm-commitment-icon]:(surface-surface-raised [box-shadow:inset_0_0_0_1px_var(--ui-color-border)])',
 	],
-	[
-		'ui-khatm-commitment',
-		'[&:hover_.ui-khatm-commitment-meta]:(surface-surface-raised [box-shadow:inset_0_0_0_1px_var(--ui-color-border)])',
-	],
-	[
-		'ui-khatm-commitment',
-		'[&:hover_.ui-khatm-commitment-copy>span:last-child]:(text-ui-text-soft)',
-	],
-	['ui-khatm-commitment', '[&:hover_.ui-khatm-commitment-meta]:(text-ui-text-soft)'],
 	['ui-khatm-commitment', '[&:active]:([transform:scale(0.99)])'],
 	[
 		'ui-khatm-commitment',
@@ -121,17 +112,7 @@ export default [
 	['ui-khatm-commitment-icon', '[&_.ui-range-type-icon]:(w-6 h-6)'],
 	['ui-khatm-commitment-copy', 'min-w-0 [flex:1_1_auto] ms-[0.8rem]'],
 	['ui-khatm-commitment-copy', '[&>span]:(block)'],
-	['ui-khatm-commitment-title', '!flex items-center flex-wrap'],
-	['ui-khatm-commitment-title', '[&>*+*]:(ms-[0.45rem])'],
-	['ui-khatm-commitment-title', '[&_strong]:(text-[0.9rem] font-950)'],
-	[
-		'ui-khatm-commitment-copy',
-		'[&>span:last-child]:(mt-[0.2rem] text-ui-text-muted text-[0.7rem] leading-[1.7])',
-	],
-	[
-		'ui-khatm-commitment-meta',
-		'[flex:0_0_auto] ms-[0.65rem] py-[0.35rem] ps-[0.55rem] pe-[0.55rem] rounded-full surface-surface-muted text-ui-text-muted text-[0.65rem] font-900',
-	],
+	['ui-khatm-commitment-title', 'block text-[0.9rem] font-950'],
 	['ui-khatm-commitment-arrow', 'flex [flex:0_0_auto] ms-[0.55rem] text-ui-primary'],
 	['ui-khatm-commitment-arrow', '[&_svg]:(w-5 h-5)'],
 	['ui-khatm-range-heading', 'flex items-start justify-between'],
@@ -369,7 +350,6 @@ export default [
 		'ui-khatm-commitment-icon',
 		'[@media(max-width:479px)]:(w-[2.65rem] h-[2.65rem] basis-[2.65rem])',
 	],
-	['ui-khatm-commitment-meta', '[@media(max-width:479px)]:(hidden)'],
 	['ui-khatm-range-card-main', '[@media(max-width:479px)]:(flex-col)'],
 	[
 		'ui-khatm-range-card-status',

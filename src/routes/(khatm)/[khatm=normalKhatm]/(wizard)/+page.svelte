@@ -171,8 +171,6 @@
 {#snippet rangeTypeOption(
 	type: RangeType,
 	title: string,
-	description: string,
-	meta: string,
 	recommended = false,
 )}
 	<button
@@ -185,15 +183,11 @@
 			{#if type === 'all'}<IconAll />{:else}<RangeTypeIcon {type} />{/if}
 		</span>
 		<span class="ui-khatm-commitment-copy">
-			<span class="ui-khatm-commitment-title">
-				<strong>{title}</strong>
-			</span>
-			<span>{description}</span>
+			<strong class="ui-khatm-commitment-title">{title}</strong>
 		</span>
-		<span class="ui-khatm-commitment-meta">{meta}</span>
-		<span class="ui-khatm-commitment-arrow" aria-hidden="true"
-			><IconArrow class="ltr:mirror" /></span
-		>
+		<span class="ui-khatm-commitment-arrow" aria-hidden="true">
+			<IconArrow class="ltr:mirror" />
+		</span>
 	</button>
 {/snippet}
 
@@ -209,34 +203,24 @@
 		{@render rangeTypeOption(
 			'page',
 			m.wizard_one_page(),
-			m.wizard_one_page_description(),
-			m.wizard_short(),
 			true,
 		)}
 		{@render rangeTypeOption(
 			'hizbQuarter',
 			m.wizard_one_hizb(),
-			m.wizard_one_hizb_description(),
-			m.wizard_brief(),
 		)}
 		{@render rangeTypeOption(
 			'juz',
 			m.wizard_one_juz(),
-			m.wizard_one_juz_description(),
-			m.wizard_continuous(),
 		)}
 		{@render rangeTypeOption(
 			'surah',
 			m.wizard_one_surah(),
-			m.wizard_one_surah_description(),
-			m.wizard_meaningful(),
 		)}
 		{#if khatm.progress > 0.9}
 			{@render rangeTypeOption(
 				'all',
 				m.wizard_all_remaining(),
-				m.wizard_all_remaining_description(),
-				m.wizard_finale(),
 			)}
 		{/if}
 	</div>
